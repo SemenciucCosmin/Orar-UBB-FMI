@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.startup.runtime)
 
     // COMPOSE
     implementation(platform(libs.compose.bom))
@@ -70,12 +71,18 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
 
-    implementation("org.jsoup:jsoup:1.14.3")
-    implementation("com.google.code.gson:gson:2.8.8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    // JSOUP
+    implementation(libs.jsoup)
+
+    // KOIN
+    implementation(libs.koin.android)
 
     // NAVIGATION
     implementation(libs.navigation.compose)
+
+    // RETROFIT
+    implementation(libs.moshi)
+    implementation(libs.retrofit.converter.moshi)
 
     // TEST
     androidTestImplementation(libs.test.espresso.core)
