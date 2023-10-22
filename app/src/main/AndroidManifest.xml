@@ -36,7 +36,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.example.orarubb_fmi.OrarUBBFMIInitializer"
+                android:name="com.example.orarubb_fmi.OrarUbbFmiInitializer"
                 android:value="androidx.startup" />
         </provider>
 
