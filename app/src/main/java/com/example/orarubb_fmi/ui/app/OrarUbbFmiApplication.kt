@@ -1,4 +1,4 @@
-package com.example.orarubb_fmi
+package com.example.orarubb_fmi.ui.app
 
 import android.app.Application
 import com.example.orarubb_fmi.di.modules.libraryModules

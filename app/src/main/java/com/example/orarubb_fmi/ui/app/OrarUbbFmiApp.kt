@@ -1,4 +1,4 @@
-package com.example.orarubb_fmi
+package com.example.orarubb_fmi.ui.app
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

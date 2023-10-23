@@ -4,9 +4,11 @@ import com.example.orarubb_fmi.model.Timetable
 import com.example.orarubb_fmi.model.TimetableInfo
 
 interface TimetableRepository {
-    suspend fun getTimetables(timetableInfo: TimetableInfo): List<Timetable>
+    suspend fun getGroups(timetableInfo: TimetableInfo): List<String>
 
-    suspend fun getCachedTimetable(): Timetable
+    suspend fun getTimetable(timetableInfo: TimetableInfo, group: String): Timetable?
+
+    suspend fun getCachedTimetable(): Timetable?
 
     suspend fun saveTimetable(timetable: Timetable)
 }

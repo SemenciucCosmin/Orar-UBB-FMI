@@ -11,8 +11,8 @@ enum class Participant {
     companion object {
         fun getParticipantType(participant: String): Participant {
             return when  {
-                participant.contains("/") && participant.contains("1") -> SEMIGROUP_1
-                participant.contains("/") && participant.contains("2") -> SEMIGROUP_2
+                participant.contains("/1") -> SEMIGROUP_1
+                participant.contains("/2") -> SEMIGROUP_2
                 participant.isDigitsOnly() -> WHOLE_GROUP
                 else -> WHOLE_YEAR
             }

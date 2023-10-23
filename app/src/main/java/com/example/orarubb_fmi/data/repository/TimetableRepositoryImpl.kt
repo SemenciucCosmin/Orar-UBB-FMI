@@ -1,5 +1,6 @@
 package com.example.orarubb_fmi.data.repository
 
+import com.example.orarubb_fmi.common.SPACE
 import com.example.orarubb_fmi.data.datasource.api.TimetableApiService
 import com.example.orarubb_fmi.domain.model.ClassType
 import com.example.orarubb_fmi.domain.model.Participant
@@ -26,7 +27,27 @@ class TimetableRepositoryImpl(
         private const val HOUR_FORMAT = "%02d:00"
     }
 
-    override suspend fun getTimetables(timetableInfo: TimetableInfo): List<Timetable> {
+    override suspend fun getGroups(timetableInfo: TimetableInfo): List<String> {
+        val htmlResponse = timetableApiService.getTimetablesHtml(
+            year = timetableInfo.year,
+            semester = timetableInfo.semester,
+            studyField = timetableInfo.studyField.notation,
+            studyLanguage = timetableInfo.studyLanguage.notation,
+            studyYear = timetableInfo.studyYear
+        )
+        val document = Jsoup.parse(htmlResponse.string())
+        val headlineTags = document.select(HEADLINE_TAG)
+        val groupTags = headlineTags.subList(1, headlineTags.size)
+        val groups = groupTags.mapNotNull { tag ->
+            tag.text().split(String.SPACE).lastOrNull()
+        }
+        return groups
+    }
+
+    override suspend fun getTimetable(
+        timetableInfo: TimetableInfo,
+        group: String
+    ): Timetable? {
         val htmlResponse = timetableApiService.getTimetablesHtml(
             year = timetableInfo.year,
             semester = timetableInfo.semester,
@@ -37,29 +58,28 @@ class TimetableRepositoryImpl(
         val document = Jsoup.parse(htmlResponse.string())
         val tables = document.select(TABLE_TAG)
         val headlineTags = document.select(HEADLINE_TAG)
-        val groupTags = headlineTags.subList(1, headlineTags.size)
-        val groups = groupTags.mapNotNull { tag ->
-            tag.text().split(" ").lastOrNull()
+        val groupElements = headlineTags.subList(1, headlineTags.size)
+        val groups = groupElements.mapNotNull { element ->
+            element.text().split(String.SPACE).lastOrNull()
         }
 
         val timetables = tables.mapIndexed { index, table ->
-            val group = groups[index]
             val rows = table.select(TABLE_ROW_TAG)
-
             val timetableClasses = rows.mapNotNull { row ->
                 getTimetableClass(row.select(TABLE_COLUMN_TAG))
             }
 
             Timetable(
-                group = group,
+                group = groups[index],
                 info = timetableInfo,
                 classes = timetableClasses
             )
         }
-        return timetables
+
+        return timetables.find { it.group == group }
     }
 
-    override suspend fun getCachedTimetable(): Timetable {
+    override suspend fun getCachedTimetable(): Timetable? {
         TODO("Not yet implemented")
     }
 

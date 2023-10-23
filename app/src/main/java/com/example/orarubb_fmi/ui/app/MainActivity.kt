@@ -1,11 +1,16 @@
-package com.example.orarubb_fmi
+package com.example.orarubb_fmi.ui.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.example.orarubb_fmi.common.timetablesInfo
 import com.example.orarubb_fmi.ui.theme.OrarUBBFMITheme
+import com.example.orarubb_fmi.ui.viewmodel.TimetableViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val timetableViewModel: TimetableViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,5 +20,8 @@ class MainActivity : ComponentActivity() {
                 OrarUbbFmiApp()
             }
         }
+
+        timetableViewModel.getTimetable(timetablesInfo.first(), "111")
+        timetableViewModel.getGroups(timetablesInfo.first())
     }
 }
