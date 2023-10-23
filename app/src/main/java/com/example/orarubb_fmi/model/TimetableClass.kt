@@ -1,4 +1,8 @@
-package com.example.orarubb_fmi.domain
+package com.example.orarubb_fmi.model
+
+import com.example.orarubb_fmi.domain.model.ClassType
+import com.example.orarubb_fmi.domain.model.Participant
+import com.example.orarubb_fmi.domain.model.Week
 
 data class TimetableClass(
     val day: String,

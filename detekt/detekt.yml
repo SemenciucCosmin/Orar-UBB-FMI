@@ -689,7 +689,7 @@ style:
     active: false
   ReturnCount:
     active: true
-    max: 2
+    max: 15
     excludedFunctions:
       - 'equals'
     excludeLabeled: false

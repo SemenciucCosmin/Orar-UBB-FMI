@@ -1,4 +1,4 @@
-package com.example.orarubb_fmi.domain
+package com.example.orarubb_fmi.domain.model
 
 import androidx.core.text.isDigitsOnly
 

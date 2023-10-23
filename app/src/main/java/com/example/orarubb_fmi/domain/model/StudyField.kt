@@ -1,4 +1,4 @@
-package com.example.orarubb_fmi.domain
+package com.example.orarubb_fmi.domain.model
 
 enum class StudyField(val notation: String) {
     MATHEMATICS(notation = "M"),

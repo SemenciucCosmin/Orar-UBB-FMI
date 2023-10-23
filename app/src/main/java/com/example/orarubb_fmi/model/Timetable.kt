@@ -1,4 +1,4 @@
-package com.example.orarubb_fmi.domain
+package com.example.orarubb_fmi.model
 
 data class Timetable(
     val group: String,

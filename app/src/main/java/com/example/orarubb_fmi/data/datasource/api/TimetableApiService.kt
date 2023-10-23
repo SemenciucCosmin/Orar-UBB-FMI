@@ -1,4 +1,4 @@
-package com.example.orarubb_fmi.datasource.api
+package com.example.orarubb_fmi.data.datasource.api
 
 import okhttp3.ResponseBody
 import retrofit2.http.GET
