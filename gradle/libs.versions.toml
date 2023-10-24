@@ -7,7 +7,7 @@ androidx-navigation-runtime-ktx = "2.7.4"
 androidx-startup-runtime = "1.1.1"
 
 # COMPOSE
-compose-bom = "2023.10.00"
+compose-bom = "2023.10.01"
 
 # JSOUP
 jsoup = "1.14.3"
@@ -20,16 +20,16 @@ navigation-compose = "2.7.4"
 
 # PLUGINS
 android-gradle-plugin = "8.1.0"
-google-ksp = "1.8.10-1.0.9"
 detekt = "1.23.1"
-kotlin-android = "1.8.10"
+google-ksp = "1.9.10-1.0.13"
+kotlin-android = "1.9.10"
 
 # RETROFIT
 moshi = "1.13.0"
 retrofit-converter-moshi = "2.9.0"
 
 # ROOM
-room = "2.5.2"
+room = "2.6.0"
 
 # TEST
 junit = "4.13.2"
@@ -80,8 +80,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
-google-ksp = { id = "com.google.devtools.ksp", version.ref = "google-ksp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "google-ksp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-android" }
 
 
