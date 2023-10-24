@@ -28,6 +28,9 @@ kotlin-android = "1.8.10"
 moshi = "1.13.0"
 retrofit-converter-moshi = "2.9.0"
 
+# ROOM
+room = "2.5.2"
+
 # TEST
 junit = "4.13.2"
 test-ext = "1.1.5"
@@ -62,6 +65,11 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 # RETROFIT
 moshi = {group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi"}
 retrofit-converter-moshi = {group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit-converter-moshi"}
+
+# ROOM
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 
 # TEST
 test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "test-espresso-core" }
