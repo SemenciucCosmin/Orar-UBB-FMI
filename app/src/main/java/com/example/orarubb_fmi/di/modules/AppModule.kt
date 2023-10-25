@@ -10,6 +10,6 @@ import retrofit2.Retrofit
 
 val appModule = module {
     factory { get<Retrofit>().create(TimetableApiService::class.java) }
-    factory<TimetableRepository> { TimetableRepositoryImpl(get()) }
+    factory<TimetableRepository> { TimetableRepositoryImpl(get(), get()) }
     viewModel { TimetableViewModel(get()) }
 }

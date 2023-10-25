@@ -1,7 +1,16 @@
 package com.example.orarubb_fmi.data.repository
 
+import com.example.orarubb_fmi.common.END_HOUR
+import com.example.orarubb_fmi.common.HEADLINE_TAG
+import com.example.orarubb_fmi.common.HOURS_DELIMITER
+import com.example.orarubb_fmi.common.HOUR_FORMAT
 import com.example.orarubb_fmi.common.SPACE
+import com.example.orarubb_fmi.common.START_HOUR
+import com.example.orarubb_fmi.common.TABLE_COLUMN_TAG
+import com.example.orarubb_fmi.common.TABLE_ROW_TAG
+import com.example.orarubb_fmi.common.TABLE_TAG
 import com.example.orarubb_fmi.data.datasource.api.TimetableApiService
+import com.example.orarubb_fmi.data.datasource.dao.TimetableDao
 import com.example.orarubb_fmi.domain.model.ClassType
 import com.example.orarubb_fmi.domain.model.Participant
 import com.example.orarubb_fmi.model.Timetable
@@ -13,19 +22,9 @@ import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 
 class TimetableRepositoryImpl(
-    private val timetableApiService: TimetableApiService
+    private val timetableApiService: TimetableApiService,
+    private val timetableDao: TimetableDao
 ) : TimetableRepository {
-
-    companion object {
-        private const val HEADLINE_TAG = "h1"
-        private const val TABLE_TAG = "table"
-        private const val TABLE_ROW_TAG = "tr"
-        private const val TABLE_COLUMN_TAG = "td"
-        private const val HOURS_DELIMITER = "-"
-        private const val START_HOUR = 0
-        private const val END_HOUR = 1
-        private const val HOUR_FORMAT = "%02d:00"
-    }
 
     override suspend fun getGroups(timetableInfo: TimetableInfo): List<String> {
         val htmlResponse = timetableApiService.getTimetablesHtml(
