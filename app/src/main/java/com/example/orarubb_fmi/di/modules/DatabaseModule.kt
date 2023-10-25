@@ -10,6 +10,5 @@ val databaseModule = module {
     single {
         Room.databaseBuilder(androidContext(), TimetableDatabase::class.java, DATABASE_FILE).build()
     }
-
     factory { get<TimetableDatabase>().timetableDao() }
 }
