@@ -44,10 +44,7 @@ class TimetableRepositoryImpl(
         return groups
     }
 
-    override suspend fun getTimetable(
-        timetableInfo: TimetableInfo,
-        group: String
-    ): Timetable? {
+    override suspend fun getTimetable(timetableInfo: TimetableInfo): Timetable {
         val htmlResponse = timetableApiService.getTimetablesHtml(
             year = timetableInfo.year,
             semester = timetableInfo.semester,
@@ -63,20 +60,20 @@ class TimetableRepositoryImpl(
             element.text().split(String.SPACE).lastOrNull()
         }
 
-        val timetables = tables.mapIndexed { index, table ->
+        val timetablesClasses = tables.mapIndexed { index, table ->
             val rows = table.select(TABLE_ROW_TAG)
-            val timetableClasses = rows.mapNotNull { row ->
-                getTimetableClass(row.select(TABLE_COLUMN_TAG))
+            rows.mapNotNull { row ->
+                getTimetableClass(
+                    group = groups[index],
+                    columns = row.select(TABLE_COLUMN_TAG)
+                )
             }
+        }.flatten()
 
-            Timetable(
-                group = groups[index],
-                info = timetableInfo,
-                classes = timetableClasses
-            )
-        }
-
-        return timetables.find { it.group == group }
+        return Timetable(
+            info = timetableInfo,
+            classes = timetablesClasses
+        )
     }
 
     override suspend fun getCachedTimetable(): Timetable? {
@@ -87,7 +84,7 @@ class TimetableRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    private fun getTimetableClass(columns: Elements): TimetableClass? {
+    private fun getTimetableClass(group: String, columns: Elements): TimetableClass? {
         if (columns.isEmpty()) return null
 
         val dayElement = columns[0].text() ?: return null
@@ -108,6 +105,7 @@ class TimetableRepositoryImpl(
         val classType = ClassType.getClassType(classTypeElement)
 
         return TimetableClass(
+            group = group,
             day = dayElement,
             startHour = startHour,
             endHour = endHour,

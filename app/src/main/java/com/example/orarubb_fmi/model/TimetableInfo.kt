@@ -4,9 +4,9 @@ import com.example.orarubb_fmi.domain.model.StudyField
 import com.example.orarubb_fmi.domain.model.StudyLanguage
 
 data class TimetableInfo(
-    val year: Int,
-    val semester: Int,
+    val year: String,
+    val semester: String,
     val studyField: StudyField,
     val studyLanguage: StudyLanguage,
-    val studyYear: Int
+    val studyYear: String
 )

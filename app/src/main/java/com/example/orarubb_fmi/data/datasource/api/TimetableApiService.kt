@@ -7,10 +7,10 @@ import retrofit2.http.Path
 interface TimetableApiService {
     @GET("{year}-{semester}/tabelar/{studyField}{studyLanguage}{studyYear}.html")
     suspend fun getTimetablesHtml(
-        @Path("year") year: Int,
-        @Path("semester") semester: Int,
+        @Path("year") year: String,
+        @Path("semester") semester: String,
         @Path("studyField") studyField: String,
         @Path("studyLanguage") studyLanguage: String,
-        @Path("studyYear") studyYear: Int
+        @Path("studyYear") studyYear: String
     ): ResponseBody
 }

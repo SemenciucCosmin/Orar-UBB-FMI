@@ -25,9 +25,9 @@ class TimetableViewModel(private val timetableRepository: TimetableRepository) :
         }
     }
 
-    fun getTimetable(timetableInfo: TimetableInfo, group: String) {
+    fun getTimetable(timetableInfo: TimetableInfo) {
         viewModelScope.launch {
-            val timetable = timetableRepository.getTimetable(timetableInfo, group)
+            val timetable = timetableRepository.getTimetable(timetableInfo)
             _timetable.update { timetable }
         }
     }

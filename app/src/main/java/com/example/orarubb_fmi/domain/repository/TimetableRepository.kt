@@ -6,7 +6,7 @@ import com.example.orarubb_fmi.model.TimetableInfo
 interface TimetableRepository {
     suspend fun getGroups(timetableInfo: TimetableInfo): List<String>
 
-    suspend fun getTimetable(timetableInfo: TimetableInfo, group: String): Timetable?
+    suspend fun getTimetable(timetableInfo: TimetableInfo): Timetable
 
     suspend fun getCachedTimetable(): Timetable?
 
