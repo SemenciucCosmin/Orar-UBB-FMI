@@ -32,11 +32,16 @@ class TimetableViewModel(private val timetableRepository: TimetableRepository) :
         }
     }
 
-    fun getCachedTimetable(): Timetable {
-        TODO("Not yet implemented")
+    fun getCachedTimetable() {
+        viewModelScope.launch {
+            val timetable = timetableRepository.getCachedTimetable()
+            _timetable.update { timetable }
+        }
     }
 
     fun saveTimetable(timetable: Timetable) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            timetableRepository.saveTimetable(timetable)
+        }
     }
 }

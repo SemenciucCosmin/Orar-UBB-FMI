@@ -16,11 +16,4 @@ data class TimetableClass(
     val classType: ClassType,
     val discipline: String,
     val professor: String
-) {
-    val id: String
-        get() {
-            val ids = group + day + startHour + endHour + week + place +
-                    participant + classType + discipline + professor
-            return UUID.nameUUIDFromBytes(ids.toByteArray()).toString()
-        }
-}
+)

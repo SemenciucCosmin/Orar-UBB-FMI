@@ -9,6 +9,10 @@ import com.example.orarubb_fmi.common.START_HOUR
 import com.example.orarubb_fmi.common.TABLE_COLUMN_TAG
 import com.example.orarubb_fmi.common.TABLE_ROW_TAG
 import com.example.orarubb_fmi.common.TABLE_TAG
+import com.example.orarubb_fmi.common.toTimetableClass
+import com.example.orarubb_fmi.common.toTimetableClassEntity
+import com.example.orarubb_fmi.common.toTimetableInfo
+import com.example.orarubb_fmi.common.toTimetableInfoEntity
 import com.example.orarubb_fmi.data.datasource.api.TimetableApiService
 import com.example.orarubb_fmi.data.datasource.dao.TimetableDao
 import com.example.orarubb_fmi.domain.model.ClassType
@@ -75,12 +79,20 @@ class TimetableRepositoryImpl(
         )
     }
 
-    override suspend fun getCachedTimetable(): Timetable? {
-        TODO("Not yet implemented")
+    override suspend fun getCachedTimetable(): Timetable {
+        val timetableInfoEntity = timetableDao.getTimetableInfo()
+        val timetableClassEntities = timetableDao.getTimetableClasses()
+        return Timetable(
+            info = timetableInfoEntity.toTimetableInfo(),
+            classes = timetableClassEntities.map { it.toTimetableClass() }
+        )
     }
 
     override suspend fun saveTimetable(timetable: Timetable) {
-        TODO("Not yet implemented")
+        timetableDao.insertTimetableInfo(timetable.toTimetableInfoEntity())
+        timetable.classes.forEach { timetableClass ->
+            timetableDao.insertTimetableClass(timetableClass.toTimetableClassEntity())
+        }
     }
 
     private fun getTimetableClass(group: String, columns: Elements): TimetableClass? {

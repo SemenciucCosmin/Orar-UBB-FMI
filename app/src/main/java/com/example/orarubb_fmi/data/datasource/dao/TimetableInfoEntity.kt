@@ -8,10 +8,10 @@ import androidx.room.Entity
     primaryKeys = ["id"]
 )
 data class TimetableInfoEntity(
-    @ColumnInfo(name = "id") val id: Int,
-    @ColumnInfo(name = "year") val year: Int,
-    @ColumnInfo(name = "semester") val semester: Int,
+    @ColumnInfo(name = "id") val id: String,
+    @ColumnInfo(name = "year") val year: String,
+    @ColumnInfo(name = "semester") val semester: String,
     @ColumnInfo(name = "studyField") val studyField: Int,
     @ColumnInfo(name = "studyLanguage") val studyLanguage: Int,
-    @ColumnInfo(name = "studyYear") val studyYear: Int
+    @ColumnInfo(name = "studyYear") val studyYear: String
 )

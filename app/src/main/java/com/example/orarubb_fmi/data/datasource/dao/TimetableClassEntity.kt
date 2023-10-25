@@ -8,7 +8,7 @@ import androidx.room.Entity
     primaryKeys = ["id"]
 )
 data class TimetableClassEntity(
-    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "group") val group: String,
     @ColumnInfo(name = "day") val day: String,
     @ColumnInfo(name = "startHour") val startHour: String,

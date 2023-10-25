@@ -8,7 +8,7 @@ interface TimetableRepository {
 
     suspend fun getTimetable(timetableInfo: TimetableInfo): Timetable
 
-    suspend fun getCachedTimetable(): Timetable?
+    suspend fun getCachedTimetable(): Timetable
 
     suspend fun saveTimetable(timetable: Timetable)
 }
