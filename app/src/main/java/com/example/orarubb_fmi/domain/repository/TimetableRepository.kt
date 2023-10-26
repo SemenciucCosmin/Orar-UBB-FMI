@@ -7,8 +7,4 @@ interface TimetableRepository {
     suspend fun getGroups(timetableInfo: TimetableInfo): List<String>
 
     suspend fun getTimetable(timetableInfo: TimetableInfo): Timetable
-
-    suspend fun getCachedTimetable(): Timetable
-
-    suspend fun saveTimetable(timetable: Timetable)
 }

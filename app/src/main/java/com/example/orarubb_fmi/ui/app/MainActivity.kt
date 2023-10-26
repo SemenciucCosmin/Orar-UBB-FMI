@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
         }
 
         timetableViewModel.getTimetable(timetablesInfo.first())
-        timetableViewModel.getTimetable(timetablesInfo[22])
         timetableViewModel.getGroups(timetablesInfo.first())
     }
 }

@@ -31,23 +31,32 @@ class TimetableRepositoryImpl(
 ) : TimetableRepository {
 
     override suspend fun getGroups(timetableInfo: TimetableInfo): List<String> {
-        val htmlResponse = timetableApiService.getTimetablesHtml(
-            year = timetableInfo.year,
-            semester = timetableInfo.semester,
-            studyField = timetableInfo.studyField.notation,
-            studyLanguage = timetableInfo.studyLanguage.notation,
-            studyYear = timetableInfo.studyYear
-        )
-        val document = Jsoup.parse(htmlResponse.string())
-        val headlineTags = document.select(HEADLINE_TAG)
-        val groupTags = headlineTags.subList(1, headlineTags.size)
-        val groups = groupTags.mapNotNull { tag ->
-            tag.text().split(String.SPACE).lastOrNull()
+        val cachedTimetable = getCachedTimetable()
+        return if (timetableInfo != cachedTimetable?.info) {
+            val cloudTimetable = fetchTimetable(timetableInfo)
+            timetableDao.deleteTimetableInfo()
+            timetableDao.deleteTimetableClasses()
+            saveTimetable(cloudTimetable)
+            cloudTimetable.classes.map { it.group }.distinct()
+        } else {
+            cachedTimetable.classes.map { it.group }.distinct()
         }
-        return groups
     }
 
     override suspend fun getTimetable(timetableInfo: TimetableInfo): Timetable {
+        val cachedTimetable = getCachedTimetable()
+        return if (timetableInfo != cachedTimetable?.info) {
+            val cloudTimetable = fetchTimetable(timetableInfo)
+            timetableDao.deleteTimetableInfo()
+            timetableDao.deleteTimetableClasses()
+            saveTimetable(cloudTimetable)
+            cloudTimetable
+        } else {
+            cachedTimetable
+        }
+    }
+
+    private suspend fun fetchTimetable(timetableInfo: TimetableInfo): Timetable {
         val htmlResponse = timetableApiService.getTimetablesHtml(
             year = timetableInfo.year,
             semester = timetableInfo.semester,
@@ -79,16 +88,16 @@ class TimetableRepositoryImpl(
         )
     }
 
-    override suspend fun getCachedTimetable(): Timetable {
-        val timetableInfoEntity = timetableDao.getTimetableInfo()
-        val timetableClassEntities = timetableDao.getTimetableClasses()
+    private suspend fun getCachedTimetable(): Timetable? {
+        val timetableInfoEntity = timetableDao.getTimetableInfo() ?: return null
+        val timetableClassEntities = timetableDao.getTimetableClasses() ?: return null
         return Timetable(
             info = timetableInfoEntity.toTimetableInfo(),
             classes = timetableClassEntities.map { it.toTimetableClass() }
         )
     }
 
-    override suspend fun saveTimetable(timetable: Timetable) {
+    private suspend fun saveTimetable(timetable: Timetable) {
         timetableDao.insertTimetableInfo(timetable.toTimetableInfoEntity())
         timetable.classes.forEach { timetableClass ->
             timetableDao.insertTimetableClass(timetableClass.toTimetableClassEntity())

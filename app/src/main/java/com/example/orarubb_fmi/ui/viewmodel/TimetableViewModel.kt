@@ -20,8 +20,8 @@ class TimetableViewModel(private val timetableRepository: TimetableRepository) :
 
     fun getGroups(timetableInfo: TimetableInfo) {
         viewModelScope.launch {
-            val receivedGroups = timetableRepository.getGroups(timetableInfo)
-            _groups.update { receivedGroups }
+            val groups = timetableRepository.getGroups(timetableInfo)
+            _groups.update { groups }
         }
     }
 
@@ -29,19 +29,6 @@ class TimetableViewModel(private val timetableRepository: TimetableRepository) :
         viewModelScope.launch {
             val timetable = timetableRepository.getTimetable(timetableInfo)
             _timetable.update { timetable }
-        }
-    }
-
-    fun getCachedTimetable() {
-        viewModelScope.launch {
-            val timetable = timetableRepository.getCachedTimetable()
-            _timetable.update { timetable }
-        }
-    }
-
-    fun saveTimetable(timetable: Timetable) {
-        viewModelScope.launch {
-            timetableRepository.saveTimetable(timetable)
         }
     }
 }

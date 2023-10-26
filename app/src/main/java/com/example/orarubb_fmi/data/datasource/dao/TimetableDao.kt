@@ -9,14 +9,20 @@ import androidx.room.Query
 interface TimetableDao {
 
     @Query("SELECT * FROM timetable_info")
-    suspend fun getTimetableInfo(): TimetableInfoEntity
+    suspend fun getTimetableInfo(): TimetableInfoEntity?
 
     @Query("SELECT * FROM timetable_class")
-    suspend fun getTimetableClasses(): List<TimetableClassEntity>
+    suspend fun getTimetableClasses(): List<TimetableClassEntity>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTimetableInfo(timetableInfoEntity: TimetableInfoEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTimetableClass(timetableClassEntity: TimetableClassEntity)
+
+    @Query("DELETE FROM timetable_info")
+    suspend fun deleteTimetableInfo()
+
+    @Query("DELETE FROM timetable_class")
+    suspend fun deleteTimetableClasses()
 }
