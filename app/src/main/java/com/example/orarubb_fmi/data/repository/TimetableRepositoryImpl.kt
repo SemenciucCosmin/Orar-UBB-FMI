@@ -22,6 +22,9 @@ import com.example.orarubb_fmi.model.TimetableClass
 import com.example.orarubb_fmi.model.TimetableInfo
 import com.example.orarubb_fmi.domain.model.Week
 import com.example.orarubb_fmi.domain.repository.TimetableRepository
+import com.example.orarubb_fmi.model.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 
@@ -30,71 +33,70 @@ class TimetableRepositoryImpl(
     private val timetableDao: TimetableDao
 ) : TimetableRepository {
 
-    override suspend fun getGroups(timetableInfo: TimetableInfo): List<String> {
+    override suspend fun getTimetable(timetableInfo: TimetableInfo): Resource<Timetable> {
         val cachedTimetable = getCachedTimetable()
         return if (timetableInfo != cachedTimetable?.info) {
             val cloudTimetable = fetchTimetable(timetableInfo)
-            timetableDao.deleteTimetableInfo()
-            timetableDao.deleteTimetableClasses()
-            saveTimetable(cloudTimetable)
-            cloudTimetable.classes.map { it.group }.distinct()
+            reconcileCachedTimetable(cloudTimetable)
+            Resource.Success(cloudTimetable)
         } else {
-            cachedTimetable.classes.map { it.group }.distinct()
-        }
-    }
-
-    override suspend fun getTimetable(timetableInfo: TimetableInfo): Timetable {
-        val cachedTimetable = getCachedTimetable()
-        return if (timetableInfo != cachedTimetable?.info) {
-            val cloudTimetable = fetchTimetable(timetableInfo)
-            timetableDao.deleteTimetableInfo()
-            timetableDao.deleteTimetableClasses()
-            saveTimetable(cloudTimetable)
-            cloudTimetable
-        } else {
-            cachedTimetable
+            Resource.Success(cachedTimetable)
         }
     }
 
     private suspend fun fetchTimetable(timetableInfo: TimetableInfo): Timetable {
-        val htmlResponse = timetableApiService.getTimetablesHtml(
-            year = timetableInfo.year,
-            semester = timetableInfo.semester,
-            studyField = timetableInfo.studyField.notation,
-            studyLanguage = timetableInfo.studyLanguage.notation,
-            studyYear = timetableInfo.studyYear
-        )
-        val document = Jsoup.parse(htmlResponse.string())
-        val tables = document.select(TABLE_TAG)
-        val headlineTags = document.select(HEADLINE_TAG)
-        val groupElements = headlineTags.subList(1, headlineTags.size)
-        val groups = groupElements.mapNotNull { element ->
-            element.text().split(String.SPACE).lastOrNull()
-        }
-
-        val timetablesClasses = tables.mapIndexed { index, table ->
-            val rows = table.select(TABLE_ROW_TAG)
-            rows.mapNotNull { row ->
-                getTimetableClass(
-                    group = groups[index],
-                    columns = row.select(TABLE_COLUMN_TAG)
-                )
+        return withContext(Dispatchers.Default) {
+            val htmlResponse = timetableApiService.getTimetablesHtml(
+                year = timetableInfo.year,
+                semester = timetableInfo.semester,
+                studyField = timetableInfo.studyField.notation,
+                studyLanguage = timetableInfo.studyLanguage.notation,
+                studyYear = timetableInfo.studyYear
+            )
+            val document = Jsoup.parse(htmlResponse.string())
+            val tables = document.select(TABLE_TAG)
+            val headlineTags = document.select(HEADLINE_TAG)
+            val groupElements = headlineTags.subList(1, headlineTags.size)
+            val groups = groupElements.mapNotNull { element ->
+                element.text().split(String.SPACE).lastOrNull()
             }
-        }.flatten()
 
-        return Timetable(
-            info = timetableInfo,
-            classes = timetablesClasses
-        )
+            val timetablesClasses = tables.mapIndexed { index, table ->
+                val rows = table.select(TABLE_ROW_TAG)
+                rows.mapNotNull { row ->
+                    getTimetableClass(
+                        group = groups[index],
+                        columns = row.select(TABLE_COLUMN_TAG)
+                    )
+                }
+            }.flatten()
+
+            Timetable(
+                info = timetableInfo,
+                classes = timetablesClasses
+            )
+        }
     }
 
     private suspend fun getCachedTimetable(): Timetable? {
-        val timetableInfoEntity = timetableDao.getTimetableInfo() ?: return null
-        val timetableClassEntities = timetableDao.getTimetableClasses() ?: return null
-        return Timetable(
-            info = timetableInfoEntity.toTimetableInfo(),
-            classes = timetableClassEntities.map { it.toTimetableClass() }
-        )
+        return withContext(Dispatchers.IO) {
+            val timetableInfoEntity = timetableDao.getTimetableInfo() ?: return@withContext null
+            val timetableClassEntities =
+                timetableDao.getTimetableClasses() ?: return@withContext null
+
+            return@withContext Timetable(
+                info = timetableInfoEntity.toTimetableInfo(),
+                classes = timetableClassEntities.map { it.toTimetableClass() }
+            )
+        }
+    }
+
+    private suspend fun reconcileCachedTimetable(timetable: Timetable) {
+        withContext(Dispatchers.IO) {
+            timetableDao.deleteTimetableInfo()
+            timetableDao.deleteTimetableClasses()
+            saveTimetable(timetable)
+        }
     }
 
     private suspend fun saveTimetable(timetable: Timetable) {
