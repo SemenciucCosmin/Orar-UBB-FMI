@@ -77,6 +77,10 @@ dependencies {
 
     // KOIN
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+
+    // LIFECYCLE
+    implementation(libs.lifecycle.runtime.compose)
 
     // NAVIGATION
     implementation(libs.navigation.compose)
