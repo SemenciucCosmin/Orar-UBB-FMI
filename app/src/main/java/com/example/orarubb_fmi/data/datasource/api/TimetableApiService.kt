@@ -1,6 +1,7 @@
 package com.example.orarubb_fmi.data.datasource.api
 
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -12,5 +13,5 @@ interface TimetableApiService {
         @Path("studyField") studyField: String,
         @Path("studyLanguage") studyLanguage: String,
         @Path("studyYear") studyYear: String
-    ): ResponseBody
+    ): Response<ResponseBody>
 }

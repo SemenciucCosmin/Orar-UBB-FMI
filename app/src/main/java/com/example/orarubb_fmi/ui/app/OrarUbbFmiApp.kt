@@ -1,6 +1,7 @@
 package com.example.orarubb_fmi.ui.app
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -96,14 +97,24 @@ fun OrarUbbFmiApp() {
 
 
                     is TimetableUitState.Loading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(50.dp),
-                            color = Color.Blue
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(50.dp),
+                                color = Color.Blue
+                            )
+                        }
                     }
 
                     is TimetableUitState.Error -> {
-                        Text(text = (timetableUiState as TimetableUitState.Error).message)
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = (timetableUiState as TimetableUitState.Error).message)
+                        }
                     }
                 }
             }

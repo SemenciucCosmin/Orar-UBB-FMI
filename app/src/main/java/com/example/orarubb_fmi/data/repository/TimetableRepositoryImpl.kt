@@ -15,6 +15,7 @@ import com.example.orarubb_fmi.common.toTimetableInfo
 import com.example.orarubb_fmi.common.toTimetableInfoEntity
 import com.example.orarubb_fmi.data.datasource.api.TimetableApiService
 import com.example.orarubb_fmi.data.datasource.dao.TimetableDao
+import com.example.orarubb_fmi.data.network.CallResponse
 import com.example.orarubb_fmi.domain.model.ClassType
 import com.example.orarubb_fmi.domain.model.Participant
 import com.example.orarubb_fmi.model.Timetable
@@ -25,8 +26,10 @@ import com.example.orarubb_fmi.domain.repository.TimetableRepository
 import com.example.orarubb_fmi.model.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
+import java.io.IOException
 
 class TimetableRepositoryImpl(
     private val timetableApiService: TimetableApiService,
@@ -35,25 +38,40 @@ class TimetableRepositoryImpl(
 
     override suspend fun getTimetable(timetableInfo: TimetableInfo): Resource<Timetable> {
         val cachedTimetable = getCachedTimetable()
-        return if (timetableInfo != cachedTimetable?.info) {
-            val cloudTimetable = fetchTimetable(timetableInfo)
+        if (timetableInfo != cachedTimetable?.info) {
+            val cloudResource = fetchTimetable(timetableInfo)
+            val cloudTimetable = cloudResource.getOrNull() ?: return cloudResource
             reconcileCachedTimetable(cloudTimetable)
-            Resource.Success(cloudTimetable)
+            return cloudResource
         } else {
-            Resource.Success(cachedTimetable)
+            return Resource.Success(cachedTimetable)
         }
     }
 
-    private suspend fun fetchTimetable(timetableInfo: TimetableInfo): Timetable {
+    private suspend fun fetchTimetable(timetableInfo: TimetableInfo): Resource<Timetable> {
+        val callResponse = safeApiCall(
+            call = { fetchTimetableCall(timetableInfo) },
+            errorMessage = "IO exception"
+        )
+        return when (callResponse) {
+            is CallResponse.Error -> Resource.Error(Resource.ErrorType.Network)
+            is CallResponse.Success -> {
+                val cloudTimetable = parseCallResponse(timetableInfo, callResponse.data)
+                if (cloudTimetable == null) {
+                    Resource.Error(Resource.ErrorType.NotFound)
+                } else {
+                    Resource.Success(cloudTimetable)
+                }
+            }
+        }
+    }
+
+    private suspend fun parseCallResponse(
+        timetableInfo: TimetableInfo,
+        callResponse: ResponseBody
+    ): Timetable? {
         return withContext(Dispatchers.Default) {
-            val htmlResponse = timetableApiService.getTimetablesHtml(
-                year = timetableInfo.year,
-                semester = timetableInfo.semester,
-                studyField = timetableInfo.studyField.notation,
-                studyLanguage = timetableInfo.studyLanguage.notation,
-                studyYear = timetableInfo.studyYear
-            )
-            val document = Jsoup.parse(htmlResponse.string())
+            val document = Jsoup.parse(callResponse.string())
             val tables = document.select(TABLE_TAG)
             val headlineTags = document.select(HEADLINE_TAG)
             val groupElements = headlineTags.subList(1, headlineTags.size)
@@ -69,7 +87,7 @@ class TimetableRepositoryImpl(
                         columns = row.select(TABLE_COLUMN_TAG)
                     )
                 }
-            }.flatten()
+            }.flatten().ifEmpty { return@withContext null }
 
             Timetable(
                 info = timetableInfo,
@@ -80,13 +98,12 @@ class TimetableRepositoryImpl(
 
     private suspend fun getCachedTimetable(): Timetable? {
         return withContext(Dispatchers.IO) {
-            val timetableInfoEntity = timetableDao.getTimetableInfo() ?: return@withContext null
-            val timetableClassEntities =
-                timetableDao.getTimetableClasses() ?: return@withContext null
+            val infoEntity = timetableDao.getTimetableInfo() ?: return@withContext null
+            val classEntities = timetableDao.getTimetableClasses() ?: return@withContext null
 
-            return@withContext Timetable(
-                info = timetableInfoEntity.toTimetableInfo(),
-                classes = timetableClassEntities.map { it.toTimetableClass() }
+            Timetable(
+                info = infoEntity.toTimetableInfo(),
+                classes = classEntities.map { it.toTimetableClass() }
             )
         }
     }
@@ -138,5 +155,34 @@ class TimetableRepositoryImpl(
             discipline = disciplineElement,
             professor = professorElement
         )
+    }
+
+    private suspend fun fetchTimetableCall(timetableInfo: TimetableInfo): CallResponse<ResponseBody> {
+        val response = timetableApiService.getTimetablesHtml(
+            year = timetableInfo.year,
+            semester = timetableInfo.semester,
+            studyField = timetableInfo.studyField.notation,
+            studyLanguage = timetableInfo.studyLanguage.notation,
+            studyYear = timetableInfo.studyYear
+        )
+        return if (!response.isSuccessful) {
+            CallResponse.Error(Exception(response.errorBody().toString()))
+        } else {
+            val body = response.body()
+            if (body == null) {
+                CallResponse.Error(Exception("Response body cannot be null."))
+            } else {
+                CallResponse.Success(body)
+            }
+        }
+    }
+
+    private suspend fun <T : Any> safeApiCall(
+        call: suspend () -> CallResponse<T>,
+        errorMessage: String
+    ): CallResponse<T> = try {
+        call.invoke()
+    } catch (e: Exception) {
+        CallResponse.Error(IOException(errorMessage, e))
     }
 }
