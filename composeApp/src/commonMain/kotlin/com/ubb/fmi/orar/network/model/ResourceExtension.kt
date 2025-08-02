@@ -15,7 +15,7 @@ const val HTTP_NOT_FOUND = 410
 val HTTP_OK = 200..299
 
 suspend inline fun <reified T> processApiResource(
-    operation: () -> HttpResponse
+    operation: suspend () -> HttpResponse
 ): Resource<T> {
     return try {
         val response = operation.invoke()

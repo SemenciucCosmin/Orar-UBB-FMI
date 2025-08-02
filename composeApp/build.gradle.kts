@@ -53,8 +53,10 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.ui)
 
+            // HTML PARSER
+            implementation(libs.html.parser)
+
             // KTOR
-//            implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
@@ -63,6 +65,9 @@ kotlin {
             // KOIN
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+
+            // KOTLINX
+            implementation(libs.kotlinx.date.time)
         }
 
         iosMain.dependencies {

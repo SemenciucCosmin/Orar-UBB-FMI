@@ -22,6 +22,9 @@ compose-multiplatform = "1.8.2"
 # COMPOSE
 compose-plugin = "1.7.0"
 
+# HTML PARSER
+html-parser = "0.6.0"
+
 # KOIN
 koin = "4.1.0"
 
@@ -30,6 +33,7 @@ kotlin = "2.2.0"
 
 # KOTLINX
 kotlinx-coroutines = "1.10.2"
+kotlinx-dateTime = "0.7.1"
 kotlinx-serialization = "1.9.0"
 
 # KSP
@@ -70,6 +74,9 @@ coil-network-ktor2 = { module = "io.coil-kt.coil3:coil-network-ktor2", version.r
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil3" }
 coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 
+# HTML PARSER
+html-parser = { group = "com.mohamedrejeb.ksoup", name = "ksoup-html", version.ref = "html-parser" }
+
 # KTOR
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
@@ -88,6 +95,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 
 # KOTLINX
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-date-time = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-dateTime"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 # NAVIGATION
