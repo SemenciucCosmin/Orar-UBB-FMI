@@ -16,7 +16,7 @@ class TeachersDataSourceImpl(
     override suspend fun getTeachers(year: Int, semester: Semester): Resource<List<Teacher>> {
         val resource = teachersApi.getTeachersHtml(
             year = year,
-            semester = semester.id
+            semesterId = semester.id
         )
 
         val teachersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
@@ -45,7 +45,7 @@ class TeachersDataSourceImpl(
     ): Resource<TeacherTimetable> {
         val resource = teachersApi.getTeacherTimetableHtml(
             year = year,
-            semester = semester.id,
+            semesterId = semester.id,
             teacherId = teacher.id
         )
 

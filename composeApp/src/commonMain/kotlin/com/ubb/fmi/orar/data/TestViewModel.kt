@@ -3,12 +3,11 @@ package com.ubb.fmi.orar.data
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.model.Semester
-import com.ubb.fmi.orar.data.model.StudyLine
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
-import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSourceImpl
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.timetables.repository.TimetablesRepository
 import com.ubb.fmi.orar.logging.Logger
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -22,6 +21,7 @@ class TestViewModel(
     private val teachersDataSource: TeachersDataSource,
     private val subjectsDataSource: SubjectsDataSource,
     private val studyLineDataSource: StudyLineDataSource,
+    private val timetablesRepository: TimetablesRepository,
 ) : ViewModel() {
 
     @OptIn(ExperimentalTime::class)
@@ -32,12 +32,10 @@ class TestViewModel(
             val semester = Semester.FIRST
 
 //            val rooms = roomsDataSource.getRooms(year, semester).payload
-//            val room = rooms?.first() ?: return@launch
-//            val roomTimetable = roomsDataSource.getRoomTimetable(
-//                year = year,
-//                semester = semester,
-//                room = room
-//            )
+//            val roomsTimetables = rooms?.map { room ->
+//                logger.d("TESTMESSAGE", "room: ${room.name}")
+//                roomsDataSource.getRoomTimetable(year, semester, room)
+//            }
 
 //            val subjects = subjectsDataSource.getSubjects(year, semester).payload
 //            val subject = subjects?.first() ?: return@launch
@@ -55,11 +53,16 @@ class TestViewModel(
 //                teacher = teacher
 //            )
 
+            val studyLines = studyLineDataSource.getStudyLines(year, semester).payload
+            val ok = studyLines
 //            val studyLineTimetable = studyLineDataSource.getStudyLineTimetable(
 //                year = year,
 //                semester = semester,
 //                studyLine = StudyLine.IE1
 //            ).payload
+
+//            val executionTime = timetablesRepository.load(year, semester)
+//            logger.d("TESTMESSAGE", "executionTime: $executionTime")
         }
     }
 }

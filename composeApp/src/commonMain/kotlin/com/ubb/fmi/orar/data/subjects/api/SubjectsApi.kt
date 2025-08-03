@@ -8,20 +8,20 @@ import io.ktor.client.request.get
 class SubjectsApi(private val httpClient: HttpClient) {
     suspend fun getSubjectsMapHtml(
         year: Int,
-        semester: String,
+        semesterId: String,
     ): Resource<String> {
         return processApiResource {
-            httpClient.get("$BASE_URL/$year-$semester/disc/index.html")
+            httpClient.get("$BASE_URL/$year-$semesterId/disc/index.html")
         }
     }
 
     suspend fun getSubjectTimetableHtml(
         year: Int,
-        semester: String,
+        semesterId: String,
         subjectId: String
     ): Resource<String> {
         return processApiResource {
-            httpClient.get("$BASE_URL/$year-$semester/disc/$subjectId.html")
+            httpClient.get("$BASE_URL/$year-$semesterId/disc/$subjectId.html")
         }
     }
 

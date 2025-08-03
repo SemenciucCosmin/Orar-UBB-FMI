@@ -16,7 +16,7 @@ class RoomsDataSourceImpl(
     override suspend fun getRooms(year: Int, semester: Semester): Resource<List<Room>> {
         val resource = roomsApi.getRoomsMapHtml(
             year = year,
-            semester = semester.id
+            semesterId = semester.id
         )
 
         val roomsMapHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
@@ -48,7 +48,7 @@ class RoomsDataSourceImpl(
     ): Resource<RoomTimetable> {
         val resource = roomsApi.getRoomTimetableHtml(
             year = year,
-            semester = semester.id,
+            semesterId = semester.id,
             roomId = room.id
         )
 

@@ -23,6 +23,8 @@ private const val HEADLINE_TAG_CLOSED = "</h1"
 private const val HYPERLINK_TAG_OPEN = "<a"
 private const val HYPERLINK_TAG_CLOSED = "</a"
 
+private const val NESTED_HYPERLINK_TAG_CLOSED = "</a></a>"
+
 private const val TABLE_TAG_OPEN = "<table"
 private const val TABLE_TAG_CLOSED = "</table"
 
@@ -53,7 +55,18 @@ object HtmlParser {
                         .firstOrNull()?.formatHyperlinkId() ?: String.BLANK
 
                     val cells = when {
-                        !cellHtml.contains(HYPERLINK_TAG_OPEN) -> cellHtml.select(TAG_RIGHT, TAG_LEFT)
+                        !cellHtml.contains(HYPERLINK_TAG_OPEN) -> {
+                            cellHtml.select(TAG_RIGHT, TAG_LEFT)
+                        }
+
+                        cellHtml.contains(NESTED_HYPERLINK_TAG_CLOSED) -> {
+                            val startIndex = cellHtml.lastIndexOf(HYPERLINK_TAG_OPEN)
+                            val endIndex = cellHtml.lastIndexOf(HYPERLINK_TAG_CLOSED)
+
+                            cellHtml
+                                .substring(startIndex + 1, endIndex -1)
+                                .select(TAG_RIGHT, TAG_LEFT)
+                        }
 
                         else -> {
                             cellHtml

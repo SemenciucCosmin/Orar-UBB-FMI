@@ -1,12 +1,8 @@
 package com.ubb.fmi.orar.data.studyline.datasource
 
 import com.ubb.fmi.orar.data.model.Semester
-import com.ubb.fmi.orar.data.model.StudyLine
-import com.ubb.fmi.orar.data.rooms.api.RoomsApi
-import com.ubb.fmi.orar.data.rooms.model.Room
-import com.ubb.fmi.orar.data.rooms.model.RoomTimetable
-import com.ubb.fmi.orar.data.rooms.model.RoomTimetableClass
 import com.ubb.fmi.orar.data.studyline.api.StudyLineApi
+import com.ubb.fmi.orar.data.studyline.model.StudyLine
 import com.ubb.fmi.orar.data.studyline.model.StudyLineGroupTimetable
 import com.ubb.fmi.orar.data.studyline.model.StudyLineGroupTimetableClass
 import com.ubb.fmi.orar.data.studyline.model.StudyLineTimetable
@@ -19,6 +15,47 @@ class StudyLineDataSourceImpl(
     private val studyLineApi: StudyLineApi,
 ) : StudyLineDataSource {
 
+    override suspend fun getStudyLines(
+        year: Int,
+        semester: Semester
+    ): Resource<List<StudyLine>> {
+        val resource = studyLineApi.getStudyLines(
+            year = year,
+            semesterId = semester.id
+        )
+
+        val studyLinesMapHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
+        val studyLinesTables = HtmlParser.extractTables(
+            html = studyLinesMapHtml
+        )
+
+        val rooms = studyLinesTables.map { table ->
+            table.rows.mapNotNull { row ->
+                val nameCell = row.cells.getOrNull(NAME_INDEX) ?: return@mapNotNull null
+                val studyYear1Cell = row.cells.getOrNull(STUDY_YEAR_1_INDEX)
+                val studyYear2Cell = row.cells.getOrNull(STUDY_YEAR_2_INDEX)
+                val studyYear3Cell = row.cells.getOrNull(STUDY_YEAR_3_INDEX)
+
+                listOfNotNull(
+                    studyYear1Cell,
+                    studyYear2Cell,
+                    studyYear3Cell,
+                ).filter { it.value != NULL }.map { cell ->
+                    StudyLine(
+                        name = nameCell.value,
+                        id = cell.id,
+                        studyYearId = cell.value
+                    )
+                }
+            }.flatten()
+        }.flatten()
+
+        return when {
+            rooms.isEmpty() -> Resource(null, Status.Error)
+            else -> Resource(rooms, Status.Success)
+        }
+    }
+
     override suspend fun getStudyLineTimetable(
         year: Int,
         semester: Semester,
@@ -26,7 +63,7 @@ class StudyLineDataSourceImpl(
     ): Resource<StudyLineTimetable> {
         val resource = studyLineApi.getStudyLineTimetable(
             year = year,
-            semester = semester.id,
+            semesterId = semester.id,
             studyLineId = studyLine.id
         )
 
@@ -88,6 +125,12 @@ class StudyLineDataSourceImpl(
     }
 
     companion object {
+        // StudyLine column indexes
+        private const val NAME_INDEX = 0
+        private const val STUDY_YEAR_1_INDEX = 1
+        private const val STUDY_YEAR_2_INDEX = 2
+        private const val STUDY_YEAR_3_INDEX = 3
+
         // StudyLine timetable column indexes
         private const val DAY_INDEX = 0
         private const val HOURS_INDEX = 1
@@ -103,5 +146,6 @@ class StudyLineDataSourceImpl(
         private const val SEMIGROUP_2_ID = "/2"
         private const val WHOLE_GROUP_ID = "whole_group"
         private const val WHOLE_YEAR_ID = "whole_year"
+        private const val NULL = "null"
     }
 }
