@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
 kotlin {
@@ -68,6 +69,10 @@ kotlin {
 
             // KOTLINX
             implementation(libs.kotlinx.date.time)
+            implementation(libs.kotlinx.immutableCollections)
+
+            // NAVIGATION
+            implementation(libs.navigation.compose)
         }
 
         iosMain.dependencies {

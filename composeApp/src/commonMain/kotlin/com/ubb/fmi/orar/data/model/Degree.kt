@@ -1,15 +1,15 @@
 package com.ubb.fmi.orar.data.model
 
-enum class Semester(
+enum class Degree(
     val id: String,
      val label: String,
 ) {
-    FIRST(
+    LICENCE(
         id = "1",
-        label = "Semstrul 1"
+        label = "Licenta"
     ),
-    SECOND(
+    MASTER(
         id = "2",
-        label = "Semstrul 2"
+        label = "Master"
     )
 }

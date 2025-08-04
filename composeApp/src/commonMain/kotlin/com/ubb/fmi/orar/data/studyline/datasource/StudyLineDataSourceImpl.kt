@@ -1,6 +1,5 @@
 package com.ubb.fmi.orar.data.studyline.datasource
 
-import com.ubb.fmi.orar.data.model.Semester
 import com.ubb.fmi.orar.data.studyline.api.StudyLineApi
 import com.ubb.fmi.orar.data.studyline.model.StudyLine
 import com.ubb.fmi.orar.data.studyline.model.StudyLineGroupTimetable
@@ -17,11 +16,11 @@ class StudyLineDataSourceImpl(
 
     override suspend fun getStudyLines(
         year: Int,
-        semester: Semester
+        semesterId: String
     ): Resource<List<StudyLine>> {
         val resource = studyLineApi.getStudyLines(
             year = year,
-            semesterId = semester.id
+            semesterId = semesterId
         )
 
         val studyLinesMapHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
@@ -58,12 +57,12 @@ class StudyLineDataSourceImpl(
 
     override suspend fun getStudyLineTimetable(
         year: Int,
-        semester: Semester,
+        semesterId: String,
         studyLine: StudyLine
     ): Resource<StudyLineTimetable> {
         val resource = studyLineApi.getStudyLineTimetable(
             year = year,
-            semesterId = semester.id,
+            semesterId = semesterId,
             studyLineId = studyLine.id
         )
 

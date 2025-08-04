@@ -31,38 +31,56 @@ class TestViewModel(
             val year = currentDate.year - 1
             val semester = Semester.FIRST
 
-//            val rooms = roomsDataSource.getRooms(year, semester).payload
+//            val rooms = roomsDataSource.getRooms(year, semester.id).payload
 //            val roomsTimetables = rooms?.map { room ->
 //                logger.d("TESTMESSAGE", "room: ${room.name}")
-//                roomsDataSource.getRoomTimetable(year, semester, room)
+//                roomsDataSource.getRoomTimetable(year, semester.id, room)
 //            }
 
-//            val subjects = subjectsDataSource.getSubjects(year, semester).payload
+//            val subjects = subjectsDataSource.getSubjects(year, semester.id).payload
 //            val subject = subjects?.first() ?: return@launch
 //            val subjectTimetable = subjectsDataSource.getSubjectTimetable(
 //                year = year,
-//                semester = semester,
+//                semester = semester.id,
 //                subject = subject
 //            )
 
-//            val teachers = teachersDataSource.getTeachers(year, semester).payload
+//            val teachers = teachersDataSource.getTeachers(year, semester.id).payload
 //            val teacher = teachers?.first() ?: return@launch
 //            val teacherTimetable = teachersDataSource.getTeacherTimetable(
 //                year = year,
-//                semester = semester,
+//                semester = semester.id,
 //                teacher = teacher
 //            )
 
-            val studyLines = studyLineDataSource.getStudyLines(year, semester).payload
+            val studyLines = studyLineDataSource.getStudyLines(year, semester.id).payload
             val ok = studyLines
 //            val studyLineTimetable = studyLineDataSource.getStudyLineTimetable(
 //                year = year,
-//                semester = semester,
+//                semester = semester.id,
 //                studyLine = StudyLine.IE1
 //            ).payload
 
-//            val executionTime = timetablesRepository.load(year, semester)
+//            val executionTime = timetablesRepository.load(year, semester.id)
 //            logger.d("TESTMESSAGE", "executionTime: $executionTime")
         }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun testYears() {
+        val currentInstant = Clock.System.now()
+        val currentDate = currentInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+        val currentYear = currentDate.year
+        val previousYear = currentYear - 1
+
+        val years = (previousYear..currentYear).map { year ->
+            val nextYear = year.inc()
+            "$year-$nextYear"
+        }
+
+        logger.d("TESTMESSAGE", "$years")
+    }
+
+    companion object {
     }
 }

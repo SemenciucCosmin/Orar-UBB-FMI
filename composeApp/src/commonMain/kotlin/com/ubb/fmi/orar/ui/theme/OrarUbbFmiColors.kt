@@ -4,7 +4,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme = darkColorScheme(
+val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFD0BCFF),
     onPrimary = Color(0xFF381E72),
     primaryContainer = Color(0xFF4F378B),
@@ -43,13 +43,13 @@ private val DarkColorScheme = darkColorScheme(
     surfaceDim = Color(0xFF141218)
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF6750A4),
+val LightColorScheme = lightColorScheme(
+    primary = Color(0xFF004174),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFEADDFF),
-    onPrimaryContainer = Color(0xFF21005D),
-    inversePrimary = Color(0xFFD0BCFF),
-    secondary = Color(0xFF625B71),
+    primaryContainer = Color(0xFFDBEFFF),
+    onPrimaryContainer = Color(0xFF00335C),
+    inversePrimary = Color(0xFFBDE2FF),
+    secondary = Color(0xFF4D5B59),
     onSecondary = Color(0xFFFFFFFF),
     secondaryContainer = Color(0xFFE8DEF8),
     onSecondaryContainer = Color(0xFF1D192B),

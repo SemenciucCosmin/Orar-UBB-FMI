@@ -1,6 +1,5 @@
 package com.ubb.fmi.orar.data.rooms.datasource
 
-import com.ubb.fmi.orar.data.model.Semester
 import com.ubb.fmi.orar.data.rooms.api.RoomsApi
 import com.ubb.fmi.orar.data.rooms.model.Room
 import com.ubb.fmi.orar.data.rooms.model.RoomTimetable
@@ -13,10 +12,10 @@ class RoomsDataSourceImpl(
     private val roomsApi: RoomsApi
 ) : RoomsDataSource {
 
-    override suspend fun getRooms(year: Int, semester: Semester): Resource<List<Room>> {
+    override suspend fun getRooms(year: Int, semesterId: String): Resource<List<Room>> {
         val resource = roomsApi.getRoomsMapHtml(
             year = year,
-            semesterId = semester.id
+            semesterId = semesterId
         )
 
         val roomsMapHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
@@ -43,12 +42,12 @@ class RoomsDataSourceImpl(
 
     override suspend fun getRoomTimetable(
         year: Int,
-        semester: Semester,
+        semesterId: String,
         room: Room
     ): Resource<RoomTimetable> {
         val resource = roomsApi.getRoomTimetableHtml(
             year = year,
-            semesterId = semester.id,
+            semesterId = semesterId,
             roomId = room.id
         )
 

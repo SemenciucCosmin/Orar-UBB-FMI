@@ -1,6 +1,5 @@
 package com.ubb.fmi.orar.data.subjects.datasource
 
-import com.ubb.fmi.orar.data.model.Semester
 import com.ubb.fmi.orar.data.subjects.api.SubjectsApi
 import com.ubb.fmi.orar.data.subjects.model.Subject
 import com.ubb.fmi.orar.data.subjects.model.SubjectTimetable
@@ -13,10 +12,10 @@ class SubjectsDataSourceImpl(
     private val subjectsApi: SubjectsApi
 ) : SubjectsDataSource {
 
-    override suspend fun getSubjects(year: Int, semester: Semester): Resource<List<Subject>> {
+    override suspend fun getSubjects(year: Int, semesterId: String): Resource<List<Subject>> {
         val resource = subjectsApi.getSubjectsMapHtml(
             year = year,
-            semesterId = semester.id
+            semesterId = semesterId
         )
 
         val subjectsMapHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
@@ -42,12 +41,12 @@ class SubjectsDataSourceImpl(
 
     override suspend fun getSubjectTimetable(
         year: Int,
-        semester: Semester,
+        semesterId: String,
         subject: Subject
     ): Resource<SubjectTimetable> {
         val resource = subjectsApi.getSubjectTimetableHtml(
             year = year,
-            semesterId = semester.id,
+            semesterId = semesterId,
             subjectId = subject.id
         )
 

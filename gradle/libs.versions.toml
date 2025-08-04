@@ -34,6 +34,7 @@ kotlin = "2.2.0"
 # KOTLINX
 kotlinx-coroutines = "1.10.2"
 kotlinx-dateTime = "0.7.1"
+kotlinx-immutableCollections = "0.4.0"
 kotlinx-serialization = "1.9.0"
 
 # KSP
@@ -96,6 +97,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 # KOTLINX
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-date-time = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-dateTime"}
+kotlinx-immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutableCollections" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 # NAVIGATION

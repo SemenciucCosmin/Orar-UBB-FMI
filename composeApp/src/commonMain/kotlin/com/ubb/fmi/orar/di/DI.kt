@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.data.studyline.di.studyLineDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetables.di.timetablesDataModule
+import com.ubb.fmi.orar.feature.form.di.formFeatureModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,4 +26,5 @@ fun commonModule() = module {
     includes(subjectsDataModule())
     includes(teachersDataModule())
     includes(timetablesDataModule())
+    includes(formFeatureModule())
 }
