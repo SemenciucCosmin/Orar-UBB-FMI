@@ -14,3 +14,6 @@ val String.Companion.EQUAL: String
 
 val String.Companion.SLASH: String
     get() = "/"
+
+val String.Companion.PIPE: String
+    get() = "|"

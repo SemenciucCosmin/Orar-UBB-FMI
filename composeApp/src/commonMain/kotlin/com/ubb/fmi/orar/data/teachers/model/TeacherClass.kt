@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.data.teachers.model
 
-data class TeacherTimetableClass (
+data class TeacherClass (
+    val id: String,
     val day: String,
     val hours: String,
     val frequencyId: String,

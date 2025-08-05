@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.di
 
 import com.ubb.fmi.orar.data.TestViewModel
+import com.ubb.fmi.orar.data.database.di.databaseDataModule
 import com.ubb.fmi.orar.network.di.networkDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.studyline.di.studyLineDataModule
@@ -27,4 +28,5 @@ fun commonModule() = module {
     includes(teachersDataModule())
     includes(timetablesDataModule())
     includes(formFeatureModule())
+    includes(databaseDataModule())
 }

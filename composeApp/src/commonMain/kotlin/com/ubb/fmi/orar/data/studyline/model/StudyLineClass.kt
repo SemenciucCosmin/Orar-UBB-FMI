@@ -1,6 +1,8 @@
 package com.ubb.fmi.orar.data.studyline.model
 
-data class StudyLineGroupTimetableClass(
+data class StudyLineClass(
+    val id: String,
+    val groupId: String,
     val day: String,
     val hours: String,
     val frequencyId: String,

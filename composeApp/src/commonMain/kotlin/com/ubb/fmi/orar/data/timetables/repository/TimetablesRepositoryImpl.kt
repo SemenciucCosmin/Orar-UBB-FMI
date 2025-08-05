@@ -6,7 +6,6 @@ import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -16,53 +15,38 @@ class TimetablesRepositoryImpl(
     private val studyLineDataSource: StudyLineDataSource,
     private val subjectsDataSource: SubjectsDataSource,
     private val teachersDataSource: TeachersDataSource,
-): TimetablesRepository {
+) : TimetablesRepository {
 
     @OptIn(ExperimentalTime::class)
     override suspend fun load(year: Int, semesterId: String): Long {
         return withContext(Dispatchers.Default) {
             val startTime = Clock.System.now().toEpochMilliseconds()
 
-            val asyncRooms = async { roomsDataSource.getRooms(year, semesterId) }
-            val asyncStudyLines = async { studyLineDataSource.getStudyLines(year, semesterId) }
-            val asyncSubjects = async { subjectsDataSource.getSubjects(year, semesterId) }
-            val asyncTeachers = async { teachersDataSource.getTeachers(year, semesterId) }
-
-            val roomsResource = asyncRooms.await()
-            val studyLinesResource = asyncStudyLines.await()
-            val subjectsResource = asyncSubjects.await()
-            val teachersResource = asyncTeachers.await()
-
-            val rooms = roomsResource.payload ?: emptyList()
-            val studyLines = studyLinesResource.payload ?: emptyList()
-            val subjects = subjectsResource.payload ?: emptyList()
-            val teachers = teachersResource.payload ?: emptyList()
-
-            val asyncRoomsTimetables = rooms.map { room ->
-                async { roomsDataSource.getRoomTimetable(year, semesterId, room) }
+            val asyncRoomTimetables = async {
+                roomsDataSource.getTimetables(year, semesterId)
             }
 
-            val asyncSubjectsTimetables = subjects.map { subject ->
-                async { subjectsDataSource.getSubjectTimetable(year, semesterId, subject) }
+            val asyncStudyLineTimetables = async {
+                studyLineDataSource.getTimetables(year, semesterId)
             }
 
-            val asyncTeachersTimetables = teachers.map { teacher ->
-                async { teachersDataSource.getTeacherTimetable(year, semesterId, teacher) }
+            val asyncSubjectTimetables = async {
+                subjectsDataSource.getTimetables(year, semesterId)
             }
 
-            val asyncStudyLinesTimetablesType = studyLines.map { studyLine ->
-                async { studyLineDataSource.getStudyLineTimetable(year, semesterId, studyLine) }
+            val asyncTeachersTimetables = async {
+                teachersDataSource.getTimetables(year, semesterId)
             }
 
-            val roomsTimetablesResource = asyncRoomsTimetables.awaitAll()
-            val subjectsTimetablesResource = asyncSubjectsTimetables.awaitAll()
-            val teachersTimetablesResource = asyncTeachersTimetables.awaitAll()
-            val studyLinesTimetablesResource = asyncStudyLinesTimetablesType.awaitAll()
+            val roomTimetablesResource = asyncRoomTimetables.await()
+            val studyLineTimetablesResource = asyncStudyLineTimetables.await()
+            val subjectTimetablesResource = asyncSubjectTimetables.await()
+            val teacherTimetablesResource = asyncTeachersTimetables.await()
 
-            val roomsTimetables = roomsTimetablesResource.mapNotNull { it.payload }
-            val subjectsTimetables = subjectsTimetablesResource.mapNotNull { it.payload }
-            val teachersTimetables = teachersTimetablesResource.mapNotNull { it.payload }
-            val studyLinesTimetables = studyLinesTimetablesResource.mapNotNull { it.payload }
+            val roomTimetables = roomTimetablesResource.payload ?: emptyList()
+            val studyLineTimetables = studyLineTimetablesResource.payload ?: emptyList()
+            val subjectTimetables = subjectTimetablesResource.payload ?: emptyList()
+            val teacherTimetables = teacherTimetablesResource.payload ?: emptyList()
 
             val endTime = Clock.System.now().toEpochMilliseconds()
             return@withContext endTime - startTime

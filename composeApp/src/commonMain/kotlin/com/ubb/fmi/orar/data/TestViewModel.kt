@@ -53,16 +53,15 @@ class TestViewModel(
 //                teacher = teacher
 //            )
 
-            val studyLines = studyLineDataSource.getStudyLines(year, semester.id).payload
-            val ok = studyLines
+//            val studyLines = studyLineDataSource.getStudyLines(year, semester.id).payload
 //            val studyLineTimetable = studyLineDataSource.getStudyLineTimetable(
 //                year = year,
 //                semester = semester.id,
 //                studyLine = StudyLine.IE1
 //            ).payload
 
-//            val executionTime = timetablesRepository.load(year, semester.id)
-//            logger.d("TESTMESSAGE", "executionTime: $executionTime")
+            val executionTime = timetablesRepository.load(year, semester.id)
+            logger.d("TESTMESSAGE", "executionTime: $executionTime")
         }
     }
 

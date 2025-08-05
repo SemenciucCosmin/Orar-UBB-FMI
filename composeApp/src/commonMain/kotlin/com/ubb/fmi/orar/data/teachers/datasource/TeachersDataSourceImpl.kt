@@ -1,43 +1,94 @@
 package com.ubb.fmi.orar.data.teachers.datasource
 
+import com.ubb.fmi.orar.data.database.dao.TeacherDao
+import com.ubb.fmi.orar.data.database.model.TeacherClassEntity
+import com.ubb.fmi.orar.data.database.model.TeacherEntity
 import com.ubb.fmi.orar.data.teachers.api.TeachersApi
 import com.ubb.fmi.orar.data.teachers.model.Teacher
 import com.ubb.fmi.orar.data.teachers.model.TeacherTimetable
-import com.ubb.fmi.orar.data.teachers.model.TeacherTimetableClass
+import com.ubb.fmi.orar.data.teachers.model.TeacherClass
+import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.network.model.Resource
 import com.ubb.fmi.orar.network.model.Status
+import com.ubb.fmi.orar.network.model.isError
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
+import okio.ByteString.Companion.encodeUtf8
 
 class TeachersDataSourceImpl(
-    private val teachersApi: TeachersApi
+    private val teachersApi: TeachersApi,
+    private val teacherDao: TeacherDao
 ) : TeachersDataSource {
 
-    override suspend fun getTeachers(year: Int, semesterId: String): Resource<List<Teacher>> {
-        val resource = teachersApi.getTeachersHtml(
-            year = year,
-            semesterId = semesterId
-        )
-
-        val teachersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val teachersTable = HtmlParser.extractTables(
-            html = teachersHtml
-        ).firstOrNull()
-
-        val teachersCells = teachersTable?.rows?.map { it.cells }?.flatten()
-        val teachers = teachersCells?.map { cell ->
-            Teacher(
-                id = cell.id,
-                name = cell.value
-            )
-        }?.filter { it.name != NULL }
+    override suspend fun getTimetables(
+        year: Int,
+        semesterId: String
+    ): Resource<List<TeacherTimetable>> {
+        val cachedTimetables = getTimetablesFromCache()
 
         return when {
-            teachers.isNullOrEmpty() -> Resource(null, Status.Error)
-            else -> Resource(teachers, Status.Success)
+            cachedTimetables.isNotEmpty() -> {
+                println("TESTMESSAGE Teacher: from cache")
+                Resource(cachedTimetables, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE Teacher: from API")
+                val apiTimetablesResource = getTimetablesFromApi(year, semesterId)
+                apiTimetablesResource.payload?.forEach { timetable ->
+                    val teacherEntity = mapTeacherToEntity(timetable.teacher)
+                    val classesEntities = mapClassesToEntities(
+                        teacherId = timetable.teacher.id,
+                        classes = timetable.classes
+                    )
+
+                    teacherDao.insertTeacher(teacherEntity)
+                    teacherDao.insertTeacherClasses(classesEntities)
+                }
+
+                apiTimetablesResource
+            }
         }
     }
 
-    override suspend fun getTeacherTimetable(
+    private suspend fun getTimetablesFromCache(): List<TeacherTimetable> {
+        val entities = teacherDao.getAllTeachersWithClasses()
+        return entities.map { (teacherEntity, classesEntities) ->
+            TeacherTimetable(
+                teacher = mapEntityToTeacher(teacherEntity),
+                classes = mapEntitiesToClasses(classesEntities)
+            )
+        }
+    }
+
+    private suspend fun getTimetablesFromApi(
+        year: Int,
+        semesterId: String
+    ): Resource<List<TeacherTimetable>> {
+        return withContext(Dispatchers.Default) {
+            val teachersResource = getTeachersFromApi(year, semesterId)
+            val teachers = teachersResource.payload ?: emptyList()
+            val teacherTimetablesResources = teachers.map { room ->
+                async { getTeacherTimetableFromApi(year, semesterId, room) }
+            }.awaitAll()
+
+            val teachersTimetables = teacherTimetablesResources.mapNotNull { it.payload }
+            val errorStatus = teacherTimetablesResources.map {
+                it.status
+            }.firstOrNull { it.isError() }
+
+            return@withContext when {
+                teachersResource.status.isError() -> Resource(null, teachersResource.status)
+                errorStatus != null -> Resource(null, errorStatus)
+                else -> Resource(teachersTimetables, Status.Success)
+            }
+        }
+    }
+
+    suspend fun getTeacherTimetableFromApi(
         year: Int,
         semesterId: String,
         teacher: Teacher
@@ -62,7 +113,18 @@ class TeachersDataSourceImpl(
             val classTypeCell = row.cells.getOrNull(CLASS_TYPE_INDEX) ?: return@mapNotNull null
             val subjectCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
 
-            TeacherTimetableClass(
+            val id = listOf(
+                dayCell.value,
+                hoursCell.value,
+                frequencyCell.value,
+                studyLineCell.value,
+                classTypeCell.value,
+                subjectCell.id,
+                subjectCell.value,
+            ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
+
+            TeacherClass(
+                id = id,
                 day = dayCell.value,
                 hours = hoursCell.value,
                 frequencyId = frequencyCell.value,
@@ -70,13 +132,88 @@ class TeachersDataSourceImpl(
                 studyLineId = studyLineCell.value,
                 classTypeId = classTypeCell.value,
                 subjectId = subjectCell.id,
-                subjectName = subjectCell.value
+                subjectName = subjectCell.value,
             )
         }
 
         return when {
             classes.isNullOrEmpty() -> Resource(null, Status.Error)
             else -> Resource(TeacherTimetable(teacher, classes), Status.Success)
+        }
+    }
+
+    suspend fun getTeachersFromApi(year: Int, semesterId: String): Resource<List<Teacher>> {
+        val resource = teachersApi.getTeachersHtml(
+            year = year,
+            semesterId = semesterId
+        )
+
+        val teachersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
+        val teachersTable = HtmlParser.extractTables(
+            html = teachersHtml
+        ).firstOrNull()
+
+        val teachersCells = teachersTable?.rows?.map { it.cells }?.flatten()
+        val teachers = teachersCells?.map { cell ->
+            Teacher(
+                id = cell.id,
+                name = cell.value
+            )
+        }?.filter { it.name != NULL }
+
+        return when {
+            teachers.isNullOrEmpty() -> Resource(null, Status.Error)
+            else -> Resource(teachers, Status.Success)
+        }
+    }
+
+    private fun mapEntityToTeacher(teacherEntity: TeacherEntity): Teacher {
+        return Teacher(
+            id = teacherEntity.id,
+            name = teacherEntity.name,
+        )
+    }
+
+    private fun mapEntitiesToClasses(entities: List<TeacherClassEntity>): List<TeacherClass> {
+        return entities.map { teacherClassEntity ->
+            TeacherClass(
+                id = teacherClassEntity.id,
+                day = teacherClassEntity.day,
+                hours = teacherClassEntity.hours,
+                frequencyId = teacherClassEntity.frequencyId,
+                roomId = teacherClassEntity.roomId,
+                studyLineId = teacherClassEntity.studyLineId,
+                classTypeId = teacherClassEntity.classTypeId,
+                subjectId = teacherClassEntity.subjectId,
+                subjectName = teacherClassEntity.subjectName,
+            )
+        }
+    }
+
+    private fun mapTeacherToEntity(teacher: Teacher): TeacherEntity {
+        return TeacherEntity(
+            id = teacher.id,
+            name = teacher.name,
+        )
+    }
+
+    private fun mapClassesToEntities(
+        teacherId: String,
+        classes: List<TeacherClass>
+    ): List<TeacherClassEntity> {
+        return classes.map { teacherClass ->
+            TeacherClassEntity(
+                id = teacherClass.id,
+                teacherId = teacherId,
+                roomId = teacherClass.roomId,
+                day = teacherClass.day,
+                hours = teacherClass.hours,
+                frequencyId = teacherClass.frequencyId,
+                studyLineId = teacherClass.studyLineId,
+                classTypeId = teacherClass.classTypeId,
+                subjectId = teacherClass.subjectId,
+                subjectName = teacherClass.subjectName
+            )
         }
     }
 

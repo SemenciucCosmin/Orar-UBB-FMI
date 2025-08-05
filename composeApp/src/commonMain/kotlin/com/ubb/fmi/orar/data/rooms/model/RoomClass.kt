@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.data.rooms.model
 
-data class RoomTimetableClass(
+data class RoomClass(
+    val id: String,
     val day: String,
     val hours: String,
     val frequencyId: String,

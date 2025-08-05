@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.jetbrainsKotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -27,7 +29,11 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
     sourceSets {
         androidMain.dependencies {
             // ANDROIDX
@@ -36,6 +42,9 @@ kotlin {
             // COMPOSE
             implementation(compose.preview)
 
+            // KOIN
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
 
             // KTOR
             implementation(libs.ktor.client.okhttp)
@@ -54,9 +63,6 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.ui)
 
-            // HTML PARSER
-            implementation(libs.html.parser)
-
             // KTOR
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.core)
@@ -64,15 +70,23 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
 
             // KOIN
-            implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
 
             // KOTLINX
             implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.immutableCollections)
 
+            // OKIO
+            implementation(libs.okio)
+
             // NAVIGATION
             implementation(libs.navigation.compose)
+
+            // ROOM
+            implementation(libs.room.runtime)
+
+            // SQLITE
+            implementation(libs.sqlite.bundled)
         }
 
         iosMain.dependencies {
@@ -83,6 +97,10 @@ kotlin {
         commonTest.dependencies {
             // TEST
             implementation(libs.kotlin.test)
+        }
+
+        dependencies {
+            ksp(libs.room.compiler)
         }
     }
 }
@@ -115,6 +133,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.room.ktx)
     debugImplementation(compose.uiTooling)
 }
 
