@@ -3,12 +3,15 @@ package com.ubb.fmi.orar.data
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.model.Semester
+import com.ubb.fmi.orar.data.model.UserType
+import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.timetables.repository.TimetablesRepository
 import com.ubb.fmi.orar.logging.Logger
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -22,14 +25,27 @@ class TestViewModel(
     private val subjectsDataSource: SubjectsDataSource,
     private val studyLineDataSource: StudyLineDataSource,
     private val timetablesRepository: TimetablesRepository,
+    private val timetablePreferences: TimetablePreferences,
 ) : ViewModel() {
 
     @OptIn(ExperimentalTime::class)
     fun test() {
         viewModelScope.launch {
+            timetablePreferences.getConfiguration().collectLatest {
+                logger.d("TESTMESSAGE", "config: $it")
+            }
+        }
+
+        viewModelScope.launch {
             val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val year = currentDate.year - 1
             val semester = Semester.FIRST
+
+            timetablePreferences.setYear(year)
+            timetablePreferences.setSemester(semester.id)
+            timetablePreferences.setUserType(UserType.TEACHER.id)
+            timetablePreferences.setTeacherId("teacherId")
+
 
 //            val rooms = roomsDataSource.getRooms(year, semester.id).payload
 //            val roomsTimetables = rooms?.map { room ->
@@ -60,8 +76,8 @@ class TestViewModel(
 //                studyLine = StudyLine.IE1
 //            ).payload
 
-            val executionTime = timetablesRepository.load(year, semester.id)
-            logger.d("TESTMESSAGE", "executionTime: $executionTime")
+//            val executionTime = timetablesRepository.load(year, semester.id)
+//            logger.d("TESTMESSAGE", "executionTime: $executionTime")
         }
     }
 

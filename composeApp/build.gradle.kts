@@ -63,6 +63,10 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.ui)
 
+            // DATA STORE
+            implementation(libs.data.store)
+            implementation(libs.data.store.preferences)
+
             // KTOR
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.core)

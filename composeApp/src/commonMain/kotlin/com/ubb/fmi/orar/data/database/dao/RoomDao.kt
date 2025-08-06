@@ -5,12 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Upsert
-import com.ubb.fmi.orar.data.database.di.Car
 import com.ubb.fmi.orar.data.database.model.RoomClassEntity
 import com.ubb.fmi.orar.data.database.model.RoomEntity
 import com.ubb.fmi.orar.data.database.model.RoomWithClasses
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RoomDao {
