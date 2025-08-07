@@ -9,7 +9,7 @@ sealed class ConfigurationNavDestination {
     data class OnboardingForm(val title: String): ConfigurationNavDestination()
 
     @Serializable
-    data object TeachersForm: ConfigurationNavDestination()
+    data class TeachersForm(val teacherTitleId: String): ConfigurationNavDestination()
 
     @Serializable
     data object StudyLinesForm: ConfigurationNavDestination()

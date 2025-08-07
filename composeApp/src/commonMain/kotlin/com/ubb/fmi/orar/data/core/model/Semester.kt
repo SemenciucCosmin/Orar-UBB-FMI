@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.model
+package com.ubb.fmi.orar.data.core.model
 
 enum class Semester(
     val id: String,

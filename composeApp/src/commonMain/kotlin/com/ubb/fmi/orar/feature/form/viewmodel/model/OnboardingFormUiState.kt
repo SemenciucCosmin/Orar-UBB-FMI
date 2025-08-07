@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.feature.form.viewmodel.model
 
-import com.ubb.fmi.orar.data.model.UserType
+import com.ubb.fmi.orar.data.core.model.UserType
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
 
 data class OnboardingFormUiState(
@@ -9,8 +9,9 @@ data class OnboardingFormUiState(
     val selectedSemesterId: String? = null,
     val selectedUserTypeId: String? = null,
     val selectedDegreeId: String? = null,
-){
-    enum class OnboardingFormEvent: Event {
+    val selectedTeacherTitleId: String? = null,
+) {
+    enum class OnboardingFormEvent : Event {
         ONBOARDING_STUDENT_DONE,
         ONBOARDING_TEACHER_DONE,
     }
@@ -21,8 +22,13 @@ val OnboardingFormUiState.isNextEnabled: Boolean
         val isStudyYearSelected = selectedStudyYear != null
         val isSemesterSelected = selectedSemesterId != null
         val isDegreeSelected = selectedDegreeId != null
+        val isTeacherTitleSelected = selectedTeacherTitleId != null
         val isStudentSelected = selectedUserTypeId == UserType.STUDENT.id
         val isTeacherSelected = selectedUserTypeId == UserType.TEACHER.id
-        val isUserInfoSelected = isTeacherSelected || (isStudentSelected && isDegreeSelected)
+
+        val isStudentInfoSelected = isStudentSelected && isDegreeSelected
+        val isTeacherInfoSelected = isTeacherSelected && isTeacherTitleSelected
+        val isUserInfoSelected = isStudentInfoSelected || isTeacherInfoSelected
+
         return isStudyYearSelected && isSemesterSelected && isUserInfoSelected
     }

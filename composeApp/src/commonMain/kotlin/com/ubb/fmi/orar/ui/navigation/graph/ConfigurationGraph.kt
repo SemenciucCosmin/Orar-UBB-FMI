@@ -8,7 +8,7 @@ import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.form.ui.route.OnboardingFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.StudyGroupsRoute
 import com.ubb.fmi.orar.feature.form.ui.route.StudyLinesRoute
-import com.ubb.fmi.orar.feature.form.ui.route.TeachersRoute
+import com.ubb.fmi.orar.feature.form.ui.route.TeachersFormRoute
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationNavDestination
 
 @Composable
@@ -24,13 +24,17 @@ fun ConfigurationGraph(
             val args = navBackStackEntry.toRoute<ConfigurationNavDestination.OnboardingForm>()
 
             OnboardingFormRoute(
-                navController = navController,
-                title = args.title
+                title = args.title,
+                navController = navController
             )
         }
 
         composable<ConfigurationNavDestination.TeachersForm> { navBackStackEntry ->
-            TeachersRoute(navController)
+            val args = navBackStackEntry.toRoute<ConfigurationNavDestination.TeachersForm>()
+            TeachersFormRoute(
+                teacherTitleId = args.teacherTitleId,
+                navController = navController
+            )
         }
 
         composable<ConfigurationNavDestination.StudyLinesForm> { navBackStackEntry ->

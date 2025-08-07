@@ -15,9 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.data.model.Degree
-import com.ubb.fmi.orar.data.model.Semester
-import com.ubb.fmi.orar.data.model.UserType
+import com.ubb.fmi.orar.data.core.model.Degree
+import com.ubb.fmi.orar.data.core.model.Semester
+import com.ubb.fmi.orar.data.core.model.UserType
+import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -29,11 +30,13 @@ fun OnboardingFormScreen(
     selectedSemesterId: String?,
     selectedUserTypeId: String?,
     selectedDegreeId: String?,
+    selectedTeacherTitleId: String?,
     isNextEnabled: Boolean,
     onStudyYearClick: (Int) -> Unit,
     onSemesterClick: (String) -> Unit,
     onUserTypeClick: (String) -> Unit,
     onDegreeClick: (String) -> Unit,
+    onTeacherTitleClick: (String) -> Unit,
     onNextClick: () -> Unit
 ) {
     Scaffold { paddingValues ->
@@ -43,6 +46,7 @@ fun OnboardingFormScreen(
                 style = MaterialTheme.typography.displaySmall,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
@@ -85,9 +89,7 @@ fun OnboardingFormScreen(
                     items = UserType.entries.map { FormInputItem(it.id, it.label) }
                 )
 
-                AnimatedVisibility(
-                    visible = selectedUserTypeId == UserType.STUDENT.id,
-                ) {
+                AnimatedVisibility(visible = selectedUserTypeId == UserType.STUDENT.id) {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         HorizontalDivider()
 
@@ -96,6 +98,19 @@ fun OnboardingFormScreen(
                             selectedItemId = selectedDegreeId,
                             onItemClick = onDegreeClick,
                             items = Degree.entries.map { FormInputItem(it.id, it.label) }
+                        )
+                    }
+                }
+
+                AnimatedVisibility(visible = selectedUserTypeId == UserType.TEACHER.id) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        HorizontalDivider()
+
+                        FormInput(
+                            title = "Titlul",
+                            selectedItemId = selectedTeacherTitleId,
+                            onItemClick = onTeacherTitleClick,
+                            items = TeacherTitle.entries.map { FormInputItem(it.id, it.id) }
                         )
                     }
                 }
@@ -124,13 +139,15 @@ private fun PreviewOnboardingFormScreen() {
             studyYears = listOf(2024, 2025),
             selectedStudyYear = 2025,
             selectedSemesterId = Semester.FIRST.id,
-            selectedUserTypeId = UserType.STUDENT.id,
+            selectedUserTypeId = UserType.TEACHER.id,
             selectedDegreeId = Degree.LICENCE.id,
+            selectedTeacherTitleId = TeacherTitle.PROFESSOR.id,
             isNextEnabled = true,
             onStudyYearClick = {},
             onSemesterClick = {},
             onUserTypeClick = {},
             onDegreeClick = {},
+            onTeacherTitleClick = {},
             onNextClick = {}
         )
     }

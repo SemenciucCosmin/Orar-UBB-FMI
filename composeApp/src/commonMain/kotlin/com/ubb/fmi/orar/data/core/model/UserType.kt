@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.model
+package com.ubb.fmi.orar.data.core.model
 
 enum class UserType(val id: String, val label: String) {
     STUDENT(

@@ -7,7 +7,10 @@ import com.ubb.fmi.orar.data.teachers.api.TeachersApi
 import com.ubb.fmi.orar.data.teachers.model.Teacher
 import com.ubb.fmi.orar.data.teachers.model.TeacherTimetable
 import com.ubb.fmi.orar.data.teachers.model.TeacherClass
+import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.PIPE
+import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.network.model.Resource
 import com.ubb.fmi.orar.network.model.Status
@@ -22,6 +25,31 @@ class TeachersDataSourceImpl(
     private val teachersApi: TeachersApi,
     private val teacherDao: TeacherDao
 ) : TeachersDataSource {
+
+    override suspend fun getTeachers(
+        year: Int,
+        semesterId: String
+    ): Resource<List<Teacher>> {
+        val cachedTeachers = getTeachersFromCache()
+
+        return when {
+            cachedTeachers.isNotEmpty() -> {
+                println("TESTMESSAGE Teacher: from cache")
+                Resource(cachedTeachers, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE Teacher: from API")
+                val apiTeachersResource = getTeachersFromApi(year, semesterId)
+                apiTeachersResource.payload?.forEach { teacher ->
+                    val teacherEntity = mapTeacherToEntity(teacher)
+                    teacherDao.insertTeacher(teacherEntity)
+                }
+
+                apiTeachersResource
+            }
+        }
+    }
 
     override suspend fun getTimetables(
         year: Int,
@@ -52,6 +80,11 @@ class TeachersDataSourceImpl(
                 apiTimetablesResource
             }
         }
+    }
+
+    private suspend fun getTeachersFromCache(): List<Teacher> {
+        val entities = teacherDao.getAllTeachers()
+        return entities.map(::mapEntityToTeacher)
     }
 
     private suspend fun getTimetablesFromCache(): List<TeacherTimetable> {
@@ -154,10 +187,19 @@ class TeachersDataSourceImpl(
         ).firstOrNull()
 
         val teachersCells = teachersTable?.rows?.map { it.cells }?.flatten()
-        val teachers = teachersCells?.map { cell ->
+        val teachers = teachersCells?.mapNotNull { cell ->
+            val title = TeacherTitle.entries.firstOrNull {
+                cell.value.contains(it.id)
+            } ?: return@mapNotNull null
+
+            val name = cell.value
+                .replace(title.id, String.BLANK)
+                .replaceFirst(String.SPACE, String.BLANK)
+
             Teacher(
                 id = cell.id,
-                name = cell.value
+                name = name,
+                titleId = title.id
             )
         }?.filter { it.name != NULL }
 
@@ -171,6 +213,7 @@ class TeachersDataSourceImpl(
         return Teacher(
             id = teacherEntity.id,
             name = teacherEntity.name,
+            titleId = teacherEntity.titleId
         )
     }
 
@@ -194,6 +237,7 @@ class TeachersDataSourceImpl(
         return TeacherEntity(
             id = teacher.id,
             name = teacher.name,
+            titleId = teacher.titleId
         )
     }
 

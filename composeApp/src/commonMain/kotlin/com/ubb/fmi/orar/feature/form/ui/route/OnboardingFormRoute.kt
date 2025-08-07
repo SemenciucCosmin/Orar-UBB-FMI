@@ -14,8 +14,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OnboardingFormRoute(
-    navController: NavController,
-    title: String
+    title: String,
+    navController: NavController
 ) {
     val viewModel = koinViewModel<OnboardingFormViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -27,11 +27,13 @@ fun OnboardingFormRoute(
         selectedSemesterId = uiState.selectedSemesterId,
         selectedUserTypeId = uiState.selectedUserTypeId,
         selectedDegreeId = uiState.selectedDegreeId,
+        selectedTeacherTitleId = uiState.selectedTeacherTitleId,
         isNextEnabled = uiState.isNextEnabled,
         onStudyYearClick = viewModel::selectStudyYear,
         onSemesterClick = viewModel::selectSemester,
         onUserTypeClick = viewModel::selectUserType,
         onDegreeClick = viewModel::selectDegree,
+        onTeacherTitleClick = viewModel::selectTeacherTitle,
         onNextClick = viewModel::finishOnboarding
     )
 
@@ -44,7 +46,9 @@ fun OnboardingFormRoute(
 
             OnboardingFormUiState.OnboardingFormEvent.ONBOARDING_TEACHER_DONE -> {
                 viewModel.unregisterEvent(event)
-                navController.navigate(ConfigurationNavDestination.TeachersForm)
+                uiState.selectedTeacherTitleId?.let {
+                    navController.navigate(ConfigurationNavDestination.TeachersForm(it))
+                }
             }
         }
     }

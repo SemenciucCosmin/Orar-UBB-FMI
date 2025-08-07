@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.model
+package com.ubb.fmi.orar.data.core.model
 
 enum class ClassType(val id: String) {
     COURSE(id = "Curs"),

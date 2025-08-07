@@ -22,18 +22,18 @@ fun App() {
     val navController = rememberNavController()
 
     OrarUbbFmiTheme {
-        Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(onClick = viewModel::test) {
-                Text(text = "Test")
-            }
-        }
-//        ConfigurationGraph(
-//            navController = navController,
-//            onboardingFormTitle = "Bun venit!"
-//        )
+//        Column (
+//            modifier = Modifier.fillMaxSize(),
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Button(onClick = viewModel::test) {
+//                Text(text = "Test")
+//            }
+//        }
+        ConfigurationGraph(
+            navController = navController,
+            onboardingFormTitle = "Bun venit!"
+        )
     }
 }

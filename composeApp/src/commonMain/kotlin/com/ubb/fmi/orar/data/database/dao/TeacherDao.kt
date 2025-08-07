@@ -11,6 +11,9 @@ import com.ubb.fmi.orar.data.database.model.TeacherWithClasses
 
 @Dao
 interface TeacherDao {
+
+    @Query("SELECT * FROM teachers")
+    suspend fun getAllTeachers(): List<TeacherEntity>
     @Transaction
     @Query("SELECT * FROM teachers")
     suspend fun getAllTeachersWithClasses(): List<TeacherWithClasses>

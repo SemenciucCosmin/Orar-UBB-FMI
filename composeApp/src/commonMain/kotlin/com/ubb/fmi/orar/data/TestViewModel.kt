@@ -2,8 +2,8 @@ package com.ubb.fmi.orar.data
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.model.Semester
-import com.ubb.fmi.orar.data.model.UserType
+import com.ubb.fmi.orar.data.core.model.Semester
+import com.ubb.fmi.orar.data.core.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource

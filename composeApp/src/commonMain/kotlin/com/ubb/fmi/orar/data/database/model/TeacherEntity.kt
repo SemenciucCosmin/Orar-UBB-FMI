@@ -8,4 +8,5 @@ data class TeacherEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     val name: String,
+    val titleId: String
 )

@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.ubb.fmi.orar.data.model.UserType
 import com.ubb.fmi.orar.data.preferences.model.TimetableConfiguration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -25,28 +24,14 @@ class TimetablePreferencesImpl(
             val subjectId = preferences[SUBJECT_ID]
             val teacherId = preferences[TEACHER_ID]
 
-            when {
-                userTypeId == UserType.STUDENT.id && degreeId != null && subjectId != null -> {
-                    TimetableConfiguration.Student(
-                        year = year,
-                        semesterId = semesterId,
-                        userTypeId = userTypeId,
-                        degreeId = degreeId,
-                        subjectId = subjectId
-                    )
-                }
-
-                userTypeId == UserType.TEACHER.id && teacherId != null -> {
-                    TimetableConfiguration.Teacher(
-                        year = year,
-                        semesterId = semesterId,
-                        userTypeId = userTypeId,
-                        teacherId = teacherId,
-                    )
-                }
-
-                else -> null
-            }
+            TimetableConfiguration(
+                year = year,
+                semesterId = semesterId,
+                userTypeId = userTypeId,
+                degreeId = degreeId,
+                subjectId = subjectId,
+                teacherId = teacherId,
+            )
         }
     }
 

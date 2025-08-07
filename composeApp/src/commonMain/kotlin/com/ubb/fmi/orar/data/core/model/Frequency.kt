@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.model
+package com.ubb.fmi.orar.data.core.model
 
 enum class Frequency(val id: String) {
     WEEK_1(id = "sapt. 1"),

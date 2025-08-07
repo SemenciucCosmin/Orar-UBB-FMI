@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.form.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
@@ -29,9 +30,9 @@ fun <T> FormInput(
             fontWeight = FontWeight.SemiBold
         )
 
-        Row(
+        FlowRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.Center
         ) {
             items.forEach { item ->
                 InputChip(
@@ -58,6 +59,8 @@ private fun PreviewFormInput() {
                 FormInputItem(id = 1, label = "Label 1"),
                 FormInputItem(id = 2, label = "Label 2"),
                 FormInputItem(id = 3, label = "Label 3"),
+                FormInputItem(id = 4, label = "Label 4"),
+                FormInputItem(id = 5, label = "Label 5"),
             )
         )
     }

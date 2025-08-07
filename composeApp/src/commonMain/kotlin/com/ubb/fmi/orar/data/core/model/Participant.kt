@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.model
+package com.ubb.fmi.orar.data.core.model
 
 enum class Participant(val id: String) {
     SEMIGROUP_1("/1"),
