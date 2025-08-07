@@ -12,8 +12,8 @@ data class OnboardingFormUiState(
     val selectedTeacherTitleId: String? = null,
 ) {
     enum class OnboardingFormEvent : Event {
-        ONBOARDING_STUDENT_DONE,
-        ONBOARDING_TEACHER_DONE,
+        FORM_STUDENT_COMPLETED,
+        FORM_TEACHER_COMPLETED,
     }
 }
 

@@ -24,7 +24,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun OnboardingFormScreen(
-    title: String,
     studyYears: List<Int>,
     selectedStudyYear: Int?,
     selectedSemesterId: String?,
@@ -42,7 +41,7 @@ fun OnboardingFormScreen(
     Scaffold { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             Text(
-                text = title,
+                text = "Bun venit!",
                 style = MaterialTheme.typography.displaySmall,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold,
@@ -135,7 +134,6 @@ fun OnboardingFormScreen(
 private fun PreviewOnboardingFormScreen() {
     OrarUbbFmiTheme {
         OnboardingFormScreen(
-            title = "Bun venit!",
             studyYears = listOf(2024, 2025),
             selectedStudyYear = 2025,
             selectedSemesterId = Semester.FIRST.id,

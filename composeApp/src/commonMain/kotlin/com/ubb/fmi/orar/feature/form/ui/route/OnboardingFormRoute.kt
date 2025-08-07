@@ -9,19 +9,15 @@ import com.ubb.fmi.orar.feature.form.viewmodel.OnboardingFormViewModel
 import com.ubb.fmi.orar.feature.form.viewmodel.model.OnboardingFormUiState
 import com.ubb.fmi.orar.feature.form.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
-import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun OnboardingFormRoute(
-    title: String,
-    navController: NavController
-) {
+fun OnboardingFormRoute(navController: NavController) {
     val viewModel = koinViewModel<OnboardingFormViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     OnboardingFormScreen(
-        title = title,
         studyYears = uiState.studyYears,
         selectedStudyYear = uiState.selectedStudyYear,
         selectedSemesterId = uiState.selectedSemesterId,
@@ -39,15 +35,15 @@ fun OnboardingFormRoute(
 
     EventHandler(viewModel.events) { event ->
         when(event) {
-            OnboardingFormUiState.OnboardingFormEvent.ONBOARDING_STUDENT_DONE -> {
+            OnboardingFormUiState.OnboardingFormEvent.FORM_STUDENT_COMPLETED -> {
                 viewModel.unregisterEvent(event)
-                navController.navigate(ConfigurationNavDestination.StudyLinesForm)
+                navController.navigate(ConfigurationFormNavDestination.StudyLinesForm)
             }
 
-            OnboardingFormUiState.OnboardingFormEvent.ONBOARDING_TEACHER_DONE -> {
+            OnboardingFormUiState.OnboardingFormEvent.FORM_TEACHER_COMPLETED -> {
                 viewModel.unregisterEvent(event)
                 uiState.selectedTeacherTitleId?.let {
-                    navController.navigate(ConfigurationNavDestination.TeachersForm(it))
+                    navController.navigate(ConfigurationFormNavDestination.TeachersForm(it))
                 }
             }
         }

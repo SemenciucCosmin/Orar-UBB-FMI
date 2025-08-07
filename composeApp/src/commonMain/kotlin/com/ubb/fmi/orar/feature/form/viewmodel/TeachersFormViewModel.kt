@@ -72,4 +72,10 @@ class TeachersFormViewModel(
         job.cancel()
         job = getTeachers()
     }
+
+    fun finishSelection() {
+        viewModelScope.launch {
+            _uiState.value.selectedTeacherId?.let { timetablePreferences.setTeacherId(it) }
+        }
+    }
 }

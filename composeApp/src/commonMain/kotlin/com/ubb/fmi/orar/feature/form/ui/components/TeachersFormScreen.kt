@@ -21,7 +21,7 @@ fun TeachersFormScreen(
     uiState: TeachersFormUiState,
     onTeacherClick: (String) -> Unit,
     onNextClick: () -> Unit,
-    onRetry: () -> Unit,
+    onRetryClick: () -> Unit,
 ) {
     Scaffold { paddingValues ->
         when {
@@ -35,7 +35,7 @@ fun TeachersFormScreen(
 
             uiState.isError -> {
                 FailureState(
-                    onRetry = onRetry,
+                    onRetry = onRetryClick,
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()

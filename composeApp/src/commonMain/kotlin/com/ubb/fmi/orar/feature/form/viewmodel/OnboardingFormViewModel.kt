@@ -60,11 +60,11 @@ class OnboardingFormViewModel(
 
             when (_uiState.value.selectedUserTypeId) {
                 UserType.STUDENT.id -> registerEvent(
-                    event = OnboardingFormUiState.OnboardingFormEvent.ONBOARDING_STUDENT_DONE
+                    event = OnboardingFormUiState.OnboardingFormEvent.FORM_STUDENT_COMPLETED
                 )
 
                 else -> registerEvent(
-                    event = OnboardingFormUiState.OnboardingFormEvent.ONBOARDING_TEACHER_DONE
+                    event = OnboardingFormUiState.OnboardingFormEvent.FORM_TEACHER_COMPLETED
                 )
             }
         }
