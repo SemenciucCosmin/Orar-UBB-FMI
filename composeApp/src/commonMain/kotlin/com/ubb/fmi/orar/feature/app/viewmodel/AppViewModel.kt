@@ -9,17 +9,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json.Default.configuration
 import kotlin.time.Duration.Companion.seconds
 
 class AppViewModel(
     private val timetablePreferences: TimetablePreferences
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AppUiState())
     val uiState = _uiState.asStateFlow()
@@ -37,11 +35,17 @@ class AppViewModel(
                     val isStudyYearSelected = configuration?.year != null
                     val isSemesterSelected = configuration?.semesterId != null
                     val isDegreeSelected = configuration?.degreeId != null
+                    val isStudyLineSelected = configuration?.studyLineId != null
+                    val isStudyGroupSelected = configuration?.groupId != null
                     val isTeacherSelected = configuration?.teacherId != null
                     val isStudentTypeSelected = configuration?.userTypeId == UserType.STUDENT.id
                     val isTeacherTypeSelected = configuration?.userTypeId == UserType.TEACHER.id
 
-                    val isStudentInfoSelected = isStudentTypeSelected && isDegreeSelected
+                    val isStudyLineInfoSelected = isStudyLineSelected && isStudyGroupSelected
+                    val isStudentInfoSelected = isStudentTypeSelected &&
+                            isDegreeSelected &&
+                            isStudyLineInfoSelected
+
                     val isTeacherInfoSelected = isTeacherTypeSelected && isTeacherSelected
                     val isUserInfoSelected = isStudentInfoSelected || isTeacherInfoSelected
                     val isStudyInfoSelected = isStudyYearSelected && isSemesterSelected

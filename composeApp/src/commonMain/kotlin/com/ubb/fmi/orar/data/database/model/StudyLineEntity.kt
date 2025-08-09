@@ -8,5 +8,6 @@ data class StudyLineEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     val name: String,
-    val studyYearId: String,
+    val studyYearsIds: List<String>,
+    val degreeId: String,
 )

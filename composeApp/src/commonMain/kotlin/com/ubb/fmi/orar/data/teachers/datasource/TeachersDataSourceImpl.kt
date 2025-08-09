@@ -59,12 +59,12 @@ class TeachersDataSourceImpl(
 
         return when {
             cachedTimetables.isNotEmpty() -> {
-                println("TESTMESSAGE Teacher: from cache")
+                println("TESTMESSAGE Teacher Timetable: from cache")
                 Resource(cachedTimetables, Status.Success)
             }
 
             else -> {
-                println("TESTMESSAGE Teacher: from API")
+                println("TESTMESSAGE Teacher Timetable: from API")
                 val apiTimetablesResource = getTimetablesFromApi(year, semesterId)
                 apiTimetablesResource.payload?.forEach { timetable ->
                     val teacherEntity = mapTeacherToEntity(timetable.teacher)

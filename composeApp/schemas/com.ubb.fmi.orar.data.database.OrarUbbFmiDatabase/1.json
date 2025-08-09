@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c8f154ed801ff876054fe2158f5490fb",
+    "identityHash": "c6f72f677f29465b5b39724ec1734723",
     "entities": [
       {
         "tableName": "rooms",
@@ -102,7 +102,7 @@
       },
       {
         "tableName": "study_lines",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `studyYearId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `studyYearsIds` TEXT NOT NULL, `degreeId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -117,8 +117,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "studyYearId",
-            "columnName": "studyYearId",
+            "fieldPath": "studyYearsIds",
+            "columnName": "studyYearsIds",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "degreeId",
+            "columnName": "degreeId",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -403,7 +409,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c8f154ed801ff876054fe2158f5490fb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c6f72f677f29465b5b39724ec1734723')"
     ]
   }
 }

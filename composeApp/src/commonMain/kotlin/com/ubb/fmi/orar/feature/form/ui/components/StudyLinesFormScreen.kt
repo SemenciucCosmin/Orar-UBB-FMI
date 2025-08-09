@@ -11,20 +11,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.feature.form.viewmodel.model.TeachersFormUiState
+import com.ubb.fmi.orar.data.core.model.StudyYear
+import com.ubb.fmi.orar.feature.form.viewmodel.model.StudyLinesFormUiState
+import com.ubb.fmi.orar.feature.form.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @Composable
-fun TeachersFormScreen(
-    uiState: TeachersFormUiState,
-    onTeacherClick: (String) -> Unit,
+fun StudyLinesFormScreen(
+    uiState: StudyLinesFormUiState,
+    onStudyLineClick: (String) -> Unit,
+    onStudyYearClick: (String) -> Unit,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
 ) {
@@ -56,13 +58,22 @@ fun TeachersFormScreen(
                             .weight(1f)
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        items(uiState.teachers) { teacher ->
-                            FormListItem<String>(
+                        items(uiState.studyLines) { studyLine ->
+                            FormListItem(
                                 modifier = Modifier.fillMaxWidth(),
-                                headlineLabel = teacher.name,
-                                overLineLabel = teacher.titleId,
-                                isSelected = uiState.selectedTeacherId == teacher.id,
-                                onClick = { onTeacherClick(teacher.id) }
+                                headlineLabel = studyLine.name,
+                                isSelected = uiState.selectedStudyLineId == studyLine.id,
+                                onClick = { onStudyLineClick(studyLine.id) },
+                                onUnderlineItemClick = onStudyYearClick,
+                                selectedUnderlineItemId = uiState.selectedStudyYearId,
+                                underlineItems = studyLine.studyYearsIds.map { yearId ->
+                                    val year = StudyYear.getById(yearId)
+
+                                    FormInputItem(
+                                        id = year.id,
+                                        label = year.label
+                                    )
+                                }
                             )
                         }
                     }
@@ -70,7 +81,7 @@ fun TeachersFormScreen(
 
                     Button(
                         onClick = onNextClick,
-                        enabled = uiState.selectedTeacherId != null,
+                        enabled = uiState.isNextEnabled,
                         shape = MaterialTheme.shapes.small,
                         modifier = Modifier
                             .fillMaxWidth()

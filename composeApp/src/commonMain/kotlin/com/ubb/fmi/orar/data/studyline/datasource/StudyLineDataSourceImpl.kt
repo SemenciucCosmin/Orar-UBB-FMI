@@ -1,5 +1,7 @@
 package com.ubb.fmi.orar.data.studyline.datasource
 
+import com.ubb.fmi.orar.data.core.model.Degree
+import com.ubb.fmi.orar.data.core.model.StudyYear
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.database.model.StudyLineClassEntity
@@ -7,6 +9,7 @@ import com.ubb.fmi.orar.data.studyline.api.StudyLineApi
 import com.ubb.fmi.orar.data.studyline.model.StudyLine
 import com.ubb.fmi.orar.data.studyline.model.StudyLineClass
 import com.ubb.fmi.orar.data.studyline.model.StudyLineTimetable
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.network.model.Resource
@@ -23,6 +26,31 @@ class StudyLineDataSourceImpl(
     private val studyLineDao: StudyLineDao
 ) : StudyLineDataSource {
 
+    override suspend fun getStudyLines(
+        year: Int,
+        semesterId: String
+    ): Resource<List<StudyLine>> {
+        val cachedStudyLines = getStudyLinesFromCache()
+
+        return when {
+            cachedStudyLines.isNotEmpty() -> {
+                println("TESTMESSAGE StudyLine: from cache")
+                Resource(cachedStudyLines, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE StudyLine: from API")
+                val apiStudyLinesResource = getStudyLinesFromApi(year, semesterId)
+                apiStudyLinesResource.payload?.forEach { teacher ->
+                    val studyLinesEntity = mapStudyLineToEntity(teacher)
+                    studyLineDao.insertStudyLine(studyLinesEntity)
+                }
+
+                apiStudyLinesResource
+            }
+        }
+    }
+
     override suspend fun getTimetables(
         year: Int,
         semesterId: String
@@ -31,12 +59,12 @@ class StudyLineDataSourceImpl(
 
         return when {
             cachedTimetables.isNotEmpty() -> {
-                println("TESTMESSAGE StudyLine: from cache")
+                println("TESTMESSAGE StudyLine Timetable: from cache")
                 Resource(cachedTimetables, Status.Success)
             }
 
             else -> {
-                println("TESTMESSAGE StudyLine: from API")
+                println("TESTMESSAGE StudyLine Timetable: from API")
                 val apiTimetablesResource = getTimetablesFromApi(year, semesterId)
                 apiTimetablesResource.payload?.forEach { timetable ->
                     val studyLineEntity = mapStudyLineToEntity(timetable.studyLine)
@@ -52,6 +80,11 @@ class StudyLineDataSourceImpl(
                 apiTimetablesResource
             }
         }
+    }
+
+    private suspend fun getStudyLinesFromCache(): List<StudyLine> {
+        val entities = studyLineDao.getAllStudyLines()
+        return entities.map(::mapEntityToStudyLine)
     }
 
     private suspend fun getTimetablesFromCache(): List<StudyLineTimetable> {
@@ -109,7 +142,8 @@ class StudyLineDataSourceImpl(
                 val hoursCell = row.cells.getOrNull(HOURS_INDEX) ?: return@mapNotNull null
                 val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
                 val roomCell = row.cells.getOrNull(ROOM_INDEX) ?: return@mapNotNull null
-                val participantCell = row.cells.getOrNull(PARTICIPANT_INDEX) ?: return@mapNotNull null
+                val participantCell =
+                    row.cells.getOrNull(PARTICIPANT_INDEX) ?: return@mapNotNull null
                 val classTypeCell = row.cells.getOrNull(CLASS_TYPE_INDEX) ?: return@mapNotNull null
                 val subjectCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
                 val teacherCell = row.cells.getOrNull(TEACHER_INDEX) ?: return@mapNotNull null
@@ -175,30 +209,42 @@ class StudyLineDataSourceImpl(
             html = studyLinesMapHtml
         )
 
-        val rooms = studyLinesTables.map { table ->
+        val studyLines = studyLinesTables.mapIndexed { tableIndex, table ->
             table.rows.mapNotNull { row ->
                 val nameCell = row.cells.getOrNull(NAME_INDEX) ?: return@mapNotNull null
                 val studyYear1Cell = row.cells.getOrNull(STUDY_YEAR_1_INDEX)
                 val studyYear2Cell = row.cells.getOrNull(STUDY_YEAR_2_INDEX)
                 val studyYear3Cell = row.cells.getOrNull(STUDY_YEAR_3_INDEX)
 
-                listOfNotNull(
+                val studyYearCells = listOfNotNull(
                     studyYear1Cell,
                     studyYear2Cell,
                     studyYear3Cell,
-                ).filter { it.value != NULL }.map { cell ->
-                    StudyLine(
-                        name = nameCell.value,
-                        id = cell.id,
-                        studyYearId = cell.value
-                    )
+                ).filter { it.value != NULL }
+
+                val id = studyYear1Cell?.id?.toCharArray()?.filter { char ->
+                    char.isLetter()
+                }?.joinToString(separator = String.BLANK) ?: return@mapNotNull null
+
+                val studyYearsIds = studyYearCells.map { cell ->
+                    StudyYear.getById(cell.value).id
                 }
-            }.flatten()
+
+                StudyLine(
+                    name = nameCell.value,
+                    id = id,
+                    studyYearsIds = studyYearsIds,
+                    degreeId = when {
+                        tableIndex == MASTER_DEGREE_TABLE_INDEX -> Degree.MASTER.id
+                        else -> Degree.LICENCE.id
+                    }
+                )
+            }
         }.flatten()
 
         return when {
-            rooms.isEmpty() -> Resource(null, Status.Error)
-            else -> Resource(rooms, Status.Success)
+            studyLines.isEmpty() -> Resource(null, Status.Error)
+            else -> Resource(studyLines, Status.Success)
         }
     }
 
@@ -206,7 +252,8 @@ class StudyLineDataSourceImpl(
         return StudyLine(
             id = entity.id,
             name = entity.name,
-            studyYearId = entity.studyYearId
+            studyYearsIds = entity.studyYearsIds,
+            degreeId = entity.degreeId
         )
     }
 
@@ -233,7 +280,8 @@ class StudyLineDataSourceImpl(
         return StudyLineEntity(
             id = studyLine.id,
             name = studyLine.name,
-            studyYearId = studyLine.studyYearId
+            studyYearsIds = studyLine.studyYearsIds,
+            degreeId = studyLine.degreeId
         )
     }
 
@@ -281,5 +329,8 @@ class StudyLineDataSourceImpl(
         private const val WHOLE_GROUP_ID = "whole_group"
         private const val WHOLE_YEAR_ID = "whole_year"
         private const val NULL = "null"
+
+        // Degree
+        private const val MASTER_DEGREE_TABLE_INDEX = 1
     }
 }

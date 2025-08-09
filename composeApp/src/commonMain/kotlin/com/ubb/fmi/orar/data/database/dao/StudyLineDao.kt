@@ -11,6 +11,9 @@ import com.ubb.fmi.orar.data.database.model.StudyLineWithClasses
 
 @Dao
 interface StudyLineDao {
+    @Query("SELECT * FROM study_lines")
+    suspend fun getAllStudyLines(): List<StudyLineEntity>
+
     @Transaction
     @Query("SELECT * FROM study_lines")
     suspend fun getAllStudyLinesWithClasses(): List<StudyLineWithClasses>

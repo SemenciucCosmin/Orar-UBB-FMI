@@ -5,11 +5,11 @@ enum class Degree(
     val label: String,
 ) {
     LICENCE(
-        id = "1",
+        id = "licenta",
         label = "Licenta"
     ),
     MASTER(
-        id = "2",
+        id = "master",
         label = "Master"
     )
 }

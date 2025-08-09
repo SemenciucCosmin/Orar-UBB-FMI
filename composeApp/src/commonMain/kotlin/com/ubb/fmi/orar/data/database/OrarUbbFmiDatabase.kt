@@ -30,6 +30,7 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
         TeacherClassEntity::class,
     ],
 )
+@TypeConverters(TypeConverter::class)
 @ConstructedBy(OrarUbbFmiDatabaseConstructor::class)
 abstract class OrarUbbFmiDatabase : RoomDatabase() {
 
