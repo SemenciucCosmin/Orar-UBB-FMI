@@ -54,20 +54,24 @@ class StudyLinesFormViewModel(
 
             emit(Resource(filteredStudyLines, studyLinesResource.status))
         }.collectLatest { studyLinesResource ->
+            val studyLinesGroups = studyLinesResource.payload?.groupBy { studyLine ->
+                studyLine.baseId
+            }?.values?.toList() ?: emptyList()
+
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     isError = studyLinesResource.status.isError(),
-                    studyLines = studyLinesResource.payload ?: emptyList()
+                    studyLinesGroups = studyLinesGroups
                 )
             }
         }
     }
 
-    fun selectStudyLine(studyLine: String) {
+    fun selectStudyLineBaseId(studyLineBaseId: String) {
         _uiState.update {
             it.copy(
-                selectedStudyLineId = studyLine,
+                selectedStudyLineBaseId = studyLineBaseId,
                 selectedStudyYearId = null,
             )
         }
@@ -84,8 +88,12 @@ class StudyLinesFormViewModel(
 
     fun finishSelection() {
         viewModelScope.launch {
-            _uiState.value.selectedStudyLineId?.let {
-                timetablePreferences.setTeacherId(it)
+            val studyLineBaseId = _uiState.value.selectedStudyLineBaseId
+            val studyYearId = _uiState.value.selectedStudyYearId
+
+            if (studyLineBaseId != null && studyYearId != null) {
+                timetablePreferences.setStudyLineBaseId(studyLineBaseId)
+                timetablePreferences.setStudyLineYearId(studyYearId)
                 registerEvent(StudyLinesFormUiState.StudyLinesFormEvent.SELECTION_DONE)
             }
         }

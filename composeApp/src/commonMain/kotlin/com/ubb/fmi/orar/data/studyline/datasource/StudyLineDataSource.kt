@@ -8,5 +8,11 @@ interface StudyLineDataSource {
 
     suspend fun getStudyLines(year: Int, semesterId: String): Resource<List<StudyLine>>
 
+    suspend fun getStudyGroupsIds(
+        year: Int,
+        semesterId: String,
+        studyLineId: String
+    ): Resource<List<String>>
+
     suspend fun getTimetables(year: Int, semesterId: String): Resource<List<StudyLineTimetable>>
 }

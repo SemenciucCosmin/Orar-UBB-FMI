@@ -21,7 +21,8 @@ class TimetablePreferencesImpl(
             val semesterId = preferences[SEMESTER_ID] ?: return@mapLatest null
             val userTypeId = preferences[USER_TYPE_ID] ?: return@mapLatest null
             val degreeId = preferences[DEGREE_ID]
-            val studyLineId = preferences[STUDY_LINE_ID]
+            val studyLineBaseId = preferences[STUDY_LINE_BASE_ID]
+            val studyLineYearId = preferences[STUDY_LINE_YEAR_ID]
             val groupId = preferences[GROUP_ID]
             val teacherId = preferences[TEACHER_ID]
 
@@ -30,7 +31,8 @@ class TimetablePreferencesImpl(
                 semesterId = semesterId,
                 userTypeId = userTypeId,
                 degreeId = degreeId,
-                studyLineId = studyLineId,
+                studyLineBaseId = studyLineBaseId,
+                studyLineYearId = studyLineYearId,
                 groupId = groupId,
                 teacherId = teacherId,
             )
@@ -53,8 +55,12 @@ class TimetablePreferencesImpl(
         dataStore.edit { it[DEGREE_ID] = degreeId }
     }
 
-    override suspend fun setStudyLineId(studyLineId: String) {
-        dataStore.edit { it[STUDY_LINE_ID] = studyLineId }
+    override suspend fun setStudyLineBaseId(studyLineBaseId: String) {
+        dataStore.edit { it[STUDY_LINE_BASE_ID] = studyLineBaseId }
+    }
+
+    override suspend fun setStudyLineYearId(studyLineYearId: String) {
+        dataStore.edit { it[STUDY_LINE_YEAR_ID] = studyLineYearId }
     }
 
     override suspend fun setGroupId(groupId: String) {
@@ -70,7 +76,8 @@ class TimetablePreferencesImpl(
         val SEMESTER_ID = stringPreferencesKey(name = "SEMESTER_ID")
         val USER_TYPE_ID = stringPreferencesKey(name = "USER_TYPE_ID")
         val DEGREE_ID = stringPreferencesKey(name = "DEGREE_ID")
-        val STUDY_LINE_ID = stringPreferencesKey(name = "STUDY_LINE_ID")
+        val STUDY_LINE_BASE_ID = stringPreferencesKey(name = "STUDY_LINE_BASE_ID")
+        val STUDY_LINE_YEAR_ID = stringPreferencesKey(name = "STUDY_LINE_YEAR_ID")
         val GROUP_ID = stringPreferencesKey(name = "GROUP_ID")
         val TEACHER_ID = stringPreferencesKey(name = "TEACHER_ID")
     }

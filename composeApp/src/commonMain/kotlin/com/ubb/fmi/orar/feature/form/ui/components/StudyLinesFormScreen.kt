@@ -58,16 +58,19 @@ fun StudyLinesFormScreen(
                             .weight(1f)
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        items(uiState.studyLines) { studyLine ->
+                        items(uiState.studyLinesGroups) { studyLinesGroups ->
+                            val lineId = studyLinesGroups.firstOrNull()?.baseId ?: return@items
+                            val label = studyLinesGroups.firstOrNull()?.name ?: return@items
+
                             FormListItem(
                                 modifier = Modifier.fillMaxWidth(),
-                                headlineLabel = studyLine.name,
-                                isSelected = uiState.selectedStudyLineId == studyLine.id,
-                                onClick = { onStudyLineClick(studyLine.id) },
+                                headlineLabel = label,
+                                isSelected = uiState.selectedStudyLineBaseId == lineId,
+                                onClick = { onStudyLineClick(lineId) },
                                 onUnderlineItemClick = onStudyYearClick,
                                 selectedUnderlineItemId = uiState.selectedStudyYearId,
-                                underlineItems = studyLine.studyYearsIds.map { yearId ->
-                                    val year = StudyYear.getById(yearId)
+                                underlineItems = studyLinesGroups.map { studyLine ->
+                                    val year = StudyYear.getById(studyLine.studyYearId)
 
                                     FormInputItem(
                                         id = year.id,
@@ -77,7 +80,6 @@ fun StudyLinesFormScreen(
                             )
                         }
                     }
-
 
                     Button(
                         onClick = onNextClick,

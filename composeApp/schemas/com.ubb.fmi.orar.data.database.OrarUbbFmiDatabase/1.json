@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c6f72f677f29465b5b39724ec1734723",
+    "identityHash": "6c0c5d2ccc122753f9c63a5d20ebbe07",
     "entities": [
       {
         "tableName": "rooms",
@@ -102,11 +102,17 @@
       },
       {
         "tableName": "study_lines",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `studyYearsIds` TEXT NOT NULL, `degreeId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `lineId` TEXT NOT NULL, `name` TEXT NOT NULL, `studyYearId` TEXT NOT NULL, `degreeId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lineId",
+            "columnName": "lineId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -117,8 +123,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "studyYearsIds",
-            "columnName": "studyYearsIds",
+            "fieldPath": "studyYearId",
+            "columnName": "studyYearId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -409,7 +415,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c6f72f677f29465b5b39724ec1734723')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6c0c5d2ccc122753f9c63a5d20ebbe07')"
     ]
   }
 }

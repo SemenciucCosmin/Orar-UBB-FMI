@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.data.studyline.datasource
 
 import com.ubb.fmi.orar.data.core.model.Degree
-import com.ubb.fmi.orar.data.core.model.StudyYear
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.database.model.StudyLineClassEntity
@@ -49,6 +48,19 @@ class StudyLineDataSourceImpl(
                 apiStudyLinesResource
             }
         }
+    }
+
+    override suspend fun getStudyGroupsIds(
+        year: Int,
+        semesterId: String,
+        studyLineId: String
+    ): Resource<List<String>> {
+        val timetablesResource = getTimetables(year, semesterId)
+        val groupIds = timetablesResource.payload?.firstOrNull { (studyLine, _) ->
+            studyLine.id == studyLineId
+        }?.classes?.map { it.groupId }?.distinct()
+
+        return Resource(groupIds, timetablesResource.status)
     }
 
     override suspend fun getTimetables(
@@ -216,30 +228,27 @@ class StudyLineDataSourceImpl(
                 val studyYear2Cell = row.cells.getOrNull(STUDY_YEAR_2_INDEX)
                 val studyYear3Cell = row.cells.getOrNull(STUDY_YEAR_3_INDEX)
 
-                val studyYearCells = listOfNotNull(
+                listOfNotNull(
                     studyYear1Cell,
                     studyYear2Cell,
                     studyYear3Cell,
-                ).filter { it.value != NULL }
+                ).filter { it.value != NULL }.map { cell ->
+                    val id = cell.id.toCharArray().filter { char ->
+                        char.isLetter()
+                    }.joinToString(separator = String.BLANK)
 
-                val id = studyYear1Cell?.id?.toCharArray()?.filter { char ->
-                    char.isLetter()
-                }?.joinToString(separator = String.BLANK) ?: return@mapNotNull null
-
-                val studyYearsIds = studyYearCells.map { cell ->
-                    StudyYear.getById(cell.value).id
+                    StudyLine(
+                        name = nameCell.value,
+                        id = cell.id,
+                        baseId = id,
+                        studyYearId = cell.value,
+                        degreeId = when {
+                            tableIndex == MASTER_DEGREE_TABLE_INDEX -> Degree.MASTER.id
+                            else -> Degree.LICENCE.id
+                        }
+                    )
                 }
-
-                StudyLine(
-                    name = nameCell.value,
-                    id = id,
-                    studyYearsIds = studyYearsIds,
-                    degreeId = when {
-                        tableIndex == MASTER_DEGREE_TABLE_INDEX -> Degree.MASTER.id
-                        else -> Degree.LICENCE.id
-                    }
-                )
-            }
+            }.flatten()
         }.flatten()
 
         return when {
@@ -252,7 +261,8 @@ class StudyLineDataSourceImpl(
         return StudyLine(
             id = entity.id,
             name = entity.name,
-            studyYearsIds = entity.studyYearsIds,
+            baseId = entity.lineId,
+            studyYearId = entity.studyYearId,
             degreeId = entity.degreeId
         )
     }
@@ -280,7 +290,8 @@ class StudyLineDataSourceImpl(
         return StudyLineEntity(
             id = studyLine.id,
             name = studyLine.name,
-            studyYearsIds = studyLine.studyYearsIds,
+            lineId = studyLine.baseId,
+            studyYearId = studyLine.studyYearId,
             degreeId = studyLine.degreeId
         )
     }

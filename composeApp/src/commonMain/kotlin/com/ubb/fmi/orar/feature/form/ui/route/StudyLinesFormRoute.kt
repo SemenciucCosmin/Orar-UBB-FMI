@@ -18,7 +18,7 @@ fun StudyLinesRoute(navController: NavController) {
 
     StudyLinesFormScreen(
         uiState = uiState,
-        onStudyLineClick = viewModel::selectStudyLine,
+        onStudyLineClick = viewModel::selectStudyLineBaseId,
         onStudyYearClick = viewModel::selectStudyYear,
         onNextClick = viewModel::finishSelection,
         onRetryClick = viewModel::retry
@@ -27,6 +27,7 @@ fun StudyLinesRoute(navController: NavController) {
     EventHandler(viewModel.events) { event ->
         when(event) {
             StudyLinesFormUiState.StudyLinesFormEvent.SELECTION_DONE -> {
+                viewModel.unregisterEvent(event)
                 navController.navigate(ConfigurationFormNavDestination.StudyGroupsForm)
             }
         }

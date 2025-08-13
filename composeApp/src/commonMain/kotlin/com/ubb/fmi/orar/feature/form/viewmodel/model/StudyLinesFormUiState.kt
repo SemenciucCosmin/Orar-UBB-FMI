@@ -4,8 +4,8 @@ import com.ubb.fmi.orar.data.studyline.model.StudyLine
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
 
 data class StudyLinesFormUiState(
-    val studyLines: List<StudyLine> = emptyList(),
-    val selectedStudyLineId: String? = null,
+    val studyLinesGroups: List<List<StudyLine>> = emptyList(),
+    val selectedStudyLineBaseId: String? = null,
     val selectedStudyYearId: String? = null,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
@@ -16,4 +16,4 @@ data class StudyLinesFormUiState(
 }
 
 val StudyLinesFormUiState.isNextEnabled: Boolean
-    get() = selectedStudyLineId != null && selectedStudyYearId != null
+    get() = selectedStudyLineBaseId != null && selectedStudyYearId != null

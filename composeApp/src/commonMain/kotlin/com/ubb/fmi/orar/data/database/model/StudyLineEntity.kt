@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 data class StudyLineEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
+    val lineId: String,
     val name: String,
-    val studyYearsIds: List<String>,
+    val studyYearId: String,
     val degreeId: String,
 )

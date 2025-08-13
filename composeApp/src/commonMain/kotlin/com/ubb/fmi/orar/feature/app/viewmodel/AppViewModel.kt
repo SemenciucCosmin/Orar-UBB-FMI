@@ -35,7 +35,9 @@ class AppViewModel(
                     val isStudyYearSelected = configuration?.year != null
                     val isSemesterSelected = configuration?.semesterId != null
                     val isDegreeSelected = configuration?.degreeId != null
-                    val isStudyLineSelected = configuration?.studyLineId != null
+                    val isStudyLineBaseIdSelected = configuration?.studyLineBaseId != null
+                    val isStudyLineYearIdSelected = configuration?.studyLineYearId != null
+                    val isStudyLineSelected = isStudyLineBaseIdSelected && isStudyLineYearIdSelected
                     val isStudyGroupSelected = configuration?.groupId != null
                     val isTeacherSelected = configuration?.teacherId != null
                     val isStudentTypeSelected = configuration?.userTypeId == UserType.STUDENT.id
