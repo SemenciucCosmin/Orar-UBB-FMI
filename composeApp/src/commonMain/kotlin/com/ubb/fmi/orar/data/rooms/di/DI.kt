@@ -7,5 +7,5 @@ import org.koin.dsl.module
 
 fun roomsDataModule() = module {
     factory<RoomsApi> { RoomsApi(get()) }
-    factory<RoomsDataSource> { RoomsDataSourceImpl(get(), get()) }
+    factory<RoomsDataSource> { RoomsDataSourceImpl(get(), get(), get()) }
 }

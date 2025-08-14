@@ -10,6 +10,8 @@ import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetables.di.timetablesDataModule
 import com.ubb.fmi.orar.feature.app.di.appFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
+import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
+import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,4 +32,6 @@ fun commonModule() = module {
     includes(formFeatureModule())
     includes(databaseDataModule())
     includes(preferencesDataModule())
+    includes(roomsFeatureModule())
+    includes(roomTimetableFeatureModule())
 }

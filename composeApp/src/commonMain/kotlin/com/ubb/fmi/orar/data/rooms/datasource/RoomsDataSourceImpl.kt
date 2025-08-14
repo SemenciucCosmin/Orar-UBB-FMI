@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.rooms.datasource
 
+import com.ubb.fmi.orar.data.database.dao.RoomClassDao
 import com.ubb.fmi.orar.data.database.dao.RoomDao
 import com.ubb.fmi.orar.data.database.model.RoomClassEntity
 import com.ubb.fmi.orar.data.database.model.RoomEntity
@@ -7,6 +8,7 @@ import com.ubb.fmi.orar.data.rooms.api.RoomsApi
 import com.ubb.fmi.orar.data.rooms.model.Room
 import com.ubb.fmi.orar.data.rooms.model.RoomTimetable
 import com.ubb.fmi.orar.data.rooms.model.RoomClass
+import com.ubb.fmi.orar.data.studyline.model.StudyLineTimetable
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.network.model.Resource
@@ -17,11 +19,40 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.orEmpty
 
 class RoomsDataSourceImpl(
     private val roomsApi: RoomsApi,
     private val roomDao: RoomDao,
+    private val roomClassDao: RoomClassDao
 ) : RoomsDataSource {
+
+    override suspend fun getRooms(
+        year: Int,
+        semesterId: String
+    ): Resource<List<Room>> {
+        val cachedRooms = getRoomsFromCache()
+
+        return when {
+            cachedRooms.isNotEmpty() -> {
+                println("TESTMESSAGE Rooms: from cache")
+                Resource(cachedRooms, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE Rooms: from API")
+                val apiRoomsResource = getRoomsFromApi(year, semesterId)
+                apiRoomsResource.payload?.forEach { room ->
+                    val roomEntity = mapRoomToEntity(room)
+                    roomDao.insertRoom(roomEntity)
+                }
+
+                apiRoomsResource
+            }
+        }
+    }
 
     override suspend fun getTimetables(
         year: Int,
@@ -31,12 +62,12 @@ class RoomsDataSourceImpl(
 
         return when {
             cachedTimetables.isNotEmpty() -> {
-                println("TESTMESSAGE Room: from cache")
+                println("TESTMESSAGE Rooms timetable: from cache")
                 Resource(cachedTimetables, Status.Success)
             }
 
             else -> {
-                println("TESTMESSAGE Room: from API")
+                println("TESTMESSAGE Rooms timetable: from API")
                 val apiTimetablesResource = getTimetablesFromApi(year, semesterId)
                 apiTimetablesResource.payload?.forEach { timetable ->
                     val roomEntity = mapRoomToEntity(timetable.room)
@@ -46,7 +77,7 @@ class RoomsDataSourceImpl(
                     )
 
                     roomDao.insertRoom(roomEntity)
-                    roomDao.insertRoomClasses(classesEntities)
+                    classesEntities.forEach { roomClassDao.insertRoomClass(it) }
                 }
 
                 apiTimetablesResource
@@ -54,12 +85,23 @@ class RoomsDataSourceImpl(
         }
     }
 
+    private suspend fun getRoomsFromCache(): List<Room> {
+        val entities = roomDao.getRooms()
+        return entities.map(::mapEntityToRoom)
+    }
+
     private suspend fun getTimetablesFromCache(): List<RoomTimetable> {
-        val entities = roomDao.getAllRoomsWithClasses()
-        return entities.map { (roomEntity, classesEntities) ->
+        val roomEntities = roomDao.getRooms()
+        val roomClassEntities = roomClassDao.getRoomsClasses()
+        val groupedRoomClassEntities = roomClassEntities.groupBy { it.roomId }
+        val roomWithClassesEntities = roomEntities.associateWith { roomEntity ->
+            groupedRoomClassEntities[roomEntity.id].orEmpty()
+        }.filter { it.value.isNotEmpty() }
+
+        return roomWithClassesEntities.map { (roomEntity, classesEntities) ->
             RoomTimetable(
                 room = mapEntityToRoom(roomEntity),
-                classes = mapEntitiesToClasses(classesEntities)
+                classes = mapEntitiesToClasses(classesEntities),
             )
         }
     }

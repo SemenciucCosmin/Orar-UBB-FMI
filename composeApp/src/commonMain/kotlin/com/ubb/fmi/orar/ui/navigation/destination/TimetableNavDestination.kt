@@ -7,4 +7,10 @@ sealed class TimetableNavDestination() {
 
     @Serializable
     data object Main: TimetableNavDestination()
+
+    @Serializable
+    data object Rooms: TimetableNavDestination()
+
+    @Serializable
+    data class RoomTimetable(val roomId: String): TimetableNavDestination()
 }

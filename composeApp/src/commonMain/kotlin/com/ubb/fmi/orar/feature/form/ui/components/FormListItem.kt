@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.catalog.extensions.conditional
 import orar_ubb_fmi.composeapp.generated.resources.Res
-import orar_ubb_fmi.composeapp.generated.resources.check
+import orar_ubb_fmi.composeapp.generated.resources.ic_check
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -67,7 +67,7 @@ fun <T> FormListItem(
 
                 if (isSelected) {
                     Icon(
-                        painter = painterResource(Res.drawable.check),
+                        painter = painterResource(Res.drawable.ic_check),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
