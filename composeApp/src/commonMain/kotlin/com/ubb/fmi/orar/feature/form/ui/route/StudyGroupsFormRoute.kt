@@ -1,21 +1,21 @@
 package com.ubb.fmi.orar.feature.form.ui.route
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ubb.fmi.orar.feature.form.ui.components.StudyGroupsFormScreen
+import com.ubb.fmi.orar.feature.form.viewmodel.StudyGroupsFormViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun StudyGroupsRoute(navController: NavController) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "StudyGroupsRoute")
-    }
+fun StudyGroupsRoute() {
+    val viewModel = koinViewModel<StudyGroupsFormViewModel>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    StudyGroupsFormScreen(
+        uiState = uiState,
+        onStudyGroupClick = viewModel::selectStudyGroup,
+        onNextClick = viewModel::finishSelection,
+        onRetryClick = viewModel::retry
+    )
 }

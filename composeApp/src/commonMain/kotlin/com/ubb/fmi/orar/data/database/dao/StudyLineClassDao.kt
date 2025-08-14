@@ -9,10 +9,10 @@ import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.database.model.StudyLineClassEntity
 
 @Dao
-interface StudyLineDao {
-    @Query("SELECT * FROM study_lines")
-    suspend fun getAllStudyLines(): List<StudyLineEntity>
+interface StudyLineClassDao {
+    @Query("SELECT * FROM study_line_classes")
+    suspend fun getAllStudyLineClasses(): List<StudyLineClassEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStudyLine(studyLineEntity: StudyLineEntity)
+    suspend fun insertStudyLineClass(studyLineClassEntity: StudyLineClassEntity)
 }

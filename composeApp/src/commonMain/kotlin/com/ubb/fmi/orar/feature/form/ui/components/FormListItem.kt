@@ -74,7 +74,7 @@ fun <T> FormListItem(
                 }
             }
 
-            AnimatedVisibility(visible = isSelected) {
+            AnimatedVisibility(visible = isSelected && underlineItems != null) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HorizontalDivider()
 

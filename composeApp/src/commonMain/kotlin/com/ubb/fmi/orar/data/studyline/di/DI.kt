@@ -7,5 +7,5 @@ import org.koin.dsl.module
 
 fun studyLineDataModule() = module {
     factory<StudyLineApi> { StudyLineApi(get()) }
-    factory<StudyLineDataSource> { StudyLineDataSourceImpl(get(), get()) }
+    factory<StudyLineDataSource> { StudyLineDataSourceImpl(get(), get(), get()) }
 }

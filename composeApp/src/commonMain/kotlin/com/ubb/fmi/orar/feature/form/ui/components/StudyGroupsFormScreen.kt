@@ -16,17 +16,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.data.core.model.StudyYear
-import com.ubb.fmi.orar.feature.form.viewmodel.model.StudyLinesFormUiState
+import com.ubb.fmi.orar.feature.form.viewmodel.model.StudyGroupsFromUiState
 import com.ubb.fmi.orar.feature.form.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @Composable
-fun StudyLinesFormScreen(
-    uiState: StudyLinesFormUiState,
-    onStudyLineClick: (String) -> Unit,
-    onStudyYearClick: (String) -> Unit,
+fun StudyGroupsFormScreen(
+    uiState: StudyGroupsFromUiState,
+    onStudyGroupClick: (String) -> Unit,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
 ) {
@@ -58,25 +56,12 @@ fun StudyLinesFormScreen(
                             .weight(1f)
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        items(uiState.groupedStudyLines) { groupedStudyLines ->
-                            val lineId = groupedStudyLines.firstOrNull()?.baseId ?: return@items
-                            val label = groupedStudyLines.firstOrNull()?.name ?: return@items
-
-                            FormListItem(
+                        items(uiState.studyGroups) { studyGroup ->
+                            FormListItem<String>(
                                 modifier = Modifier.fillMaxWidth(),
-                                headlineLabel = label,
-                                isSelected = uiState.selectedStudyLineBaseId == lineId,
-                                onClick = { onStudyLineClick(lineId) },
-                                onUnderlineItemClick = onStudyYearClick,
-                                selectedUnderlineItemId = uiState.selectedStudyYearId,
-                                underlineItems = groupedStudyLines.map { studyLine ->
-                                    val year = StudyYear.getById(studyLine.studyYearId)
-
-                                    FormInputItem(
-                                        id = year.id,
-                                        label = year.label
-                                    )
-                                }
+                                headlineLabel = studyGroup,
+                                isSelected = uiState.selectedStudyGroupId == studyGroup,
+                                onClick = { onStudyGroupClick(studyGroup) },
                             )
                         }
                     }

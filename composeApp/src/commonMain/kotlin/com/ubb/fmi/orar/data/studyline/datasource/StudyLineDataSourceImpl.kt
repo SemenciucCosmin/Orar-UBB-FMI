@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.data.studyline.datasource
 
 import com.ubb.fmi.orar.data.core.model.Degree
+import com.ubb.fmi.orar.data.database.dao.StudyLineClassDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.database.model.StudyLineClassEntity
@@ -22,7 +23,8 @@ import okio.ByteString.Companion.encodeUtf8
 
 class StudyLineDataSourceImpl(
     private val studyLineApi: StudyLineApi,
-    private val studyLineDao: StudyLineDao
+    private val studyLineDao: StudyLineDao,
+    private val studyLineClassDao: StudyLineClassDao,
 ) : StudyLineDataSource {
 
     override suspend fun getStudyLines(
@@ -86,7 +88,7 @@ class StudyLineDataSourceImpl(
                     )
 
                     studyLineDao.insertStudyLine(studyLineEntity)
-                    studyLineDao.insertStudyLineClasses(classesEntities)
+                    classesEntities.forEach { studyLineClassDao.insertStudyLineClass(it) }
                 }
 
                 apiTimetablesResource
@@ -100,8 +102,14 @@ class StudyLineDataSourceImpl(
     }
 
     private suspend fun getTimetablesFromCache(): List<StudyLineTimetable> {
-        val entities = studyLineDao.getAllStudyLinesWithClasses()
-        return entities.map { (studyLineEntity, classesEntities) ->
+        val studyLineEntities = studyLineDao.getAllStudyLines()
+        val studyLineClassEntities = studyLineClassDao.getAllStudyLineClasses()
+        val groupedStudyLineClassEntities = studyLineClassEntities.groupBy { it.studyLineId }
+        val studyLineWithClassesEntities = studyLineEntities.associateWith { studyLineEntity ->
+            groupedStudyLineClassEntities[studyLineEntity.id].orEmpty()
+        }.filter { it.value.isNotEmpty() }
+
+        return studyLineWithClassesEntities.map { (studyLineEntity, classesEntities) ->
             StudyLineTimetable(
                 studyLine = mapEntityToStudyLine(studyLineEntity),
                 classes = mapEntitiesToClasses(classesEntities),

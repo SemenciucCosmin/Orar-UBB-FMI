@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.ubb.fmi.orar.data.database.dao.RoomDao
+import com.ubb.fmi.orar.data.database.dao.StudyLineClassDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.SubjectDao
 import com.ubb.fmi.orar.data.database.dao.TeacherDao
@@ -37,6 +38,8 @@ abstract class OrarUbbFmiDatabase : RoomDatabase() {
     abstract val roomDao: RoomDao
 
     abstract val studyLineDao: StudyLineDao
+
+    abstract val studyLineClassDao: StudyLineClassDao
 
     abstract val subjectDao: SubjectDao
 

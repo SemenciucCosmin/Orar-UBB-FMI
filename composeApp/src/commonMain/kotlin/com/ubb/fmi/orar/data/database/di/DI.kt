@@ -9,6 +9,7 @@ fun databaseDataModule() = module {
     single { get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build() }
     single { get<OrarUbbFmiDatabase>().roomDao }
     single { get<OrarUbbFmiDatabase>().studyLineDao }
+    single { get<OrarUbbFmiDatabase>().studyLineClassDao }
     single { get<OrarUbbFmiDatabase>().subjectDao }
     single { get<OrarUbbFmiDatabase>().teacherDao }
 }

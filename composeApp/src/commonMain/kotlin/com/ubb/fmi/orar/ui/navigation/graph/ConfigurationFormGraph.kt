@@ -31,7 +31,7 @@ fun ConfigurationFormGraph(navController: NavHostController) {
         }
 
         composable<ConfigurationFormNavDestination.StudyGroupsForm> { navBackStackEntry ->
-            StudyGroupsRoute(navController)
+            StudyGroupsRoute()
         }
     }
 }
