@@ -19,7 +19,7 @@ fun TeachersRoute(navController: NavController) {
         onRetryClick = viewModel::retry,
         onSelectFilter = viewModel::selectTeacherTitleFilter,
         onTeacherClick = { roomId ->
-            navController.navigate(TimetableNavDestination.RoomTimetable(roomId))
+            navController.navigate(TimetableNavDestination.TeacherTimetable(roomId))
         }
     )
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -57,11 +58,11 @@ fun TeachersScreen(
                 ) {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(
-                            horizontal = 16.dp)
+                        contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
                         items(TeacherTitleFilter.entries) { teacherTitleFilter ->
                             FilterChip(
+                                shape = CircleShape,
                                 selected = uiState.selectedFilter == teacherTitleFilter,
                                 onClick = { onSelectFilter(teacherTitleFilter) },
                                 label = { Text(text = teacherTitleFilter.label) }

@@ -61,6 +61,7 @@ fun OnboardingFormScreen(
                 Text(
                     text = "Alege configuratiile pentru orarul tau",
                     style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 FormInput(

@@ -9,6 +9,7 @@ import com.ubb.fmi.orar.data.database.dao.RoomDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineClassDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.SubjectDao
+import com.ubb.fmi.orar.data.database.dao.TeacherClassDao
 import com.ubb.fmi.orar.data.database.dao.TeacherDao
 import com.ubb.fmi.orar.data.database.model.RoomClassEntity
 import com.ubb.fmi.orar.data.database.model.RoomEntity
@@ -47,6 +48,8 @@ abstract class OrarUbbFmiDatabase : RoomDatabase() {
     abstract val subjectDao: SubjectDao
 
     abstract val teacherDao: TeacherDao
+
+    abstract val teacherClassDao: TeacherClassDao
 
     companion object {
         const val DATABASE_NAME = "orar_ubb_fmi.db"

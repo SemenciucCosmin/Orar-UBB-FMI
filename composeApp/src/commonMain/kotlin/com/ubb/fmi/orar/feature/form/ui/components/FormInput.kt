@@ -3,12 +3,10 @@ package com.ubb.fmi.orar.feature.form.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.InputChip
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,7 +33,7 @@ fun <T> FormInput(
             verticalArrangement = Arrangement.Center
         ) {
             items.forEach { item ->
-                InputChip(
+                FilterChip(
                     selected = item.id == selectedItemId,
                     onClick = { onItemClick(item.id) },
                     label = {

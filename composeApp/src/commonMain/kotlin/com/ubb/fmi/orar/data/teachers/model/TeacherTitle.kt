@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.data.teachers.model
 
 enum class TeacherTitle(
     val id: String,
-    val label: String
+    val label: String,
 ) {
     PROFESSOR(
         id = "Prof.",

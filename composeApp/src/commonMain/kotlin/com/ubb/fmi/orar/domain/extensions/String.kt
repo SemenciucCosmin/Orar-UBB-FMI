@@ -17,3 +17,12 @@ val String.Companion.SLASH: String
 
 val String.Companion.PIPE: String
     get() = "|"
+
+val String.Companion.DASH: String
+    get() = "-"
+
+val String.Companion.COLON: String
+    get() = ":"
+
+val String.Companion.COMMA: String
+    get() = ","

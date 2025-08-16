@@ -6,7 +6,19 @@ import com.ubb.fmi.orar.network.model.Resource
 
 interface TeachersDataSource {
 
-    suspend fun getTeachers(year: Int, semesterId: String): Resource<List<Teacher>>
+    suspend fun getTeachers(
+        year: Int,
+        semesterId: String
+    ): Resource<List<Teacher>>
 
-    suspend fun getTimetables(year: Int, semesterId: String): Resource<List<TeacherTimetable>>
+    suspend fun getTimetables(
+        year: Int,
+        semesterId: String
+    ): Resource<List<TeacherTimetable>>
+
+    suspend fun getTimetable(
+        year: Int,
+        semesterId: String,
+        teacherId: String
+    ): Resource<TeacherTimetable>
 }

@@ -10,6 +10,7 @@ import com.ubb.fmi.orar.data.studyline.model.StudyLine
 import com.ubb.fmi.orar.data.studyline.model.StudyLineClass
 import com.ubb.fmi.orar.data.studyline.model.StudyLineTimetable
 import com.ubb.fmi.orar.domain.extensions.BLANK
+import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.network.model.Resource
@@ -159,14 +160,19 @@ class StudyLineDataSourceImpl(
         val studyLineClasses = studyLineTables.map { studyLineTable ->
             studyLineTable.rows.mapNotNull { row ->
                 val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
-                val hoursCell = row.cells.getOrNull(HOURS_INDEX) ?: return@mapNotNull null
+                val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
                 val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
                 val roomCell = row.cells.getOrNull(ROOM_INDEX) ?: return@mapNotNull null
-                val participantCell =
-                    row.cells.getOrNull(PARTICIPANT_INDEX) ?: return@mapNotNull null
                 val classTypeCell = row.cells.getOrNull(CLASS_TYPE_INDEX) ?: return@mapNotNull null
                 val subjectCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
                 val teacherCell = row.cells.getOrNull(TEACHER_INDEX) ?: return@mapNotNull null
+                val intervals = intervalCell.value.split(String.DASH)
+                val startHour = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
+                val endHour = intervals.getOrNull(END_HOUR_INDEX) ?: return@mapNotNull null
+
+                val participantCell = row.cells.getOrNull(
+                    PARTICIPANT_INDEX
+                ) ?: return@mapNotNull null
 
                 val participantId = when {
                     participantCell.value.contains(SEMIGROUP_1_ID) -> SEMIGROUP_1_ID
@@ -177,9 +183,10 @@ class StudyLineDataSourceImpl(
 
                 val id = listOf(
                     dayCell.value,
-                    hoursCell.value,
+                    intervalCell.value,
                     frequencyCell.value,
                     roomCell.id,
+                    participantCell.value,
                     classTypeCell.value,
                     subjectCell.id,
                     teacherCell.id,
@@ -189,10 +196,12 @@ class StudyLineDataSourceImpl(
                     id = id,
                     groupId = studyLineTable.title,
                     day = dayCell.value,
-                    hours = hoursCell.value,
+                    startHour = "$startHour:00",
+                    endHour = "$endHour:00",
                     frequencyId = frequencyCell.value,
                     roomId = roomCell.id,
                     participantId = participantId,
+                    participantName = participantCell.value,
                     classTypeId = classTypeCell.value,
                     subjectId = subjectCell.id,
                     teacherId = teacherCell.id
@@ -283,10 +292,12 @@ class StudyLineDataSourceImpl(
                 id = classEntity.id,
                 groupId = classEntity.groupId,
                 day = classEntity.day,
-                hours = classEntity.hours,
+                startHour = classEntity.startHour,
+                endHour = classEntity.endHour,
                 frequencyId = classEntity.frequencyId,
                 roomId = classEntity.roomId,
                 participantId = classEntity.participantId,
+                participantName = classEntity.participantName,
                 classTypeId = classEntity.classTypeId,
                 subjectId = classEntity.subjectId,
                 teacherId = classEntity.teacherId
@@ -314,10 +325,12 @@ class StudyLineDataSourceImpl(
                 studyLineId = studyLineId,
                 groupId = groupClass.groupId,
                 day = groupClass.day,
-                hours = groupClass.hours,
+                startHour = groupClass.startHour,
+                endHour = groupClass.endHour,
                 frequencyId = groupClass.frequencyId,
                 roomId = groupClass.roomId,
                 participantId = groupClass.participantId,
+                participantName = groupClass.participantName,
                 classTypeId = groupClass.classTypeId,
                 subjectId = groupClass.subjectId,
                 teacherId = groupClass.teacherId
@@ -334,7 +347,7 @@ class StudyLineDataSourceImpl(
 
         // StudyLine timetable column indexes
         private const val DAY_INDEX = 0
-        private const val HOURS_INDEX = 1
+        private const val INTERVAL_INDEX = 1
         private const val FREQUENCY_INDEX = 2
         private const val ROOM_INDEX = 3
         private const val PARTICIPANT_INDEX = 4
@@ -351,5 +364,9 @@ class StudyLineDataSourceImpl(
 
         // Degree
         private const val MASTER_DEGREE_TABLE_INDEX = 1
+
+        // Interval indexes
+        private const val START_HOUR_INDEX = 0
+        private const val END_HOUR_INDEX = 1
     }
 }

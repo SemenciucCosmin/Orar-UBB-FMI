@@ -8,5 +8,6 @@ data class TimetableConfiguration(
     val studyLineBaseId: String?,
     val studyLineYearId: String?,
     val groupId: String?,
+    val groupTypeId: String?,
     val teacherId: String?
 )

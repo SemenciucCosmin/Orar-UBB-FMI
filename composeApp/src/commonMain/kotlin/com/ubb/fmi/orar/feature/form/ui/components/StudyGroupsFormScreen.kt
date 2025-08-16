@@ -24,7 +24,7 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 @Composable
 fun StudyGroupsFormScreen(
     uiState: StudyGroupsFromUiState,
-    onStudyGroupClick: (String) -> Unit,
+    onStudyGroupClick: (StudyGroupsFromUiState.Group) -> Unit,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
 ) {
@@ -59,8 +59,9 @@ fun StudyGroupsFormScreen(
                         items(uiState.studyGroups) { studyGroup ->
                             FormListItem<String>(
                                 modifier = Modifier.fillMaxWidth(),
-                                headlineLabel = studyGroup,
-                                isSelected = uiState.selectedStudyGroupId == studyGroup,
+                                headlineLabel = studyGroup.id,
+                                underLineLabel = studyGroup.type.label,
+                                isSelected = uiState.selectedStudyGroup == studyGroup,
                                 onClick = { onStudyGroupClick(studyGroup) },
                             )
                         }

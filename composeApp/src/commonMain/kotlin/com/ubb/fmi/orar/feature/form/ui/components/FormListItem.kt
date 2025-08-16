@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +28,7 @@ fun <T> FormListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     overLineLabel: String? = null,
+    underLineLabel: String? = null,
     underlineItems: List<FormInputItem<T>>? = null,
     selectedUnderlineItemId: T? = null,
     onUnderlineItemClick: (T) -> Unit = {},
@@ -63,6 +64,14 @@ fun <T> FormListItem(
                         text = headlineLabel,
                         style = MaterialTheme.typography.labelLarge,
                     )
+
+                    underLineLabel?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 }
 
                 if (isSelected) {
@@ -81,7 +90,7 @@ fun <T> FormListItem(
                     if (underlineItems != null) {
                         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             underlineItems.forEach { item ->
-                                InputChip(
+                                FilterChip(
                                     selected = item.id == selectedUnderlineItemId,
                                     onClick = { onUnderlineItemClick(item.id) },
                                     label = { Text(text = item.label) }

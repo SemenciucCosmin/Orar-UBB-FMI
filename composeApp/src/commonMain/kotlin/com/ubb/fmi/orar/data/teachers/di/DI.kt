@@ -7,5 +7,5 @@ import org.koin.dsl.module
 
 fun teachersDataModule() = module {
     factory<TeachersApi> { TeachersApi(get()) }
-    factory<TeachersDataSource> { TeachersDataSourceImpl(get(), get()) }
+    factory<TeachersDataSource> { TeachersDataSourceImpl(get(), get(), get()) }
 }

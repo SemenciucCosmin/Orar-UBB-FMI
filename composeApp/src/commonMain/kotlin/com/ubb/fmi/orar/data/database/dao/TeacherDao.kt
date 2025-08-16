@@ -4,23 +4,17 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
-import com.ubb.fmi.orar.data.database.model.TeacherClassEntity
 import com.ubb.fmi.orar.data.database.model.TeacherEntity
-import com.ubb.fmi.orar.data.database.model.TeacherWithClasses
 
 @Dao
 interface TeacherDao {
 
     @Query("SELECT * FROM teachers")
     suspend fun getAllTeachers(): List<TeacherEntity>
-    @Transaction
-    @Query("SELECT * FROM teachers")
-    suspend fun getAllTeachersWithClasses(): List<TeacherWithClasses>
+
+    @Query("SELECT * FROM teachers WHERE id LIKE :teacherId")
+    suspend fun getTeacher(teacherId: String): TeacherEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTeacher(teacher: TeacherEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTeacherClasses(teacherClasses: List<TeacherClassEntity>)
 }

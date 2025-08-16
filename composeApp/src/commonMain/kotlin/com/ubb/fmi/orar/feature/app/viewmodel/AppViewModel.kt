@@ -31,28 +31,33 @@ class AppViewModel(
     private fun checkConfiguration() {
         viewModelScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
+                if (configuration == null) {
+                    _uiState.update { it.copy(isConfigurationDone = false) }
+                    return@collectLatest
+                }
+
                 _uiState.update {
-                    val isStudyYearSelected = configuration?.year != null
-                    val isSemesterSelected = configuration?.semesterId != null
-                    val isDegreeSelected = configuration?.degreeId != null
-                    val isStudyLineBaseIdSelected = configuration?.studyLineBaseId != null
-                    val isStudyLineYearIdSelected = configuration?.studyLineYearId != null
-                    val isStudyLineSelected = isStudyLineBaseIdSelected && isStudyLineYearIdSelected
-                    val isStudyGroupSelected = configuration?.groupId != null
-                    val isTeacherSelected = configuration?.teacherId != null
-                    val isStudentTypeSelected = configuration?.userTypeId == UserType.STUDENT.id
-                    val isTeacherTypeSelected = configuration?.userTypeId == UserType.TEACHER.id
+                    val hasDegree = configuration.degreeId != null
 
-                    val isStudyLineInfoSelected = isStudyLineSelected && isStudyGroupSelected
-                    val isStudentInfoSelected = isStudentTypeSelected &&
-                            isDegreeSelected &&
-                            isStudyLineInfoSelected
+                    val hasStudyLineBase = configuration.studyLineBaseId != null
+                    val hasStudyLineYear = configuration.studyLineYearId != null
+                    val hasStudyLine = hasStudyLineBase && hasStudyLineYear
 
-                    val isTeacherInfoSelected = isTeacherTypeSelected && isTeacherSelected
-                    val isUserInfoSelected = isStudentInfoSelected || isTeacherInfoSelected
-                    val isStudyInfoSelected = isStudyYearSelected && isSemesterSelected
+                    val hasStudyGroup = configuration.groupId != null
+                    val hasStudyGroupType = configuration.groupTypeId != null
+                    val hasStudyGroupInfo = hasStudyGroup && hasStudyGroupType
 
-                    it.copy(isConfigurationDone = isStudyInfoSelected && isUserInfoSelected)
+                    val hasStudyLineInfo = hasStudyLine && hasStudyGroupInfo
+
+                    val isStudent = configuration.userTypeId == UserType.STUDENT.id
+                    val isTeacher = configuration.userTypeId == UserType.TEACHER.id
+
+                    val hasStudentInfo = isStudent && hasDegree && hasStudyLineInfo
+                    val hasTeacherInfo = isTeacher && configuration.teacherId != null
+
+                    val hasUserInfo = hasStudentInfo || hasTeacherInfo
+
+                    it.copy(isConfigurationDone = hasUserInfo)
                 }
             }
         }
