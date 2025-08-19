@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.rooms.ui.route.RoomsRoute
 import com.ubb.fmi.orar.feature.roomtimetable.ui.route.RoomTimetableRoute
+import com.ubb.fmi.orar.feature.subjects.ui.route.SubjectsRoute
+import com.ubb.fmi.orar.feature.subjecttimetable.ui.route.SubjectTimetableRoute
 import com.ubb.fmi.orar.feature.teachers.ui.route.TeachersRoute
 import com.ubb.fmi.orar.feature.teachertimetable.ui.route.TeacherTimetableRoute
 import com.ubb.fmi.orar.feature.timetable.ui.route.MainTimetableRoute
@@ -16,7 +18,7 @@ import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 fun TimetableGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = TimetableNavDestination.Teachers,
+        startDestination = TimetableNavDestination.Subjects,
     ) {
         composable<TimetableNavDestination.Main> { navBackStackEntry ->
             MainTimetableRoute(navController)
@@ -45,6 +47,19 @@ fun TimetableGraph(navController: NavHostController) {
             TeacherTimetableRoute(
                 navController = navController,
                 teacherId = args.teacherId
+            )
+        }
+
+        composable<TimetableNavDestination.Subjects> { navBackStackEntry ->
+            SubjectsRoute(navController)
+        }
+
+        composable<TimetableNavDestination.SubjectTimetable> { navBackStackEntry ->
+            val args = navBackStackEntry.toRoute<TimetableNavDestination.SubjectTimetable>()
+
+            SubjectTimetableRoute(
+                navController = navController,
+                subjectId = args.subjectId
             )
         }
     }

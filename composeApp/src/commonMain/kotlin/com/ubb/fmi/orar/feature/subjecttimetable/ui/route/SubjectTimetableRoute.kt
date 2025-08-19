@@ -1,26 +1,28 @@
-package com.ubb.fmi.orar.feature.teachertimetable.ui.route
+package com.ubb.fmi.orar.feature.subjecttimetable.ui.route
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.ubb.fmi.orar.feature.subjecttimetable.ui.components.SubjectTimetableScreen
+import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.SubjectTimetableViewModel
 import com.ubb.fmi.orar.feature.teachertimetable.ui.components.TeacherTimetableScreen
 import com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel.TeacherTimetableViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun TeacherTimetableRoute(
+fun SubjectTimetableRoute(
     navController: NavController,
-    teacherId: String,
+    subjectId: String,
 ) {
-    val viewModel: TeacherTimetableViewModel = koinViewModel(
-        parameters = { parametersOf(teacherId) }
+    val viewModel: SubjectTimetableViewModel = koinViewModel(
+        parameters = { parametersOf(subjectId) }
     )
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    TeacherTimetableScreen(
+    SubjectTimetableScreen(
         uiState = uiState,
         onFrequencyClick = viewModel::selectFrequency,
         onRetryClick = viewModel::retry,

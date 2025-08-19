@@ -60,7 +60,9 @@ fun TeachersScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        items(TeacherTitleFilter.entries) { teacherTitleFilter ->
+                        items(
+                            TeacherTitleFilter.entries.sortedBy { it.orderIndex }
+                        ) { teacherTitleFilter ->
                             FilterChip(
                                 shape = CircleShape,
                                 selected = uiState.selectedFilter == teacherTitleFilter,

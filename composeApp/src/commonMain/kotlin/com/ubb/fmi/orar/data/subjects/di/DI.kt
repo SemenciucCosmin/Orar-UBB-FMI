@@ -7,5 +7,5 @@ import org.koin.dsl.module
 
 fun subjectsDataModule() = module {
     factory<SubjectsApi> { SubjectsApi(get()) }
-    factory<SubjectsDataSource> { SubjectsDataSourceImpl(get(), get()) }
+    factory<SubjectsDataSource> { SubjectsDataSourceImpl(get(), get(), get()) }
 }

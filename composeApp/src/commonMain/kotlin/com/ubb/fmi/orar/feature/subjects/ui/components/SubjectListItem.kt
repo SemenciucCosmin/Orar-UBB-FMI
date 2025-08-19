@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.teachers.ui.components
+package com.ubb.fmi.orar.feature.subjects.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_right_arrow
-import orar_ubb_fmi.composeapp.generated.resources.ic_teacher
+import orar_ubb_fmi.composeapp.generated.resources.ic_subject
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun TeacherListItem(
+fun SubjectListItem(
+    id: String,
     title: String,
-    name: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -36,7 +36,7 @@ fun TeacherListItem(
         ) {
             Icon(
                 modifier = Modifier.size(24.dp),
-                painter = painterResource(Res.drawable.ic_teacher),
+                painter = painterResource(Res.drawable.ic_subject),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -46,13 +46,13 @@ fun TeacherListItem(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 Text(
-                    text = title,
+                    text = id,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
 
                 Text(
-                    text = name,
+                    text = title,
                     style = MaterialTheme.typography.titleMedium
                 )
             }

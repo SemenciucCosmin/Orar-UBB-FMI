@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.teachertimetable.ui.components
+package com.ubb.fmi.orar.feature.subjecttimetable.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.data.core.model.Frequency
-import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel.model.TeacherTimetableUiState
-import com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel.model.TeacherTimetableUiState.Companion.timetableItems
+import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.model.SubjectTimetableUiState
+import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.model.SubjectTimetableUiState.Companion.timetableItems
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableListDivider
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableListItem
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableTopBar
@@ -26,8 +25,8 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeacherTimetableScreen(
-    uiState: TeacherTimetableUiState,
+fun SubjectTimetableScreen(
+    uiState: SubjectTimetableUiState,
     onFrequencyClick: (Frequency) -> Unit,
     onRetryClick: () -> Unit,
     onBack: () -> Unit,
@@ -38,14 +37,7 @@ fun TeacherTimetableScreen(
                 onBack = onBack,
                 selectedFrequency = uiState.selectedFrequency,
                 onFrequencyClick = onFrequencyClick,
-                title = when {
-                    uiState.teacher == null -> String.BLANK
-
-                    else -> {
-                        val title = TeacherTitle.getById(uiState.teacher.titleId)
-                        "${title.label} ${uiState.teacher.name}"
-                    }
-                }
+                title = uiState.subject?.name ?: String.BLANK
             )
         }
     ) { paddingValues ->
@@ -58,7 +50,7 @@ fun TeacherTimetableScreen(
                 )
             }
 
-            uiState.isError || uiState.teacher == null -> {
+            uiState.isError || uiState.subject == null -> {
                 FailureState(
                     onRetry = onRetryClick,
                     modifier = Modifier

@@ -19,4 +19,10 @@ sealed class TimetableNavDestination() {
 
     @Serializable
     data class TeacherTimetable(val teacherId: String): TimetableNavDestination()
+
+    @Serializable
+    data object Subjects: TimetableNavDestination()
+
+    @Serializable
+    data class SubjectTimetable(val subjectId: String): TimetableNavDestination()
 }

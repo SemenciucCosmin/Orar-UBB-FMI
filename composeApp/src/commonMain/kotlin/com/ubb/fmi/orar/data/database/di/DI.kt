@@ -12,6 +12,7 @@ fun databaseDataModule() = module {
     single { get<OrarUbbFmiDatabase>().studyLineDao }
     single { get<OrarUbbFmiDatabase>().studyLineClassDao }
     single { get<OrarUbbFmiDatabase>().subjectDao }
+    single { get<OrarUbbFmiDatabase>().subjectClassDao }
     single { get<OrarUbbFmiDatabase>().teacherDao }
     single { get<OrarUbbFmiDatabase>().teacherClassDao }
 }

@@ -4,11 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.ubb.fmi.orar.data.database.model.TeacherClassEntity
-import com.ubb.fmi.orar.data.database.model.TeacherEntity
-import com.ubb.fmi.orar.data.database.model.TeacherWithClasses
-import com.ubb.fmi.orar.data.teachers.model.TeacherClass
 
 @Dao
 interface TeacherClassDao {

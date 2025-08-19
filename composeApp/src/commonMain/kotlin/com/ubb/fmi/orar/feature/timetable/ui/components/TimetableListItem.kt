@@ -80,14 +80,15 @@ fun TimetableListItem(
                 ) {
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
                         color = Color.White,
                         text = when {
                             participant.isEmpty() -> classType.label
                             else -> "${classType.label} - $participant"
                         },
                         modifier = Modifier.padding(
-                            vertical = 2.dp,
-                            horizontal = 8.dp
+                            vertical = 3.dp,
+                            horizontal = 9.dp
                         )
                     )
                 }
@@ -112,6 +113,7 @@ fun TimetableListItem(
 
                 Text(
                     text = room,
+                    textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodySmall
                 )
             }

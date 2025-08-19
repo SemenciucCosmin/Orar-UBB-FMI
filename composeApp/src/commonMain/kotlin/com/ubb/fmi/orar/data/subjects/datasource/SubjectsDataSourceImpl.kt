@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.subjects.datasource
 
+import com.ubb.fmi.orar.data.database.dao.SubjectClassDao
 import com.ubb.fmi.orar.data.database.dao.SubjectDao
 import com.ubb.fmi.orar.data.database.model.SubjectClassEntity
 import com.ubb.fmi.orar.data.database.model.SubjectEntity
@@ -18,11 +19,42 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.orEmpty
 
 class SubjectsDataSourceImpl(
     private val subjectsApi: SubjectsApi,
-    private val subjectDao: SubjectDao
+    private val subjectDao: SubjectDao,
+    private val subjectClassDao: SubjectClassDao,
 ) : SubjectsDataSource {
+    
+    override suspend fun getSubjects(
+        year: Int,
+        semesterId: String
+    ): Resource<List<Subject>> {
+        val cachedSubjects = getSubjectsFromCache()
+
+        return when {
+            cachedSubjects.isNotEmpty() -> {
+                println("TESTMESSAGE Subject: from cache")
+                val orderedSubjects = cachedSubjects.sortedBy { it.name }
+                Resource(orderedSubjects, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE Subject: from API")
+                val apiSubjectsResource = getSubjectsFromApi(year, semesterId)
+                apiSubjectsResource.payload?.forEach { subject ->
+                    val subjectEntity = mapSubjectToEntity(subject)
+                    subjectDao.insertSubject(subjectEntity)
+                }
+
+                val orderedSubjects = apiSubjectsResource.payload?.sortedBy { it.name }
+                Resource(orderedSubjects, apiSubjectsResource.status)
+            }
+        }
+    }
 
     override suspend fun getTimetables(
         year: Int,
@@ -47,7 +79,7 @@ class SubjectsDataSourceImpl(
                     )
 
                     subjectDao.insertSubject(subjectEntity)
-                    subjectDao.insertSubjectClasses(classesEntities)
+                    classesEntities.forEach { subjectClassDao.insertSubjectClass(it) }
                 }
 
                 apiTimetablesResource
@@ -55,16 +87,96 @@ class SubjectsDataSourceImpl(
         }
     }
 
+    override suspend fun getTimetable(
+        year: Int,
+        semesterId: String,
+        subjectId: String
+    ): Resource<SubjectTimetable> {
+        val subject = getSubjects(year, semesterId).payload?.firstOrNull { it.id == subjectId }
+        val cachedTimetable = subject?.let { getTimetableFromCache(subject) }
+
+        return when {
+            cachedTimetable?.classes?.isNotEmpty() == true -> {
+                println("TESTMESSAGE Subject Timetable: from cache")
+                Resource(cachedTimetable, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE Subject Timetable: from API")
+                if (subject == null) return Resource(null, Status.Error)
+                val apiTimetableResource = getSubjectTimetableFromApi(year, semesterId, subject)
+                apiTimetableResource.payload?.let { timetable ->
+                    val subjectEntity = mapSubjectToEntity(timetable.subject)
+                    val classesEntities = mapClassesToEntities(
+                        subjectId = timetable.subject.id,
+                        classes = timetable.classes
+                    )
+
+                    subjectDao.insertSubject(subjectEntity)
+                    classesEntities.forEach { subjectClassDao.insertSubjectClass(it) }
+                }
+
+                apiTimetableResource
+            }
+        }
+    }
+
+    private suspend fun getSubjectsFromCache(): List<Subject> {
+        val entities = subjectDao.getAllSubjects()
+        return entities.map(::mapEntityToSubject)
+    }
+
+    private suspend fun getTimetableFromCache(subject: Subject): SubjectTimetable {
+        val subjectClassEntities = subjectClassDao.getSubjectClasses(subject.id)
+        return SubjectTimetable(
+            subject = subject,
+            classes = mapEntitiesToClasses(subjectClassEntities),
+        )
+    }
+
     private suspend fun getTimetablesFromCache(): List<SubjectTimetable> {
-        val entities = subjectDao.getAllSubjectsWithClasses()
-        return entities.map { (subjectEntity, classesEntities) ->
+        val subjectEntities = subjectDao.getAllSubjects()
+        val subjectClassEntities = subjectClassDao.getAllSubjectClasses()
+        val groupedSubjectClassEntities = subjectClassEntities.groupBy { it.subjectId }
+        val subjectWithClassesEntities = subjectEntities.associateWith { subjectEntity ->
+            groupedSubjectClassEntities[subjectEntity.id].orEmpty()
+        }.filter { it.value.isNotEmpty() }
+
+        return subjectWithClassesEntities.map { (subjectEntity, classesEntities) ->
             SubjectTimetable(
                 subject = mapEntityToSubject(subjectEntity),
-                classes = mapEntitiesToClasses(classesEntities)
+                classes = mapEntitiesToClasses(classesEntities),
             )
         }
     }
 
+    private suspend fun getSubjectsFromApi(year: Int, semesterId: String): Resource<List<Subject>> {
+        val resource = subjectsApi.getSubjectsMapHtml(
+            year = year,
+            semesterId = semesterId
+        )
+
+        val subjectsMapHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
+        val subjectsTable = HtmlParser.extractTables(
+            html = subjectsMapHtml
+        ).firstOrNull()
+
+        val subjects = subjectsTable?.rows?.mapNotNull { row ->
+            val idCell = row.cells.getOrNull(ID_INDEX) ?: return@mapNotNull null
+            val nameCell = row.cells.getOrNull(NAME_INDEX) ?: return@mapNotNull null
+
+            Subject(
+                id = idCell.value,
+                name = nameCell.value,
+            )
+        }
+
+        return when {
+            subjects.isNullOrEmpty() -> Resource(null, Status.Error)
+            else -> Resource(subjects, Status.Success)
+        }
+    }
+    
     private suspend fun getTimetablesFromApi(
         year: Int,
         semesterId: String
@@ -153,33 +265,6 @@ class SubjectsDataSourceImpl(
         return when {
             classes.isNullOrEmpty() -> Resource(null, Status.Error)
             else -> Resource(SubjectTimetable(subject, classes), Status.Success)
-        }
-    }
-
-    private suspend fun getSubjectsFromApi(year: Int, semesterId: String): Resource<List<Subject>> {
-        val resource = subjectsApi.getSubjectsMapHtml(
-            year = year,
-            semesterId = semesterId
-        )
-
-        val subjectsMapHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val subjectsTable = HtmlParser.extractTables(
-            html = subjectsMapHtml
-        ).firstOrNull()
-
-        val subjects = subjectsTable?.rows?.mapNotNull { row ->
-            val idCell = row.cells.getOrNull(ID_INDEX) ?: return@mapNotNull null
-            val nameCell = row.cells.getOrNull(NAME_INDEX) ?: return@mapNotNull null
-
-            Subject(
-                id = idCell.value,
-                name = nameCell.value,
-            )
-        }
-
-        return when {
-            subjects.isNullOrEmpty() -> Resource(null, Status.Error)
-            else -> Resource(subjects, Status.Success)
         }
     }
 

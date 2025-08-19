@@ -38,7 +38,8 @@ class RoomsDataSourceImpl(
         return when {
             cachedRooms.isNotEmpty() -> {
                 println("TESTMESSAGE Rooms: from cache")
-                Resource(cachedRooms, Status.Success)
+                val orderedRooms = cachedRooms.sortedBy { it.name }
+                Resource(orderedRooms, Status.Success)
             }
 
             else -> {
@@ -49,7 +50,8 @@ class RoomsDataSourceImpl(
                     roomDao.insertRoom(roomEntity)
                 }
 
-                apiRoomsResource
+                val orderedRooms = apiRoomsResource.payload?.sortedBy { it.name }
+                Resource(orderedRooms, apiRoomsResource.status)
             }
         }
     }
