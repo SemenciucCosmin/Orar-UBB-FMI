@@ -6,13 +6,10 @@ import kotlinx.serialization.Serializable
 sealed class TimetableNavDestination() {
 
     @Serializable
-    data object Main: TimetableNavDestination()
+    data object Home: TimetableNavDestination()
 
     @Serializable
-    data object Rooms: TimetableNavDestination()
-
-    @Serializable
-    data class RoomTimetable(val roomId: String): TimetableNavDestination()
+    data object Students: TimetableNavDestination()
 
     @Serializable
     data object Teachers: TimetableNavDestination()
@@ -25,4 +22,10 @@ sealed class TimetableNavDestination() {
 
     @Serializable
     data class SubjectTimetable(val subjectId: String): TimetableNavDestination()
+
+    @Serializable
+    data object Rooms: TimetableNavDestination()
+
+    @Serializable
+    data class RoomTimetable(val roomId: String): TimetableNavDestination()
 }

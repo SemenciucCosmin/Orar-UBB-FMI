@@ -1,6 +1,11 @@
 package com.ubb.fmi.orar.ui.navigation.graph
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,26 +20,26 @@ import com.ubb.fmi.orar.feature.timetable.ui.route.MainTimetableRoute
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 
 @Composable
-fun TimetableGraph(navController: NavHostController) {
+fun TimetableGraph(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+) {
     NavHost(
+        modifier = modifier,
         navController = navController,
-        startDestination = TimetableNavDestination.Subjects,
+        startDestination = TimetableNavDestination.Home,
     ) {
-        composable<TimetableNavDestination.Main> { navBackStackEntry ->
+        composable<TimetableNavDestination.Home> { navBackStackEntry ->
             MainTimetableRoute(navController)
         }
 
-        composable<TimetableNavDestination.Rooms> { navBackStackEntry ->
-            RoomsRoute(navController)
-        }
-
-        composable<TimetableNavDestination.RoomTimetable> { navBackStackEntry ->
-            val args = navBackStackEntry.toRoute<TimetableNavDestination.RoomTimetable>()
-
-            RoomTimetableRoute(
-                navController = navController,
-                roomId = args.roomId
-            )
+        composable<TimetableNavDestination.Students> { navBackStackEntry ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = "Students destination",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
 
         composable<TimetableNavDestination.Teachers> { navBackStackEntry ->
@@ -60,6 +65,19 @@ fun TimetableGraph(navController: NavHostController) {
             SubjectTimetableRoute(
                 navController = navController,
                 subjectId = args.subjectId
+            )
+        }
+
+        composable<TimetableNavDestination.Rooms> { navBackStackEntry ->
+            RoomsRoute(navController)
+        }
+
+        composable<TimetableNavDestination.RoomTimetable> { navBackStackEntry ->
+            val args = navBackStackEntry.toRoute<TimetableNavDestination.RoomTimetable>()
+
+            RoomTimetableRoute(
+                navController = navController,
+                roomId = args.roomId
             )
         }
     }
