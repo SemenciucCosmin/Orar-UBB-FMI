@@ -122,7 +122,7 @@ class RoomsDataSourceImpl(
     }
 
     private suspend fun getRoomsFromCache(): List<Room> {
-        val entities = roomDao.getRooms()
+        val entities = roomDao.getAllRooms()
         return entities.map(::mapEntityToRoom)
     }
 
@@ -135,7 +135,7 @@ class RoomsDataSourceImpl(
     }
 
     private suspend fun getTimetablesFromCache(): List<RoomTimetable> {
-        val roomEntities = roomDao.getRooms()
+        val roomEntities = roomDao.getAllRooms()
         val roomClassEntities = roomClassDao.getAllRoomsClasses()
         val groupedRoomClassEntities = roomClassEntities.groupBy { it.roomId }
         val roomWithClassesEntities = roomEntities.associateWith { roomEntity ->

@@ -4,9 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
-import com.ubb.fmi.orar.data.database.model.StudyLineClassEntity
 
 @Dao
 interface StudyLineDao {

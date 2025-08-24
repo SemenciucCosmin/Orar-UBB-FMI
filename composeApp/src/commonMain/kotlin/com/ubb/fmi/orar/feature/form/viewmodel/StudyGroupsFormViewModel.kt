@@ -48,16 +48,13 @@ class StudyGroupsFormViewModel(
             val studyYear = configuration.studyLineYearId?.let(StudyYear::getById)
             val studyLineId = configuration.studyLineBaseId + studyYear?.notation
 
-            val timetablesResource = studyLineaDataSource.getTimetables(
+            val timetablesResource = studyLineaDataSource.getStudyGroupsIds(
                 year = configuration.year,
-                semesterId = configuration.semesterId
+                semesterId = configuration.semesterId,
+                studyLineId = studyLineId,
             )
 
-            val studyGroupsIds = timetablesResource.payload?.firstOrNull { studyLineTimetable ->
-                studyLineTimetable.studyLine.id == studyLineId
-            }?.classes?.map { it.groupId }?.distinct()
-
-            val studyGroups = studyGroupsIds?.map { studyGroupsId ->
+            val studyGroups = timetablesResource.payload?.map { studyGroupsId ->
                 GroupType.entries.map { groupType ->
                     StudyGroupsFromUiState.Group(
                         id = studyGroupsId,

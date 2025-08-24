@@ -12,7 +12,9 @@ import com.ubb.fmi.orar.data.studyline.model.StudyLineTimetable
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
+import com.ubb.fmi.orar.domain.extensions.SLASH
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import com.ubb.fmi.orar.domain.htmlparser.model.Table
 import com.ubb.fmi.orar.network.model.Resource
 import com.ubb.fmi.orar.network.model.Status
 import com.ubb.fmi.orar.network.model.isError
@@ -37,7 +39,8 @@ class StudyLineDataSourceImpl(
         return when {
             cachedStudyLines.isNotEmpty() -> {
                 println("TESTMESSAGE StudyLine: from cache")
-                Resource(cachedStudyLines, Status.Success)
+                val orderedStudyLines = cachedStudyLines.sortedBy { it.name }
+                Resource(orderedStudyLines, Status.Success)
             }
 
             else -> {
@@ -48,7 +51,8 @@ class StudyLineDataSourceImpl(
                     studyLineDao.insertStudyLine(studyLinesEntity)
                 }
 
-                apiStudyLinesResource
+                val orderedStudyLines = apiStudyLinesResource.payload?.sortedBy { it.name }
+                Resource(orderedStudyLines, apiStudyLinesResource.status)
             }
         }
     }
@@ -58,12 +62,9 @@ class StudyLineDataSourceImpl(
         semesterId: String,
         studyLineId: String
     ): Resource<List<String>> {
-        val timetablesResource = getTimetables(year, semesterId)
-        val groupIds = timetablesResource.payload?.firstOrNull { (studyLine, _) ->
-            studyLine.id == studyLineId
-        }?.classes?.map { it.groupId }?.distinct()
-
-        return Resource(groupIds, timetablesResource.status)
+        val timetableResource = getTimetable(year, semesterId, studyLineId)
+        val groupIds = timetableResource.payload?.classes?.map { it.groupId }?.distinct()
+        return Resource(groupIds, timetableResource.status)
     }
 
     override suspend fun getTimetables(
@@ -97,9 +98,51 @@ class StudyLineDataSourceImpl(
         }
     }
 
+    override suspend fun getTimetable(
+        year: Int,
+        semesterId: String,
+        studyLineId: String
+    ): Resource<StudyLineTimetable> {
+        val studyLine = getStudyLines(year, semesterId).payload?.firstOrNull { it.id == studyLineId }
+        val cachedTimetable = studyLine?.let { getTimetableFromCache(studyLine) }
+
+        return when {
+            cachedTimetable?.classes?.isNotEmpty() == true -> {
+                println("TESTMESSAGE StudyLine Timetable: from cache")
+                Resource(cachedTimetable, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE StudyLine Timetable: from API")
+                if (studyLine == null) return Resource(null, Status.Error)
+                val apiTimetableResource = getStudyLineTimetableFromApi(year, semesterId, studyLine)
+                apiTimetableResource.payload?.let { timetable ->
+                    val studyLineEntity = mapStudyLineToEntity(timetable.studyLine)
+                    val classesEntities = mapClassesToEntities(
+                        studyLineId = timetable.studyLine.id,
+                        classes = timetable.classes
+                    )
+
+                    studyLineDao.insertStudyLine(studyLineEntity)
+                    classesEntities.forEach { studyLineClassDao.insertStudyLineClass(it) }
+                }
+
+                apiTimetableResource
+            }
+        }
+    }
+
     private suspend fun getStudyLinesFromCache(): List<StudyLine> {
         val entities = studyLineDao.getAllStudyLines()
         return entities.map(::mapEntityToStudyLine)
+    }
+
+    private suspend fun getTimetableFromCache(studyLine: StudyLine): StudyLineTimetable {
+        val studyLineClassEntities = studyLineClassDao.getStudyLineClasses(studyLine.id)
+        return StudyLineTimetable(
+            studyLine = studyLine,
+            classes = mapEntitiesToClasses(studyLineClassEntities),
+        )
     }
 
     private suspend fun getTimetablesFromCache(): List<StudyLineTimetable> {
@@ -155,9 +198,17 @@ class StudyLineDataSourceImpl(
 
         val studyLineHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
         val studyLineTables = HtmlParser.extractTables(studyLineHtml)
+        val joinedStudyLineTables = studyLineTables.map { studyLineTable ->
+            studyLineTable.copy(title = studyLineTable.title.substringBefore(String.SLASH))
+        }.groupBy { it.title }.map { (groupId, tables) ->
+            Table(
+                title = groupId,
+                rows = tables.flatMap { it.rows }.distinct()
+            )
+        }
 
-        val rowsCount = studyLineTables.sumOf { table -> table.rows.size }
-        val studyLineClasses = studyLineTables.map { studyLineTable ->
+        val rowsCount = joinedStudyLineTables.sumOf { table -> table.rows.size }
+        val studyLineClasses = joinedStudyLineTables.map { studyLineTable ->
             studyLineTable.rows.mapNotNull { row ->
                 val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
                 val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
@@ -174,10 +225,16 @@ class StudyLineDataSourceImpl(
                     PARTICIPANT_INDEX
                 ) ?: return@mapNotNull null
 
+                val groupId = studyLineTable.title
+                val participantSemigroupId = participantCell.value.apply {
+                    replace(groupId, String.BLANK)
+                    replace(String.SLASH, String.BLANK)
+                }
+
                 val participantId = when {
-                    participantCell.value.contains(SEMIGROUP_1_ID) -> SEMIGROUP_1_ID
-                    participantCell.value.contains(SEMIGROUP_2_ID) -> SEMIGROUP_2_ID
-                    participantCell.value.all { it.isDigit() } -> WHOLE_GROUP_ID
+                    participantSemigroupId == SEMIGROUP_1 -> SEMIGROUP_1_ID
+                    participantSemigroupId == SEMIGROUP_2 -> SEMIGROUP_2_ID
+                    participantCell.value == groupId -> WHOLE_GROUP_ID
                     else -> WHOLE_YEAR_ID
                 }
 
@@ -194,7 +251,7 @@ class StudyLineDataSourceImpl(
 
                 StudyLineClass(
                     id = id,
-                    groupId = studyLineTable.title,
+                    groupId = groupId,
                     day = dayCell.value,
                     startHour = "$startHour:00",
                     endHour = "$endHour:00",
@@ -356,6 +413,8 @@ class StudyLineDataSourceImpl(
         private const val TEACHER_INDEX = 7
 
         // ParticipantIds
+        private const val SEMIGROUP_1 = "1"
+        private const val SEMIGROUP_2 = "2"
         private const val SEMIGROUP_1_ID = "/1"
         private const val SEMIGROUP_2_ID = "/2"
         private const val WHOLE_GROUP_ID = "whole_group"
