@@ -6,14 +6,16 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.ubb.fmi.orar.data.database.model.RoomClassEntity
-import com.ubb.fmi.orar.data.database.model.RoomEntity
-import com.ubb.fmi.orar.data.rooms.model.RoomClass
+import com.ubb.fmi.orar.data.database.model.SubjectClassEntity
 
 @Dao
 interface RoomClassDao {
-    @Transaction
+
     @Query("SELECT * FROM room_classes")
-    suspend fun getRoomsClasses(): List<RoomClassEntity>
+    suspend fun getAllRoomsClasses(): List<RoomClassEntity>
+
+    @Query("SELECT * FROM room_classes WHERE roomId LIKE :roomId")
+    suspend fun getRoomClasses(roomId: String): List<RoomClassEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoomClass(roomClassEntity: RoomClassEntity)

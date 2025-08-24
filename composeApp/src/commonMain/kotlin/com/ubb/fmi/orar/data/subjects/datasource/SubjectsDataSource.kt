@@ -21,6 +21,4 @@ interface SubjectsDataSource {
         semesterId: String,
         subjectId: String
     ): Resource<SubjectTimetable>
-
-
 }

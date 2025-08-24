@@ -87,14 +87,56 @@ class RoomsDataSourceImpl(
         }
     }
 
+    override suspend fun getTimetable(
+        year: Int,
+        semesterId: String,
+        roomId: String
+    ): Resource<RoomTimetable> {
+        val room = getRooms(year, semesterId).payload?.firstOrNull { it.id == roomId }
+        val cachedTimetable = room?.let { getTimetableFromCache(room) }
+
+        return when {
+            cachedTimetable?.classes?.isNotEmpty() == true -> {
+                println("TESTMESSAGE Room Timetable: from cache")
+                Resource(cachedTimetable, Status.Success)
+            }
+
+            else -> {
+                println("TESTMESSAGE Room Timetable: from API")
+                if (room == null) return Resource(null, Status.Error)
+                val apiTimetableResource = getRoomTimetableFromApi(year, semesterId, room)
+                apiTimetableResource.payload?.let { timetable ->
+                    val roomEntity = mapRoomToEntity(timetable.room)
+                    val classesEntities = mapClassesToEntities(
+                        roomId = timetable.room.id,
+                        classes = timetable.classes
+                    )
+
+                    roomDao.insertRoom(roomEntity)
+                    classesEntities.forEach { roomClassDao.insertRoomClass(it) }
+                }
+
+                apiTimetableResource
+            }
+        }
+    }
+
     private suspend fun getRoomsFromCache(): List<Room> {
         val entities = roomDao.getRooms()
         return entities.map(::mapEntityToRoom)
     }
 
+    private suspend fun getTimetableFromCache(room: Room): RoomTimetable {
+        val roomClassEntities = roomClassDao.getRoomClasses(room.id)
+        return RoomTimetable(
+            room = room,
+            classes = mapEntitiesToClasses(roomClassEntities),
+        )
+    }
+
     private suspend fun getTimetablesFromCache(): List<RoomTimetable> {
         val roomEntities = roomDao.getRooms()
-        val roomClassEntities = roomClassDao.getRoomsClasses()
+        val roomClassEntities = roomClassDao.getAllRoomsClasses()
         val groupedRoomClassEntities = roomClassEntities.groupBy { it.roomId }
         val roomWithClassesEntities = roomEntities.associateWith { roomEntity ->
             groupedRoomClassEntities[roomEntity.id].orEmpty()
