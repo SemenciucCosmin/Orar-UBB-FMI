@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 
 @Composable
-fun MainTimetableRoute(navController: NavController) {
+fun HomeRoute(navController: NavController) {
     Scaffold(
         bottomBar = { TimetableBottomBar(navController) }
     ) { paddingValues ->

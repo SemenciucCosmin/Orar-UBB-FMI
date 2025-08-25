@@ -34,19 +34,21 @@ fun TeacherTimetableScreen(
 ) {
     Scaffold(
         topBar = {
-            TimetableTopBar(
-                onBack = onBack,
-                selectedFrequency = uiState.selectedFrequency,
-                onFrequencyClick = onFrequencyClick,
-                title = when {
-                    uiState.teacher == null -> String.BLANK
+            if (!uiState.isLoading && !uiState.isError) {
+                TimetableTopBar(
+                    onBack = onBack,
+                    selectedFrequency = uiState.selectedFrequency,
+                    onFrequencyClick = onFrequencyClick,
+                    title = when {
+                        uiState.teacher == null -> String.BLANK
 
-                    else -> {
-                        val title = TeacherTitle.getById(uiState.teacher.titleId)
-                        "${title.label} ${uiState.teacher.name}"
+                        else -> {
+                            val title = TeacherTitle.getById(uiState.teacher.titleId)
+                            "${title.label} ${uiState.teacher.name}"
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) { paddingValues ->
         when {

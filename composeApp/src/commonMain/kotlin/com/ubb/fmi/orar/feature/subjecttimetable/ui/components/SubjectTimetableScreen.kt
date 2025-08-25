@@ -33,12 +33,14 @@ fun SubjectTimetableScreen(
 ) {
     Scaffold(
         topBar = {
-            TimetableTopBar(
-                onBack = onBack,
-                selectedFrequency = uiState.selectedFrequency,
-                onFrequencyClick = onFrequencyClick,
-                title = uiState.subject?.name ?: String.BLANK
-            )
+            if (!uiState.isLoading && !uiState.isError) {
+                TimetableTopBar(
+                    onBack = onBack,
+                    selectedFrequency = uiState.selectedFrequency,
+                    onFrequencyClick = onFrequencyClick,
+                    title = uiState.subject?.name ?: String.BLANK
+                )
+            }
         }
     ) { paddingValues ->
         when {

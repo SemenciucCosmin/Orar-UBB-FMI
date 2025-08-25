@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.roomtimetable.ui.components
+package com.ubb.fmi.orar.feature.studylinetimetable.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,10 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.data.core.model.Frequency
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel.model.RoomTimetableUiState
-import com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel.model.RoomTimetableUiState.Companion.timetableItems
-import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.model.SubjectTimetableUiState
-import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.model.SubjectTimetableUiState.Companion.timetableItems
+import com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel.model.StudyLineTimetableUiState
+import com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel.model.StudyLineTimetableUiState.Companion.timetableItems
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableListDivider
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableListItem
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableTopBar
@@ -27,8 +25,8 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoomTimetableScreen(
-    uiState: RoomTimetableUiState,
+fun StudyLineTimetableScreen(
+    uiState: StudyLineTimetableUiState,
     onFrequencyClick: (Frequency) -> Unit,
     onRetryClick: () -> Unit,
     onBack: () -> Unit,
@@ -40,7 +38,7 @@ fun RoomTimetableScreen(
                     onBack = onBack,
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = onFrequencyClick,
-                    title = uiState.room?.name ?: String.BLANK
+                    title = uiState.studyLine?.name ?: String.BLANK
                 )
             }
         }
@@ -54,7 +52,7 @@ fun RoomTimetableScreen(
                 )
             }
 
-            uiState.isError || uiState.room == null -> {
+            uiState.isError || uiState.studyLine == null -> {
                 FailureState(
                     onRetry = onRetryClick,
                     modifier = Modifier
