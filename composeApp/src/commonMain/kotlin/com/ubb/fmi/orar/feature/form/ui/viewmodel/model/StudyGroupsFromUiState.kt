@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.form.viewmodel.model
+package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.core.model.GroupType
 

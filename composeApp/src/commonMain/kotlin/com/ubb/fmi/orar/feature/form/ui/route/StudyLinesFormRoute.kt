@@ -5,8 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.StudyLinesFormScreen
-import com.ubb.fmi.orar.feature.form.viewmodel.StudyLinesFormViewModel
-import com.ubb.fmi.orar.feature.form.viewmodel.model.StudyLinesFormUiState
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel
@@ -20,6 +20,7 @@ fun StudyLinesRoute(navController: NavController) {
         uiState = uiState,
         onStudyLineClick = viewModel::selectStudyLineBaseId,
         onStudyYearClick = viewModel::selectStudyYear,
+        onSelectFilter = viewModel::selectDegreeFilter,
         onNextClick = viewModel::finishSelection,
         onRetryClick = viewModel::retry
     )

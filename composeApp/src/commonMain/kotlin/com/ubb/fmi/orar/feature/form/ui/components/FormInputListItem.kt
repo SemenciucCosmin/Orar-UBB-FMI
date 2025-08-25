@@ -14,7 +14,7 @@ import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun <T> FormInput(
+fun <T> FormInputListItem(
     title: String,
     items: List<FormInputItem<T>>,
     selectedItemId: T?,
@@ -49,7 +49,7 @@ fun <T> FormInput(
 @Composable
 private fun PreviewFormInput() {
     OrarUbbFmiTheme {
-        FormInput(
+        FormInputListItem(
             title = "Title",
             selectedItemId = 1,
             onItemClick = {},

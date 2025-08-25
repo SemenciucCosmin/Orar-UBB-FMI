@@ -1,9 +1,9 @@
-package com.ubb.fmi.orar.feature.form.viewmodel
+package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.core.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.feature.form.viewmodel.model.OnboardingFormUiState
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,15 +40,7 @@ class OnboardingFormViewModel(
     }
 
     fun selectUserType(userTypeId: String) {
-        _uiState.update { it.copy(selectedUserTypeId = userTypeId, selectedDegreeId = null) }
-    }
-
-    fun selectDegree(degreeId: String) {
-        _uiState.update { it.copy(selectedDegreeId = degreeId) }
-    }
-
-    fun selectTeacherTitle(teacherTitleId: String) {
-        _uiState.update { it.copy(selectedTeacherTitleId = teacherTitleId) }
+        _uiState.update { it.copy(selectedUserTypeId = userTypeId) }
     }
 
     fun finishOnboarding() {
@@ -56,15 +48,14 @@ class OnboardingFormViewModel(
             _uiState.value.selectedStudyYear?.let { timetablePreferences.setYear(it) }
             _uiState.value.selectedSemesterId?.let { timetablePreferences.setSemester(it) }
             _uiState.value.selectedUserTypeId?.let { timetablePreferences.setUserType(it) }
-            _uiState.value.selectedDegreeId?.let { timetablePreferences.setDegreeId(it) }
 
             when (_uiState.value.selectedUserTypeId) {
                 UserType.STUDENT.id -> registerEvent(
-                    event = OnboardingFormUiState.OnboardingFormEvent.FORM_STUDENT_COMPLETED
+                    event = OnboardingFormUiState.OnboardingFormEvent.STUDENT_COMPLETED
                 )
 
                 else -> registerEvent(
-                    event = OnboardingFormUiState.OnboardingFormEvent.FORM_TEACHER_COMPLETED
+                    event = OnboardingFormUiState.OnboardingFormEvent.TEACHER_COMPLETED
                 )
             }
         }

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.form.ui.route.OnboardingFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.StudyGroupsRoute
 import com.ubb.fmi.orar.feature.form.ui.route.StudyLinesRoute
@@ -22,8 +21,7 @@ fun ConfigurationFormGraph(navController: NavHostController) {
         }
 
         composable<ConfigurationFormNavDestination.TeachersForm> { navBackStackEntry ->
-            val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.TeachersForm>()
-            TeachersFormRoute(teacherTitleId = args.teacherTitleId)
+            TeachersFormRoute()
         }
 
         composable<ConfigurationFormNavDestination.StudyLinesForm> { navBackStackEntry ->

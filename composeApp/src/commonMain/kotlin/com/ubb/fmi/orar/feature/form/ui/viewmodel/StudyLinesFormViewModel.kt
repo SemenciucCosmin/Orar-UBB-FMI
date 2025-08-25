@@ -1,10 +1,11 @@
-package com.ubb.fmi.orar.feature.form.viewmodel
+package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
-import com.ubb.fmi.orar.feature.form.viewmodel.model.StudyLinesFormUiState
-import com.ubb.fmi.orar.network.model.Resource
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
+import com.ubb.fmi.orar.feature.studyLines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.network.model.isError
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,15 +49,13 @@ class StudyLinesFormViewModel(
                 semesterId = configuration.semesterId
             )
 
-            val filteredStudyLines = studyLinesResource.payload?.filter { studyLine ->
-                studyLine.degreeId == configuration.degreeId
-            }
-
-            emit(Resource(filteredStudyLines, studyLinesResource.status))
+            emit(studyLinesResource)
         }.collectLatest { studyLinesResource ->
             val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
                 studyLine.baseId
-            }?.values?.toList() ?: emptyList()
+            }?.values?.toList()?.map { studyLines ->
+                studyLines.sortedBy { it.studyYearId }
+            } ?: emptyList()
 
             _uiState.update {
                 it.copy(
@@ -81,6 +80,17 @@ class StudyLinesFormViewModel(
         _uiState.update { it.copy(selectedStudyYearId = studyYear) }
     }
 
+
+    fun selectDegreeFilter(degreeFilter: DegreeFilter) {
+        _uiState.update {
+            it.copy(
+                selectedFilter = degreeFilter,
+                selectedStudyLineBaseId = null,
+                selectedStudyYearId = null,
+            )
+        }
+    }
+
     fun retry() {
         job.cancel()
         job = getStudyLines()
@@ -90,10 +100,14 @@ class StudyLinesFormViewModel(
         viewModelScope.launch {
             val studyLineBaseId = _uiState.value.selectedStudyLineBaseId
             val studyYearId = _uiState.value.selectedStudyYearId
+            val selectedStudyLine = _uiState.value.filteredGroupedStudyLines
+                .flatten()
+                .firstOrNull { it.baseId == studyLineBaseId && it.studyYearId == studyYearId }
 
-            if (studyLineBaseId != null && studyYearId != null) {
-                timetablePreferences.setStudyLineBaseId(studyLineBaseId)
-                timetablePreferences.setStudyLineYearId(studyYearId)
+            if (selectedStudyLine != null) {
+                timetablePreferences.setStudyLineBaseId(selectedStudyLine.baseId)
+                timetablePreferences.setStudyLineYearId(selectedStudyLine.studyYearId)
+                timetablePreferences.setDegreeId(selectedStudyLine.degreeId)
                 registerEvent(StudyLinesFormUiState.StudyLinesFormEvent.SELECTION_DONE)
             }
         }

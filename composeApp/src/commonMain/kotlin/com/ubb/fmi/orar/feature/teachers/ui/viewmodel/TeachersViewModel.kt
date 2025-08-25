@@ -22,7 +22,6 @@ class TeachersViewModel(
     private val timetablePreferences: TimetablePreferences
 ) : ViewModel() {
 
-    private var job: Job
     private val _uiState = MutableStateFlow(TeachersUiState())
     val uiState = _uiState.asStateFlow()
         .stateIn(
@@ -33,7 +32,7 @@ class TeachersViewModel(
 
 
     init {
-        job = getTeachers()
+        getTeachers()
     }
 
     fun selectTeacherTitleFilter(teacherTitleFilter: TeacherTitleFilter) {
@@ -43,15 +42,10 @@ class TeachersViewModel(
     }
 
     private fun getTeachers() = viewModelScope.launch {
-        _uiState.update {
-            it.copy(
-                isLoading = true,
-                isError = false
-            )
-        }
+        _uiState.update { it.copy(isLoading = true, isError = false) }
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val teacherResource = teachersDataSource.getTeachers(
+        val teachersResource = teachersDataSource.getTeachers(
             year = configuration?.year ?: return@launch,
             semesterId = configuration.semesterId
         )
@@ -59,14 +53,13 @@ class TeachersViewModel(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                isError = teacherResource.status.isError(),
-                teachers = teacherResource.payload ?: emptyList()
+                isError = teachersResource.status.isError(),
+                teachers = teachersResource.payload ?: emptyList()
             )
         }
     }
 
     fun retry() {
-        job.cancel()
-        job = getTeachers()
+        getTeachers()
     }
 }

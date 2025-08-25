@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ubb.fmi.orar.feature.form.ui.components.StudyGroupsFormScreen
-import com.ubb.fmi.orar.feature.form.viewmodel.StudyGroupsFormViewModel
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyGroupsFormViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

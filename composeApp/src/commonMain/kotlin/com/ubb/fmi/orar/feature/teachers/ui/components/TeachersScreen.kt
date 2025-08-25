@@ -51,11 +51,7 @@ fun TeachersScreen(
             }
 
             else -> {
-                Column(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(paddingValues)
-                ) {
+                Column(modifier = Modifier.padding(paddingValues)) {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)

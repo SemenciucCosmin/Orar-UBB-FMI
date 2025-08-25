@@ -1,9 +1,9 @@
 package com.ubb.fmi.orar.feature.form.di
 
-import com.ubb.fmi.orar.feature.form.viewmodel.OnboardingFormViewModel
-import com.ubb.fmi.orar.feature.form.viewmodel.StudyGroupsFormViewModel
-import com.ubb.fmi.orar.feature.form.viewmodel.StudyLinesFormViewModel
-import com.ubb.fmi.orar.feature.form.viewmodel.TeachersFormViewModel
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.OnboardingFormViewModel
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyGroupsFormViewModel
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.TeachersFormViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 

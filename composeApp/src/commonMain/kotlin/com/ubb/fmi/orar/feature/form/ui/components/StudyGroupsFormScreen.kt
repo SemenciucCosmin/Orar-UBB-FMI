@@ -16,8 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.feature.form.viewmodel.model.StudyGroupsFromUiState
-import com.ubb.fmi.orar.feature.form.viewmodel.model.isNextEnabled
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyGroupsFromUiState
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
