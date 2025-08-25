@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -76,6 +77,7 @@ fun <T> FormListItem(
 
                 if (isSelected) {
                     Icon(
+                        modifier = Modifier.size(24.dp),
                         painter = painterResource(Res.drawable.ic_check),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary

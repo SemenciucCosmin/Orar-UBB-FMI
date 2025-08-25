@@ -1,15 +1,18 @@
 package com.ubb.fmi.orar.feature.usertimetable.ui.components
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.components.TimetableFrequencyTab
 import orar_ubb_fmi.composeapp.generated.resources.Res
-import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
+import orar_ubb_fmi.composeapp.generated.resources.ic_edit
+import orar_ubb_fmi.composeapp.generated.resources.ic_settings
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +29,8 @@ fun UserTimetableTopBar(
         navigationIcon = {
             IconButton(onClick = onSettingsClick) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_left_arrow),
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(Res.drawable.ic_settings),
                     contentDescription = null,
                 )
             }
@@ -34,7 +38,8 @@ fun UserTimetableTopBar(
         title = {
             IconButton(onClick = onEditClick) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_left_arrow),
+                    modifier = Modifier.size(32.dp),
+                    painter = painterResource(Res.drawable.ic_edit),
                     contentDescription = null,
                 )
             }

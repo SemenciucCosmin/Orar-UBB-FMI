@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.timetable.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +33,7 @@ fun TimetableTopBar(
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(
+                    modifier = Modifier.size(32.dp),
                     painter = painterResource(Res.drawable.ic_left_arrow),
                     contentDescription = null,
                 )

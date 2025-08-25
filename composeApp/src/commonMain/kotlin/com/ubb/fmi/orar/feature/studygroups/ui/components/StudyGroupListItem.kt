@@ -41,7 +41,8 @@ fun StudyGroupListItem(
 
             Text(
                 text = label,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
             )
 
             Icon(
