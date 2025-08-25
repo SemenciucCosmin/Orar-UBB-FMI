@@ -3,14 +3,12 @@ package com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.core.model.Frequency
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
-import com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel.model.TeacherTimetableUiState
+import com.ubb.fmi.orar.domain.teachers.usecase.GetTeacherTimetableUseCase
+import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.network.model.isError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,11 +16,10 @@ import kotlin.time.Duration.Companion.seconds
 
 class TeacherTimetableViewModel(
     private val teacherId: String,
-    private val teachersDataSource: TeachersDataSource,
-    private val timetablePreferences: TimetablePreferences
+    private val getTeacherTimetableUseCase: GetTeacherTimetableUseCase,
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(TeacherTimetableUiState())
+    private val _uiState = MutableStateFlow(TimetableUiState())
     val uiState = _uiState.asStateFlow()
         .stateIn(
             scope = viewModelScope,
@@ -37,25 +34,12 @@ class TeacherTimetableViewModel(
     private fun loadTimetable() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, isError = false) }
-
-            val configuration = timetablePreferences.getConfiguration().firstOrNull()
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, isError = true) }
-                return@launch
-            }
-
-            val timetableResource = teachersDataSource.getTimetable(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-                teacherId = teacherId
-            )
-
+            val timetableResource = getTeacherTimetableUseCase(teacherId)
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     isError = timetableResource.status.isError(),
-                    classes = timetableResource.payload?.classes ?: emptyList(),
-                    teacher = timetableResource.payload?.teacher
+                    timetable = timetableResource.payload,
                 )
             }
         }

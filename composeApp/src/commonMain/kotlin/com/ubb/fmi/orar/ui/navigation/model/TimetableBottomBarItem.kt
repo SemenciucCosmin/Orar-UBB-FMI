@@ -17,7 +17,7 @@ enum class TimetableBottomBarItem(
     HOME(
         label = "Home",
         icon = Res.drawable.ic_home,
-        destination = TimetableNavDestination.Home,
+        destination = TimetableNavDestination.HomeTimetable,
     ),
     STUDENTS(
         label = "Studenti",

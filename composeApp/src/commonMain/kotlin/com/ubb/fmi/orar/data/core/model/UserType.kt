@@ -9,4 +9,10 @@ enum class UserType(val id: String, val label: String) {
         id = "teacher",
         label = "Profesor"
     );
+
+    companion object {
+        fun getById(id: String): UserType {
+            return entries.firstOrNull { it.id == id } ?: STUDENT
+        }
+    }
 }

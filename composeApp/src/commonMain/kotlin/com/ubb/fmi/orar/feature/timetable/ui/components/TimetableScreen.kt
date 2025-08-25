@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.roomtimetable.ui.components
+package com.ubb.fmi.orar.feature.timetable.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,34 +13,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.data.core.model.Frequency
-import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel.model.RoomTimetableUiState
-import com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel.model.RoomTimetableUiState.Companion.timetableItems
-import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.model.SubjectTimetableUiState
-import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.model.SubjectTimetableUiState.Companion.timetableItems
-import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableListDivider
-import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableListItem
-import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableTopBar
-import com.ubb.fmi.orar.feature.timetable.ui.model.TimetableItem
+import com.ubb.fmi.orar.feature.timetable.ui.model.TimetableListItem
+import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
+import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState.Companion.timetableListItems
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoomTimetableScreen(
-    uiState: RoomTimetableUiState,
+fun TimetableScreen(
+    uiState: TimetableUiState,
     onFrequencyClick: (Frequency) -> Unit,
     onRetryClick: () -> Unit,
     onBack: () -> Unit,
 ) {
     Scaffold(
         topBar = {
-            if (!uiState.isLoading && !uiState.isError) {
+            uiState.timetable?.let { timetable ->
                 TimetableTopBar(
-                    onBack = onBack,
+                    title = timetable.title,
+                    subtitle = timetable.subtitle,
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = onFrequencyClick,
-                    title = uiState.room?.name ?: String.BLANK
+                    onBack = onBack
                 )
             }
         }
@@ -54,7 +49,7 @@ fun RoomTimetableScreen(
                 )
             }
 
-            uiState.isError || uiState.room == null -> {
+            uiState.isError || uiState.timetable == null -> {
                 FailureState(
                     onRetry = onRetryClick,
                     modifier = Modifier
@@ -69,13 +64,13 @@ fun RoomTimetableScreen(
                         contentPadding = PaddingValues(12.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        items(uiState.timetableItems) { timetableItem ->
+                        items(uiState.timetableListItems) { timetableItem ->
                             when (timetableItem) {
-                                is TimetableItem.Divider -> {
+                                is TimetableListItem.Divider -> {
                                     TimetableListDivider(text = timetableItem.day)
                                 }
 
-                                is TimetableItem.Class -> {
+                                is TimetableListItem.Class -> {
                                     TimetableListItem(
                                         startHour = timetableItem.startHour,
                                         endHour = timetableItem.endHour,

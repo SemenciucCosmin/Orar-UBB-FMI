@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.timetable.ui.route
+package com.ubb.fmi.orar.feature.hometimetable.ui.route
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 
 @Composable
-fun HomeRoute(navController: NavController) {
+fun HomeTimetableRoute(navController: NavController) {
     Scaffold(
         bottomBar = { TimetableBottomBar(navController) }
     ) { paddingValues ->

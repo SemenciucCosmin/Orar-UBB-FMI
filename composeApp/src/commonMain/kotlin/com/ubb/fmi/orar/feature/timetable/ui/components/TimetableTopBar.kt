@@ -1,13 +1,16 @@
 package com.ubb.fmi.orar.feature.timetable.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.data.core.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.components.TimetableFrequencyTab
 import orar_ubb_fmi.composeapp.generated.resources.Res
@@ -18,12 +21,13 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun TimetableTopBar(
     title: String,
+    subtitle: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     selectedFrequency: Frequency? = null,
     onFrequencyClick: (Frequency) -> Unit = {}
 ) {
-    TopAppBar(
+    MediumTopAppBar(
         modifier = modifier,
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -34,10 +38,18 @@ fun TimetableTopBar(
             }
         },
         title = {
-            Text(
-                style = MaterialTheme.typography.titleMedium,
-                text = title
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         },
         actions = {
             selectedFrequency?.let {

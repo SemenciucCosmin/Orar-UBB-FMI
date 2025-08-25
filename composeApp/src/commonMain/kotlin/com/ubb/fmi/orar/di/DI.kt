@@ -8,8 +8,13 @@ import com.ubb.fmi.orar.data.studyline.di.studyLineDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetables.di.timetablesDataModule
+import com.ubb.fmi.orar.domain.rooms.di.roomsDomainModule
+import com.ubb.fmi.orar.domain.studylines.di.studyLinesDomainModule
+import com.ubb.fmi.orar.domain.subjects.di.subjectsDomainModule
+import com.ubb.fmi.orar.domain.teachers.di.teachersDomainModule
 import com.ubb.fmi.orar.feature.app.di.appFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
+import com.ubb.fmi.orar.feature.hometimetable.di.homeTimetableFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import com.ubb.fmi.orar.feature.studygroups.di.studyGroupsFeatureModule
@@ -48,4 +53,9 @@ fun commonModule() = module {
     includes(studyLinesFeatureModule())
     includes(studyGroupsFeatureModule())
     includes(studyLineTimetableFeatureModule())
+    includes(homeTimetableFeatureModule())
+    includes(roomsDomainModule())
+    includes(studyLinesDomainModule())
+    includes(subjectsDomainModule())
+    includes(teachersDomainModule())
 }

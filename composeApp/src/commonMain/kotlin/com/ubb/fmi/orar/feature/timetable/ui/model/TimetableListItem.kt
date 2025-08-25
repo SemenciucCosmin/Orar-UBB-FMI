@@ -2,11 +2,11 @@ package com.ubb.fmi.orar.feature.timetable.ui.model
 
 import com.ubb.fmi.orar.data.core.model.ClassType
 
-sealed interface TimetableItem {
+sealed interface TimetableListItem {
 
     data class Divider(
         val day: String
-    ) : TimetableItem
+    ) : TimetableListItem
 
     data class Class(
         val startHour: String,
@@ -16,5 +16,5 @@ sealed interface TimetableItem {
         val participant: String,
         val teacher: String,
         val room: String,
-    ) : TimetableItem
+    ) : TimetableListItem
 }

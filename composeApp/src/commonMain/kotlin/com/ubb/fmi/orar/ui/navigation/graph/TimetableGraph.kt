@@ -15,7 +15,7 @@ import com.ubb.fmi.orar.feature.subjects.ui.route.SubjectsRoute
 import com.ubb.fmi.orar.feature.subjecttimetable.ui.route.SubjectTimetableRoute
 import com.ubb.fmi.orar.feature.teachers.ui.route.TeachersRoute
 import com.ubb.fmi.orar.feature.teachertimetable.ui.route.TeacherTimetableRoute
-import com.ubb.fmi.orar.feature.timetable.ui.route.HomeRoute
+import com.ubb.fmi.orar.feature.hometimetable.ui.route.HomeTimetableRoute
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 
 @Composable
@@ -26,10 +26,10 @@ fun TimetableGraph(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = TimetableNavDestination.Home,
+        startDestination = TimetableNavDestination.HomeTimetable,
     ) {
-        composable<TimetableNavDestination.Home> { navBackStackEntry ->
-            HomeRoute(navController)
+        composable<TimetableNavDestination.HomeTimetable> { navBackStackEntry ->
+            HomeTimetableRoute(navController)
         }
 
         composable<TimetableNavDestination.StudyLines> { navBackStackEntry ->
