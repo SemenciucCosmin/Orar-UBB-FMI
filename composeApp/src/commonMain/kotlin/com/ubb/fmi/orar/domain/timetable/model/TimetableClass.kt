@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.domain.timetable.model
 
-import com.ubb.fmi.orar.data.core.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
 
 data class TimetableClass(
     val id: String,

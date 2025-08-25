@@ -12,7 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.data.core.model.Frequency
+import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
 import com.ubb.fmi.orar.feature.timetable.ui.model.TimetableListItem
 import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState.Companion.timetableListItems

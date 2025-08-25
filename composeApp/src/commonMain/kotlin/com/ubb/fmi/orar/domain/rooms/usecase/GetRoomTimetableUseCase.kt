@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.domain.rooms.usecase
 
-import com.ubb.fmi.orar.data.core.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource

@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
-import com.ubb.fmi.orar.data.core.model.GroupType
+import com.ubb.fmi.orar.feature.timetable.ui.model.GroupType
 
 data class StudyGroupsFromUiState(
     val studyGroups: List<Group> = emptyList(),

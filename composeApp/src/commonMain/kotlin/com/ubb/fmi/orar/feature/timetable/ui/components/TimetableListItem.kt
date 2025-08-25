@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.data.core.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_down_arrow

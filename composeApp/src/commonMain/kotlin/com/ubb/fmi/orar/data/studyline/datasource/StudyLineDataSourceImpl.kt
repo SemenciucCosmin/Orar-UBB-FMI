@@ -1,11 +1,11 @@
 package com.ubb.fmi.orar.data.studyline.datasource
 
-import com.ubb.fmi.orar.data.core.model.Degree
 import com.ubb.fmi.orar.data.database.dao.StudyLineClassDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.database.model.StudyLineClassEntity
 import com.ubb.fmi.orar.data.studyline.api.StudyLineApi
+import com.ubb.fmi.orar.data.studyline.model.Degree
 import com.ubb.fmi.orar.data.studyline.model.StudyLine
 import com.ubb.fmi.orar.data.studyline.model.StudyLineClass
 import com.ubb.fmi.orar.data.studyline.model.StudyLineTimetable

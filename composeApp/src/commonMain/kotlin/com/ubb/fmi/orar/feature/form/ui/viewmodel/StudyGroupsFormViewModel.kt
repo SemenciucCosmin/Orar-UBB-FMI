@@ -2,8 +2,8 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.core.model.GroupType
-import com.ubb.fmi.orar.data.core.model.StudyYear
+import com.ubb.fmi.orar.feature.timetable.ui.model.GroupType
+import com.ubb.fmi.orar.domain.timetable.model.StudyYear
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyGroupsFromUiState

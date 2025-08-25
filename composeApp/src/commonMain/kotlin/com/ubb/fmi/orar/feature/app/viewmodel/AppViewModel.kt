@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.feature.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.core.model.UserType
+import com.ubb.fmi.orar.feature.timetable.ui.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.app.viewmodel.model.AppUiState
 import kotlinx.coroutines.flow.MutableStateFlow

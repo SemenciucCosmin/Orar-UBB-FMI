@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.data.core.model.GroupType
+import com.ubb.fmi.orar.feature.timetable.ui.model.GroupType
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_group
 import orar_ubb_fmi.composeapp.generated.resources.ic_right_arrow

@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.core.model.UserType
+import com.ubb.fmi.orar.feature.timetable.ui.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel

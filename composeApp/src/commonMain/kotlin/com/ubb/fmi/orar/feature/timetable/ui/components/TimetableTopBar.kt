@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.data.core.model.Frequency
+import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.components.TimetableFrequencyTab
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow

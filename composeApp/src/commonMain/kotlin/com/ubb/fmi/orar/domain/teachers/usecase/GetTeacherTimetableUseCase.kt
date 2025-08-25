@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.domain.teachers.usecase
 
-import com.ubb.fmi.orar.data.core.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.teachers.model.TeacherTitle

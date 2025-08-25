@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.core.model.Frequency
+import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
 import com.ubb.fmi.orar.domain.subjects.usecase.GetSubjectTimetableUseCase
 import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.network.model.isError

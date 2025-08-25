@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.core.model
+package com.ubb.fmi.orar.feature.timetable.ui.model
 
 enum class GroupType (
     val id: String,
@@ -15,7 +15,7 @@ enum class GroupType (
 
     companion object {
         fun getById(id: String): GroupType {
-            return GroupType.entries.firstOrNull { it.id == id } ?: SEMIGROUP_1
+            return entries.firstOrNull { it.id == id } ?: SEMIGROUP_1
         }
     }
 }

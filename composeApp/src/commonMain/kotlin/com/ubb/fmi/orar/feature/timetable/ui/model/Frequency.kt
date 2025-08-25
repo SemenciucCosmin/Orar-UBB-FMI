@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.core.model
+package com.ubb.fmi.orar.feature.timetable.ui.model
 
 enum class Frequency(
     val id: String,

@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.core.model
+package com.ubb.fmi.orar.domain.timetable.model
 
 import androidx.compose.ui.graphics.Color
 import orar_ubb_fmi.composeapp.generated.resources.Res
