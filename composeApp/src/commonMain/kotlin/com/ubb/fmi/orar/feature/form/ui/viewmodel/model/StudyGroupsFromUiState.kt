@@ -1,18 +1,11 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
-import com.ubb.fmi.orar.feature.timetable.ui.model.GroupType
-
 data class StudyGroupsFromUiState(
-    val studyGroups: List<Group> = emptyList(),
-    val selectedStudyGroup: Group? = null,
+    val studyGroups: List<String> = emptyList(),
+    val selectedStudyGroupId: String? = null,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
-) {
-    data class Group (
-        val id: String,
-        val type: GroupType
-    )
-}
+)
 
 val StudyGroupsFromUiState.isNextEnabled: Boolean
-    get() = selectedStudyGroup != null
+    get() = selectedStudyGroupId != null

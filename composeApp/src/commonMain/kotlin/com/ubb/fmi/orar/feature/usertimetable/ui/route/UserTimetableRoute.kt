@@ -1,34 +1,31 @@
-package com.ubb.fmi.orar.feature.roomtimetable.ui.route
+package com.ubb.fmi.orar.feature.usertimetable.ui.route
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel.RoomTimetableViewModel
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableScreen
-import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableTopBar
+import com.ubb.fmi.orar.feature.usertimetable.ui.components.UserTimetableTopBar
+import com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel.UserTimetableViewModel
+import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
-fun RoomTimetableRoute(
-    navController: NavController,
-    roomId: String,
-) {
-    val viewModel: RoomTimetableViewModel = koinViewModel(parameters = { parametersOf(roomId) })
+fun UserTimetableRoute(navController: NavController) {
+    val viewModel: UserTimetableViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     TimetableScreen(
         uiState = uiState,
         onRetryClick = viewModel::retry,
+        bottomBar = { TimetableBottomBar(navController) },
         topBar = {
             uiState.timetable?.let { timetable ->
-                TimetableTopBar(
-                    title = timetable.title,
-                    subtitle = timetable.subtitle,
+                UserTimetableTopBar(
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = viewModel::selectFrequency,
-                    onBack = navController::navigateUp
+                    onSettingsClick = {},
+                    onEditClick = {}
                 )
             }
         }

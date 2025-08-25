@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.feature.timetable.ui.model
 
-import com.ubb.fmi.orar.domain.timetable.model.ClassType
+import com.ubb.fmi.orar.domain.usertimetable.model.ClassType
 
 sealed interface TimetableListItem {
 

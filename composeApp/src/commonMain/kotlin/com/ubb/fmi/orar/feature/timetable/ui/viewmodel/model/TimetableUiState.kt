@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model
 
 import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
-import com.ubb.fmi.orar.domain.timetable.model.Timetable
+import com.ubb.fmi.orar.domain.usertimetable.model.Timetable
 import com.ubb.fmi.orar.feature.timetable.ui.model.TimetableListItem
 
 data class TimetableUiState(

@@ -2,7 +2,6 @@ package com.ubb.fmi.orar.feature.studygroups.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.feature.timetable.ui.model.GroupType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.feature.studygroups.ui.viewmodel.model.StudyGroupsUiState
@@ -46,20 +45,11 @@ class StudyGroupsViewModel(
             studyLineId = studyLineId,
         )
 
-        val studyGroups = studyGroupsResource.payload?.map { studyGroupsId ->
-            GroupType.entries.map { groupType ->
-                StudyGroupsUiState.Group(
-                    id = studyGroupsId,
-                    type = groupType
-                )
-            }
-        }?.flatten() ?: emptyList()
-
         _uiState.update {
             it.copy(
                 isLoading = false,
                 isError = studyGroupsResource.status.isError(),
-                studyGroups = studyGroups
+                studyGroups = studyGroupsResource.payload  ?: emptyList()
             )
         }
     }

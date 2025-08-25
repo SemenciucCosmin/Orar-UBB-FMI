@@ -21,7 +21,5 @@ interface TimetablePreferences {
 
     suspend fun setGroupId(groupId: String)
 
-    suspend fun setGroupTypeId(groupTypeId: String)
-
     suspend fun setTeacherId(teacherId: String)
 }

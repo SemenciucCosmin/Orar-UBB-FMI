@@ -44,10 +44,7 @@ class AppViewModel(
                     val hasStudyLine = hasStudyLineBase && hasStudyLineYear
 
                     val hasStudyGroup = configuration.groupId != null
-                    val hasStudyGroupType = configuration.groupTypeId != null
-                    val hasStudyGroupInfo = hasStudyGroup && hasStudyGroupType
-
-                    val hasStudyLineInfo = hasStudyLine && hasStudyGroupInfo
+                    val hasStudyLineInfo = hasStudyLine && hasStudyGroup
 
                     val isStudent = configuration.userTypeId == UserType.STUDENT.id
                     val isTeacher = configuration.userTypeId == UserType.TEACHER.id

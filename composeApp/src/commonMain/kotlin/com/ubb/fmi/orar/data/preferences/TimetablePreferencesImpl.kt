@@ -24,7 +24,6 @@ class TimetablePreferencesImpl(
             val studyLineBaseId = preferences[STUDY_LINE_BASE_ID]
             val studyLineYearId = preferences[STUDY_LINE_YEAR_ID]
             val groupId = preferences[GROUP_ID]
-            val groupTypeId = preferences[GROUP_TYPE_ID]
             val teacherId = preferences[TEACHER_ID]
 
             TimetableConfiguration(
@@ -35,7 +34,6 @@ class TimetablePreferencesImpl(
                 studyLineBaseId = studyLineBaseId,
                 studyLineYearId = studyLineYearId,
                 groupId = groupId,
-                groupTypeId = groupTypeId,
                 teacherId = teacherId,
             )
         }
@@ -69,10 +67,6 @@ class TimetablePreferencesImpl(
         dataStore.edit { it[GROUP_ID] = groupId }
     }
 
-    override suspend fun setGroupTypeId(groupTypeId: String) {
-        dataStore.edit { it[GROUP_TYPE_ID] = groupTypeId }
-    }
-
     override suspend fun setTeacherId(teacherId: String) {
         dataStore.edit { it[TEACHER_ID] = teacherId }
     }
@@ -85,7 +79,6 @@ class TimetablePreferencesImpl(
         val STUDY_LINE_BASE_ID = stringPreferencesKey(name = "STUDY_LINE_BASE_ID")
         val STUDY_LINE_YEAR_ID = stringPreferencesKey(name = "STUDY_LINE_YEAR_ID")
         val GROUP_ID = stringPreferencesKey(name = "GROUP_ID")
-        val GROUP_TYPE_ID = stringPreferencesKey(name = "GROUP_TYPE_ID")
         val TEACHER_ID = stringPreferencesKey(name = "TEACHER_ID")
     }
 }

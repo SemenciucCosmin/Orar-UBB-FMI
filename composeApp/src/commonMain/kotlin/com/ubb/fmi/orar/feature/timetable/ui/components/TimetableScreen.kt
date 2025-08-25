@@ -12,7 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
 import com.ubb.fmi.orar.feature.timetable.ui.model.TimetableListItem
 import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState.Companion.timetableListItems
@@ -23,22 +22,13 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 @Composable
 fun TimetableScreen(
     uiState: TimetableUiState,
-    onFrequencyClick: (Frequency) -> Unit,
     onRetryClick: () -> Unit,
-    onBack: () -> Unit,
+    topBar: @Composable () -> Unit,
+    bottomBar: @Composable () -> Unit = {},
 ) {
     Scaffold(
-        topBar = {
-            uiState.timetable?.let { timetable ->
-                TimetableTopBar(
-                    title = timetable.title,
-                    subtitle = timetable.subtitle,
-                    selectedFrequency = uiState.selectedFrequency,
-                    onFrequencyClick = onFrequencyClick,
-                    onBack = onBack
-                )
-            }
-        }
+        topBar = topBar,
+        bottomBar = bottomBar
     ) { paddingValues ->
         when {
             uiState.isLoading -> {
@@ -49,7 +39,7 @@ fun TimetableScreen(
                 )
             }
 
-            uiState.isError || uiState.timetable == null -> {
+            uiState.isError -> {
                 FailureState(
                     onRetry = onRetryClick,
                     modifier = Modifier

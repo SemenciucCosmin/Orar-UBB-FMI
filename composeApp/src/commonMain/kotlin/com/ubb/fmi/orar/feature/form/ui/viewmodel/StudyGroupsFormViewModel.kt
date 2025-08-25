@@ -2,8 +2,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.feature.timetable.ui.model.GroupType
-import com.ubb.fmi.orar.domain.timetable.model.StudyYear
+import com.ubb.fmi.orar.domain.usertimetable.model.StudyYear
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyGroupsFromUiState
@@ -49,26 +48,17 @@ class StudyGroupsFormViewModel(
             studyLineId = studyLineId,
         )
 
-        val studyGroups = studyGroupsResource.payload?.map { studyGroupsId ->
-            GroupType.entries.map { groupType ->
-                StudyGroupsFromUiState.Group(
-                    id = studyGroupsId,
-                    type = groupType
-                )
-            }
-        }?.flatten() ?: emptyList()
-
         _uiState.update {
             it.copy(
                 isLoading = false,
                 isError = studyGroupsResource.status.isError(),
-                studyGroups = studyGroups,
+                studyGroups = studyGroupsResource.payload ?: emptyList(),
             )
         }
     }
 
-    fun selectStudyGroup(studyGroup: StudyGroupsFromUiState.Group) {
-        _uiState.update { it.copy(selectedStudyGroup = studyGroup) }
+    fun selectStudyGroup(studyGroupId: String) {
+        _uiState.update { it.copy(selectedStudyGroupId = studyGroupId) }
     }
 
     fun retry() {
@@ -77,9 +67,8 @@ class StudyGroupsFormViewModel(
 
     fun finishSelection() {
         viewModelScope.launch {
-            _uiState.value.selectedStudyGroup?.let { studyGroup ->
-                timetablePreferences.setGroupId(studyGroup.id)
-                timetablePreferences.setGroupTypeId(studyGroup.type.id)
+            _uiState.value.selectedStudyGroupId?.let { studyGroupId ->
+                timetablePreferences.setGroupId(studyGroupId)
             }
         }
     }

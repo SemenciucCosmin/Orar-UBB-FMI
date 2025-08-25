@@ -18,7 +18,7 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 @Composable
 fun StudyGroupsScreen(
     uiState: StudyGroupsUiState,
-    onStudyGroupClick: (StudyGroupsUiState.Group) -> Unit,
+    onStudyGroupClick: (String) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     Scaffold { paddingValues ->
@@ -48,8 +48,7 @@ fun StudyGroupsScreen(
                 ) {
                     items(uiState.studyGroups) { studyGroup ->
                         StudyGroupListItem(
-                            label = studyGroup.id,
-                            type = studyGroup.type,
+                            label = studyGroup,
                             onClick = { onStudyGroupClick(studyGroup) },
                             modifier = Modifier.fillMaxWidth()
                         )

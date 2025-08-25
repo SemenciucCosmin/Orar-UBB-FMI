@@ -1,6 +1,5 @@
 package com.ubb.fmi.orar.feature.form.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,7 +24,7 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 @Composable
 fun StudyGroupsFormScreen(
     uiState: StudyGroupsFromUiState,
-    onStudyGroupClick: (StudyGroupsFromUiState.Group) -> Unit,
+    onStudyGroupClick: (String) -> Unit,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
 ) {
@@ -58,9 +57,8 @@ fun StudyGroupsFormScreen(
                         items(uiState.studyGroups) { studyGroup ->
                             FormListItem<String>(
                                 modifier = Modifier.fillMaxWidth(),
-                                headlineLabel = studyGroup.id,
-                                underLineLabel = studyGroup.type.label,
-                                isSelected = uiState.selectedStudyGroup == studyGroup,
+                                headlineLabel = studyGroup,
+                                isSelected = uiState.selectedStudyGroupId == studyGroup,
                                 onClick = { onStudyGroupClick(studyGroup) },
                             )
                         }

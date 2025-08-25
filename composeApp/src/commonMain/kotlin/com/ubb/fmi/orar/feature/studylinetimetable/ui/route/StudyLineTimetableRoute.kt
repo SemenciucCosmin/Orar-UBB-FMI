@@ -6,6 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel.StudyLineTimetableViewModel
 import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableScreen
+import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableTopBar
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -23,8 +24,17 @@ fun StudyLineTimetableRoute(
 
     TimetableScreen(
         uiState = uiState,
-        onFrequencyClick = viewModel::selectFrequency,
         onRetryClick = viewModel::retry,
-        onBack = navController::navigateUp
+        topBar = {
+            uiState.timetable?.let { timetable ->
+                TimetableTopBar(
+                    title = timetable.title,
+                    subtitle = timetable.subtitle,
+                    selectedFrequency = uiState.selectedFrequency,
+                    onFrequencyClick = viewModel::selectFrequency,
+                    onBack = navController::navigateUp
+                )
+            }
+        }
     )
 }

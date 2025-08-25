@@ -12,9 +12,9 @@ import com.ubb.fmi.orar.domain.rooms.di.roomsDomainModule
 import com.ubb.fmi.orar.domain.studylines.di.studyLinesDomainModule
 import com.ubb.fmi.orar.domain.subjects.di.subjectsDomainModule
 import com.ubb.fmi.orar.domain.teachers.di.teachersDomainModule
+import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
 import com.ubb.fmi.orar.feature.app.di.appFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
-import com.ubb.fmi.orar.feature.hometimetable.di.homeTimetableFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import com.ubb.fmi.orar.feature.studygroups.di.studyGroupsFeatureModule
@@ -24,6 +24,7 @@ import com.ubb.fmi.orar.feature.subjects.di.subjectsFeatureModule
 import com.ubb.fmi.orar.feature.subjecttimetable.di.subjectTimetableFeatureModule
 import com.ubb.fmi.orar.feature.teachers.di.teachersFeatureModule
 import com.ubb.fmi.orar.feature.teachertimetable.di.teacherTimetableFeatureModule
+import com.ubb.fmi.orar.feature.usertimetable.di.userTimetableFeatureModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -37,7 +38,6 @@ fun commonModule() = module {
     includes(appFeatureModule())
     includes(databaseDataModule())
     includes(formFeatureModule())
-    includes(homeTimetableFeatureModule())
     includes(networkDataModule())
     includes(preferencesDataModule())
     includes(roomsDataModule())
@@ -58,4 +58,6 @@ fun commonModule() = module {
     includes(teachersFeatureModule())
     includes(teacherTimetableFeatureModule())
     includes(timetablesDataModule())
+    includes(userTimetableDomainModule())
+    includes(userTimetableFeatureModule())
 }

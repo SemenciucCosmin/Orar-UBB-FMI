@@ -1,0 +1,54 @@
+package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
+import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
+import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
+import com.ubb.fmi.orar.network.model.isError
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
+
+class UserTimetableViewModel(
+    private val getUserTimetableUseCase: GetUserTimetableUseCase,
+): ViewModel() {
+
+    private val _uiState = MutableStateFlow(TimetableUiState())
+    val uiState = _uiState.asStateFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
+            initialValue = _uiState.value
+        )
+
+    init {
+        loadTimetable()
+    }
+
+    private fun loadTimetable() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, isError = false) }
+            val timetableResource = getUserTimetableUseCase()
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    isError = timetableResource.status.isError(),
+                    timetable = timetableResource.payload,
+                )
+            }
+        }
+    }
+
+    fun selectFrequency(frequency: Frequency) {
+        _uiState.update { it.copy(selectedFrequency = frequency) }
+    }
+
+    fun retry() {
+        loadTimetable()
+    }
+}

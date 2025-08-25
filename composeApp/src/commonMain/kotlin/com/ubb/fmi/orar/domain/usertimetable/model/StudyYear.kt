@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.domain.timetable.model
+package com.ubb.fmi.orar.domain.usertimetable.model
 
 enum class StudyYear(
     val id: String,

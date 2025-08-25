@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 sealed class TimetableNavDestination() {
 
     @Serializable
-    data object HomeTimetable: TimetableNavDestination()
+    data object UserTimetable: TimetableNavDestination()
 
     @Serializable
     data object StudyLines: TimetableNavDestination()
