@@ -23,6 +23,7 @@ import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
+import com.ubb.fmi.orar.ui.catalog.components.FormListItem
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @Composable
@@ -73,9 +74,7 @@ fun TeachersFormScreen(
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(MaterialTheme.colorScheme.background)
+                        modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.filteredTeachers) { teacher ->
                             FormListItem<String>(

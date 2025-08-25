@@ -12,7 +12,7 @@ import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestinatio
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun StudyLinesRoute(navController: NavController) {
+fun StudyLinesFormRoute(navController: NavController) {
     val viewModel = koinViewModel<StudyLinesFormViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

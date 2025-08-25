@@ -22,7 +22,7 @@ enum class TimetableBottomBarItem(
     STUDENTS(
         label = "Studenti",
         icon = Res.drawable.ic_student,
-        destination = TimetableNavDestination.Students,
+        destination = TimetableNavDestination.StudyLines,
     ),
     TEACHERS(
         label = "Profesori",

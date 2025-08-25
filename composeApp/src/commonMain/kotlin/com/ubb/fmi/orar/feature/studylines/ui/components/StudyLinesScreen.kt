@@ -1,34 +1,36 @@
-package com.ubb.fmi.orar.feature.teachers.ui.components
+package com.ubb.fmi.orar.feature.studylines.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
-import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
-import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
-import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
+import com.ubb.fmi.orar.data.core.model.StudyYear
+import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
+import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
+import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
-import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 
 @Composable
-fun TeachersScreen(
-    uiState: TeachersUiState,
-    onTeacherClick: (String) -> Unit,
-    onSelectFilter: (TeacherTitleFilter) -> Unit,
+fun StudyLinesScreen(
+    uiState: StudyLinesUiState,
+    onStudyLineClick: (String) -> Unit,
+    onStudyYearClick: (String) -> Unit,
+    onSelectFilter: (DegreeFilter) -> Unit,
     onRetryClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
 ) {
@@ -57,14 +59,12 @@ fun TeachersScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
-                        items(
-                            TeacherTitleFilter.entries.sortedBy { it.orderIndex }
-                        ) { teacherTitleFilter ->
+                        items(DegreeFilter.entries.sortedBy { it.orderIndex }) { degreeFilter ->
                             FilterChip(
                                 shape = CircleShape,
-                                selected = uiState.selectedFilter == teacherTitleFilter,
-                                onClick = { onSelectFilter(teacherTitleFilter) },
-                                label = { Text(text = teacherTitleFilter.label) }
+                                selected = uiState.selectedFilter == degreeFilter,
+                                onClick = { onSelectFilter(degreeFilter) },
+                                label = { Text(text = degreeFilter.label) }
                             )
                         }
                     }
@@ -72,12 +72,21 @@ fun TeachersScreen(
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.weight(1f)
                     ) {
-                        items(uiState.filteredTeachers) { teacher ->
-                            TeacherListItem(
-                                name = teacher.name,
-                                title = TeacherTitle.getById(teacher.titleId).label,
-                                onClick = { onTeacherClick(teacher.id) },
+                        items(uiState.filteredGroupedStudyLines) { groupedStudyLines ->
+                            val lineId = groupedStudyLines.firstOrNull()?.baseId ?: return@items
+                            val label = groupedStudyLines.firstOrNull()?.name ?: return@items
+
+                            StudyLineListItem(
+                                title = label,
+                                isSelected = uiState.selectedStudyLineBaseId == lineId,
+                                onClick = { onStudyLineClick(lineId) },
+                                onStudyYearClick = onStudyYearClick,
+                                modifier = Modifier.fillMaxWidth(),
+                                studyYears = groupedStudyLines.map { studyLine ->
+                                    StudyYear.getById(studyLine.studyYearId)
+                                }
                             )
                         }
                     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.subjects.ui.components.SubjectsScreen
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.SubjectsViewModel
+import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -18,6 +19,7 @@ fun SubjectsRoute(navController: NavController) {
         uiState = uiState,
         onRetryClick = viewModel::retry,
         onChangeSearchQuery = viewModel::setSearchQuery,
+        bottomBar = { TimetableBottomBar(navController) },
         onSubjectClick = { roomId ->
             navController.navigate(TimetableNavDestination.SubjectTimetable(roomId))
         }

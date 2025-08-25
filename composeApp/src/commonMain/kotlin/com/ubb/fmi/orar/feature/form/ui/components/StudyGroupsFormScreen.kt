@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyGroupsFromUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
+import com.ubb.fmi.orar.ui.catalog.components.FormListItem
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @Composable
@@ -52,9 +53,7 @@ fun StudyGroupsFormScreen(
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(MaterialTheme.colorScheme.background)
+                        modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.studyGroups) { studyGroup ->
                             FormListItem<String>(

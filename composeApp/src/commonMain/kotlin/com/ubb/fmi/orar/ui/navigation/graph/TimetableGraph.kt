@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.rooms.ui.route.RoomsRoute
 import com.ubb.fmi.orar.feature.roomtimetable.ui.route.RoomTimetableRoute
+import com.ubb.fmi.orar.feature.studygroups.ui.route.StudyGroupsRoute
+import com.ubb.fmi.orar.feature.studylines.ui.route.StudyLinesRoute
 import com.ubb.fmi.orar.feature.subjects.ui.route.SubjectsRoute
 import com.ubb.fmi.orar.feature.subjecttimetable.ui.route.SubjectTimetableRoute
 import com.ubb.fmi.orar.feature.teachers.ui.route.TeachersRoute
@@ -33,10 +35,23 @@ fun TimetableGraph(
             MainTimetableRoute(navController)
         }
 
-        composable<TimetableNavDestination.Students> { navBackStackEntry ->
+        composable<TimetableNavDestination.StudyLines> { navBackStackEntry ->
+            StudyLinesRoute(navController)
+        }
+
+        composable<TimetableNavDestination.StudyGroups> { navBackStackEntry ->
+            val args = navBackStackEntry.toRoute<TimetableNavDestination.StudyGroups>()
+            StudyGroupsRoute(
+                navController = navController,
+                studyLineId = args.studyLineId
+            )
+        }
+
+        composable<TimetableNavDestination.StudyLineTimetable> { navBackStackEntry ->
+            val args = navBackStackEntry.toRoute<TimetableNavDestination.StudyLineTimetable>()
             Box(modifier = Modifier.fillMaxSize()) {
                 Text(
-                    text = "Students destination",
+                    text = "StudyGroups destination",
                     modifier = Modifier.align(Alignment.Center)
                 )
             }

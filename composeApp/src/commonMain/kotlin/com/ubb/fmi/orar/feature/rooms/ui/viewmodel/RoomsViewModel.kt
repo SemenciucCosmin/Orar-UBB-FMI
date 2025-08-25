@@ -6,7 +6,6 @@ import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.network.model.isError
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +20,6 @@ class RoomsViewModel(
     private val timetablePreferences: TimetablePreferences
 ) : ViewModel() {
 
-    private var job: Job
     private val _uiState = MutableStateFlow(RoomsUiState())
     val uiState = _uiState.asStateFlow()
         .stateIn(
@@ -32,7 +30,7 @@ class RoomsViewModel(
 
 
     init {
-        job = getRooms()
+        getRooms()
     }
 
     private fun getRooms() = viewModelScope.launch {
@@ -59,7 +57,6 @@ class RoomsViewModel(
     }
 
     fun retry() {
-        job.cancel()
-        job = getRooms()
+        getRooms()
     }
 }

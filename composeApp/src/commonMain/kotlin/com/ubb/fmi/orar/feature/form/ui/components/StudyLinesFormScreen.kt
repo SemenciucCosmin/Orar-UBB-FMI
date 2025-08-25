@@ -23,8 +23,10 @@ import com.ubb.fmi.orar.data.core.model.StudyYear
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
-import com.ubb.fmi.orar.feature.studyLines.ui.viewmodel.model.DegreeFilter
+import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
+import com.ubb.fmi.orar.ui.catalog.components.FormInputItem
+import com.ubb.fmi.orar.ui.catalog.components.FormListItem
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @Composable
@@ -74,9 +76,7 @@ fun StudyLinesFormScreen(
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(MaterialTheme.colorScheme.background)
+                        modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.filteredGroupedStudyLines) { groupedStudyLines ->
                             val lineId = groupedStudyLines.firstOrNull()?.baseId ?: return@items

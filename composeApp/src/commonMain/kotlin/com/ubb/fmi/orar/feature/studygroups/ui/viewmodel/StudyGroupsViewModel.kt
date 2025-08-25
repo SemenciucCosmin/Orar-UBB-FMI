@@ -1,12 +1,11 @@
-package com.ubb.fmi.orar.feature.form.ui.viewmodel
+package com.ubb.fmi.orar.feature.studygroups.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.core.model.GroupType
-import com.ubb.fmi.orar.data.core.model.StudyYear
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
-import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyGroupsFromUiState
+import com.ubb.fmi.orar.feature.studygroups.ui.viewmodel.model.StudyGroupsUiState
 import com.ubb.fmi.orar.network.model.isError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,12 +17,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-class StudyGroupsFormViewModel(
+class StudyGroupsViewModel(
+    private val studyLineId: String,
     private val studyLinesDataSource: StudyLineDataSource,
     private val timetablePreferences: TimetablePreferences
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(StudyGroupsFromUiState())
+    private val _uiState = MutableStateFlow(StudyGroupsUiState())
     val uiState = _uiState.asStateFlow()
         .stateIn(
             scope = viewModelScope,
@@ -39,19 +39,16 @@ class StudyGroupsFormViewModel(
     private fun getStudyGroups() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
 
-        val configuration = timetablePreferences.getConfiguration().firstOrNull() ?: return@launch
-        val studyYear = configuration.studyLineYearId?.let(StudyYear::getById)
-        val studyLineId = configuration.studyLineBaseId + studyYear?.notation
-
+        val configuration = timetablePreferences.getConfiguration().firstOrNull()
         val studyGroupsResource = studyLinesDataSource.getStudyGroupsIds(
-            year = configuration.year,
+            year = configuration?.year ?: return@launch,
             semesterId = configuration.semesterId,
             studyLineId = studyLineId,
         )
 
         val studyGroups = studyGroupsResource.payload?.map { studyGroupsId ->
             GroupType.entries.map { groupType ->
-                StudyGroupsFromUiState.Group(
+                StudyGroupsUiState.Group(
                     id = studyGroupsId,
                     type = groupType
                 )
@@ -62,25 +59,12 @@ class StudyGroupsFormViewModel(
             it.copy(
                 isLoading = false,
                 isError = studyGroupsResource.status.isError(),
-                studyGroups = studyGroups,
+                studyGroups = studyGroups
             )
         }
     }
 
-    fun selectStudyGroup(studyGroup: StudyGroupsFromUiState.Group) {
-        _uiState.update { it.copy(selectedStudyGroup = studyGroup) }
-    }
-
     fun retry() {
         getStudyGroups()
-    }
-
-    fun finishSelection() {
-        viewModelScope.launch {
-            _uiState.value.selectedStudyGroup?.let { studyGroup ->
-                timetablePreferences.setGroupId(studyGroup.id)
-                timetablePreferences.setGroupTypeId(studyGroup.type.id)
-            }
-        }
     }
 }

@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.studyLines.ui.viewmodel.model
+package com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.core.model.Degree
 

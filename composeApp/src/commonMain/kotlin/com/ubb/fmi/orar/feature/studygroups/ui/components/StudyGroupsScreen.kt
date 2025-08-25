@@ -1,29 +1,27 @@
-package com.ubb.fmi.orar.feature.rooms.ui.components
+package com.ubb.fmi.orar.feature.studygroups.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
+import com.ubb.fmi.orar.feature.studygroups.ui.viewmodel.model.StudyGroupsUiState
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 
 @Composable
-fun RoomsScreen(
-    uiState: RoomsUiState,
-    onRoomClick: (String) -> Unit,
+fun StudyGroupsScreen(
+    uiState: StudyGroupsUiState,
+    onStudyGroupClick: (StudyGroupsUiState.Group) -> Unit,
     onRetryClick: () -> Unit,
-    bottomBar: @Composable () -> Unit,
 ) {
-    Scaffold(bottomBar = bottomBar) { paddingValues ->
+    Scaffold { paddingValues ->
         when {
             uiState.isLoading -> {
                 ProgressOverlay(
@@ -48,11 +46,12 @@ fun RoomsScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.padding(paddingValues)
                 ) {
-                    items(uiState.rooms) { room ->
-                        RoomListItem(
-                            name = room.name,
-                            location = room.location,
-                            onClick = { onRoomClick(room.id) },
+                    items(uiState.studyGroups) { studyGroup ->
+                        StudyGroupListItem(
+                            label = studyGroup.id,
+                            type = studyGroup.type,
+                            onClick = { onStudyGroupClick(studyGroup) },
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }

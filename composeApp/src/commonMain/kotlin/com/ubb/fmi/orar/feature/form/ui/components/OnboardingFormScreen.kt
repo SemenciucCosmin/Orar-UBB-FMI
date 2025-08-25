@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.data.core.model.Semester
 import com.ubb.fmi.orar.data.core.model.UserType
+import com.ubb.fmi.orar.ui.catalog.components.FormInputItem
+import com.ubb.fmi.orar.ui.catalog.components.FormInputListItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

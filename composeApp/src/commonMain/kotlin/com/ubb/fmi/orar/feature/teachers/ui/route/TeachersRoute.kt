@@ -6,6 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.teachers.ui.components.TeachersScreen
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.TeachersViewModel
+import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -18,6 +19,7 @@ fun TeachersRoute(navController: NavController) {
         uiState = uiState,
         onRetryClick = viewModel::retry,
         onSelectFilter = viewModel::selectTeacherTitleFilter,
+        bottomBar = { TimetableBottomBar(navController) },
         onTeacherClick = { roomId ->
             navController.navigate(TimetableNavDestination.TeacherTimetable(roomId))
         }

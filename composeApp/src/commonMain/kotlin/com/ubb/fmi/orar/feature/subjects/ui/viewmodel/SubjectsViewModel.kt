@@ -6,7 +6,6 @@ import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.network.model.isError
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +20,6 @@ class SubjectsViewModel(
     private val timetablePreferences: TimetablePreferences
 ) : ViewModel() {
 
-    private var job: Job
     private val _uiState = MutableStateFlow(SubjectsUiState())
     val uiState = _uiState.asStateFlow()
         .stateIn(
@@ -32,7 +30,7 @@ class SubjectsViewModel(
 
 
     init {
-        job = getSubjects()
+        getSubjects()
     }
 
     fun setSearchQuery(searchQuery: String) {
@@ -65,7 +63,6 @@ class SubjectsViewModel(
     }
 
     fun retry() {
-        job.cancel()
-        job = getSubjects()
+        getSubjects()
     }
 }

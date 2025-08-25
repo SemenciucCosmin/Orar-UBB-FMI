@@ -9,7 +9,16 @@ sealed class TimetableNavDestination() {
     data object Home: TimetableNavDestination()
 
     @Serializable
-    data object Students: TimetableNavDestination()
+    data object StudyLines: TimetableNavDestination()
+
+    @Serializable
+    data class StudyGroups(val studyLineId: String): TimetableNavDestination()
+
+    @Serializable
+    data class StudyLineTimetable(
+        val studyLineId: String,
+        val studyGroupId: String
+    ): TimetableNavDestination()
 
     @Serializable
     data object Teachers: TimetableNavDestination()

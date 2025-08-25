@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ubb.fmi.orar.feature.form.ui.route.OnboardingFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.StudyGroupsRoute
-import com.ubb.fmi.orar.feature.form.ui.route.StudyLinesRoute
+import com.ubb.fmi.orar.feature.form.ui.route.StudyLinesFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.TeachersFormRoute
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 
@@ -25,7 +25,7 @@ fun ConfigurationFormGraph(navController: NavHostController) {
         }
 
         composable<ConfigurationFormNavDestination.StudyLinesForm> { navBackStackEntry ->
-            StudyLinesRoute(navController)
+            StudyLinesFormRoute(navController)
         }
 
         composable<ConfigurationFormNavDestination.StudyGroupsForm> { navBackStackEntry ->
