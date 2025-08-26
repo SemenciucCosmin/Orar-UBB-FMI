@@ -6,6 +6,8 @@ import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.network.model.isError
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,7 +59,7 @@ class SubjectsViewModel(
             it.copy(
                 isLoading = false,
                 isError = subjectResource.status.isError(),
-                subjects = subjectResource.payload ?: emptyList()
+                subjects = subjectResource.payload?.toImmutableList() ?: persistentListOf()
             )
         }
     }

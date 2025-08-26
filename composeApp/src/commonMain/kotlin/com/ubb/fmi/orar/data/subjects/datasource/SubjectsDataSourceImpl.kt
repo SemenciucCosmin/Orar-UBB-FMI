@@ -121,6 +121,15 @@ class SubjectsDataSourceImpl(
         }
     }
 
+    override suspend fun changeTimetableClassVisibility(timetableClassId: String) {
+        val subjectClassEntity = subjectClassDao.getSubjectClass(timetableClassId)
+        val newSubjectClassEntity = subjectClassEntity.copy(
+            isVisible = !subjectClassEntity.isVisible
+        )
+
+        subjectClassDao.insertSubjectClass(newSubjectClassEntity)
+    }
+
     private suspend fun getSubjectsFromCache(): List<Subject> {
         val entities = subjectDao.getAllSubjects()
         return entities.map(::mapEntityToSubject)
@@ -258,7 +267,8 @@ class SubjectsDataSourceImpl(
                 participantId = participantId,
                 participantName = participantCell.value,
                 classTypeId = classTypeCell.value,
-                teacherId = teacherCell.id
+                teacherId = teacherCell.id,
+                isVisible = true
             )
         }
 
@@ -288,7 +298,8 @@ class SubjectsDataSourceImpl(
                 participantId = subjectClassEntity.participantId,
                 participantName = subjectClassEntity.participantName,
                 classTypeId = subjectClassEntity.classTypeId,
-                teacherId = subjectClassEntity.teacherId
+                teacherId = subjectClassEntity.teacherId,
+                isVisible = subjectClassEntity.isVisible,
             )
         }
     }
@@ -317,7 +328,8 @@ class SubjectsDataSourceImpl(
                 participantId = subjectClass.participantId,
                 participantName = subjectClass.participantName,
                 classTypeId = subjectClass.classTypeId,
-                teacherId = subjectClass.teacherId
+                teacherId = subjectClass.teacherId,
+                isVisible = subjectClass.isVisible,
             )
         }
     }

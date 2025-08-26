@@ -27,4 +27,8 @@ interface StudyLineDataSource {
         semesterId: String,
         studyLineId: String
     ): Resource<StudyLineTimetable>
+
+    suspend fun changeTimetableClassVisibility(
+        timetableClassId: String
+    )
 }

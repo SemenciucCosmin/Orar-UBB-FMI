@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.domain.usertimetable.model
+package com.ubb.fmi.orar.domain.timetable.model
 
 enum class Degree(
     val id: String,

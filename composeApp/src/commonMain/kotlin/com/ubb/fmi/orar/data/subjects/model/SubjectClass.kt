@@ -12,4 +12,5 @@ data class SubjectClass(
     val participantName: String,
     val classTypeId: String,
     val teacherId: String,
+    val isVisible: Boolean,
 )

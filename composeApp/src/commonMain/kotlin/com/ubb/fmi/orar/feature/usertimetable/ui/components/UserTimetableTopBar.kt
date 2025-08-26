@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
@@ -18,11 +19,12 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserTimetableTopBar(
-    modifier: Modifier = Modifier,
+    isEditModeOn: Boolean,
     selectedFrequency: Frequency,
     onSettingsClick: () -> Unit,
     onEditClick: () -> Unit,
     onFrequencyClick: (Frequency) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         modifier = modifier,
@@ -36,7 +38,10 @@ fun UserTimetableTopBar(
             }
         },
         title = {
-            IconButton(onClick = onEditClick) {
+            FilledIconToggleButton(
+                checked = isEditModeOn,
+                onCheckedChange = { onEditClick() }
+            ) {
                 Icon(
                     modifier = Modifier.size(32.dp),
                     painter = painterResource(Res.drawable.ic_edit),

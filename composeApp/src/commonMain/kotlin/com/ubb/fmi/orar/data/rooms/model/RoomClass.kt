@@ -12,4 +12,5 @@ data class RoomClass(
     val classTypeId: String,
     val subjectId: String,
     val teacherId: String,
+    val isVisible: Boolean,
 )

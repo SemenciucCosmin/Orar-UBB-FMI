@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.domain.studylines.usecase
 
-import com.ubb.fmi.orar.domain.usertimetable.model.ClassType
-import com.ubb.fmi.orar.domain.usertimetable.model.StudyYear
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.StudyYear
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
@@ -10,8 +10,10 @@ import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.domain.usertimetable.model.Timetable
-import com.ubb.fmi.orar.domain.usertimetable.model.TimetableClass
+import com.ubb.fmi.orar.domain.timetable.model.ClassOwner
+import com.ubb.fmi.orar.domain.timetable.model.Day
+import com.ubb.fmi.orar.domain.timetable.model.Timetable
+import com.ubb.fmi.orar.domain.timetable.model.TimetableClass
 import com.ubb.fmi.orar.network.model.Resource
 import com.ubb.fmi.orar.network.model.Status
 import kotlinx.coroutines.async
@@ -115,11 +117,17 @@ class GetStudyLineTimetableUseCase(
                 frequencyId = studyLineClass.frequencyId,
                 subject = subject.name,
                 classType = ClassType.Companion.getById(studyLineClass.classTypeId),
+                classOwner = ClassOwner.STUDY_LINE,
                 participant = participant,
                 teacher = "$teacherTitle ${teacher.name}",
-                room = room.name
+                room = room.name,
+                isVisible = studyLineClass.isVisible
             )
-        }
+        }?.sortedWith(
+            compareBy<TimetableClass> { Day.getById(it.day).orderIndex }
+                .thenBy { it.startHour }
+                .thenBy { it.endHour }
+        )
 
         val studyLine = timetableResource.payload?.studyLine
         val (title, subtitle) = when {

@@ -1,10 +1,13 @@
 package com.ubb.fmi.orar.feature.timetable.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.domain.usertimetable.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_down_arrow
@@ -33,12 +36,17 @@ fun TimetableListItem(
     participant: String,
     teacher: String,
     room: String,
+    enabled: Boolean,
+    expanded: Boolean,
     modifier: Modifier = Modifier
 ) {
-    ElevatedCard(modifier = modifier) {
+    ElevatedCard(
+        onClick = {},
+        modifier = modifier,
+        enabled = enabled,
+    ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -62,6 +70,10 @@ fun TimetableListItem(
                 )
             }
 
+            AnimatedVisibility(expanded) {
+                Spacer(modifier = Modifier.width(12.dp))
+            }
+
             Column(
                 modifier = Modifier.weight(0.70f),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -71,12 +83,17 @@ fun TimetableListItem(
                     text = subject,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
 
                 Surface(
-                    color = classType.color,
                     shape = MaterialTheme.shapes.extraLarge,
+                    color = classType.color.copy(
+                        alpha = when {
+                            enabled -> 1f
+                            else -> 0.5f
+                        }
+                    ),
                 ) {
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
@@ -98,6 +115,10 @@ fun TimetableListItem(
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center
                 )
+            }
+
+            AnimatedVisibility(expanded) {
+                Spacer(modifier = Modifier.width(12.dp))
             }
 
             Column(
@@ -133,6 +154,8 @@ private fun PreviewTimetableListItem() {
             participant = "914",
             teacher = "Asist. LORINCZI Abel",
             room = "A304",
+            enabled = true,
+            expanded = true
         )
     }
 }

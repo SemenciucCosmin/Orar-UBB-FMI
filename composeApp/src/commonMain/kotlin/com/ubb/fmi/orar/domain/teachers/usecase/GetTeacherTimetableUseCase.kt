@@ -1,14 +1,16 @@
 package com.ubb.fmi.orar.domain.teachers.usecase
 
-import com.ubb.fmi.orar.domain.usertimetable.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.domain.usertimetable.model.Timetable
-import com.ubb.fmi.orar.domain.usertimetable.model.TimetableClass
+import com.ubb.fmi.orar.domain.timetable.model.ClassOwner
+import com.ubb.fmi.orar.domain.timetable.model.Day
+import com.ubb.fmi.orar.domain.timetable.model.Timetable
+import com.ubb.fmi.orar.domain.timetable.model.TimetableClass
 import com.ubb.fmi.orar.network.model.Resource
 import com.ubb.fmi.orar.network.model.Status
 import kotlinx.coroutines.flow.firstOrNull
@@ -60,11 +62,17 @@ class GetTeacherTimetableUseCase(
                 frequencyId = teacherClass.frequencyId,
                 subject = teacherClass.subjectName,
                 classType = ClassType.getById(teacherClass.classTypeId),
+                classOwner = ClassOwner.TEACHER,
                 participant = participant,
                 teacher = "${teacherTitle.label} ${teacher.name}",
-                room = teacherClass.roomId
+                room = teacherClass.roomId,
+                isVisible = teacherClass.isVisible
             )
-        }
+        }?.sortedWith(
+            compareBy<TimetableClass> { Day.getById(it.day).orderIndex }
+                .thenBy { it.startHour }
+                .thenBy { it.endHour }
+        )
 
         val teacher = timetableResource.payload?.teacher
         val title = when {

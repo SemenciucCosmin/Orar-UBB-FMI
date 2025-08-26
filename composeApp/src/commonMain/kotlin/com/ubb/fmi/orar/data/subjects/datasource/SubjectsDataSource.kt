@@ -21,4 +21,8 @@ interface SubjectsDataSource {
         semesterId: String,
         subjectId: String
     ): Resource<SubjectTimetable>
+
+    suspend fun changeTimetableClassVisibility(
+        timetableClassId: String
+    )
 }

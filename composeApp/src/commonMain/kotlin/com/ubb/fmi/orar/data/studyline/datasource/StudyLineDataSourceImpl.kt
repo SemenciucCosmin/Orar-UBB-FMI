@@ -132,6 +132,15 @@ class StudyLineDataSourceImpl(
         }
     }
 
+    override suspend fun changeTimetableClassVisibility(timetableClassId: String) {
+        val studyLineClassEntity = studyLineClassDao.getStudyLineClass(timetableClassId)
+        val newStudyLineClassEntity = studyLineClassEntity.copy(
+            isVisible = !studyLineClassEntity.isVisible
+        )
+
+        studyLineClassDao.insertStudyLineClass(newStudyLineClassEntity)
+    }
+
     private suspend fun getStudyLinesFromCache(): List<StudyLine> {
         val entities = studyLineDao.getAllStudyLines()
         return entities.map(::mapEntityToStudyLine)
@@ -261,7 +270,8 @@ class StudyLineDataSourceImpl(
                     participantName = participantCell.value,
                     classTypeId = classTypeCell.value,
                     subjectId = subjectCell.id,
-                    teacherId = teacherCell.id
+                    teacherId = teacherCell.id,
+                    isVisible = true
                 )
             }
         }.flatten()
@@ -357,7 +367,8 @@ class StudyLineDataSourceImpl(
                 participantName = classEntity.participantName,
                 classTypeId = classEntity.classTypeId,
                 subjectId = classEntity.subjectId,
-                teacherId = classEntity.teacherId
+                teacherId = classEntity.teacherId,
+                isVisible = classEntity.isVisible,
             )
         }
     }
@@ -390,7 +401,8 @@ class StudyLineDataSourceImpl(
                 participantName = groupClass.participantName,
                 classTypeId = groupClass.classTypeId,
                 subjectId = groupClass.subjectId,
-                teacherId = groupClass.teacherId
+                teacherId = groupClass.teacherId,
+                isVisible = groupClass.isVisible,
             )
         }
     }

@@ -19,4 +19,5 @@ data class TeacherClassEntity(
     val classTypeId: String,
     val subjectId: String,
     val subjectName: String,
+    val isVisible: Boolean,
 )

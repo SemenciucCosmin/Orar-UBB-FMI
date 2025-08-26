@@ -13,4 +13,5 @@ data class TeacherClass (
     val classTypeId: String,
     val subjectId: String,
     val subjectName: String,
+    val isVisible: Boolean,
 )

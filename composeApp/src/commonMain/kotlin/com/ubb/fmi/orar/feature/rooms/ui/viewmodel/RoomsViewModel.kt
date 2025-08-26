@@ -6,6 +6,9 @@ import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.network.model.isError
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,7 +54,7 @@ class RoomsViewModel(
             it.copy(
                 isLoading = false,
                 isError = roomResource.status.isError(),
-                rooms = roomResource.payload ?: emptyList()
+                rooms = roomResource.payload?.toImmutableList() ?: persistentListOf()
             )
         }
     }

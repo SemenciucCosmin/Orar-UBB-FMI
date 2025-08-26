@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.domain.usertimetable.model
+package com.ubb.fmi.orar.domain.timetable.model
 
 data class TimetableClass(
     val id: String,
@@ -8,7 +8,9 @@ data class TimetableClass(
     val frequencyId: String,
     val subject: String,
     val classType: ClassType,
+    val classOwner: ClassOwner,
     val participant: String,
     val teacher: String,
     val room: String,
+    val isVisible: Boolean
 )

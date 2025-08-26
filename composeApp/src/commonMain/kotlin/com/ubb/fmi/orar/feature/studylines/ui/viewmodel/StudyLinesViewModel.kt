@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.network.model.isError
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -47,8 +49,8 @@ class StudyLinesViewModel(
         val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
             studyLine.baseId
         }?.values?.toList()?.map { studyLines ->
-            studyLines.sortedBy { it.studyYearId }
-        } ?: emptyList()
+            studyLines.sortedBy { it.studyYearId }.toImmutableList()
+        }?.toImmutableList() ?: persistentListOf()
 
         _uiState.update {
             it.copy(

@@ -19,13 +19,15 @@ fun UserTimetableRoute(navController: NavController) {
         uiState = uiState,
         onRetryClick = viewModel::retry,
         bottomBar = { TimetableBottomBar(navController) },
+        onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
         topBar = {
             uiState.timetable?.let { timetable ->
                 UserTimetableTopBar(
+                    isEditModeOn = uiState.isEditModeOn,
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = viewModel::selectFrequency,
-                    onSettingsClick = {},
-                    onEditClick = {}
+                    onEditClick = viewModel::changeEditMode,
+                    onSettingsClick = {}
                 )
             }
         }

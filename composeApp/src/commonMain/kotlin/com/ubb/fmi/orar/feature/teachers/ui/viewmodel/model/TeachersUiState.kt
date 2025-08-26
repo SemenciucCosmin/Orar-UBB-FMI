@@ -1,19 +1,22 @@
 package com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.teachers.model.Teacher
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 data class TeachersUiState(
-    private val teachers: List<Teacher> = emptyList(),
+    private val teachers: ImmutableList<Teacher> = persistentListOf(),
     val selectedFilter: TeacherTitleFilter = TeacherTitleFilter.ALL,
     val isLoading: Boolean = true,
     val isError: Boolean = true
 ) {
     companion object {
-        val TeachersUiState.filteredTeachers: List<Teacher>
+        val TeachersUiState.filteredTeachers: ImmutableList<Teacher>
             get() {
                 return teachers.filter { teacher ->
                     teacher.titleId == selectedFilter.id || selectedFilter == TeacherTitleFilter.ALL
-                }
+                }.toImmutableList()
             }
     }
 }

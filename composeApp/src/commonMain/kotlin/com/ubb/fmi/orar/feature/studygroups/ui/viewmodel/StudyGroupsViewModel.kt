@@ -6,6 +6,8 @@ import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.feature.studygroups.ui.viewmodel.model.StudyGroupsUiState
 import com.ubb.fmi.orar.network.model.isError
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -49,7 +51,7 @@ class StudyGroupsViewModel(
             it.copy(
                 isLoading = false,
                 isError = studyGroupsResource.status.isError(),
-                studyGroups = studyGroupsResource.payload  ?: emptyList()
+                studyGroups = studyGroupsResource.payload?.toImmutableList()  ?: persistentListOf()
             )
         }
     }

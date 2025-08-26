@@ -2,11 +2,13 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.domain.usertimetable.model.StudyYear
+import com.ubb.fmi.orar.domain.timetable.model.StudyYear
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyGroupsFromUiState
 import com.ubb.fmi.orar.network.model.isError
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -52,7 +54,7 @@ class StudyGroupsFormViewModel(
             it.copy(
                 isLoading = false,
                 isError = studyGroupsResource.status.isError(),
-                studyGroups = studyGroupsResource.payload ?: emptyList(),
+                studyGroups = studyGroupsResource.payload?.toImmutableList() ?: persistentListOf(),
             )
         }
     }

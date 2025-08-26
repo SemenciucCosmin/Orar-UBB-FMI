@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2657fe2a7a22c8b11a188a6c2a8db87b",
+    "identityHash": "d8a9f4fdb5770df8ede51f0285cb2bff",
     "entities": [
       {
         "tableName": "rooms",
@@ -36,7 +36,7 @@
       },
       {
         "tableName": "room_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `roomId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `roomId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -109,6 +109,12 @@
             "columnName": "teacherId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isVisible",
+            "columnName": "isVisible",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -162,7 +168,7 @@
       },
       {
         "tableName": "study_line_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `groupId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `groupId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -241,6 +247,12 @@
             "columnName": "teacherId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isVisible",
+            "columnName": "isVisible",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -276,7 +288,7 @@
       },
       {
         "tableName": "subject_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -349,6 +361,12 @@
             "columnName": "teacherId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isVisible",
+            "columnName": "isVisible",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -390,7 +408,7 @@
       },
       {
         "tableName": "teacher_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `subjectName` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `subjectName` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -469,6 +487,12 @@
             "columnName": "subjectName",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isVisible",
+            "columnName": "isVisible",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -481,7 +505,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2657fe2a7a22c8b11a188a6c2a8db87b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd8a9f4fdb5770df8ede51f0285cb2bff')"
     ]
   }
 }

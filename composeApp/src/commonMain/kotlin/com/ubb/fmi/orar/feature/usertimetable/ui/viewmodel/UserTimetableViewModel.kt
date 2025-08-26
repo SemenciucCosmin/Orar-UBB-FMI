@@ -2,8 +2,10 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.domain.timetable.usecase.ChangeTimetableClassVisibilityUseCase
 import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
+import com.ubb.fmi.orar.feature.timetable.ui.model.TimetableListItem
 import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.network.model.isError
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,8 @@ import kotlin.time.Duration.Companion.seconds
 
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
-): ViewModel() {
+    private val changeTimetableClassVisibilityUseCase: ChangeTimetableClassVisibilityUseCase,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TimetableUiState())
     val uiState = _uiState.asStateFlow()
@@ -46,6 +49,30 @@ class UserTimetableViewModel(
 
     fun selectFrequency(frequency: Frequency) {
         _uiState.update { it.copy(selectedFrequency = frequency) }
+    }
+
+    fun changeEditMode() {
+        _uiState.update { it.copy(isEditModeOn = !it.isEditModeOn) }
+    }
+
+    fun changeTimetableClassVisibility(timetableClass: TimetableListItem.Class) {
+        viewModelScope.launch {
+            changeTimetableClassVisibilityUseCase(
+                timetableClassId = timetableClass.id,
+                timetableClassOwner = timetableClass.classOwner,
+            )
+        }
+
+        _uiState.update { state ->
+            val newClasses = state.timetable?.classes?.map {
+                when {
+                    it.id != timetableClass.id -> it
+                    else -> it.copy(isVisible = !it.isVisible)
+                }
+            } ?: emptyList()
+
+            state.copy(timetable = state.timetable?.copy(classes = newClasses))
+        }
     }
 
     fun retry() {

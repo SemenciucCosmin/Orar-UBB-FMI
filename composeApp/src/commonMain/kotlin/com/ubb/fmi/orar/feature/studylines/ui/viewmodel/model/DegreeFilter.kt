@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model
 
-import com.ubb.fmi.orar.domain.usertimetable.model.Degree
+import com.ubb.fmi.orar.domain.timetable.model.Degree
 
 enum class DegreeFilter(
     val id: String,

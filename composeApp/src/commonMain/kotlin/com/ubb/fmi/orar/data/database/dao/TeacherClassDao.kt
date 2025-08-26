@@ -15,6 +15,9 @@ interface TeacherClassDao {
     @Query("SELECT * FROM teacher_classes WHERE teacherId LIKE :teacherId")
     suspend fun getTeacherClasses(teacherId: String): List<TeacherClassEntity>
 
+    @Query("SELECT * FROM teacher_classes WHERE id LIKE :teacherClassId")
+    suspend fun getTeacherClass(teacherClassId: String): TeacherClassEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTeacherClass(teacherClass: TeacherClassEntity)
 }

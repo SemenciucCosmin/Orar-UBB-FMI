@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.domain.subjects.usecase
 
-import com.ubb.fmi.orar.domain.usertimetable.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
@@ -8,8 +8,10 @@ import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.domain.usertimetable.model.Timetable
-import com.ubb.fmi.orar.domain.usertimetable.model.TimetableClass
+import com.ubb.fmi.orar.domain.timetable.model.ClassOwner
+import com.ubb.fmi.orar.domain.timetable.model.Day
+import com.ubb.fmi.orar.domain.timetable.model.Timetable
+import com.ubb.fmi.orar.domain.timetable.model.TimetableClass
 import com.ubb.fmi.orar.network.model.Resource
 import com.ubb.fmi.orar.network.model.Status
 import kotlinx.coroutines.async
@@ -79,11 +81,17 @@ class GetSubjectTimetableUseCase(
                 frequencyId = subjectClass.frequencyId,
                 subject = subject.name,
                 classType = ClassType.Companion.getById(subjectClass.classTypeId),
+                classOwner = ClassOwner.SUBJECT,
                 participant = participant,
                 teacher = "$teacherTitle ${teacher.name}",
-                room = subjectClass.roomId
+                room = subjectClass.roomId,
+                isVisible = subjectClass.isVisible
             )
-        }
+        }?.sortedWith(
+            compareBy<TimetableClass> { Day.getById(it.day).orderIndex }
+                .thenBy { it.startHour }
+                .thenBy { it.endHour }
+        )
 
         val subject = timetableResource.payload?.subject
         val timetable = Timetable(

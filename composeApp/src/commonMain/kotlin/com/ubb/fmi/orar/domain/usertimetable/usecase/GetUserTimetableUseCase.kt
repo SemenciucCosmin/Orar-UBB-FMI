@@ -3,8 +3,8 @@ package com.ubb.fmi.orar.domain.usertimetable.usecase
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.studylines.usecase.GetStudyLineTimetableUseCase
 import com.ubb.fmi.orar.domain.teachers.usecase.GetTeacherTimetableUseCase
-import com.ubb.fmi.orar.domain.usertimetable.model.StudyYear
-import com.ubb.fmi.orar.domain.usertimetable.model.Timetable
+import com.ubb.fmi.orar.domain.timetable.model.StudyYear
+import com.ubb.fmi.orar.domain.timetable.model.Timetable
 import com.ubb.fmi.orar.feature.timetable.ui.model.UserType
 import com.ubb.fmi.orar.network.model.Resource
 import com.ubb.fmi.orar.network.model.Status

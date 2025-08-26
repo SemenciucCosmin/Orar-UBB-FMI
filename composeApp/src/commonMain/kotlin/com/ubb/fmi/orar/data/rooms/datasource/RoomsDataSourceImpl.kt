@@ -121,6 +121,15 @@ class RoomsDataSourceImpl(
         }
     }
 
+    override suspend fun changeTimetableClassVisibility(timetableClassId: String) {
+        val roomClassEntity = roomClassDao.getRoomClass(timetableClassId)
+        val newRoomClassEntity = roomClassEntity.copy(
+            isVisible = !roomClassEntity.isVisible
+        )
+
+        roomClassDao.insertRoomClass(newRoomClassEntity)
+    }
+
     private suspend fun getRoomsFromCache(): List<Room> {
         val entities = roomDao.getAllRooms()
         return entities.map(::mapEntityToRoom)
@@ -230,7 +239,8 @@ class RoomsDataSourceImpl(
                 participantName = participantCell.value,
                 classTypeId = classTypeCell.value,
                 subjectId = subjectCell.id,
-                teacherId = teacherCell.id
+                teacherId = teacherCell.id,
+                isVisible = true
             )
         }
 
@@ -292,7 +302,8 @@ class RoomsDataSourceImpl(
                 participantName =  roomClassEntity.participantName,
                 classTypeId = roomClassEntity.classTypeId,
                 subjectId = roomClassEntity.subjectId,
-                teacherId = roomClassEntity.teacherId
+                teacherId = roomClassEntity.teacherId,
+                isVisible = roomClassEntity.isVisible,
             )
         }
     }
@@ -322,7 +333,8 @@ class RoomsDataSourceImpl(
                 participantName =  roomClass.participantName,
                 classTypeId = roomClass.classTypeId,
                 subjectId = roomClass.subjectId,
-                teacherId = roomClass.teacherId
+                teacherId = roomClass.teacherId,
+                isVisible = roomClass.isVisible,
             )
         }
     }

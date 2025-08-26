@@ -21,4 +21,8 @@ interface RoomsDataSource {
         semesterId: String,
         roomId: String
     ): Resource<RoomTimetable>
+
+    suspend fun changeTimetableClassVisibility(
+        timetableClassId: String
+    )
 }

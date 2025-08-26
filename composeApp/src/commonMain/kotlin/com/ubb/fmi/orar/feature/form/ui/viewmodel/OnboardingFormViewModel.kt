@@ -5,6 +5,7 @@ import com.ubb.fmi.orar.feature.timetable.ui.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +25,11 @@ class OnboardingFormViewModel(
 
     private val _uiState = MutableStateFlow(OnboardingFormUiState())
     val uiState = _uiState.asStateFlow()
-        .onStart { _uiState.update { it.copy(studyYears = getStudyYears()) } }
+        .onStart {
+            _uiState.update {
+                it.copy(studyYears = getStudyYears().toImmutableList())
+            }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),

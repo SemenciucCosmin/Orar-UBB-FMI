@@ -17,6 +17,9 @@ interface RoomClassDao {
     @Query("SELECT * FROM room_classes WHERE roomId LIKE :roomId")
     suspend fun getRoomClasses(roomId: String): List<RoomClassEntity>
 
+    @Query("SELECT * FROM room_classes WHERE id LIKE :classId")
+    suspend fun getRoomClass(classId: String): RoomClassEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoomClass(roomClassEntity: RoomClassEntity)
 }

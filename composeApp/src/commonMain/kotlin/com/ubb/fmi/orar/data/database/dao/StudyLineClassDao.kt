@@ -16,6 +16,9 @@ interface StudyLineClassDao {
     @Query("SELECT * FROM study_line_classes WHERE studyLineId LIKE :studyLineId")
     suspend fun getStudyLineClasses(studyLineId: String): List<StudyLineClassEntity>
 
+    @Query("SELECT * FROM study_line_classes WHERE id LIKE :studyLineClassId")
+    suspend fun getStudyLineClass(studyLineClassId: String): StudyLineClassEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStudyLineClass(studyLineClassEntity: StudyLineClassEntity)
 }
