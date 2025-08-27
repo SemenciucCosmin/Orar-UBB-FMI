@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,12 +29,6 @@ fun TimetableFrequencyTab(
             selected = selectedFrequency == Frequency.WEEK_1,
             onClick = { onFrequencyClick(Frequency.WEEK_1) },
             shape = CircleShape,
-            colors = FilterChipDefaults.filterChipColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                labelColor = MaterialTheme.colorScheme.onSurface,
-                selectedContainerColor = MaterialTheme.colorScheme.primary,
-                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-            ),
             label = {
                 Text(
                     text = Frequency.WEEK_1.label,
@@ -48,12 +41,6 @@ fun TimetableFrequencyTab(
             selected = selectedFrequency == Frequency.WEEK_2,
             onClick = { onFrequencyClick(Frequency.WEEK_2) },
             shape = CircleShape,
-            colors = FilterChipDefaults.filterChipColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                labelColor = MaterialTheme.colorScheme.onSurface,
-                selectedContainerColor = MaterialTheme.colorScheme.primary,
-                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-            ),
             label = {
                 Text(
                     text = Frequency.WEEK_2.label,

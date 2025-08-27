@@ -69,7 +69,7 @@ fun SearchBar(
             Box(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
