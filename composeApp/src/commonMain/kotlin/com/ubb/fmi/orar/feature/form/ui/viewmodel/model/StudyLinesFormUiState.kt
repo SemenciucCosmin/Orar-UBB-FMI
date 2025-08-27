@@ -15,10 +15,6 @@ data class StudyLinesFormUiState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
 ) {
-    enum class StudyLinesFormEvent: Event {
-        SELECTION_DONE
-    }
-
     companion object {
         val StudyLinesFormUiState.filteredGroupedStudyLines: ImmutableList<ImmutableList<StudyLine>>
             get() {

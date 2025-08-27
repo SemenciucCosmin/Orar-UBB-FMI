@@ -42,4 +42,10 @@ enum class TeacherTitleFilter(
         label = TeacherTitle.ASSOCIATE.label,
         orderIndex = 6
     );
+
+    companion object {
+        fun getById(id: String?): TeacherTitleFilter {
+            return entries.firstOrNull { it.id == id } ?: ALL
+        }
+    }
 }

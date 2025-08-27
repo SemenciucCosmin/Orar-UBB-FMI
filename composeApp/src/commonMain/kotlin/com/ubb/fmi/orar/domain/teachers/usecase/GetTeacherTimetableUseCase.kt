@@ -11,8 +11,8 @@ import com.ubb.fmi.orar.domain.timetable.model.ClassOwner
 import com.ubb.fmi.orar.domain.timetable.model.Day
 import com.ubb.fmi.orar.domain.timetable.model.Timetable
 import com.ubb.fmi.orar.domain.timetable.model.TimetableClass
-import com.ubb.fmi.orar.network.model.Resource
-import com.ubb.fmi.orar.network.model.Status
+import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.network.model.Status
 import kotlinx.coroutines.flow.firstOrNull
 import kotlin.String
 

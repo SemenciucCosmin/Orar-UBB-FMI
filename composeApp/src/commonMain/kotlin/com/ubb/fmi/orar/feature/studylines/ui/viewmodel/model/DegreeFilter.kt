@@ -22,4 +22,10 @@ enum class DegreeFilter(
         label = Degree.MASTER.label,
         orderIndex = 2
     );
+
+    companion object {
+        fun getById(id: String?): DegreeFilter {
+            return entries.firstOrNull { it.id == id } ?: ALL
+        }
+    }
 }

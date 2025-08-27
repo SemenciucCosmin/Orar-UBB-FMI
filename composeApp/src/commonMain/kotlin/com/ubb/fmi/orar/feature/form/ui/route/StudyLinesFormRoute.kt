@@ -6,14 +6,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.StudyLinesFormScreen
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
-import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
-import com.ubb.fmi.orar.ui.catalog.components.EventHandler
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun StudyLinesFormRoute(navController: NavController) {
-    val viewModel = koinViewModel<StudyLinesFormViewModel>()
+fun StudyLinesFormRoute(
+    navController: NavController,
+    year: Int,
+    semesterId: String,
+) {
+    val viewModel = koinViewModel<StudyLinesFormViewModel>(
+        parameters = { parametersOf(year, semesterId) }
+    )
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     StudyLinesFormScreen(
@@ -21,16 +28,23 @@ fun StudyLinesFormRoute(navController: NavController) {
         onStudyLineClick = viewModel::selectStudyLineBaseId,
         onStudyYearClick = viewModel::selectStudyYear,
         onSelectFilter = viewModel::selectDegreeFilter,
-        onNextClick = viewModel::finishSelection,
-        onRetryClick = viewModel::retry
-    )
+        onRetryClick = viewModel::retry,
+        onNextClick = {
+            val studyLineBaseId = uiState.selectedStudyLineBaseId ?: return@StudyLinesFormScreen
+            val studyLineYearId = uiState.selectedStudyYearId ?: return@StudyLinesFormScreen
+            val studyLine = uiState.filteredGroupedStudyLines.flatten().firstOrNull {
+                it.baseId == studyLineBaseId && it.studyYearId == studyLineYearId
+            } ?: return@StudyLinesFormScreen
 
-    EventHandler(viewModel.events) { event ->
-        when(event) {
-            StudyLinesFormUiState.StudyLinesFormEvent.SELECTION_DONE -> {
-                viewModel.unregisterEvent(event)
-                navController.navigate(ConfigurationFormNavDestination.StudyGroupsForm)
-            }
+            navController.navigate(
+                ConfigurationFormNavDestination.StudyGroupsForm(
+                    year = year,
+                    semesterId = semesterId,
+                    studyLineBaseId = studyLineBaseId,
+                    studyLineYearId = studyLineYearId,
+                    studyLineDegreeId = studyLine.degreeId,
+                )
+            )
         }
-    }
+    )
 }

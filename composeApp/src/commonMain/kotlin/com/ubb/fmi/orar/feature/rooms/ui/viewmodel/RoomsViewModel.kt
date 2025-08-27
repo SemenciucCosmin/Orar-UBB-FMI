@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
-import com.ubb.fmi.orar.network.model.isError
+import com.ubb.fmi.orar.data.network.model.isError
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

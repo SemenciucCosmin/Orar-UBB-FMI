@@ -4,10 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableScreen
+import com.ubb.fmi.orar.ui.catalog.components.TimetableScreen
 import com.ubb.fmi.orar.feature.usertimetable.ui.components.UserTimetableTopBar
 import com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel.UserTimetableViewModel
 import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
+import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -27,7 +28,9 @@ fun UserTimetableRoute(navController: NavController) {
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = viewModel::selectFrequency,
                     onEditClick = viewModel::changeEditMode,
-                    onSettingsClick = {}
+                    onSettingsClick = {
+                        navController.navigate(ConfigurationFormNavDestination.OnboardingForm)
+                    }
                 )
             }
         }

@@ -1,12 +1,13 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.domain.timetable.model.StudyYear
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
+import com.ubb.fmi.orar.domain.timetable.model.StudyYear
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyGroupsFromUiState
-import com.ubb.fmi.orar.network.model.isError
+import com.ubb.fmi.orar.ui.catalog.model.UserType
+import com.ubb.fmi.orar.data.network.model.isError
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,9 +21,14 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class StudyGroupsFormViewModel(
+    private val year: Int,
+    private val semesterId: String,
+    private val studyLineBaseId: String,
+    private val studyLineYearId: String,
+    private val studyLineDegreeId: String,
     private val studyLinesDataSource: StudyLineDataSource,
     private val timetablePreferences: TimetablePreferences
-) : ViewModel() {
+) : EventViewModel<StudyGroupsFromUiState.StudyGroupsFromEvent>() {
 
     private val _uiState = MutableStateFlow(StudyGroupsFromUiState())
     val uiState = _uiState.asStateFlow()
@@ -40,21 +46,25 @@ class StudyGroupsFormViewModel(
     private fun getStudyGroups() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
 
-        val configuration = timetablePreferences.getConfiguration().firstOrNull() ?: return@launch
-        val studyYear = configuration.studyLineYearId?.let(StudyYear::getById)
-        val studyLineId = configuration.studyLineBaseId + studyYear?.notation
+        val studyLineYear = StudyYear.getById(studyLineYearId)
+        val studyLineId = studyLineBaseId + studyLineYear.notation
 
+        val configuration = timetablePreferences.getConfiguration().firstOrNull()
         val studyGroupsResource = studyLinesDataSource.getStudyGroupsIds(
-            year = configuration.year,
-            semesterId = configuration.semesterId,
+            year = year,
+            semesterId = semesterId,
             studyLineId = studyLineId,
         )
+
+        val studyGroups = studyGroupsResource.payload?.toImmutableList() ?: persistentListOf()
+        val selectedStudyGroupId = studyGroups.firstOrNull { it == configuration?.groupId }
 
         _uiState.update {
             it.copy(
                 isLoading = false,
                 isError = studyGroupsResource.status.isError(),
-                studyGroups = studyGroupsResource.payload?.toImmutableList() ?: persistentListOf(),
+                studyGroups = studyGroups,
+                selectedStudyGroupId = selectedStudyGroupId
             )
         }
     }
@@ -70,7 +80,14 @@ class StudyGroupsFormViewModel(
     fun finishSelection() {
         viewModelScope.launch {
             _uiState.value.selectedStudyGroupId?.let { studyGroupId ->
+                timetablePreferences.setYear(year)
+                timetablePreferences.setSemester(semesterId)
+                timetablePreferences.setStudyLineBaseId(studyLineBaseId)
+                timetablePreferences.setStudyLineYearId(studyLineYearId)
+                timetablePreferences.setDegreeId(studyLineDegreeId)
                 timetablePreferences.setGroupId(studyGroupId)
+                timetablePreferences.setUserType(UserType.STUDENT.id)
+                registerEvent(StudyGroupsFromUiState.StudyGroupsFromEvent.CONFIGURATION_DONE)
             }
         }
     }

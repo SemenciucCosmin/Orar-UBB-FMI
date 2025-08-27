@@ -9,11 +9,23 @@ sealed class ConfigurationFormNavDestination {
     data object OnboardingForm: ConfigurationFormNavDestination()
 
     @Serializable
-    data object TeachersForm: ConfigurationFormNavDestination()
+    data class TeachersForm(
+        val year: Int,
+        val semesterId: String,
+    ): ConfigurationFormNavDestination()
 
     @Serializable
-    data object StudyLinesForm: ConfigurationFormNavDestination()
+    data class StudyLinesForm(
+        val year: Int,
+        val semesterId: String,
+    ): ConfigurationFormNavDestination()
 
     @Serializable
-    data object StudyGroupsForm: ConfigurationFormNavDestination()
+    data class StudyGroupsForm(
+        val year: Int,
+        val semesterId: String,
+        val studyLineBaseId: String,
+        val studyLineYearId: String,
+        val studyLineDegreeId: String,
+    ): ConfigurationFormNavDestination()
 }

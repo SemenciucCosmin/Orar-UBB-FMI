@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.data.studyline.api
 
-import com.ubb.fmi.orar.network.model.Resource
-import com.ubb.fmi.orar.network.model.processApiResource
+import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.network.model.processApiResource
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 

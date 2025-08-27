@@ -15,9 +15,9 @@ import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.extensions.SLASH
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.domain.htmlparser.model.Table
-import com.ubb.fmi.orar.network.model.Resource
-import com.ubb.fmi.orar.network.model.Status
-import com.ubb.fmi.orar.network.model.isError
+import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.network.model.Status
+import com.ubb.fmi.orar.data.network.model.isError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

@@ -1,12 +1,13 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
-import com.ubb.fmi.orar.network.model.isError
+import com.ubb.fmi.orar.ui.catalog.model.UserType
+import com.ubb.fmi.orar.data.network.model.isError
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,9 +20,11 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class TeachersFormViewModel(
+    private val year: Int,
+    private val semesterId: String,
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences
-) : ViewModel() {
+) : EventViewModel<TeachersFormUiState.TeachersFormEvent>() {
 
     private val _uiState = MutableStateFlow(TeachersFormUiState())
     val uiState = _uiState.asStateFlow()
@@ -46,15 +49,21 @@ class TeachersFormViewModel(
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
         val teachersResource = teachersDataSource.getTeachers(
-            year = configuration?.year ?: return@launch,
-            semesterId = configuration.semesterId
+            year = year,
+            semesterId = semesterId
         )
+
+        val teacher = teachersResource.payload?.firstOrNull{
+            it.id == configuration?.teacherId
+        }
 
         _uiState.update {
             it.copy(
                 isLoading = false,
                 isError = teachersResource.status.isError(),
-                teachers = teachersResource.payload?.toImmutableList() ?: persistentListOf()
+                teachers = teachersResource.payload?.toImmutableList() ?: persistentListOf(),
+                selectedTeacherId = teacher?.id,
+                selectedFilter = TeacherTitleFilter.getById(teacher?.titleId)
             )
         }
     }
@@ -69,7 +78,13 @@ class TeachersFormViewModel(
 
     fun finishSelection() {
         viewModelScope.launch {
-            _uiState.value.selectedTeacherId?.let { timetablePreferences.setTeacherId(it) }
+            _uiState.value.selectedTeacherId?.let { teacherId ->
+                timetablePreferences.setYear(year)
+                timetablePreferences.setSemester(semesterId)
+                timetablePreferences.setTeacherId(teacherId)
+                timetablePreferences.setUserType(UserType.TEACHER.id)
+                registerEvent(TeachersFormUiState.TeachersFormEvent.CONFIGURATION_DONE)
+            }
         }
     }
 }

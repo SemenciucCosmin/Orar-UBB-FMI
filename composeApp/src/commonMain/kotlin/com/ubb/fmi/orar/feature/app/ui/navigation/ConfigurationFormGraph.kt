@@ -1,0 +1,47 @@
+package com.ubb.fmi.orar.feature.app.ui.navigation
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.ubb.fmi.orar.feature.form.ui.route.OnboardingFormRoute
+import com.ubb.fmi.orar.feature.form.ui.route.StudyGroupsFormRoute
+import com.ubb.fmi.orar.feature.form.ui.route.StudyLinesFormRoute
+import com.ubb.fmi.orar.feature.form.ui.route.TeachersFormRoute
+import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
+
+fun NavGraphBuilder.configurationFormGraph(navController: NavController) {
+    composable<ConfigurationFormNavDestination.OnboardingForm> { navBackStackEntry ->
+        OnboardingFormRoute(navController)
+    }
+
+    composable<ConfigurationFormNavDestination.TeachersForm> { navBackStackEntry ->
+        val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.TeachersForm>()
+        TeachersFormRoute(
+            navController = navController,
+            year = args.year,
+            semesterId = args.semesterId
+        )
+    }
+
+    composable<ConfigurationFormNavDestination.StudyLinesForm> { navBackStackEntry ->
+        val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.StudyLinesForm>()
+        StudyLinesFormRoute(
+            navController = navController,
+            year = args.year,
+            semesterId = args.semesterId
+        )
+    }
+
+    composable<ConfigurationFormNavDestination.StudyGroupsForm> { navBackStackEntry ->
+        val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.StudyGroupsForm>()
+        StudyGroupsFormRoute(
+            navController = navController,
+            year = args.year,
+            semesterId = args.semesterId,
+            studyLineBaseId = args.studyLineBaseId,
+            studyLineYearId = args.studyLineYearId,
+            studyLineDegreeId = args.studyLineDegreeId,
+        )
+    }
+}

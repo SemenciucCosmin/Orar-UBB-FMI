@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

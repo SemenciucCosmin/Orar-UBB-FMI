@@ -6,9 +6,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.OnboardingFormScreen
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.OnboardingFormViewModel
-import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
-import com.ubb.fmi.orar.ui.catalog.components.EventHandler
+import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -26,20 +25,31 @@ fun OnboardingFormRoute(navController: NavController) {
         onStudyYearClick = viewModel::selectStudyYear,
         onSemesterClick = viewModel::selectSemester,
         onUserTypeClick = viewModel::selectUserType,
-        onNextClick = viewModel::finishOnboarding
-    )
+        onNextClick = {
+            val year = uiState.selectedStudyYear ?: return@OnboardingFormScreen
+            val semesterId = uiState.selectedSemesterId ?: return@OnboardingFormScreen
+            val userTypeId = uiState.selectedUserTypeId ?: return@OnboardingFormScreen
+            val userType = UserType.getById(userTypeId)
 
-    EventHandler(viewModel.events) { event ->
-        when (event) {
-            OnboardingFormUiState.OnboardingFormEvent.STUDENT_COMPLETED -> {
-                viewModel.unregisterEvent(event)
-                navController.navigate(ConfigurationFormNavDestination.StudyLinesForm)
-            }
+            when (userType) {
+                UserType.STUDENT -> {
+                    navController.navigate(
+                        ConfigurationFormNavDestination.StudyLinesForm(
+                            year = year,
+                            semesterId = semesterId
+                        )
+                    )
+                }
 
-            OnboardingFormUiState.OnboardingFormEvent.TEACHER_COMPLETED -> {
-                viewModel.unregisterEvent(event)
-                navController.navigate(ConfigurationFormNavDestination.TeachersForm)
+                UserType.TEACHER -> {
+                    navController.navigate(
+                        ConfigurationFormNavDestination.TeachersForm(
+                            year = year,
+                            semesterId = semesterId
+                        )
+                    )
+                }
             }
         }
-    }
+    )
 }

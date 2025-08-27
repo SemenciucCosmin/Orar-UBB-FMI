@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.data.teachers.datasource
 
 import com.ubb.fmi.orar.data.teachers.model.Teacher
 import com.ubb.fmi.orar.data.teachers.model.TeacherTimetable
-import com.ubb.fmi.orar.network.model.Resource
+import com.ubb.fmi.orar.data.network.model.Resource
 
 interface TeachersDataSource {
 

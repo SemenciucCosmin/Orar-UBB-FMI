@@ -5,8 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel.StudyLineTimetableViewModel
-import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableScreen
-import com.ubb.fmi.orar.feature.timetable.ui.components.TimetableTopBar
+import com.ubb.fmi.orar.ui.catalog.components.TimetableScreen
+import com.ubb.fmi.orar.ui.catalog.components.TimetableTopBar
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

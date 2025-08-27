@@ -1,14 +1,14 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.feature.timetable.ui.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
-import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -21,20 +21,30 @@ import kotlin.time.ExperimentalTime
 
 class OnboardingFormViewModel(
     private val timetablePreferences: TimetablePreferences
-) : EventViewModel<OnboardingFormUiState.OnboardingFormEvent>() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingFormUiState())
     val uiState = _uiState.asStateFlow()
-        .onStart {
-            _uiState.update {
-                it.copy(studyYears = getStudyYears().toImmutableList())
-            }
-        }
+        .onStart { loadConfiguration() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
             initialValue = _uiState.value
         )
+
+    private fun loadConfiguration() {
+        viewModelScope.launch {
+            val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            _uiState.update {
+                it.copy(
+                    studyYears = getStudyYears().toImmutableList(),
+                    selectedStudyYear = configuration?.year,
+                    selectedSemesterId = configuration?.semesterId,
+                    selectedUserTypeId = configuration?.userTypeId
+                )
+            }
+        }
+    }
 
     fun selectStudyYear(studyYear: Int) {
         _uiState.update { it.copy(selectedStudyYear = studyYear) }
@@ -46,24 +56,6 @@ class OnboardingFormViewModel(
 
     fun selectUserType(userTypeId: String) {
         _uiState.update { it.copy(selectedUserTypeId = userTypeId) }
-    }
-
-    fun finishOnboarding() {
-        viewModelScope.launch {
-            _uiState.value.selectedStudyYear?.let { timetablePreferences.setYear(it) }
-            _uiState.value.selectedSemesterId?.let { timetablePreferences.setSemester(it) }
-            _uiState.value.selectedUserTypeId?.let { timetablePreferences.setUserType(it) }
-
-            when (_uiState.value.selectedUserTypeId) {
-                UserType.STUDENT.id -> registerEvent(
-                    event = OnboardingFormUiState.OnboardingFormEvent.STUDENT_COMPLETED
-                )
-
-                else -> registerEvent(
-                    event = OnboardingFormUiState.OnboardingFormEvent.TEACHER_COMPLETED
-                )
-            }
-        }
     }
 
     @OptIn(ExperimentalTime::class)

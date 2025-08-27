@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.ubb.fmi.orar.feature.app.ui.AppRoute
+import androidx.navigation.compose.rememberNavController
+import com.ubb.fmi.orar.feature.app.ui.navigation.AppGraph
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -15,7 +15,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppRoute()
+            OrarUbbFmiTheme {
+                AppGraph(rememberNavController())
+            }
         }
     }
 }

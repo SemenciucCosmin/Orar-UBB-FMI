@@ -2,10 +2,10 @@ package com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.feature.timetable.ui.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.domain.rooms.usecase.GetRoomTimetableUseCase
-import com.ubb.fmi.orar.feature.timetable.ui.viewmodel.model.TimetableUiState
-import com.ubb.fmi.orar.network.model.isError
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
+import com.ubb.fmi.orar.data.network.model.isError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow

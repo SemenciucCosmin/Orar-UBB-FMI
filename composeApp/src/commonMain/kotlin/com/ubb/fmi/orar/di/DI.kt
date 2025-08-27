@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.di
 
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
-import com.ubb.fmi.orar.network.di.networkDataModule
+import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.studyline.di.studyLineDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
@@ -14,7 +14,7 @@ import com.ubb.fmi.orar.domain.subjects.di.subjectsDomainModule
 import com.ubb.fmi.orar.domain.teachers.di.teachersDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
-import com.ubb.fmi.orar.feature.app.di.appFeatureModule
+import com.ubb.fmi.orar.feature.startup.di.startupFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
@@ -36,7 +36,6 @@ expect fun platformModule(): Module
 
 fun commonModule() = module {
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
-    includes(appFeatureModule())
     includes(databaseDataModule())
     includes(formFeatureModule())
     includes(networkDataModule())
@@ -45,6 +44,7 @@ fun commonModule() = module {
     includes(roomsDomainModule())
     includes(roomsFeatureModule())
     includes(roomTimetableFeatureModule())
+    includes(startupFeatureModule())
     includes(studyLineDataModule())
     includes(studyLinesDomainModule())
     includes(studyLinesFeatureModule())
