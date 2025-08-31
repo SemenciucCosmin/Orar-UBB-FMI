@@ -2,6 +2,8 @@ package com.ubb.fmi.orar.ui.catalog.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableClass
 import com.ubb.fmi.orar.domain.extensions.BLANK
+import com.ubb.fmi.orar.domain.extensions.COMMA
+import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
@@ -9,6 +11,7 @@ import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlin.String
 
 data class TimetableUiState(
     val classes: ImmutableList<TimetableClass> = persistentListOf(),
@@ -24,9 +27,38 @@ data class TimetableUiState(
             get() {
                 val filteredClasses = classes.filter { timetableClass ->
                     timetableClass.frequencyId in listOf(Frequency.BOTH.id, selectedFrequency.id)
-                }.filter { isEditModeOn || it.isVisible }
+                }
 
-                return filteredClasses.groupBy { it.day }.map { (day, classes) ->
+                val classes = when {
+                    isEditModeOn -> filteredClasses
+                    else -> {
+                        val visibleClasses = filteredClasses.filter { it.isVisible }
+                        val groupedClasses = visibleClasses.groupBy { timetableClass ->
+                            listOf(
+                                timetableClass.day,
+                                timetableClass.startHour,
+                                timetableClass.endHour,
+                                timetableClass.room,
+                                timetableClass.classType,
+                                timetableClass.ownerId,
+                                timetableClass.groupId,
+                                timetableClass.ownerTypeId,
+                                timetableClass.subject,
+                                timetableClass.teacher,
+                            )
+                        }
+
+                        groupedClasses.values.mapNotNull { classes ->
+                            val joinedParticipant =  classes.joinToString(
+                                String.COMMA + String.SPACE
+                            ) { it.participant }
+
+                            classes.firstOrNull()?.copy(participant = joinedParticipant)
+                        }
+                    }
+                }
+
+                return classes.groupBy { it.day }.map { (day, classes) ->
                     val divider = TimetableListItem.Divider(day)
                     val classItems = classes.map { timetableClass ->
 

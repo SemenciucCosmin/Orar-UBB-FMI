@@ -6,11 +6,11 @@ enum class Semester(
 ) {
     FIRST(
         id = "1",
-        label = "Semstrul 1"
+        label = "Semestrul 1"
     ),
     SECOND(
         id = "2",
-        label = "Semstrul 2"
+        label = "Semestrul 2"
     );
 
     companion object {

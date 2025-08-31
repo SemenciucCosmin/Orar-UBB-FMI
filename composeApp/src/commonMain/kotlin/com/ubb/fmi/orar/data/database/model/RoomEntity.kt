@@ -1,13 +1,15 @@
 package com.ubb.fmi.orar.data.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity("rooms")
+@Entity(
+    tableName = "rooms",
+    primaryKeys = ["id", "configurationId"]
+)
 data class RoomEntity(
-    @PrimaryKey(autoGenerate = false)
-    val id: String,
-    val name: String,
-    val location: String,
-    val configurationId: String,
+    @ColumnInfo(name = "id") val id: String,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "location") val location: String,
+    @ColumnInfo(name = "configurationId") val configurationId: String,
 )

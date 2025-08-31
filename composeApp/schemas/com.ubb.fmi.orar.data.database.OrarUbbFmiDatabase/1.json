@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8c628f5ffbd6c475c5301fd449182fbb",
+    "identityHash": "f7e426232baeba5639f33cf4ba39e920",
     "entities": [
       {
         "tableName": "rooms",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `location` TEXT NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `location` TEXT NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`, `configurationId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -36,13 +36,14 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "id",
+            "configurationId"
           ]
         }
       },
       {
         "tableName": "study_lines",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `configurationId` TEXT NOT NULL, `fieldId` TEXT NOT NULL, `levelId` TEXT NOT NULL, `degreeId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `fieldId` TEXT NOT NULL, `levelId` TEXT NOT NULL, `degreeId` TEXT NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`, `configurationId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -53,12 +54,6 @@
           {
             "fieldPath": "name",
             "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "configurationId",
-            "columnName": "configurationId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -79,28 +74,29 @@
             "columnName": "degreeId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "id",
+            "configurationId"
           ]
         }
       },
       {
         "tableName": "subjects",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `configurationId` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`, `configurationId`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "configurationId",
-            "columnName": "configurationId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -109,28 +105,29 @@
             "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "id",
+            "configurationId"
           ]
         }
       },
       {
         "tableName": "teachers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `configurationId` TEXT NOT NULL, `name` TEXT NOT NULL, `titleId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `titleId` TEXT NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`, `configurationId`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "configurationId",
-            "columnName": "configurationId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -145,18 +142,25 @@
             "columnName": "titleId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "id",
+            "configurationId"
           ]
         }
       },
       {
         "tableName": "timetable_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `studyLine` TEXT NOT NULL, `room` TEXT NOT NULL, `participant` TEXT NOT NULL, `classType` TEXT NOT NULL, `ownerId` TEXT NOT NULL, `groupId` TEXT NOT NULL, `ownerTypeId` TEXT NOT NULL, `subject` TEXT NOT NULL, `teacher` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `studyLine` TEXT NOT NULL, `room` TEXT NOT NULL, `participant` TEXT NOT NULL, `classType` TEXT NOT NULL, `ownerId` TEXT NOT NULL, `groupId` TEXT NOT NULL, `ownerTypeId` TEXT NOT NULL, `subject` TEXT NOT NULL, `teacher` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`, `configurationId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -258,14 +262,15 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "id",
+            "configurationId"
           ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c628f5ffbd6c475c5301fd449182fbb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f7e426232baeba5639f33cf4ba39e920')"
     ]
   }
 }
