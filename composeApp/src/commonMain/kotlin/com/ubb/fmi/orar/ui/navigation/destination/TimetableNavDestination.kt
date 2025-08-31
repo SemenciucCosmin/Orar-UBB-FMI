@@ -15,12 +15,16 @@ sealed class TimetableNavDestination() {
     data object StudyLines: TimetableNavDestination()
 
     @Serializable
-    data class StudyGroups(val studyLineId: String): TimetableNavDestination()
+    data class Groups(
+        val fieldId: String,
+        val studyLevelId: String
+    ): TimetableNavDestination()
 
     @Serializable
     data class StudyLineTimetable(
-        val studyLineId: String,
-        val studyGroupId: String
+        val fieldId: String,
+        val studyLevelId: String,
+        val groupId: String
     ): TimetableNavDestination()
 
     @Serializable

@@ -8,9 +8,12 @@ import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 
 @Dao
 interface StudyLineDao {
-    @Query("SELECT * FROM study_lines")
-    suspend fun getAllStudyLines(): List<StudyLineEntity>
+    @Query("SELECT * FROM study_lines WHERE configurationId LIKE :configurationId")
+    suspend fun getAll(configurationId: String): List<StudyLineEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStudyLine(studyLineEntity: StudyLineEntity)
+    suspend fun insert(entity: StudyLineEntity)
+
+    @Query("DELETE FROM study_lines WHERE configurationId LIKE :configurationId")
+    suspend fun deleteAll(configurationId: String)
 }

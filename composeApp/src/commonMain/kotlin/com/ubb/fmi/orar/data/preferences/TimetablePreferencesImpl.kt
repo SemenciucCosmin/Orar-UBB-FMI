@@ -21,8 +21,8 @@ class TimetablePreferencesImpl(
             val semesterId = preferences[SEMESTER_ID] ?: return@mapLatest null
             val userTypeId = preferences[USER_TYPE_ID] ?: return@mapLatest null
             val degreeId = preferences[DEGREE_ID]
-            val studyLineBaseId = preferences[STUDY_LINE_BASE_ID]
-            val studyLineYearId = preferences[STUDY_LINE_YEAR_ID]
+            val fieldId = preferences[STUDY_LINE_BASE_ID]
+            val studyLevelId = preferences[STUDY_LINE_YEAR_ID]
             val groupId = preferences[GROUP_ID]
             val teacherId = preferences[TEACHER_ID]
 
@@ -31,8 +31,8 @@ class TimetablePreferencesImpl(
                 semesterId = semesterId,
                 userTypeId = userTypeId,
                 degreeId = degreeId,
-                studyLineBaseId = studyLineBaseId,
-                studyLineYearId = studyLineYearId,
+                fieldId = fieldId,
+                studyLevelId = studyLevelId,
                 groupId = groupId,
                 teacherId = teacherId,
             )
@@ -55,12 +55,12 @@ class TimetablePreferencesImpl(
         dataStore.edit { it[DEGREE_ID] = degreeId }
     }
 
-    override suspend fun setStudyLineBaseId(studyLineBaseId: String) {
-        dataStore.edit { it[STUDY_LINE_BASE_ID] = studyLineBaseId }
+    override suspend fun setFieldId(fieldId: String) {
+        dataStore.edit { it[STUDY_LINE_BASE_ID] = fieldId }
     }
 
-    override suspend fun setStudyLineYearId(studyLineYearId: String) {
-        dataStore.edit { it[STUDY_LINE_YEAR_ID] = studyLineYearId }
+    override suspend fun setStudyLevelId(studyLevelId: String) {
+        dataStore.edit { it[STUDY_LINE_YEAR_ID] = studyLevelId }
     }
 
     override suspend fun setGroupId(groupId: String) {

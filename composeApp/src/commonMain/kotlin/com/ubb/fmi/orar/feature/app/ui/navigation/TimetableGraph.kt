@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.rooms.ui.route.RoomsRoute
 import com.ubb.fmi.orar.feature.roomtimetable.ui.route.RoomTimetableRoute
 import com.ubb.fmi.orar.feature.startup.ui.route.StartupRoute
-import com.ubb.fmi.orar.feature.studygroups.ui.route.StudyGroupsRoute
+import com.ubb.fmi.orar.feature.groups.ui.route.GroupsRoute
 import com.ubb.fmi.orar.feature.studylines.ui.route.StudyLinesRoute
 import com.ubb.fmi.orar.feature.studylinetimetable.ui.route.StudyLineTimetableRoute
 import com.ubb.fmi.orar.feature.subjects.ui.route.SubjectsRoute
@@ -30,12 +30,13 @@ fun NavGraphBuilder.timetableGraph(navController: NavController) {
         StudyLinesRoute(navController)
     }
 
-    composable<TimetableNavDestination.StudyGroups> { navBackStackEntry ->
-        val args = navBackStackEntry.toRoute<TimetableNavDestination.StudyGroups>()
+    composable<TimetableNavDestination.Groups> { navBackStackEntry ->
+        val args = navBackStackEntry.toRoute<TimetableNavDestination.Groups>()
 
-        StudyGroupsRoute(
+        GroupsRoute(
             navController = navController,
-            studyLineId = args.studyLineId
+            fieldId = args.fieldId,
+            studyLevelId = args.studyLevelId
         )
     }
 
@@ -44,8 +45,9 @@ fun NavGraphBuilder.timetableGraph(navController: NavController) {
 
         StudyLineTimetableRoute(
             navController = navController,
-            studyLineId = args.studyLineId,
-            studyGroupId = args.studyGroupId,
+            fieldId = args.fieldId,
+            studyLevelId = args.studyLevelId,
+            groupId = args.groupId,
         )
     }
 

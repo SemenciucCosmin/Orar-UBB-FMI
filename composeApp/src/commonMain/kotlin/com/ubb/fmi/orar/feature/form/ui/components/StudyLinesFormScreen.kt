@@ -6,19 +6,24 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.domain.timetable.model.StudyYear
+import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
@@ -27,17 +32,44 @@ import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.FormInputItem
 import com.ubb.fmi.orar.ui.catalog.components.FormListItem
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
+import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
+import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudyLinesFormScreen(
     uiState: StudyLinesFormUiState,
     onStudyLineClick: (String) -> Unit,
-    onStudyYearClick: (String) -> Unit,
+    onStudyLevelClick: (String) -> Unit,
     onSelectFilter: (DegreeFilter) -> Unit,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
+    onBack: () -> Unit,
 ) {
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = {
+            if (!uiState.isLoading) {
+                TopAppBar(
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                modifier = Modifier.size(32.dp),
+                                painter = painterResource(Res.drawable.ic_left_arrow),
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                    title = {
+                        Text(
+                            text = uiState.title,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                )
+            }
+        }
+    ) { paddingValues ->
         when {
             uiState.isLoading -> {
                 ProgressOverlay(
@@ -78,22 +110,22 @@ fun StudyLinesFormScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.filteredGroupedStudyLines) { groupedStudyLines ->
-                            val lineId = groupedStudyLines.firstOrNull()?.baseId ?: return@items
+                            val fieldId = groupedStudyLines.firstOrNull()?.fieldId ?: return@items
                             val label = groupedStudyLines.firstOrNull()?.name ?: return@items
 
                             FormListItem(
                                 modifier = Modifier.fillMaxWidth(),
                                 headlineLabel = label,
-                                isSelected = uiState.selectedStudyLineBaseId == lineId,
-                                onClick = { onStudyLineClick(lineId) },
-                                onUnderlineItemClick = onStudyYearClick,
-                                selectedUnderlineItemId = uiState.selectedStudyYearId,
+                                isSelected = uiState.selectedFieldId == fieldId,
+                                onClick = { onStudyLineClick(fieldId) },
+                                onUnderlineItemClick = onStudyLevelClick,
+                                selectedUnderlineItemId = uiState.selectedStudyLevelId,
                                 underlineItems = groupedStudyLines.map { studyLine ->
-                                    val year = StudyYear.getById(studyLine.studyYearId)
+                                    val studyLevel = StudyLevel.getById(studyLine.levelId)
 
                                     FormInputItem(
-                                        id = year.id,
-                                        label = year.label
+                                        id = studyLevel.id,
+                                        label = studyLevel.label
                                     )
                                 }
                             )

@@ -2,31 +2,31 @@ package com.ubb.fmi.orar.data.teachers.model
 
 enum class TeacherTitle(
     val id: String,
-    val label: String,
+    val orderIndex: Int,
 ) {
     PROFESSOR(
         id = "Prof.",
-        label = "Prof.",
+        orderIndex = 0
     ),
     SPEAKER(
         id = "Conf.",
-        label = "Conf.",
+        orderIndex = 1
     ),
     LECTURER(
         id = "Lect.",
-        label = "Lect.",
+        orderIndex = 2
     ),
     ASSISTANT(
         id = "Asist.",
-        label = "Asist.",
+        orderIndex = 3
     ),
     CANDIDATE(
         id = "Drd.",
-        label = "Drd.",
+        orderIndex = 4
     ),
     ASSOCIATE(
         id = "C.d.asociat",
-        label = "C.d.asociat",
+        orderIndex = 5
     );
 
     companion object {

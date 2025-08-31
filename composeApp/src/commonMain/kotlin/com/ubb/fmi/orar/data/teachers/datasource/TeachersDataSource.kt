@@ -1,28 +1,28 @@
 package com.ubb.fmi.orar.data.teachers.datasource
 
-import com.ubb.fmi.orar.data.teachers.model.Teacher
-import com.ubb.fmi.orar.data.teachers.model.TeacherTimetable
 import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.timetable.model.Timetable
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 
 interface TeachersDataSource {
 
-    suspend fun getTeachers(
+    suspend fun getOwners(
         year: Int,
         semesterId: String
-    ): Resource<List<Teacher>>
-
-    suspend fun getTimetables(
-        year: Int,
-        semesterId: String
-    ): Resource<List<TeacherTimetable>>
+    ): Resource<List<TimetableOwner.Teacher>>
 
     suspend fun getTimetable(
         year: Int,
         semesterId: String,
-        teacherId: String
-    ): Resource<TeacherTimetable>
+        ownerId: String,
+    ): Resource<Timetable<TimetableOwner.Teacher>>
 
     suspend fun changeTimetableClassVisibility(
         timetableClassId: String
+    )
+
+    suspend fun invalidate(
+        year: Int,
+        semesterId: String,
     )
 }

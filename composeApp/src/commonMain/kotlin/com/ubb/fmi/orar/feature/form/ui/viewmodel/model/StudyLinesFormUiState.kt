@@ -1,22 +1,23 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
-import com.ubb.fmi.orar.data.studyline.model.StudyLine
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
-import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 data class StudyLinesFormUiState(
-    private val groupedStudyLines: ImmutableList<ImmutableList<StudyLine>> = persistentListOf(),
+    private val groupedStudyLines: ImmutableList<ImmutableList<TimetableOwner.StudyLine>> = persistentListOf(),
     val selectedFilter: DegreeFilter = DegreeFilter.ALL,
-    val selectedStudyLineBaseId: String? = null,
-    val selectedStudyYearId: String? = null,
+    val selectedFieldId: String? = null,
+    val selectedStudyLevelId: String? = null,
+    val title: String = String.BLANK,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
 ) {
     companion object {
-        val StudyLinesFormUiState.filteredGroupedStudyLines: ImmutableList<ImmutableList<StudyLine>>
+        val StudyLinesFormUiState.filteredGroupedStudyLines: ImmutableList<ImmutableList<TimetableOwner.StudyLine>>
             get() {
                 return groupedStudyLines.filter { studyLines ->
                     studyLines.all {
@@ -28,4 +29,4 @@ data class StudyLinesFormUiState(
 }
 
 val StudyLinesFormUiState.isNextEnabled: Boolean
-    get() = selectedStudyLineBaseId != null && selectedStudyYearId != null
+    get() = selectedFieldId != null && selectedStudyLevelId != null

@@ -8,40 +8,36 @@ import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.data.network.model.isError
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
     private val changeTimetableClassVisibilityUseCase: ChangeTimetableClassVisibilityUseCase,
 ) : ViewModel() {
 
+    private var job: Job
     private val _uiState = MutableStateFlow(TimetableUiState())
     val uiState = _uiState.asStateFlow()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
-            initialValue = _uiState.value
-        )
 
     init {
-        loadTimetable()
+        job = loadTimetable()
     }
 
-    private fun loadTimetable() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, isError = false) }
-            val timetableResource = getUserTimetableUseCase()
+    private fun loadTimetable() = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true, isError = false) }
+        getUserTimetableUseCase().collectLatest { resource ->
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = timetableResource.status.isError(),
-                    timetable = timetableResource.payload,
+                    isError = resource.status.isError(),
+                    classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf()
                 )
             }
         }
@@ -59,23 +55,24 @@ class UserTimetableViewModel(
         viewModelScope.launch {
             changeTimetableClassVisibilityUseCase(
                 timetableClassId = timetableClass.id,
-                timetableClassOwner = timetableClass.classOwner,
+                timetableOwnerType = timetableClass.timetableOwnerType,
             )
         }
 
         _uiState.update { state ->
-            val newClasses = state.timetable?.classes?.map {
+            val newClasses = state.classes.map {
                 when {
                     it.id != timetableClass.id -> it
                     else -> it.copy(isVisible = !it.isVisible)
                 }
-            } ?: emptyList()
+            }.toImmutableList()
 
-            state.copy(timetable = state.timetable?.copy(classes = newClasses))
+            state.copy(classes = newClasses)
         }
     }
 
     fun retry() {
-        loadTimetable()
+        job.cancel()
+        job = loadTimetable()
     }
 }

@@ -13,11 +13,12 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun StudyLineTimetableRoute(
     navController: NavController,
-    studyLineId: String,
-    studyGroupId: String
+    fieldId: String,
+    studyLevelId: String,
+    groupId: String
 ) {
     val viewModel: StudyLineTimetableViewModel = koinViewModel(
-        parameters = { parametersOf(studyLineId, studyGroupId) }
+        parameters = { parametersOf(fieldId, studyLevelId, groupId) }
     )
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -26,10 +27,10 @@ fun StudyLineTimetableRoute(
         uiState = uiState,
         onRetryClick = viewModel::retry,
         topBar = {
-            uiState.timetable?.let { timetable ->
+            if (uiState.title.isNotBlank()) {
                 TimetableTopBar(
-                    title = timetable.title,
-                    subtitle = timetable.subtitle,
+                    title = uiState.title,
+                    subtitle = uiState.subtitle,
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = viewModel::selectFrequency,
                     onBack = navController::navigateUp

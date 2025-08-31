@@ -22,7 +22,7 @@ fun UserTimetableRoute(navController: NavController) {
         bottomBar = { TimetableBottomBar(navController) },
         onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
         topBar = {
-            uiState.timetable?.let { timetable ->
+            if (!uiState.isLoading && !uiState.isError) {
                 UserTimetableTopBar(
                     isEditModeOn = uiState.isEditModeOn,
                     selectedFrequency = uiState.selectedFrequency,

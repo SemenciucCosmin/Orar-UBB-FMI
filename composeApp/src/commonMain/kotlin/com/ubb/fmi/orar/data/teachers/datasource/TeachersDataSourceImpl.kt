@@ -1,13 +1,15 @@
 package com.ubb.fmi.orar.data.teachers.datasource
 
-import com.ubb.fmi.orar.data.database.dao.TeacherClassDao
 import com.ubb.fmi.orar.data.database.dao.TeacherDao
-import com.ubb.fmi.orar.data.database.model.TeacherClassEntity
+import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.TeacherEntity
+import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.network.model.Status
+import com.ubb.fmi.orar.data.timetable.model.Timetable
+import com.ubb.fmi.orar.data.timetable.model.TimetableClass
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.datasource.TimetableDataSource
 import com.ubb.fmi.orar.data.teachers.api.TeachersApi
-import com.ubb.fmi.orar.data.teachers.model.Teacher
-import com.ubb.fmi.orar.data.teachers.model.TeacherTimetable
-import com.ubb.fmi.orar.data.teachers.model.TeacherClass
 import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COLON
@@ -15,180 +17,61 @@ import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
-import com.ubb.fmi.orar.data.network.model.Resource
-import com.ubb.fmi.orar.data.network.model.Status
-import com.ubb.fmi.orar.data.network.model.isError
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
 import okio.ByteString.Companion.encodeUtf8
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.orEmpty
 
 class TeachersDataSourceImpl(
     private val teachersApi: TeachersApi,
     private val teacherDao: TeacherDao,
-    private val teacherClassDao: TeacherClassDao,
-) : TeachersDataSource {
+    timetableClassDao: TimetableClassDao,
+) : TeachersDataSource, TimetableDataSource<TimetableOwner.Teacher>(timetableClassDao) {
 
-    override suspend fun getTeachers(
+    override suspend fun getOwners(
         year: Int,
-        semesterId: String
-    ): Resource<List<Teacher>> {
-        val cachedTeachers = getTeachersFromCache()
-
-        return when {
-            cachedTeachers.isNotEmpty() -> {
-                println("TESTMESSAGE Teacher: from cache")
-                val orderedTeachers = cachedTeachers.sortedWith(
-                    compareBy<Teacher> {
-                        TeacherTitle.getById(it.titleId).ordinal
-                    }.thenBy { it.name }
-                )
-
-                Resource(orderedTeachers, Status.Success)
-            }
-
-            else -> {
-                println("TESTMESSAGE Teacher: from API")
-                val apiTeachersResource = getTeachersFromApi(year, semesterId)
-                apiTeachersResource.payload?.forEach { teacher ->
-                    val teacherEntity = mapTeacherToEntity(teacher)
-                    teacherDao.insertTeacher(teacherEntity)
-                }
-
-                val orderedTeachers = apiTeachersResource.payload?.sortedWith(
-                    compareBy<Teacher> {
-                        TeacherTitle.getById(it.titleId).ordinal
-                    }.thenBy { it.name }
-                )
-
-                Resource(orderedTeachers, apiTeachersResource.status)
-            }
-        }
-    }
-
-    override suspend fun getTimetables(
-        year: Int,
-        semesterId: String
-    ): Resource<List<TeacherTimetable>> {
-        val cachedTimetables = getTimetablesFromCache()
-
-        return when {
-            cachedTimetables.isNotEmpty() -> {
-                println("TESTMESSAGE Teacher Timetable: from cache")
-                Resource(cachedTimetables, Status.Success)
-            }
-
-            else -> {
-                println("TESTMESSAGE Teacher Timetable: from API")
-                val apiTimetablesResource = getTimetablesFromApi(year, semesterId)
-                apiTimetablesResource.payload?.forEach { timetable ->
-                    val teacherEntity = mapTeacherToEntity(timetable.teacher)
-                    val classesEntities = mapClassesToEntities(
-                        teacherId = timetable.teacher.id,
-                        classes = timetable.classes
-                    )
-
-                    teacherDao.insertTeacher(teacherEntity)
-                    classesEntities.forEach { teacherClassDao.insertTeacherClass(it) }
-                }
-
-                apiTimetablesResource
-            }
-        }
+        semesterId: String,
+    ): Resource<List<TimetableOwner.Teacher>> {
+        return super.getOwners(year, semesterId)
     }
 
     override suspend fun getTimetable(
         year: Int,
         semesterId: String,
-        teacherId: String
-    ): Resource<TeacherTimetable> {
-        val teacher = getTeachers(year, semesterId).payload?.firstOrNull { it.id == teacherId }
-        val cachedTimetable = teacher?.let { getTimetableFromCache(teacher) }
-
-        return when {
-            cachedTimetable?.classes?.isNotEmpty() == true -> {
-                println("TESTMESSAGE Teacher Timetable: from cache")
-                Resource(cachedTimetable, Status.Success)
-            }
-
-            else -> {
-                println("TESTMESSAGE Teacher Timetable: from API")
-                if (teacher == null) return Resource(null, Status.Error)
-                val apiTimetableResource = getTeacherTimetableFromApi(year, semesterId, teacher)
-                apiTimetableResource.payload?.let { timetable ->
-                    val teacherEntity = mapTeacherToEntity(timetable.teacher)
-                    val classesEntities = mapClassesToEntities(
-                        teacherId = timetable.teacher.id,
-                        classes = timetable.classes
-                    )
-
-                    teacherDao.insertTeacher(teacherEntity)
-                    classesEntities.forEach { teacherClassDao.insertTeacherClass(it) }
-                }
-
-                apiTimetableResource
-            }
-        }
+        ownerId: String,
+    ): Resource<Timetable<TimetableOwner.Teacher>> {
+        return super.getTimetable(year, semesterId, ownerId)
     }
 
-    override suspend fun changeTimetableClassVisibility(timetableClassId: String) {
-        val teacherClassEntity = teacherClassDao.getTeacherClass(timetableClassId)
-        val newTeacherClassEntity = teacherClassEntity.copy(
-            isVisible = !teacherClassEntity.isVisible
-        )
-
-        teacherClassDao.insertTeacherClass(newTeacherClassEntity)
+    override suspend fun changeTimetableClassVisibility(
+        timetableClassId: String,
+    ) {
+        super.changeTimetableClassVisibility(timetableClassId)
     }
 
-    private suspend fun getTeachersFromCache(): List<Teacher> {
-        val entities = teacherDao.getAllTeachers()
-        return entities.map(::mapEntityToTeacher)
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        super.invalidate(year, semesterId)
     }
 
-    private suspend fun getTimetableFromCache(teacher: Teacher): TeacherTimetable {
-        val teacherClassEntities = teacherClassDao.getTeacherClasses(teacher.id)
-        return TeacherTimetable(
-            teacher = teacher,
-            classes = mapEntitiesToClasses(teacherClassEntities),
-        )
+    override suspend fun getOwnersFromCache(
+        configurationId: String,
+    ): List<TimetableOwner.Teacher> {
+        val entities = teacherDao.getAll(configurationId)
+        return entities.map(::mapEntityToOwner)
     }
 
-    private suspend fun getTimetablesFromCache(): List<TeacherTimetable> {
-        val teacherEntities = teacherDao.getAllTeachers()
-        val teacherClassEntities = teacherClassDao.getAllTeacherClasses()
-        val groupedTeacherClassEntities = teacherClassEntities.groupBy { it.teacherId }
-        val teacherWithClassesEntities = teacherEntities.associateWith { teacherEntity ->
-            groupedTeacherClassEntities[teacherEntity.id].orEmpty()
-        }.filter { it.value.isNotEmpty() }
-
-        return teacherWithClassesEntities.map { (teacherEntity, classesEntities) ->
-            TeacherTimetable(
-                teacher = mapEntityToTeacher(teacherEntity),
-                classes = mapEntitiesToClasses(classesEntities),
-            )
-        }
+    override suspend fun saveOwnerInCache(owner: TimetableOwner.Teacher) {
+        val entity = mapOwnerToEntity(owner)
+        teacherDao.insert(entity)
     }
 
-    private suspend fun getTeachersFromApi(
+    override suspend fun getOwnersFromApi(
         year: Int,
-        semesterId: String
-    ): Resource<List<Teacher>> {
-        val resource = teachersApi.getTeachersHtml(
-            year = year,
-            semesterId = semesterId
-        )
-
-        val teachersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val teachersTable = HtmlParser.extractTables(
-            html = teachersHtml
-        ).firstOrNull()
-
-        val teachersCells = teachersTable?.rows?.map { it.cells }?.flatten()
-        val teachers = teachersCells?.mapNotNull { cell ->
+        semesterId: String,
+    ): Resource<List<TimetableOwner.Teacher>> {
+        val configurationId = year.toString() + semesterId
+        val resource = teachersApi.getOwnersHtml(year, semesterId)
+        val ownersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
+        val table = HtmlParser.extractTables(ownersHtml).firstOrNull()
+        val cells = table?.rows?.map { it.cells }?.flatten()
+        val owners = cells?.mapNotNull { cell ->
             val title = TeacherTitle.entries.firstOrNull {
                 cell.value.contains(it.id)
             } ?: return@mapNotNull null
@@ -197,60 +80,30 @@ class TeachersDataSourceImpl(
                 .replace(title.id, String.BLANK)
                 .replaceFirst(String.SPACE, String.BLANK)
 
-            Teacher(
+            TimetableOwner.Teacher(
                 id = cell.id,
                 name = name,
-                titleId = title.id
+                titleId = title.id,
+                configurationId = configurationId,
             )
         }?.filter { it.name != NULL }
 
         return when {
-            teachers.isNullOrEmpty() -> Resource(null, Status.Error)
-            else -> Resource(teachers, Status.Success)
+            owners.isNullOrEmpty() -> Resource(null, Status.Error)
+            else -> Resource(owners, Status.Success)
         }
     }
 
-    private suspend fun getTimetablesFromApi(
-        year: Int,
-        semesterId: String
-    ): Resource<List<TeacherTimetable>> {
-        return withContext(Dispatchers.Default) {
-            val teachersResource = getTeachers(year, semesterId)
-            val teachers = teachersResource.payload ?: emptyList()
-            val teacherTimetablesResources = teachers.map { room ->
-                async { getTeacherTimetableFromApi(year, semesterId, room) }
-            }.awaitAll()
-
-            val teachersTimetables = teacherTimetablesResources.mapNotNull { it.payload }
-            val errorStatus = teacherTimetablesResources.map {
-                it.status
-            }.firstOrNull { it.isError() }
-
-            return@withContext when {
-                teachersResource.status.isError() -> Resource(null, teachersResource.status)
-                errorStatus != null -> Resource(null, errorStatus)
-                else -> Resource(teachersTimetables, Status.Success)
-            }
-        }
-    }
-
-    private suspend fun getTeacherTimetableFromApi(
+    override suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,
-        teacher: Teacher
-    ): Resource<TeacherTimetable> {
-        val resource = teachersApi.getTeacherTimetableHtml(
-            year = year,
-            semesterId = semesterId,
-            teacherId = teacher.id
-        )
-
-        val teacherTimetableHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val teacherTable = HtmlParser.extractTables(
-            html = teacherTimetableHtml
-        ).firstOrNull()
-
-        val classes = teacherTable?.rows?.mapNotNull { row ->
+        owner: TimetableOwner.Teacher,
+    ): Resource<Timetable<TimetableOwner.Teacher>> {
+        val configurationId = year.toString() + semesterId
+        val resource = teachersApi.getTimetableHtml(year, semesterId, owner.id)
+        val timetableHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
+        val table = HtmlParser.extractTables(timetableHtml).firstOrNull()
+        val classes = table?.rows?.mapNotNull { row ->
             val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
             val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
             val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
@@ -263,37 +116,30 @@ class TeachersDataSourceImpl(
             val startHour = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
             val endHour = intervals.getOrNull(END_HOUR_INDEX) ?: return@mapNotNull null
 
-            val roomId = when {
+            val room = when {
                 roomCell.value == NULL -> String.BLANK
                 else -> roomCell.value
             }
 
-            val studyLineId = when {
+            val studyLine = when {
                 studyLineCell.value == NULL -> String.BLANK
                 else -> studyLineCell.value
             }
 
-            val participantName = when {
+            val participant = when {
                 participantCell.value == NULL -> String.BLANK
                 else -> participantCell.value
             }
 
-            val participantId = when {
-                participantCell.value.contains(SEMIGROUP_1_ID) -> SEMIGROUP_1_ID
-                participantCell.value.contains(SEMIGROUP_2_ID) -> SEMIGROUP_2_ID
-                participantCell.value.all { it.isDigit() } -> WHOLE_GROUP_ID
-                else -> WHOLE_YEAR_ID
-            }
-
-            val (classTypeId, subjectName) = when {
+            val (classType, subject) = when {
                 subjectCell.value.contains(CLASS_TYPE_STAFF_ID) -> {
-                    val subjectName = subjectCell.value.split(
+                    val subject = subjectCell.value.split(
                         String.COLON
                     ).lastOrNull()?.replace(
                         String.SPACE, String.BLANK
                     ) ?: subjectCell.value
 
-                    CLASS_TYPE_STAFF_ID to subjectName
+                    CLASS_TYPE_STAFF_ID to subject
                 }
 
                 else -> classTypeCell.value to subjectCell.value
@@ -303,96 +149,66 @@ class TeachersDataSourceImpl(
                 dayCell.value,
                 intervalCell.value,
                 frequencyCell.value,
+                roomCell.value,
                 studyLineCell.value,
                 participantCell.value,
                 classTypeCell.value,
-                subjectCell.id,
                 subjectCell.value,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
-
-
-            TeacherClass(
+            TimetableClass(
                 id = id,
                 day = dayCell.value,
                 startHour = "$startHour:00",
                 endHour = "$endHour:00",
                 frequencyId = frequencyCell.value,
-                roomId = roomId,
-                studyLineId = studyLineId,
-                participantId = participantId,
-                participantName = participantName,
-                classTypeId = classTypeId,
-                subjectId = subjectCell.id,
-                subjectName = subjectName,
+                room = room,
+                field = studyLine,
+                participant = participant,
+                classType = classType,
+                ownerId = owner.id,
+                groupId = String.BLANK,
+                ownerTypeId = owner.type.id,
+                subject = subject,
+                teacher = owner.name,
                 isVisible = true,
+                configurationId = configurationId
             )
         }
 
         return when {
-            classes.isNullOrEmpty() -> Resource(null, Status.Error)
-            else -> Resource(TeacherTimetable(teacher, classes), Status.Success)
+            classes == null -> Resource(null, Status.Error)
+            else -> Resource(Timetable(owner, classes), Status.Success)
         }
     }
 
-    private fun mapEntityToTeacher(teacherEntity: TeacherEntity): Teacher {
-        return Teacher(
-            id = teacherEntity.id,
-            name = teacherEntity.name,
-            titleId = teacherEntity.titleId
+    override fun sortOwners(
+        owners: List<TimetableOwner.Teacher>,
+    ): List<TimetableOwner.Teacher> {
+        return owners.sortedWith(
+            compareBy<TimetableOwner.Teacher> {
+                val title = TeacherTitle.getById(it.titleId)
+                title.orderIndex
+            }.thenBy { it.name }
         )
     }
 
-    private fun mapEntitiesToClasses(entities: List<TeacherClassEntity>): List<TeacherClass> {
-        return entities.map { teacherClassEntity ->
-            TeacherClass(
-                id = teacherClassEntity.id,
-                day = teacherClassEntity.day,
-                startHour = teacherClassEntity.startHour,
-                endHour = teacherClassEntity.endHour,
-                frequencyId = teacherClassEntity.frequencyId,
-                roomId = teacherClassEntity.roomId,
-                studyLineId = teacherClassEntity.studyLineId,
-                participantId = teacherClassEntity.participantId,
-                participantName = teacherClassEntity.participantName,
-                classTypeId = teacherClassEntity.classTypeId,
-                subjectId = teacherClassEntity.subjectId,
-                subjectName = teacherClassEntity.subjectName,
-                isVisible = teacherClassEntity.isVisible,
-            )
-        }
-    }
-
-    private fun mapTeacherToEntity(teacher: Teacher): TeacherEntity {
+    private fun mapOwnerToEntity(owner: TimetableOwner.Teacher): TeacherEntity {
         return TeacherEntity(
-            id = teacher.id,
-            name = teacher.name,
-            titleId = teacher.titleId
+            id = owner.id,
+            name = owner.name,
+            titleId = owner.titleId,
+            configurationId = owner.configurationId
         )
     }
 
-    private fun mapClassesToEntities(
-        teacherId: String,
-        classes: List<TeacherClass>
-    ): List<TeacherClassEntity> {
-        return classes.map { teacherClass ->
-            TeacherClassEntity(
-                id = teacherClass.id,
-                teacherId = teacherId,
-                roomId = teacherClass.roomId,
-                day = teacherClass.day,
-                startHour = teacherClass.startHour,
-                endHour = teacherClass.endHour,
-                frequencyId = teacherClass.frequencyId,
-                studyLineId = teacherClass.studyLineId,
-                participantId = teacherClass.participantId,
-                participantName = teacherClass.participantName,
-                classTypeId = teacherClass.classTypeId,
-                subjectId = teacherClass.subjectId,
-                subjectName = teacherClass.subjectName,
-                isVisible = teacherClass.isVisible,
-            )
-        }
+    private fun mapEntityToOwner(entity: TeacherEntity): TimetableOwner.Teacher {
+        return TimetableOwner.Teacher(
+            id = entity.id,
+            name = entity.name,
+            titleId = entity.titleId,
+            configurationId = entity.configurationId
+        )
     }
 
     companion object {
@@ -410,14 +226,8 @@ class TeachersDataSourceImpl(
         private const val START_HOUR_INDEX = 0
         private const val END_HOUR_INDEX = 1
 
-        // ParticipantIds
-        private const val SEMIGROUP_1_ID = "/1"
-        private const val SEMIGROUP_2_ID = "/2"
-        private const val WHOLE_GROUP_ID = "whole_group"
-        private const val WHOLE_YEAR_ID = "whole_year"
-        private const val NULL = "null"
-
         // StaffId
         private const val CLASS_TYPE_STAFF_ID = "Colectiv"
+        private const val NULL = "null"
     }
 }

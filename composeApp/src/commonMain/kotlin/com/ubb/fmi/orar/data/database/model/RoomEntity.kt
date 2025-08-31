@@ -9,4 +9,5 @@ data class RoomEntity(
     val id: String,
     val name: String,
     val location: String,
+    val configurationId: String,
 )

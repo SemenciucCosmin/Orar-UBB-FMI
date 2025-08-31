@@ -23,12 +23,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun OnboardingFormScreen(
-    studyYears: List<Int>,
-    selectedStudyYear: Int?,
+    studyLevels: List<Int>,
+    selectedStudyLevel: Int?,
     selectedSemesterId: String?,
     selectedUserTypeId: String?,
     isNextEnabled: Boolean,
-    onStudyYearClick: (Int) -> Unit,
+    onStudyLevelClick: (Int) -> Unit,
     onSemesterClick: (String) -> Unit,
     onUserTypeClick: (String) -> Unit,
     onNextClick: () -> Unit
@@ -61,9 +61,9 @@ fun OnboardingFormScreen(
 
                 FormInputListItem(
                     title = "Anul",
-                    selectedItemId = selectedStudyYear,
-                    onItemClick = onStudyYearClick,
-                    items = studyYears.map { FormInputItem(it, "$it-${it.inc()}") }
+                    selectedItemId = selectedStudyLevel,
+                    onItemClick = onStudyLevelClick,
+                    items = studyLevels.map { FormInputItem(it, "$it-${it.inc()}") }
                 )
 
                 HorizontalDivider()
@@ -104,12 +104,12 @@ fun OnboardingFormScreen(
 private fun PreviewOnboardingFormScreen() {
     OrarUbbFmiTheme {
         OnboardingFormScreen(
-            studyYears = listOf(2024, 2025),
-            selectedStudyYear = 2025,
+            studyLevels = listOf(2024, 2025),
+            selectedStudyLevel = 2025,
             selectedSemesterId = Semester.FIRST.id,
             selectedUserTypeId = UserType.TEACHER.id,
             isNextEnabled = true,
-            onStudyYearClick = {},
+            onStudyLevelClick = {},
             onSemesterClick = {},
             onUserTypeClick = {},
             onNextClick = {}

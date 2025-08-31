@@ -30,7 +30,8 @@ fun TeachersFormRoute(
         onTeacherClick = viewModel::selectTeacher,
         onSelectFilter = viewModel::selectTeacherTitleFilter,
         onNextClick = viewModel::finishSelection,
-        onRetryClick = viewModel::retry
+        onRetryClick = viewModel::retry,
+        onBack = navController::navigateUp,
     )
 
     EventHandler(viewModel.events) { event ->

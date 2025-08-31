@@ -6,7 +6,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 
 class TeachersApi(private val httpClient: HttpClient) {
-    suspend fun getTeachersHtml(
+    suspend fun getOwnersHtml(
         year: Int,
         semesterId: String,
     ): Resource<String> {
@@ -15,13 +15,13 @@ class TeachersApi(private val httpClient: HttpClient) {
         }
     }
 
-    suspend fun getTeacherTimetableHtml(
+    suspend fun getTimetableHtml(
         year: Int,
         semesterId: String,
-        teacherId: String
+        ownerId: String
     ): Resource<String> {
         return processApiResource {
-            httpClient.get("${BASE_URL}/$year-$semesterId/cadre/$teacherId.html")
+            httpClient.get("${BASE_URL}/$year-$semesterId/cadre/$ownerId.html")
         }
     }
 

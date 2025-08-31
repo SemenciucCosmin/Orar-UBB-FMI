@@ -1,37 +1,45 @@
 package com.ubb.fmi.orar.domain.timetable.usecase
 
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
-import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
+import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
-import com.ubb.fmi.orar.domain.timetable.model.ClassOwner
+import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 
 class ChangeTimetableClassVisibilityUseCase(
     private val roomsDataSource: RoomsDataSource,
-    private val studyLineDataSource: StudyLineDataSource,
+    private val studyLineDataSource: StudyLinesDataSource,
     private val subjectsDataSource: SubjectsDataSource,
     private val teachersDataSource: TeachersDataSource
 ) {
 
     suspend operator fun invoke(
         timetableClassId: String,
-        timetableClassOwner: ClassOwner,
+        timetableOwnerType: TimetableOwnerType,
     ) {
-        when (timetableClassOwner) {
-            ClassOwner.ROOM -> {
-                roomsDataSource.changeTimetableClassVisibility(timetableClassId)
+        when (timetableOwnerType) {
+            TimetableOwnerType.ROOM -> {
+                roomsDataSource.changeTimetableClassVisibility(
+                    timetableClassId = timetableClassId
+                )
             }
 
-            ClassOwner.STUDY_LINE -> {
-                studyLineDataSource.changeTimetableClassVisibility(timetableClassId)
+            TimetableOwnerType.STUDY_LINE -> {
+                studyLineDataSource.changeTimetableClassVisibility(
+                    timetableClassId = timetableClassId
+                )
             }
 
-            ClassOwner.SUBJECT -> {
-                subjectsDataSource.changeTimetableClassVisibility(timetableClassId)
+            TimetableOwnerType.SUBJECT -> {
+                subjectsDataSource.changeTimetableClassVisibility(
+                    timetableClassId = timetableClassId
+                )
             }
 
-            ClassOwner.TEACHER -> {
-                teachersDataSource.changeTimetableClassVisibility(timetableClassId)
+            TimetableOwnerType.TEACHER -> {
+                teachersDataSource.changeTimetableClassVisibility(
+                    timetableClassId = timetableClassId
+                )
             }
         }
     }

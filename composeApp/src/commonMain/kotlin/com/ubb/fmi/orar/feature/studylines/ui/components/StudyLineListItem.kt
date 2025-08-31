@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.domain.timetable.model.StudyYear
+import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.extensions.conditional
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_check
@@ -27,10 +27,10 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun StudyLineListItem(
     title: String,
-    studyYears: List<StudyYear>,
+    studyLevels: List<StudyLevel>,
     isSelected: Boolean,
     onClick: () -> Unit,
-    onStudyYearClick: (String) -> Unit,
+    onStudyLevelClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
@@ -78,14 +78,14 @@ fun StudyLineListItem(
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HorizontalDivider()
 
-                    studyYears.forEach { studyYear ->
-                        ElevatedCard(onClick = { onStudyYearClick(studyYear.id) }) {
+                    studyLevels.forEach { studyLevel ->
+                        ElevatedCard(onClick = { onStudyLevelClick(studyLevel.id) }) {
                             Row(
                                 modifier = Modifier.padding(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = studyYear.label,
+                                    text = studyLevel.label,
                                     style = MaterialTheme.typography.labelMedium,
                                     modifier = Modifier.weight(1f)
                                 )

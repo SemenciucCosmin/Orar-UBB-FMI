@@ -21,11 +21,11 @@ sealed class ConfigurationFormNavDestination {
     ): ConfigurationFormNavDestination()
 
     @Serializable
-    data class StudyGroupsForm(
+    data class GroupsForm(
         val year: Int,
         val semesterId: String,
-        val studyLineBaseId: String,
-        val studyLineYearId: String,
+        val fieldId: String,
+        val studyLevelId: String,
         val studyLineDegreeId: String,
     ): ConfigurationFormNavDestination()
 }

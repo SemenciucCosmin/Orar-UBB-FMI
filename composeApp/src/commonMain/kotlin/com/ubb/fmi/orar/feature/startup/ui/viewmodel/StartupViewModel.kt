@@ -3,13 +3,15 @@ package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedDataValidityUseCase
 import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class StartupViewModel(
-    private val timetablePreferences: TimetablePreferences
+    private val timetablePreferences: TimetablePreferences,
+    private val checkCachedDataValidityUseCase: CheckCachedDataValidityUseCase
 ) : EventViewModel<StartupEvent>() {
 
     init {
@@ -18,15 +20,17 @@ class StartupViewModel(
 
     private fun checkConfiguration() {
         viewModelScope.launch {
+            checkCachedDataValidityUseCase()
+
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
             val hasDegree = configuration?.degreeId != null
 
-            val hasStudyLineBase = configuration?.studyLineBaseId != null
-            val hasStudyLineYear = configuration?.studyLineYearId != null
+            val hasStudyLineBase = configuration?.fieldId != null
+            val hasStudyLineYear = configuration?.studyLevelId != null
             val hasStudyLine = hasStudyLineBase && hasStudyLineYear
 
-            val hasStudyGroup = configuration?.groupId != null
-            val hasStudyLineInfo = hasStudyLine && hasStudyGroup
+            val hasGroup = configuration?.groupId != null
+            val hasStudyLineInfo = hasStudyLine && hasGroup
 
             val isStudent = configuration?.userTypeId == UserType.STUDENT.id
             val isTeacher = configuration?.userTypeId == UserType.TEACHER.id

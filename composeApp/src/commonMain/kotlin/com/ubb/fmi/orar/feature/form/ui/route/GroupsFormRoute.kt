@@ -1,0 +1,53 @@
+package com.ubb.fmi.orar.feature.form.ui.route
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import com.ubb.fmi.orar.feature.form.ui.components.GroupsFormScreen
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.GroupsFormViewModel
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
+import com.ubb.fmi.orar.ui.catalog.components.EventHandler
+import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun GroupsFormRoute(
+    navController: NavController,
+    year: Int,
+    semesterId: String,
+    fieldId: String,
+    studyLevelId: String,
+    studyLineDegreeId: String,
+) {
+    val viewModel = koinViewModel<GroupsFormViewModel>(
+        parameters = {
+            parametersOf(year, semesterId, fieldId, studyLevelId, studyLineDegreeId)
+        }
+    )
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    GroupsFormScreen(
+        uiState = uiState,
+        onGroupClick = viewModel::selectGroup,
+        onNextClick = viewModel::finishSelection,
+        onRetryClick = viewModel::retry,
+        onBack = navController::navigateUp,
+    )
+
+    EventHandler(viewModel.events) { event ->
+        when(event) {
+            GroupsFromUiState.GroupsFromEvent.CONFIGURATION_DONE -> {
+                navController.navigate(TimetableNavDestination.UserTimetable) {
+                    popUpTo(ConfigurationFormNavDestination.OnboardingForm) {
+                        inclusive = true
+                        saveState = true
+                    }
+                }
+            }
+        }
+    }
+}

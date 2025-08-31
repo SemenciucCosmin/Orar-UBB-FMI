@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model
 
-import com.ubb.fmi.orar.domain.timetable.model.Degree
+import com.ubb.fmi.orar.data.groups.model.Degree
 
 enum class DegreeFilter(
     val id: String,
@@ -14,12 +14,12 @@ enum class DegreeFilter(
     ),
     LICENCE(
         id = Degree.LICENCE.id,
-        label = Degree.LICENCE.label,
+        label = "Licenta",
         orderIndex = 1
     ),
     MASTER(
         id = Degree.MASTER.id,
-        label = Degree.MASTER.label,
+        label = "Master",
         orderIndex = 2
     );
 

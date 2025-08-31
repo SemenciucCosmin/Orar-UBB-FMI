@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d8a9f4fdb5770df8ede51f0285cb2bff",
+    "identityHash": "8c628f5ffbd6c475c5301fd449182fbb",
     "entities": [
       {
         "tableName": "rooms",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `location` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `location` TEXT NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,95 +25,11 @@
             "columnName": "location",
             "affinity": "TEXT",
             "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
-        }
-      },
-      {
-        "tableName": "room_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `roomId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
           },
           {
-            "fieldPath": "roomId",
-            "columnName": "roomId",
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "day",
-            "columnName": "day",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "startHour",
-            "columnName": "startHour",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "endHour",
-            "columnName": "endHour",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "frequencyId",
-            "columnName": "frequencyId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "studyLineId",
-            "columnName": "studyLineId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "participantId",
-            "columnName": "participantId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "participantName",
-            "columnName": "participantName",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "classTypeId",
-            "columnName": "classTypeId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "subjectId",
-            "columnName": "subjectId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "teacherId",
-            "columnName": "teacherId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isVisible",
-            "columnName": "isVisible",
-            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -126,17 +42,11 @@
       },
       {
         "tableName": "study_lines",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `lineId` TEXT NOT NULL, `name` TEXT NOT NULL, `studyYearId` TEXT NOT NULL, `degreeId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `configurationId` TEXT NOT NULL, `fieldId` TEXT NOT NULL, `levelId` TEXT NOT NULL, `degreeId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lineId",
-            "columnName": "lineId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -147,8 +57,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "studyYearId",
-            "columnName": "studyYearId",
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fieldId",
+            "columnName": "fieldId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "levelId",
+            "columnName": "levelId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -167,108 +89,18 @@
         }
       },
       {
-        "tableName": "study_line_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `groupId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "studyLineId",
-            "columnName": "studyLineId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "groupId",
-            "columnName": "groupId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "day",
-            "columnName": "day",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "startHour",
-            "columnName": "startHour",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "endHour",
-            "columnName": "endHour",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "frequencyId",
-            "columnName": "frequencyId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "roomId",
-            "columnName": "roomId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "participantId",
-            "columnName": "participantId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "participantName",
-            "columnName": "participantName",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "classTypeId",
-            "columnName": "classTypeId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "subjectId",
-            "columnName": "subjectId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "teacherId",
-            "columnName": "teacherId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isVisible",
-            "columnName": "isVisible",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
-        }
-      },
-      {
         "tableName": "subjects",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `configurationId` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -287,102 +119,18 @@
         }
       },
       {
-        "tableName": "subject_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "subjectId",
-            "columnName": "subjectId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "day",
-            "columnName": "day",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "startHour",
-            "columnName": "startHour",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "endHour",
-            "columnName": "endHour",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "frequencyId",
-            "columnName": "frequencyId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "roomId",
-            "columnName": "roomId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "studyLineId",
-            "columnName": "studyLineId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "participantId",
-            "columnName": "participantId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "participantName",
-            "columnName": "participantName",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "classTypeId",
-            "columnName": "classTypeId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "teacherId",
-            "columnName": "teacherId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isVisible",
-            "columnName": "isVisible",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
-        }
-      },
-      {
         "tableName": "teachers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `titleId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `configurationId` TEXT NOT NULL, `name` TEXT NOT NULL, `titleId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -407,18 +155,12 @@
         }
       },
       {
-        "tableName": "teacher_classes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `studyLineId` TEXT NOT NULL, `participantId` TEXT NOT NULL, `participantName` TEXT NOT NULL, `classTypeId` TEXT NOT NULL, `subjectId` TEXT NOT NULL, `subjectName` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "tableName": "timetable_classes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `day` TEXT NOT NULL, `startHour` TEXT NOT NULL, `endHour` TEXT NOT NULL, `frequencyId` TEXT NOT NULL, `studyLine` TEXT NOT NULL, `room` TEXT NOT NULL, `participant` TEXT NOT NULL, `classType` TEXT NOT NULL, `ownerId` TEXT NOT NULL, `groupId` TEXT NOT NULL, `ownerTypeId` TEXT NOT NULL, `subject` TEXT NOT NULL, `teacher` TEXT NOT NULL, `isVisible` INTEGER NOT NULL, `configurationId` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "teacherId",
-            "columnName": "teacherId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -447,44 +189,56 @@
             "notNull": true
           },
           {
-            "fieldPath": "roomId",
-            "columnName": "roomId",
+            "fieldPath": "studyLine",
+            "columnName": "studyLine",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "studyLineId",
-            "columnName": "studyLineId",
+            "fieldPath": "room",
+            "columnName": "room",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "participantId",
-            "columnName": "participantId",
+            "fieldPath": "participant",
+            "columnName": "participant",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "participantName",
-            "columnName": "participantName",
+            "fieldPath": "classType",
+            "columnName": "classType",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "classTypeId",
-            "columnName": "classTypeId",
+            "fieldPath": "ownerId",
+            "columnName": "ownerId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "subjectId",
-            "columnName": "subjectId",
+            "fieldPath": "groupId",
+            "columnName": "groupId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "subjectName",
-            "columnName": "subjectName",
+            "fieldPath": "ownerTypeId",
+            "columnName": "ownerTypeId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject",
+            "columnName": "subject",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "teacher",
+            "columnName": "teacher",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -492,6 +246,12 @@
             "fieldPath": "isVisible",
             "columnName": "isVisible",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "configurationId",
+            "columnName": "configurationId",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -505,7 +265,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd8a9f4fdb5770df8ede51f0285cb2bff')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c628f5ffbd6c475c5301fd449182fbb')"
     ]
   }
 }

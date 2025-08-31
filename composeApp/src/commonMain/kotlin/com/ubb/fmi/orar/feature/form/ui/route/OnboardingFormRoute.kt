@@ -17,16 +17,16 @@ fun OnboardingFormRoute(navController: NavController) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     OnboardingFormScreen(
-        studyYears = uiState.studyYears,
-        selectedStudyYear = uiState.selectedStudyYear,
+        studyLevels = uiState.studyLevels,
+        selectedStudyLevel = uiState.selectedStudyLevel,
         selectedSemesterId = uiState.selectedSemesterId,
         selectedUserTypeId = uiState.selectedUserTypeId,
         isNextEnabled = uiState.isNextEnabled,
-        onStudyYearClick = viewModel::selectStudyYear,
+        onStudyLevelClick = viewModel::selectStudyLevel,
         onSemesterClick = viewModel::selectSemester,
         onUserTypeClick = viewModel::selectUserType,
         onNextClick = {
-            val year = uiState.selectedStudyYear ?: return@OnboardingFormScreen
+            val year = uiState.selectedStudyLevel ?: return@OnboardingFormScreen
             val semesterId = uiState.selectedSemesterId ?: return@OnboardingFormScreen
             val userTypeId = uiState.selectedUserTypeId ?: return@OnboardingFormScreen
             val userType = UserType.getById(userTypeId)

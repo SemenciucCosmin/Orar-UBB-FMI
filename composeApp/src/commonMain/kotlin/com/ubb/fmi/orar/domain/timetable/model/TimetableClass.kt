@@ -8,7 +8,7 @@ data class TimetableClass(
     val frequencyId: String,
     val subject: String,
     val classType: ClassType,
-    val classOwner: ClassOwner,
+    val timetableOwnerType: TimetableOwnerType,
     val participant: String,
     val teacher: String,
     val room: String,

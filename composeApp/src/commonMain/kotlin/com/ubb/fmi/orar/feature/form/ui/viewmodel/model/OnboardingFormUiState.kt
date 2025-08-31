@@ -4,11 +4,11 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 data class OnboardingFormUiState(
-    val studyYears: ImmutableList<Int> = persistentListOf(),
-    val selectedStudyYear: Int? = null,
+    val studyLevels: ImmutableList<Int> = persistentListOf(),
+    val selectedStudyLevel: Int? = null,
     val selectedSemesterId: String? = null,
     val selectedUserTypeId: String? = null,
 )
 
 val OnboardingFormUiState.isNextEnabled: Boolean
-    get() = listOf(selectedStudyYear, selectedSemesterId, selectedUserTypeId).all { it != null }
+    get() = listOf(selectedStudyLevel, selectedSemesterId, selectedUserTypeId).all { it != null }

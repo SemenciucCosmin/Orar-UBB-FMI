@@ -10,9 +10,12 @@ import com.ubb.fmi.orar.data.database.model.RoomEntity
 @Dao
 interface RoomDao {
     @Transaction
-    @Query("SELECT * FROM rooms")
-    suspend fun getAllRooms(): List<RoomEntity>
+    @Query("SELECT * FROM rooms WHERE configurationId LIKE :configurationId")
+    suspend fun getAll(configurationId: String): List<RoomEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRoom(room: RoomEntity)
+    suspend fun insert(entity: RoomEntity)
+
+    @Query("DELETE FROM rooms WHERE configurationId LIKE :configurationId")
+    suspend fun deleteAll(configurationId: String)
 }

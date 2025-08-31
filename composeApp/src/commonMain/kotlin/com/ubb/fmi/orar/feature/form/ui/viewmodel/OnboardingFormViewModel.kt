@@ -37,8 +37,8 @@ class OnboardingFormViewModel(
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
             _uiState.update {
                 it.copy(
-                    studyYears = getStudyYears().toImmutableList(),
-                    selectedStudyYear = configuration?.year,
+                    studyLevels = getStudyLevels().toImmutableList(),
+                    selectedStudyLevel = configuration?.year,
                     selectedSemesterId = configuration?.semesterId,
                     selectedUserTypeId = configuration?.userTypeId
                 )
@@ -46,8 +46,8 @@ class OnboardingFormViewModel(
         }
     }
 
-    fun selectStudyYear(studyYear: Int) {
-        _uiState.update { it.copy(selectedStudyYear = studyYear) }
+    fun selectStudyLevel(studyLevel: Int) {
+        _uiState.update { it.copy(selectedStudyLevel = studyLevel) }
     }
 
     fun selectSemester(semesterId: String) {
@@ -59,7 +59,7 @@ class OnboardingFormViewModel(
     }
 
     @OptIn(ExperimentalTime::class)
-    private fun getStudyYears(): List<Int> {
+    private fun getStudyLevels(): List<Int> {
         val currentInstant = Clock.System.now()
         val currentDate = currentInstant.toLocalDateTime(TimeZone.currentSystemDefault())
         val currentYear = currentDate.year

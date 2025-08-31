@@ -3,67 +3,67 @@ package com.ubb.fmi.orar.feature.studylines.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.data.studyline.datasource.StudyLineDataSource
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.data.network.model.isError
+import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 class StudyLinesViewModel(
-    private val studyLinesDataSource: StudyLineDataSource,
-    private val timetablePreferences: TimetablePreferences
+    private val studyLinesDataSource: StudyLinesDataSource,
+    private val timetablePreferences: TimetablePreferences,
 ) : ViewModel() {
 
+    private var job: Job
     private val _uiState = MutableStateFlow(StudyLinesUiState())
     val uiState = _uiState.asStateFlow()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
-            initialValue = _uiState.value
-        )
 
     init {
-        getStudyLines()
+        job = getStudyLines()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
 
-        val configuration = timetablePreferences.getConfiguration().firstOrNull() ?: return@launch
-        val studyLinesResource = studyLinesDataSource.getStudyLines(
-            year = configuration.year,
-            semesterId = configuration.semesterId
-        )
+        timetablePreferences.getConfiguration().collectLatest { configuration ->
+            if (configuration == null) {
+                _uiState.update { it.copy(isLoading = false, isError = true) }
+                return@collectLatest
+            }
 
-        val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
-            studyLine.baseId
-        }?.values?.toList()?.map { studyLines ->
-            studyLines.sortedBy { it.studyYearId }.toImmutableList()
-        }?.toImmutableList() ?: persistentListOf()
-
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                isError = studyLinesResource.status.isError(),
-                groupedStudyLines = groupedStudyLines
+            val studyLinesResource = studyLinesDataSource.getOwners(
+                year = configuration.year,
+                semesterId = configuration.semesterId
             )
+
+            val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
+                studyLine.fieldId
+            }?.values?.toList()?.map { studyLines ->
+                studyLines.sortedBy { it.levelId }.toImmutableList()
+            }?.toImmutableList() ?: persistentListOf()
+
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    isError = studyLinesResource.status.isError(),
+                    groupedStudyLines = groupedStudyLines
+                )
+            }
         }
     }
 
-    fun selectStudyLineBaseId(studyLineBaseId: String) {
+    fun selectFieldId(fieldId: String) {
         _uiState.update {
-            it.copy(selectedStudyLineBaseId = studyLineBaseId)
+            it.copy(selectedFieldId = fieldId)
         }
     }
 
@@ -71,12 +71,13 @@ class StudyLinesViewModel(
         _uiState.update {
             it.copy(
                 selectedFilter = degreeFilter,
-                selectedStudyLineBaseId = null,
+                selectedFieldId = null,
             )
         }
     }
 
     fun retry() {
-        getStudyLines()
+        job.cancel()
+        job = getStudyLines()
     }
 }

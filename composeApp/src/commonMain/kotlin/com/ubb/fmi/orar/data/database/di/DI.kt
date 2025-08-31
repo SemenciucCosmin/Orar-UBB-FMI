@@ -8,11 +8,8 @@ import org.koin.dsl.module
 fun databaseDataModule() = module {
     single { get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build() }
     single { get<OrarUbbFmiDatabase>().roomDao }
-    single { get<OrarUbbFmiDatabase>().roomClassDao }
     single { get<OrarUbbFmiDatabase>().studyLineDao }
-    single { get<OrarUbbFmiDatabase>().studyLineClassDao }
     single { get<OrarUbbFmiDatabase>().subjectDao }
-    single { get<OrarUbbFmiDatabase>().subjectClassDao }
     single { get<OrarUbbFmiDatabase>().teacherDao }
-    single { get<OrarUbbFmiDatabase>().teacherClassDao }
+    single { get<OrarUbbFmiDatabase>().timetableClassDao }
 }

@@ -9,9 +9,12 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
 @Dao
 interface TeacherDao {
 
-    @Query("SELECT * FROM teachers")
-    suspend fun getAllTeachers(): List<TeacherEntity>
+    @Query("SELECT * FROM teachers WHERE configurationId LIKE :configurationId")
+    suspend fun getAll(configurationId: String): List<TeacherEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTeacher(teacher: TeacherEntity)
+    suspend fun insert(entity: TeacherEntity)
+
+    @Query("DELETE FROM teachers WHERE configurationId LIKE :configurationId")
+    suspend fun deleteAll(configurationId: String)
 }

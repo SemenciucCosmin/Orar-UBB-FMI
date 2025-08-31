@@ -9,9 +9,12 @@ import com.ubb.fmi.orar.data.database.model.SubjectEntity
 @Dao
 interface SubjectDao {
 
-    @Query("SELECT * FROM subjects")
-    suspend fun getAllSubjects(): List<SubjectEntity>
+    @Query("SELECT * FROM subjects WHERE configurationId LIKE :configurationId")
+    suspend fun getAll(configurationId: String): List<SubjectEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSubject(subject: SubjectEntity)
+    suspend fun insert(entity: SubjectEntity)
+
+    @Query("DELETE FROM subjects WHERE configurationId LIKE :configurationId")
+    suspend fun deleteAll(configurationId: String)
 }

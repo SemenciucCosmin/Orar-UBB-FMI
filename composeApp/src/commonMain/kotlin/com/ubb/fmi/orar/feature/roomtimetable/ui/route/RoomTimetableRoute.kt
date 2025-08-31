@@ -22,10 +22,10 @@ fun RoomTimetableRoute(
         uiState = uiState,
         onRetryClick = viewModel::retry,
         topBar = {
-            uiState.timetable?.let { timetable ->
+            if (uiState.title.isNotBlank()) {
                 TimetableTopBar(
-                    title = timetable.title,
-                    subtitle = timetable.subtitle,
+                    title = uiState.title,
+                    subtitle = uiState.subtitle,
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = viewModel::selectFrequency,
                     onBack = navController::navigateUp

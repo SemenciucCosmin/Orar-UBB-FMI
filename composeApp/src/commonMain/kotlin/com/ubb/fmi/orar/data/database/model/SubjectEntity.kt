@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class SubjectEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
+    val configurationId: String,
     val name: String,
 )

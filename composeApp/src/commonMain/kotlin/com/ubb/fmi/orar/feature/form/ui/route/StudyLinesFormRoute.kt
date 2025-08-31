@@ -25,23 +25,24 @@ fun StudyLinesFormRoute(
 
     StudyLinesFormScreen(
         uiState = uiState,
-        onStudyLineClick = viewModel::selectStudyLineBaseId,
-        onStudyYearClick = viewModel::selectStudyYear,
+        onStudyLineClick = viewModel::selectFieldId,
+        onStudyLevelClick = viewModel::selectStudyLevel,
         onSelectFilter = viewModel::selectDegreeFilter,
         onRetryClick = viewModel::retry,
+        onBack = navController::navigateUp,
         onNextClick = {
-            val studyLineBaseId = uiState.selectedStudyLineBaseId ?: return@StudyLinesFormScreen
-            val studyLineYearId = uiState.selectedStudyYearId ?: return@StudyLinesFormScreen
+            val fieldId = uiState.selectedFieldId ?: return@StudyLinesFormScreen
+            val studyLevelId = uiState.selectedStudyLevelId ?: return@StudyLinesFormScreen
             val studyLine = uiState.filteredGroupedStudyLines.flatten().firstOrNull {
-                it.baseId == studyLineBaseId && it.studyYearId == studyLineYearId
+                it.fieldId == fieldId && it.levelId == studyLevelId
             } ?: return@StudyLinesFormScreen
 
             navController.navigate(
-                ConfigurationFormNavDestination.StudyGroupsForm(
+                ConfigurationFormNavDestination.GroupsForm(
                     year = year,
                     semesterId = semesterId,
-                    studyLineBaseId = studyLineBaseId,
-                    studyLineYearId = studyLineYearId,
+                    fieldId = fieldId,
+                    studyLevelId = studyLevelId,
                     studyLineDegreeId = studyLine.degreeId,
                 )
             )

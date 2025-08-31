@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.ui.catalog.model
 
-import com.ubb.fmi.orar.domain.timetable.model.ClassOwner
+import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.domain.timetable.model.ClassType
 
 sealed interface TimetableListItem {
@@ -15,7 +15,7 @@ sealed interface TimetableListItem {
         val endHour: String,
         val subject: String,
         val classType: ClassType,
-        val classOwner: ClassOwner,
+        val timetableOwnerType: TimetableOwnerType,
         val participant: String,
         val teacher: String,
         val room: String,

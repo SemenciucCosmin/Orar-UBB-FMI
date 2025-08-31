@@ -16,7 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubb.fmi.orar.domain.timetable.model.StudyYear
+import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState.Companion.filteredGroupedStudyLines
@@ -27,7 +27,7 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 fun StudyLinesScreen(
     uiState: StudyLinesUiState,
     onStudyLineClick: (String) -> Unit,
-    onStudyYearClick: (String) -> Unit,
+    onStudyLevelClick: (String) -> Unit,
     onSelectFilter: (DegreeFilter) -> Unit,
     onRetryClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
@@ -73,17 +73,17 @@ fun StudyLinesScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.filteredGroupedStudyLines) { groupedStudyLines ->
-                            val lineId = groupedStudyLines.firstOrNull()?.baseId ?: return@items
+                            val fieldId = groupedStudyLines.firstOrNull()?.fieldId ?: return@items
                             val label = groupedStudyLines.firstOrNull()?.name ?: return@items
 
                             StudyLineListItem(
                                 title = label,
-                                isSelected = uiState.selectedStudyLineBaseId == lineId,
-                                onClick = { onStudyLineClick(lineId) },
-                                onStudyYearClick = onStudyYearClick,
+                                isSelected = uiState.selectedFieldId == fieldId,
+                                onClick = { onStudyLineClick(fieldId) },
+                                onStudyLevelClick = onStudyLevelClick,
                                 modifier = Modifier.fillMaxWidth(),
-                                studyYears = groupedStudyLines.map { studyLine ->
-                                    StudyYear.getById(studyLine.studyYearId)
+                                studyLevels = groupedStudyLines.map { studyLine ->
+                                    StudyLevel.getById(studyLine.levelId)
                                 }
                             )
                         }

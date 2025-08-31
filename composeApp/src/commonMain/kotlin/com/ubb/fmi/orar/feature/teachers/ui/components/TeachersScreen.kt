@@ -15,14 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
+import com.ubb.fmi.orar.feature.teachers.ui.model.TeacherTitle
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
-import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 
 @Composable
 fun TeachersScreen(

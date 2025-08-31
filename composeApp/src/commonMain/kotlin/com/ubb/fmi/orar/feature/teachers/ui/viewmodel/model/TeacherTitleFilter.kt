@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model
 
-import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
+import com.ubb.fmi.orar.feature.teachers.ui.model.TeacherTitle
+
 
 enum class TeacherTitleFilter(
     val id: String,

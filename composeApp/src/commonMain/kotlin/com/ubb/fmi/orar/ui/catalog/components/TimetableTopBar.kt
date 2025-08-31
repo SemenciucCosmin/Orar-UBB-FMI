@@ -7,10 +7,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import orar_ubb_fmi.composeapp.generated.resources.Res
@@ -21,13 +22,13 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun TimetableTopBar(
     title: String,
-    subtitle: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     selectedFrequency: Frequency,
-    onFrequencyClick: (Frequency) -> Unit
+    onFrequencyClick: (Frequency) -> Unit,
+    subtitle: String? = null,
 ) {
-    MediumTopAppBar(
+    TopAppBar(
         modifier = modifier,
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -42,14 +43,18 @@ fun TimetableTopBar(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
                 )
 
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                subtitle?.let {
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         },
         actions = {
