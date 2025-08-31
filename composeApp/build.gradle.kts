@@ -38,6 +38,8 @@ kotlin {
         androidMain.dependencies {
             // ANDROIDX
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
 
             // COMPOSE
             implementation(compose.preview)
@@ -51,10 +53,6 @@ kotlin {
         }
 
         commonMain.dependencies {
-            // ANDROIDX
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
             // COMPOSE
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)

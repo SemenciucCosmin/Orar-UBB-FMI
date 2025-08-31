@@ -42,18 +42,13 @@ class StudyLinesFormViewModel(
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        if (configuration == null) {
-            _uiState.update { it.copy(isLoading = false, isError = true) }
-            return@launch
-        }
-
         val semester = Semester.getById(semesterId)
         val studyLinesResource = studyLinesDataSource.getOwners(
             year = year,
             semesterId = semesterId
         )
 
-        val studyLevel = configuration.studyLevelId?.let(StudyLevel::getById)
+        val studyLevel = configuration?.studyLevelId?.let(StudyLevel::getById)
         val lineId = studyLevel?.let { configuration.fieldId + studyLevel.notation}
         val selectedStudyLine = studyLinesResource.payload?.firstOrNull{ it.id == lineId }
         val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->

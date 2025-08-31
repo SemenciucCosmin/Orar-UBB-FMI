@@ -12,7 +12,11 @@ import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestinatio
 
 fun NavGraphBuilder.configurationFormGraph(navController: NavController) {
     composable<ConfigurationFormNavDestination.OnboardingForm> { navBackStackEntry ->
-        OnboardingFormRoute(navController)
+        val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.OnboardingForm>()
+        OnboardingFormRoute(
+            navController = navController,
+            configurationFormTypeId = args.configurationFormTypeId
+        )
     }
 
     composable<ConfigurationFormNavDestination.TeachersForm> { navBackStackEntry ->

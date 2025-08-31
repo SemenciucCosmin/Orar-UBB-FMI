@@ -4,25 +4,36 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.components.FormInputItem
 import com.ubb.fmi.orar.ui.catalog.components.FormInputListItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
+import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingFormScreen(
+    configurationFormType: ConfigurationFormType,
     studyLevels: List<Int>,
     selectedStudyLevel: Int?,
     selectedSemesterId: String?,
@@ -31,21 +42,46 @@ fun OnboardingFormScreen(
     onStudyLevelClick: (Int) -> Unit,
     onSemesterClick: (String) -> Unit,
     onUserTypeClick: (String) -> Unit,
-    onNextClick: () -> Unit
+    onNextClick: () -> Unit,
+    onBack: () -> Unit,
 ) {
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = {
+            if (configurationFormType == ConfigurationFormType.SETTINGS) {
+                TopAppBar(
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                modifier = Modifier.size(32.dp),
+                                painter = painterResource(Res.drawable.ic_left_arrow),
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                    title = {
+                        Text(
+                            text = "Configurare orar",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                )
+            }
+        }
+    ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            Text(
-                text = "Bun venit!",
-                style = MaterialTheme.typography.displaySmall,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .weight(0.2f)
-            )
+            if (configurationFormType == ConfigurationFormType.STARTUP) {
+                Text(
+                    text = "Bun venit!",
+                    style = MaterialTheme.typography.displaySmall,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .weight(0.2f)
+                )
+            }
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -104,6 +140,7 @@ fun OnboardingFormScreen(
 private fun PreviewOnboardingFormScreen() {
     OrarUbbFmiTheme {
         OnboardingFormScreen(
+            configurationFormType = ConfigurationFormType.STARTUP,
             studyLevels = listOf(2024, 2025),
             selectedStudyLevel = 2025,
             selectedSemesterId = Semester.FIRST.id,
@@ -112,7 +149,8 @@ private fun PreviewOnboardingFormScreen() {
             onStudyLevelClick = {},
             onSemesterClick = {},
             onUserTypeClick = {},
-            onNextClick = {}
+            onNextClick = {},
+            onBack = {}
         )
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.OnboardingFormScreen
+import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.OnboardingFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.model.UserType
@@ -12,11 +13,16 @@ import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestinatio
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun OnboardingFormRoute(navController: NavController) {
+fun OnboardingFormRoute(
+    navController: NavController,
+    configurationFormTypeId: String
+) {
     val viewModel = koinViewModel<OnboardingFormViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val configurationFormType = ConfigurationFormType.getById(configurationFormTypeId)
 
     OnboardingFormScreen(
+        configurationFormType = configurationFormType,
         studyLevels = uiState.studyLevels,
         selectedStudyLevel = uiState.selectedStudyLevel,
         selectedSemesterId = uiState.selectedSemesterId,
@@ -25,6 +31,7 @@ fun OnboardingFormRoute(navController: NavController) {
         onStudyLevelClick = viewModel::selectStudyLevel,
         onSemesterClick = viewModel::selectSemester,
         onUserTypeClick = viewModel::selectUserType,
+        onBack = navController::navigateUp,
         onNextClick = {
             val year = uiState.selectedStudyLevel ?: return@OnboardingFormScreen
             val semesterId = uiState.selectedSemesterId ?: return@OnboardingFormScreen

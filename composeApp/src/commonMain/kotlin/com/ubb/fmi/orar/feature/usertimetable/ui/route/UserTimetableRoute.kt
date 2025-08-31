@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.catalog.components.TimetableScreen
 import com.ubb.fmi.orar.feature.usertimetable.ui.components.UserTimetableTopBar
 import com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel.UserTimetableViewModel
@@ -29,7 +30,11 @@ fun UserTimetableRoute(navController: NavController) {
                     onFrequencyClick = viewModel::selectFrequency,
                     onEditClick = viewModel::changeEditMode,
                     onSettingsClick = {
-                        navController.navigate(ConfigurationFormNavDestination.OnboardingForm)
+                        navController.navigate(
+                            ConfigurationFormNavDestination.OnboardingForm(
+                                configurationFormTypeId = ConfigurationFormType.SETTINGS.id
+                            )
+                        )
                     }
                 )
             }

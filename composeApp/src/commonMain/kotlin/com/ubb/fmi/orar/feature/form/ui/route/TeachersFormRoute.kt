@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.TeachersFormScreen
+import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.TeachersFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
@@ -38,7 +39,11 @@ fun TeachersFormRoute(
         when(event) {
             TeachersFormUiState.TeachersFormEvent.CONFIGURATION_DONE -> {
                 navController.navigate(TimetableNavDestination.UserTimetable) {
-                    popUpTo(ConfigurationFormNavDestination.OnboardingForm) {
+                    popUpTo(
+                        ConfigurationFormNavDestination.OnboardingForm(
+                            configurationFormTypeId = ConfigurationFormType.STARTUP.id
+                        )
+                    ) {
                         inclusive = true
                         saveState = true
                     }

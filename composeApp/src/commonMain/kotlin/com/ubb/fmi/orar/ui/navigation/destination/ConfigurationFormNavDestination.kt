@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 sealed class ConfigurationFormNavDestination {
 
     @Serializable
-    data object OnboardingForm: ConfigurationFormNavDestination()
+    data class OnboardingForm(
+        val configurationFormTypeId: String
+    ): ConfigurationFormNavDestination()
 
     @Serializable
     data class TeachersForm(
