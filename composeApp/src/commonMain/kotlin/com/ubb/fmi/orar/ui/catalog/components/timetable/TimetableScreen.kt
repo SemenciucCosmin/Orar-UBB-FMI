@@ -86,7 +86,7 @@ fun TimetableScreen(
                                 ),
                                 endHour = stringResource(
                                     Res.string.lbl_hour,
-                                    timetableItem.startHour
+                                    timetableItem.endHour
                                 ),
                                 subject = timetableItem.subject,
                                 classType = timetableItem.classType,

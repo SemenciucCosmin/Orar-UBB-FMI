@@ -25,7 +25,6 @@ import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
         TimetableClassEntity::class,
     ],
 )
-@TypeConverters(TypeConverter::class)
 @ConstructedBy(OrarUbbFmiDatabaseConstructor::class)
 abstract class OrarUbbFmiDatabase : RoomDatabase() {
 
