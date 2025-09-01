@@ -14,13 +14,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.feature.teachers.ui.model.TeacherTitle
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
+import com.ubb.fmi.orar.ui.theme.Pds
 
 @Composable
 fun TeachersScreen(
@@ -52,8 +52,8 @@ fun TeachersScreen(
             else -> {
                 Column(modifier = Modifier.padding(paddingValues)) {
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Small),
+                        contentPadding = PaddingValues(horizontal = Pds.spacing.Medium)
                     ) {
                         items(
                             TeacherTitleFilter.entries.sortedBy { it.orderIndex }
@@ -68,8 +68,8 @@ fun TeachersScreen(
                     }
 
                     LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(Pds.spacing.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
                     ) {
                         items(uiState.filteredTeachers) { teacher ->
                             TeacherListItem(

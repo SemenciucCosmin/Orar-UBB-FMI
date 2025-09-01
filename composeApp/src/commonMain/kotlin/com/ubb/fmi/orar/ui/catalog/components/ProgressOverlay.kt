@@ -7,9 +7,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key.Companion.M
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.catalog.extensions.conditional
+import com.ubb.fmi.orar.ui.theme.Pds
 
 private const val ALPHA = 0.7f
 
@@ -17,11 +16,7 @@ private const val ALPHA = 0.7f
 fun ProgressOverlay(modifier: Modifier = Modifier, hasBackground: Boolean = false) {
     Box(
         contentAlignment = Alignment.Center,
-        content = {
-            CircularProgressIndicator(
-                strokeWidth = 2.dp
-            )
-        },
+        content = { CircularProgressIndicator(strokeWidth = Pds.spacing.XXSmall) },
         modifier = modifier.conditional(hasBackground) {
             background(MaterialTheme.colorScheme.background.copy(alpha = ALPHA))
         }

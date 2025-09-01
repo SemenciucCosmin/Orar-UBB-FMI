@@ -13,10 +13,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.timetableListItems
+import com.ubb.fmi.orar.ui.theme.Pds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,8 +52,8 @@ fun TimetableScreen(
             else -> {
                 LazyColumn(
                     modifier = Modifier.padding(paddingValues),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
+                    contentPadding = PaddingValues(Pds.spacing.SMedium),
                 ) {
                     items(
                         uiState.timetableListItems,
@@ -75,8 +75,10 @@ fun TimetableScreen(
                             is TimetableListItem.Class -> {
                                 Row(
                                     modifier = Modifier.animateItem(),
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(
+                                        Pds.spacing.SMedium
+                                    )
                                 ) {
                                     AnimatedVisibility(uiState.isEditModeOn) {
                                         TimetableVisibilityButton(

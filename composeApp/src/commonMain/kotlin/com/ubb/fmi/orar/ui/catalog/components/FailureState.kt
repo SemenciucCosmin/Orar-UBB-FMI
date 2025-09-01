@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.ubb.fmi.orar.ui.theme.Pds
 
 @Composable
 fun FailureState(
@@ -17,7 +17,7 @@ fun FailureState(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(Pds.spacing.Large, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Something went wrong. Please try again.")

@@ -9,10 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
+import com.ubb.fmi.orar.ui.theme.Pds
 
 @Composable
 fun RoomsScreen(
@@ -42,8 +42,8 @@ fun RoomsScreen(
 
             else -> {
                 LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(Pds.spacing.Medium),
+                    verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
                     modifier = Modifier.padding(paddingValues)
                 ) {
                     items(uiState.rooms) { room ->

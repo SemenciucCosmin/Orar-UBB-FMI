@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
+import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_down_arrow
 import org.jetbrains.compose.resources.painterResource
@@ -46,7 +46,7 @@ fun TimetableListItem(
         enabled = enabled,
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(Pds.spacing.SMedium),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -59,7 +59,7 @@ fun TimetableListItem(
                 )
 
                 Icon(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(Pds.icon.SMedium),
                     painter = painterResource(Res.drawable.ic_down_arrow),
                     contentDescription = null
                 )
@@ -71,12 +71,12 @@ fun TimetableListItem(
             }
 
             AnimatedVisibility(expanded) {
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(Pds.spacing.SMedium))
             }
 
             Column(
                 modifier = Modifier.weight(0.70f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -104,8 +104,8 @@ fun TimetableListItem(
                             else -> "${classType.label} - $participant"
                         },
                         modifier = Modifier.padding(
-                            vertical = 3.dp,
-                            horizontal = 9.dp
+                            vertical = Pds.spacing.XSmall,
+                            horizontal = Pds.spacing.SMedium
                         )
                     )
                 }
@@ -118,16 +118,16 @@ fun TimetableListItem(
             }
 
             AnimatedVisibility(expanded) {
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(Pds.spacing.SMedium))
             }
 
             Column(
                 modifier = Modifier.weight(0.15f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(Pds.icon.Medium),
                     painter = painterResource(classType.imageRes),
                     contentDescription = null
                 )

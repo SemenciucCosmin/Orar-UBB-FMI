@@ -18,13 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.components.FormInputItem
 import com.ubb.fmi.orar.ui.catalog.components.FormInputListItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
+import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
 import org.jetbrains.compose.resources.painterResource
@@ -52,7 +52,7 @@ fun OnboardingFormScreen(
                     navigationIcon = {
                         IconButton(onClick = onBack) {
                             Icon(
-                                modifier = Modifier.size(32.dp),
+                                modifier = Modifier.size(Pds.icon.Medium),
                                 painter = painterResource(Res.drawable.ic_left_arrow),
                                 contentDescription = null,
                             )
@@ -77,17 +77,17 @@ fun OnboardingFormScreen(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(Pds.spacing.Medium)
                         .fillMaxWidth()
                         .weight(0.2f)
                 )
             }
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
                 modifier = Modifier
                     .weight(0.8f)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = Pds.spacing.Medium),
             ) {
                 Text(
                     text = "Alege configuratiile pentru orarul tau",
@@ -127,7 +127,7 @@ fun OnboardingFormScreen(
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(Pds.spacing.Medium)
             ) {
                 Text(text = "NEXT")
             }

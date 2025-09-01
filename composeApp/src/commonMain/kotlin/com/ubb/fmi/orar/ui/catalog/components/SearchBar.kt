@@ -27,8 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
+import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_close
 import orar_ubb_fmi.composeapp.generated.resources.ic_search
@@ -72,15 +72,15 @@ fun SearchBar(
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Small),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(Pds.spacing.Small)
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_search),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(Pds.icon.Small)
                     )
 
                     Box(Modifier.weight(1f)) {
@@ -100,7 +100,7 @@ fun SearchBar(
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
-                                .size(20.dp)
+                                .size(Pds.icon.Small)
                                 .clickable {
                                     isActive = true
                                     onClearClick()

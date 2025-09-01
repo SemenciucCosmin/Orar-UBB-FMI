@@ -15,13 +15,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
+import com.ubb.fmi.orar.ui.theme.Pds
 
 @Composable
 fun StudyLinesScreen(
@@ -54,8 +54,8 @@ fun StudyLinesScreen(
             else -> {
                 Column(modifier = Modifier.padding(paddingValues)) {
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Small),
+                        contentPadding = PaddingValues(horizontal = Pds.spacing.Medium)
                     ) {
                         items(DegreeFilter.entries.sortedBy { it.orderIndex }) { degreeFilter ->
                             FilterChip(
@@ -68,8 +68,8 @@ fun StudyLinesScreen(
                     }
 
                     LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(Pds.spacing.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
                         modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.filteredGroupedStudyLines) { groupedStudyLines ->

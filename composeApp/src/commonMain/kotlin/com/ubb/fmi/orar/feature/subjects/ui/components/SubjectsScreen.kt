@@ -15,13 +15,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 import com.ubb.fmi.orar.ui.catalog.components.SearchBar
+import com.ubb.fmi.orar.ui.theme.Pds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +42,7 @@ fun SubjectsScreen(
                         onValueChange = onChangeSearchQuery,
                         placeholder = "Disciplina",
                         onClearClick = { onChangeSearchQuery(String.BLANK) },
-                        modifier = Modifier.padding(end = 16.dp)
+                        modifier = Modifier.padding(end = Pds.spacing.Medium)
                     )
                 }
             ).takeIf { !uiState.isError && !uiState.isLoading }
@@ -72,7 +72,7 @@ fun SubjectsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(paddingValues)
-                        .padding(16.dp)
+                        .padding(Pds.spacing.Medium)
                         .fillMaxSize()
                 ) {
                     Text(
@@ -84,8 +84,8 @@ fun SubjectsScreen(
 
             else -> {
                 LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(Pds.spacing.Medium),
+                    verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
                     modifier = Modifier.padding(paddingValues)
                 ) {
                     items(uiState.filteredSubjects) { subject ->

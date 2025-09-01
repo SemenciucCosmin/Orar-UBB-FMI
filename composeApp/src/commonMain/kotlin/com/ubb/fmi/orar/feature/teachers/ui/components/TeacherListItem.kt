@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_right_arrow
 import orar_ubb_fmi.composeapp.generated.resources.ic_teacher
@@ -30,12 +30,12 @@ fun TeacherListItem(
         modifier = modifier
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(Pds.spacing.SMedium),
+            horizontalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(Pds.icon.SMedium),
                 painter = painterResource(Res.drawable.ic_teacher),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
@@ -43,7 +43,7 @@ fun TeacherListItem(
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(Pds.spacing.XXSmall),
             ) {
                 Text(
                     text = title,
@@ -58,7 +58,7 @@ fun TeacherListItem(
             }
 
             Icon(
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(Pds.icon.Medium),
                 painter = painterResource(Res.drawable.ic_right_arrow),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary

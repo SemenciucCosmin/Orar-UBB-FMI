@@ -15,9 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.extensions.conditional
+import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_check
 import orar_ubb_fmi.composeapp.generated.resources.ic_right_arrow
@@ -37,22 +37,22 @@ fun StudyLineListItem(
         onClick = onClick,
         modifier = modifier.conditional(isSelected) {
             border(
-                width = 1.dp,
+                width = Pds.stroke.Medium,
                 color = MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.medium
             )
         }
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(Pds.spacing.SMedium),
+            verticalArrangement = Arrangement.spacedBy(Pds.spacing.Small)
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(Pds.icon.SMedium),
                     painter = painterResource(Res.drawable.ic_study_line),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
@@ -66,7 +66,7 @@ fun StudyLineListItem(
 
                 if (isSelected) {
                     Icon(
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(Pds.icon.SMedium),
                         painter = painterResource(Res.drawable.ic_check),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
@@ -75,13 +75,13 @@ fun StudyLineListItem(
             }
 
             AnimatedVisibility(visible = isSelected) {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(Pds.spacing.Small)) {
                     HorizontalDivider()
 
                     studyLevels.forEach { studyLevel ->
                         ElevatedCard(onClick = { onStudyLevelClick(studyLevel.id) }) {
                             Row(
-                                modifier = Modifier.padding(8.dp),
+                                modifier = Modifier.padding(Pds.spacing.Small),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
@@ -91,7 +91,7 @@ fun StudyLineListItem(
                                 )
 
                                 Icon(
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier.size(Pds.icon.SMedium),
                                     painter = painterResource(Res.drawable.ic_right_arrow),
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary

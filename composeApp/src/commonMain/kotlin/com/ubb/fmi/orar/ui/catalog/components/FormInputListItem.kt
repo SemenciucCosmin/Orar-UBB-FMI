@@ -9,8 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
+import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -29,7 +29,7 @@ fun <T> FormInputListItem(
         )
 
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
             verticalArrangement = Arrangement.Center
         ) {
             items.forEach { item ->

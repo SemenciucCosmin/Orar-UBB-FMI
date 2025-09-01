@@ -8,12 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ubb.fmi.orar.ui.navigation.model.TimetableBottomBarItem
+import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -38,7 +38,7 @@ fun TimetableBottomBar(navController: NavController) {
                 },
                 icon = {
                     Icon(
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(Pds.icon.SMedium),
                         painter = painterResource(timetableBottomBarItem.icon),
                         contentDescription = null
                     )

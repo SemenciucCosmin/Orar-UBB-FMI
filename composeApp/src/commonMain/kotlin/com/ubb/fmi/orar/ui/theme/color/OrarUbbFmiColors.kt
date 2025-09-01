@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.ui.theme
+package com.ubb.fmi.orar.ui.theme.color
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme

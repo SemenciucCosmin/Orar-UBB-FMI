@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.ubb.fmi.orar.ui.theme.Pds
 
 @Composable
 fun TimetableListDivider(
@@ -17,7 +17,7 @@ fun TimetableListDivider(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

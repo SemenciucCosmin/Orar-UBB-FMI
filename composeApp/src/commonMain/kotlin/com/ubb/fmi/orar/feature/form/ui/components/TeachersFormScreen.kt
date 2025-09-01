@@ -22,13 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.FormListItem
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
+import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
 import org.jetbrains.compose.resources.painterResource
@@ -50,7 +50,7 @@ fun TeachersFormScreen(
                     navigationIcon = {
                         IconButton(onClick = onBack) {
                             Icon(
-                                modifier = Modifier.size(32.dp),
+                                modifier = Modifier.size(Pds.icon.Medium),
                                 painter = painterResource(Res.drawable.ic_left_arrow),
                                 contentDescription = null,
                             )
@@ -87,8 +87,8 @@ fun TeachersFormScreen(
             else -> {
                 Column(modifier = Modifier.padding(paddingValues)) {
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Small),
+                        contentPadding = PaddingValues(horizontal = Pds.spacing.Medium)
                     ) {
                         items(
                             TeacherTitleFilter.entries.sortedBy { it.orderIndex }
@@ -103,8 +103,8 @@ fun TeachersFormScreen(
                     }
 
                     LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(Pds.spacing.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
                         modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.filteredTeachers) { teacher ->
@@ -125,7 +125,7 @@ fun TeachersFormScreen(
                         shape = MaterialTheme.shapes.small,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(Pds.spacing.Medium)
                     ) {
                         Text(text = "NEXT")
                     }

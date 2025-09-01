@@ -5,7 +5,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_hide
 import orar_ubb_fmi.composeapp.generated.resources.ic_show
@@ -21,7 +21,7 @@ fun TimetableVisibilityButton(
         onCheckedChange = { onClick() },
     ) {
         Icon(
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(Pds.icon.SMedium),
             contentDescription = null,
             painter = when {
                 isVisible -> painterResource(Res.drawable.ic_show)
