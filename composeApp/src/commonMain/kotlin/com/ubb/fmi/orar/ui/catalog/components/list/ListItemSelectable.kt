@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.ui.catalog.components
+package com.ubb.fmi.orar.ui.catalog.components.list
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding

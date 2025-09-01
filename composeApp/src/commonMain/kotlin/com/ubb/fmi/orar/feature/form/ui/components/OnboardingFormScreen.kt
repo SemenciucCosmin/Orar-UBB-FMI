@@ -4,11 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,9 +14,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.model.Semester
+import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.model.UserType
-import com.ubb.fmi.orar.ui.catalog.components.FormSelectionRow
+import com.ubb.fmi.orar.ui.catalog.components.list.FormSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.FormSelectionItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -48,7 +48,9 @@ fun OnboardingFormScreen(
     onNextClick: () -> Unit,
     onBack: () -> Unit,
 ) {
-    Scaffold(
+
+
+    StateScaffold(
         topBar = {
             if (configurationFormType == ConfigurationFormType.SETTINGS) {
                 TopBar(
@@ -126,16 +128,14 @@ fun OnboardingFormScreen(
                 )
             }
 
-            Button(
+            PrimaryButton(
                 onClick = onNextClick,
                 enabled = isNextEnabled,
-                shape = MaterialTheme.shapes.small,
+                text = stringResource(Res.string.lbl_next),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Pds.spacing.Medium)
-            ) {
-                Text(text = stringResource(Res.string.lbl_next))
-            }
+            )
         }
     }
 }

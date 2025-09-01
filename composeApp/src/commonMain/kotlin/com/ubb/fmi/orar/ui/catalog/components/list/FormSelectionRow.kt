@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.ui.catalog.components
+package com.ubb.fmi.orar.ui.catalog.components.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme

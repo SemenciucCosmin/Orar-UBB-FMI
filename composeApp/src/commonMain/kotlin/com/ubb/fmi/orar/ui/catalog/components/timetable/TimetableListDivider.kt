@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.ui.catalog.components
+package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

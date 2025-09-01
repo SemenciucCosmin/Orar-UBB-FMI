@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.ui.catalog.components
+package com.ubb.fmi.orar.ui.catalog.components.state
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

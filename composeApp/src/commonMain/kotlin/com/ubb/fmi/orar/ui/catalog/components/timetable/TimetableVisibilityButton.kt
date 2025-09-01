@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.ui.catalog.components
+package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
