@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.SubjectTimetableViewModel
+import com.ubb.fmi.orar.ui.catalog.components.TimetableFrequencyTab
 import com.ubb.fmi.orar.ui.catalog.components.TimetableScreen
-import com.ubb.fmi.orar.ui.catalog.components.TimetableTopBar
-import org.jetbrains.compose.resources.stringResource
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -27,13 +27,14 @@ fun SubjectTimetableRoute(
         onRetryClick = viewModel::retry,
         topBar = {
             if (uiState.title.isNotBlank()) {
-                TimetableTopBar(
+                TopBar(
                     title = uiState.title,
-                    selectedFrequency = uiState.selectedFrequency,
-                    onFrequencyClick = viewModel::selectFrequency,
                     onBack = navController::navigateUp,
-                    subtitle = uiState.studyLevel?.let {
-                        "${stringResource(it.labelRes)} - ${uiState.group}"
+                    trailingContent = {
+                        TimetableFrequencyTab(
+                            selectedFrequency = uiState.selectedFrequency,
+                            onFrequencyClick = viewModel::selectFrequency
+                        )
                     }
                 )
             }

@@ -12,31 +12,34 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
 import org.jetbrains.compose.resources.painterResource
 
+private const val MAX_LINES = 1
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimetableTopBar(
+fun TopBar(
     title: String,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    selectedFrequency: Frequency,
-    onFrequencyClick: (Frequency) -> Unit,
     subtitle: String? = null,
+    onBack: (() -> Unit)? = null,
+    trailingContent: @Composable () -> Unit = {},
 ) {
     TopAppBar(
         modifier = modifier,
+        actions = { trailingContent() },
         navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(
-                    modifier = Modifier.size(Pds.icon.Medium),
-                    painter = painterResource(Res.drawable.ic_left_arrow),
-                    contentDescription = null,
-                )
+            onBack?.let {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        modifier = Modifier.size(Pds.icon.Medium),
+                        painter = painterResource(Res.drawable.ic_left_arrow),
+                        contentDescription = null,
+                    )
+                }
             }
         },
         title = {
@@ -44,8 +47,14 @@ fun TimetableTopBar(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
+                    overflow = when {
+                        subtitle == null -> TextOverflow.Clip
+                        else -> TextOverflow.Ellipsis
+                    },
+                    maxLines = when {
+                        subtitle == null -> Int.MAX_VALUE
+                        else -> MAX_LINES
+                    }
                 )
 
                 subtitle?.let {
@@ -57,11 +66,5 @@ fun TimetableTopBar(
                 }
             }
         },
-        actions = {
-            TimetableFrequencyTab(
-                selectedFrequency = selectedFrequency,
-                onFrequencyClick = onFrequencyClick
-            )
-        }
     )
 }

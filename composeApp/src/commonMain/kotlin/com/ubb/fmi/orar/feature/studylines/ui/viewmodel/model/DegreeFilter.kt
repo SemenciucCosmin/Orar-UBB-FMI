@@ -27,10 +27,4 @@ enum class DegreeFilter(
         labelRes = Res.string.lbl_master,
         orderIndex = 2
     );
-
-    companion object {
-        fun getById(id: String?): DegreeFilter {
-            return entries.firstOrNull { it.id == id } ?: ALL
-        }
-    }
 }

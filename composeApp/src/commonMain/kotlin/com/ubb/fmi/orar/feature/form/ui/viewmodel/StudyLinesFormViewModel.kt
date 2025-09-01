@@ -60,7 +60,7 @@ class StudyLinesFormViewModel(
                 isLoading = false,
                 isError = studyLinesResource.status.isError(),
                 groupedStudyLines = groupedStudyLines,
-                selectedFilter = DegreeFilter.getById(selectedStudyLine?.degreeId),
+                selectedFilterId = selectedStudyLine?.degreeId ?: DegreeFilter.ALL.id,
                 selectedFieldId = selectedStudyLine?.fieldId,
                 selectedStudyLevelId = selectedStudyLine?.levelId,
             )
@@ -81,10 +81,10 @@ class StudyLinesFormViewModel(
     }
 
 
-    fun selectDegreeFilter(degreeFilter: DegreeFilter) {
+    fun selectDegreeFilter(degreeFilterId: String) {
         _uiState.update {
             it.copy(
-                selectedFilter = degreeFilter,
+                selectedFilterId = degreeFilterId,
                 selectedFieldId = null,
                 selectedStudyLevelId = null,
             )

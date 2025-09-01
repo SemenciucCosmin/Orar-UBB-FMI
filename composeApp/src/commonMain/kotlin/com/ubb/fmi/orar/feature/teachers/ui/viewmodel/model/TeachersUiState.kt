@@ -1,22 +1,24 @@
 package com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
-import com.ubb.fmi.orar.domain.extensions.BLANK
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 data class TeachersUiState(
     private val teachers: ImmutableList<TimetableOwner.Teacher> = persistentListOf(),
-    val selectedFilter: TeacherTitleFilter = TeacherTitleFilter.ALL,
+    val selectedFilterId: String = TeacherTitleFilter.ALL.id,
     val isLoading: Boolean = true,
-    val isError: Boolean = true
+    val isError: Boolean = true,
 ) {
     companion object {
         val TeachersUiState.filteredTeachers: ImmutableList<TimetableOwner.Teacher>
             get() {
                 return teachers.filter { teacher ->
-                    teacher.titleId == selectedFilter.id || selectedFilter == TeacherTitleFilter.ALL
+                    selectedFilterId in listOf(
+                        teacher.titleId,
+                        TeacherTitleFilter.ALL.id
+                    )
                 }.toImmutableList()
             }
     }

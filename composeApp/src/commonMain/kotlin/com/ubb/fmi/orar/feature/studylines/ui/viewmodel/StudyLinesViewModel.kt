@@ -3,7 +3,6 @@ package com.ubb.fmi.orar.feature.studylines.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
@@ -67,10 +66,10 @@ class StudyLinesViewModel(
         }
     }
 
-    fun selectDegreeFilter(degreeFilter: DegreeFilter) {
+    fun selectDegreeFilter(degreeFilterId: String) {
         _uiState.update {
             it.copy(
-                selectedFilter = degreeFilter,
+                selectedFilterId = degreeFilterId,
                 selectedFieldId = null,
             )
         }

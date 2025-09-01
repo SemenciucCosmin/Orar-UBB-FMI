@@ -4,16 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -21,12 +17,12 @@ import androidx.compose.ui.text.style.TextAlign
 import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.UserType
-import com.ubb.fmi.orar.ui.catalog.components.FormInputItem
-import com.ubb.fmi.orar.ui.catalog.components.FormInputListItem
+import com.ubb.fmi.orar.ui.catalog.components.FormSelectionRow
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.model.FormSelectionItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
-import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
 import orar_ubb_fmi.composeapp.generated.resources.lbl_timetable_configuration_title
 import orar_ubb_fmi.composeapp.generated.resources.lbl_next
 import orar_ubb_fmi.composeapp.generated.resources.lbl_semester
@@ -34,7 +30,6 @@ import orar_ubb_fmi.composeapp.generated.resources.lbl_timetable_configuration_m
 import orar_ubb_fmi.composeapp.generated.resources.lbl_user
 import orar_ubb_fmi.composeapp.generated.resources.lbl_welcome
 import orar_ubb_fmi.composeapp.generated.resources.lbl_year
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -56,22 +51,9 @@ fun OnboardingFormScreen(
     Scaffold(
         topBar = {
             if (configurationFormType == ConfigurationFormType.SETTINGS) {
-                TopAppBar(
-                    navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                modifier = Modifier.size(Pds.icon.Medium),
-                                painter = painterResource(Res.drawable.ic_left_arrow),
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    title = {
-                        Text(
-                            text = stringResource(Res.string.lbl_timetable_configuration_title),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
+                TopBar(
+                    title = stringResource(Res.string.lbl_timetable_configuration_title),
+                    onBack = onBack
                 )
             }
         }
@@ -103,21 +85,26 @@ fun OnboardingFormScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                FormInputListItem(
-                    title = stringResource(Res.string.lbl_year),
+                FormSelectionRow(
+                    headline = stringResource(Res.string.lbl_year),
                     selectedItemId = selectedStudyLevel,
-                    onItemClick = onStudyLevelClick,
-                    items = studyLevels.map { FormInputItem(it, "$it-${it.inc()}") }
+                    onClick = onStudyLevelClick,
+                    items = studyLevels.map { level ->
+                        FormSelectionItem(
+                            id = level,
+                            label = "$level-${level.inc()}"
+                        )
+                    }
                 )
 
                 HorizontalDivider()
 
-                FormInputListItem(
-                    title = stringResource(Res.string.lbl_semester),
+                FormSelectionRow(
+                    headline = stringResource(Res.string.lbl_semester),
                     selectedItemId = selectedSemesterId,
-                    onItemClick = onSemesterClick,
+                    onClick = onSemesterClick,
                     items = Semester.entries.map {
-                        FormInputItem(
+                        FormSelectionItem(
                             id = it.id,
                             label = stringResource(it.labelRes)
                         )
@@ -126,12 +113,12 @@ fun OnboardingFormScreen(
 
                 HorizontalDivider()
 
-                FormInputListItem(
-                    title = stringResource(Res.string.lbl_user),
+                FormSelectionRow(
+                    headline = stringResource(Res.string.lbl_user),
                     selectedItemId = selectedUserTypeId,
-                    onItemClick = onUserTypeClick,
+                    onClick = onUserTypeClick,
                     items = UserType.entries.map {
-                        FormInputItem(
+                        FormSelectionItem(
                             id = it.id,
                             label = stringResource(it.labelRes)
                         )

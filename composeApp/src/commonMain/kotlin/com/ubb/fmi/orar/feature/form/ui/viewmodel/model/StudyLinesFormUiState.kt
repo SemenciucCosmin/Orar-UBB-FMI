@@ -10,7 +10,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 data class StudyLinesFormUiState(
     private val groupedStudyLines: ImmutableList<ImmutableList<TimetableOwner.StudyLine>> = persistentListOf(),
-    val selectedFilter: DegreeFilter = DegreeFilter.ALL,
+    val selectedFilterId: String = DegreeFilter.ALL.id,
     val selectedFieldId: String? = null,
     val selectedStudyLevelId: String? = null,
     val isLoading: Boolean = false,
@@ -21,8 +21,8 @@ data class StudyLinesFormUiState(
             get() {
                 return groupedStudyLines.filter { studyLines ->
                     studyLines.all {
-                        it.degreeId == selectedFilter.id
-                    } || selectedFilter == DegreeFilter.ALL
+                        it.degreeId == selectedFilterId
+                    } || selectedFilterId == DegreeFilter.ALL.id
                 }.toImmutableList()
             }
     }

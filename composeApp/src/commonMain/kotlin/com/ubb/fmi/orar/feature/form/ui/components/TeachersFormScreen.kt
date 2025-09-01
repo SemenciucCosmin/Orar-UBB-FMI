@@ -6,33 +6,27 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
+import com.ubb.fmi.orar.ui.catalog.components.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
-import com.ubb.fmi.orar.ui.catalog.components.FormListItem
+import com.ubb.fmi.orar.ui.catalog.components.ListItemSelectable
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
-import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
 import orar_ubb_fmi.composeapp.generated.resources.lbl_next
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +35,7 @@ fun TeachersFormScreen(
     title: String,
     uiState: TeachersFormUiState,
     onTeacherClick: (String) -> Unit,
-    onSelectFilter: (TeacherTitleFilter) -> Unit,
+    onSelectFilter: (String) -> Unit,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
     onBack: () -> Unit,
@@ -49,22 +43,9 @@ fun TeachersFormScreen(
     Scaffold(
         topBar = {
             if (!uiState.isLoading) {
-                TopAppBar(
-                    navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                modifier = Modifier.size(Pds.icon.Medium),
-                                painter = painterResource(Res.drawable.ic_left_arrow),
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    title = {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
+                TopBar(
+                    title = title,
+                    onBack = onBack
                 )
             }
         }
@@ -89,25 +70,17 @@ fun TeachersFormScreen(
 
             else -> {
                 Column(modifier = Modifier.padding(paddingValues)) {
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Small),
-                        contentPadding = PaddingValues(horizontal = Pds.spacing.Medium)
-                    ) {
-                        items(
-                            TeacherTitleFilter.entries.sortedBy { it.orderIndex }
-                        ) { teacherTitleFilter ->
-                            FilterChip(
-                                shape = CircleShape,
-                                selected = uiState.selectedFilter == teacherTitleFilter,
-                                onClick = { onSelectFilter(teacherTitleFilter) },
-                                label = {
-                                    Text(
-                                        text = stringResource(teacherTitleFilter.labelRes)
-                                    )
-                                }
+                    ChipSelectionRow(
+                        selectedChipId = uiState.selectedFilterId,
+                        onClick = onSelectFilter,
+                        contentPadding = PaddingValues(horizontal = Pds.spacing.Medium),
+                        chips = TeacherTitleFilter.entries.sortedBy { it.orderIndex }.map {
+                            Chip(
+                                id = it.id,
+                                label = stringResource(it.labelRes)
                             )
                         }
-                    }
+                    )
 
                     LazyColumn(
                         contentPadding = PaddingValues(Pds.spacing.Medium),
@@ -115,16 +88,14 @@ fun TeachersFormScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         items(uiState.filteredTeachers) { teacher ->
-                            FormListItem<String>(
-                                modifier = Modifier.fillMaxWidth(),
-                                headlineLabel = teacher.name,
-                                overLineLabel = teacher.titleId,
+                            ListItemSelectable(
+                                headline = teacher.name,
+                                overline = teacher.titleId,
                                 isSelected = uiState.selectedTeacherId == teacher.id,
                                 onClick = { onTeacherClick(teacher.id) }
                             )
                         }
                     }
-
 
                     Button(
                         onClick = onNextClick,

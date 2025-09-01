@@ -19,12 +19,15 @@ import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
+import com.ubb.fmi.orar.ui.catalog.components.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 import com.ubb.fmi.orar.ui.catalog.components.SearchBar
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.ic_subject
 import orar_ubb_fmi.composeapp.generated.resources.lbl_no_results
 import orar_ubb_fmi.composeapp.generated.resources.lbl_subject
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,17 +42,19 @@ fun SubjectsScreen(
     Scaffold(
         bottomBar = bottomBar,
         topBar = {
-            TopAppBar(
-                title = {
-                    SearchBar(
-                        value = uiState.searchQuery,
-                        onValueChange = onChangeSearchQuery,
-                        placeholder = stringResource(Res.string.lbl_subject),
-                        onClearClick = { onChangeSearchQuery(String.BLANK) },
-                        modifier = Modifier.padding(end = Pds.spacing.Medium)
-                    )
-                }
-            ).takeIf { !uiState.isError && !uiState.isLoading }
+            if (!uiState.isError && !uiState.isLoading) {
+                TopAppBar(
+                    title = {
+                        SearchBar(
+                            value = uiState.searchQuery,
+                            onValueChange = onChangeSearchQuery,
+                            placeholder = stringResource(Res.string.lbl_subject),
+                            onClearClick = { onChangeSearchQuery(String.BLANK) },
+                            modifier = Modifier.padding(end = Pds.spacing.Medium)
+                        )
+                    }
+                )
+            }
         }
     ) { paddingValues ->
         when {
@@ -93,10 +98,11 @@ fun SubjectsScreen(
                     modifier = Modifier.padding(paddingValues)
                 ) {
                     items(uiState.filteredSubjects) { subject ->
-                        SubjectListItem(
-                            id = subject.id,
-                            title = subject.name,
+                        ListItemClickable(
+                            headline = subject.name,
+                            overline = subject.id,
                             onClick = { onSubjectClick(subject.id) },
+                            leadingIcon = painterResource(Res.drawable.ic_subject),
                         )
                     }
                 }

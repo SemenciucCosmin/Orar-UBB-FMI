@@ -1,30 +1,23 @@
 package com.ubb.fmi.orar.feature.groups.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
+import com.ubb.fmi.orar.ui.catalog.components.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
-import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
+import orar_ubb_fmi.composeapp.generated.resources.ic_group
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -39,32 +32,10 @@ fun GroupsScreen(
     Scaffold(
         topBar = {
             if (uiState.title != null && uiState.studyLevel != null) {
-                TopAppBar(
-                    navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                modifier = Modifier.size(Pds.icon.Medium),
-                                painter = painterResource(Res.drawable.ic_left_arrow),
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    title = {
-                        Column(verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall)) {
-                            Text(
-                                text = uiState.title,
-                                style = MaterialTheme.typography.titleMedium,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                            )
-
-                            Text(
-                                text = stringResource(uiState.studyLevel.labelRes),
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                    }
+                TopBar(
+                    title = uiState.title,
+                    subtitle = stringResource(uiState.studyLevel.labelRes),
+                    onBack = onBack
                 )
             }
         }
@@ -94,10 +65,10 @@ fun GroupsScreen(
                     modifier = Modifier.padding(paddingValues)
                 ) {
                     items(uiState.groups) { group ->
-                        GroupListItem(
-                            label = group,
+                        ListItemClickable(
+                            headline = group,
                             onClick = { onGroupClick(group) },
-                            modifier = Modifier.fillMaxWidth()
+                            leadingIcon = painterResource(Res.drawable.ic_group),
                         )
                     }
                 }

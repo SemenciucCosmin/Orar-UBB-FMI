@@ -8,7 +8,6 @@ import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.domain.timetable.usecase.SetConfigurationUseCase
-import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -39,9 +38,9 @@ class TeachersFormViewModel(
             initialValue = _uiState.value
         )
 
-    fun selectTeacherTitleFilter(teacherTitleFilter: TeacherTitleFilter) {
+    fun selectTeacherTitleFilter(teacherTitleFilterId: String) {
         _uiState.update {
-            it.copy(selectedFilter = teacherTitleFilter)
+            it.copy(selectedFilterId = teacherTitleFilterId)
         }
     }
 
@@ -64,7 +63,7 @@ class TeachersFormViewModel(
                 isError = resource.status.isError(),
                 teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
                 selectedTeacherId = teacher?.id,
-                selectedFilter = TeacherTitleFilter.getById(teacher?.titleId),
+                selectedFilterId = teacher?.titleId ?: TeacherTitleFilter.ALL.id,
             )
         }
     }

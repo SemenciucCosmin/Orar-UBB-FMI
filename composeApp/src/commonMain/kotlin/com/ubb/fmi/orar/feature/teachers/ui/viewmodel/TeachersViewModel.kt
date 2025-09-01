@@ -3,7 +3,6 @@ package com.ubb.fmi.orar.feature.teachers.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
@@ -52,9 +51,9 @@ class TeachersViewModel(
         }
     }
 
-    fun selectTeacherTitleFilter(teacherTitleFilter: TeacherTitleFilter) {
+    fun selectTeacherTitleFilter(teacherTitleFilterId: String) {
         _uiState.update {
-            it.copy(selectedFilter = teacherTitleFilter)
+            it.copy(selectedFilterId = teacherTitleFilterId)
         }
     }
 
