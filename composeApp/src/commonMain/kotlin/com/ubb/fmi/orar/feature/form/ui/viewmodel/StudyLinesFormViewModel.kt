@@ -8,7 +8,6 @@ import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
-import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,7 +41,6 @@ class StudyLinesFormViewModel(
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val semester = Semester.getById(semesterId)
         val studyLinesResource = studyLinesDataSource.getOwners(
             year = year,
             semesterId = semesterId
@@ -65,7 +63,6 @@ class StudyLinesFormViewModel(
                 selectedFilter = DegreeFilter.getById(selectedStudyLine?.degreeId),
                 selectedFieldId = selectedStudyLine?.fieldId,
                 selectedStudyLevelId = selectedStudyLine?.levelId,
-                title = "$year - ${year.inc()}, ${semester.label}",
             )
         }
     }

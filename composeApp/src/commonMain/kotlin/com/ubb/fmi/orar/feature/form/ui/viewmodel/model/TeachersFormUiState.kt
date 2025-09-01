@@ -12,7 +12,6 @@ data class TeachersFormUiState(
     private val teachers: ImmutableList<TimetableOwner.Teacher> = persistentListOf(),
     val selectedFilter: TeacherTitleFilter = TeacherTitleFilter.ALL,
     val selectedTeacherId: String? = null,
-    val title: String = String.BLANK,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
 ) {

@@ -7,7 +7,7 @@ import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.model.TimetableClass
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
-import com.ubb.fmi.orar.domain.timetable.model.Day
+import com.ubb.fmi.orar.data.timetable.model.Day
 
 @Suppress("UNCHECKED_CAST")
 abstract class TimetableDataSource<Owner : TimetableOwner>(

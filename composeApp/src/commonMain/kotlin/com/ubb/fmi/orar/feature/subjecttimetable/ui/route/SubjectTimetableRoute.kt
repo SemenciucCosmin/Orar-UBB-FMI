@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.subjecttimetable.ui.viewmodel.SubjectTimetableViewModel
 import com.ubb.fmi.orar.ui.catalog.components.TimetableScreen
 import com.ubb.fmi.orar.ui.catalog.components.TimetableTopBar
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -28,10 +29,12 @@ fun SubjectTimetableRoute(
             if (uiState.title.isNotBlank()) {
                 TimetableTopBar(
                     title = uiState.title,
-                    subtitle = uiState.subtitle,
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = viewModel::selectFrequency,
-                    onBack = navController::navigateUp
+                    onBack = navController::navigateUp,
+                    subtitle = uiState.studyLevel?.let {
+                        "${stringResource(it.labelRes)} - ${uiState.group}"
+                    }
                 )
             }
         }

@@ -17,6 +17,9 @@ import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.timetableListItems
 import com.ubb.fmi.orar.ui.theme.Pds
+import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.lbl_hour
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +28,7 @@ fun TimetableScreen(
     onRetryClick: () -> Unit,
     topBar: @Composable () -> Unit,
     bottomBar: @Composable () -> Unit = {},
-    onItemVisibilityChange: (TimetableListItem.Class) -> Unit = {}
+    onItemVisibilityChange: (TimetableListItem.Class) -> Unit = {},
 ) {
     Scaffold(
         topBar = topBar,
@@ -58,7 +61,7 @@ fun TimetableScreen(
                     items(
                         uiState.timetableListItems,
                         key = { timetableItem ->
-                            when(timetableItem) {
+                            when (timetableItem) {
                                 is TimetableListItem.Divider -> timetableItem.day
                                 is TimetableListItem.Class -> timetableItem.id
                             }
@@ -68,7 +71,7 @@ fun TimetableScreen(
                             is TimetableListItem.Divider -> {
                                 TimetableListDivider(
                                     modifier = Modifier.animateItem(),
-                                    text = timetableItem.day,
+                                    text = stringResource(timetableItem.day.labelRes),
                                 )
                             }
 
@@ -88,8 +91,14 @@ fun TimetableScreen(
                                     }
 
                                     TimetableListItem(
-                                        startHour = timetableItem.startHour,
-                                        endHour = timetableItem.endHour,
+                                        startHour = stringResource(
+                                            Res.string.lbl_hour,
+                                            timetableItem.startHour
+                                        ),
+                                        endHour = stringResource(
+                                            Res.string.lbl_hour,
+                                            timetableItem.startHour
+                                        ),
                                         subject = timetableItem.subject,
                                         classType = timetableItem.classType,
                                         participant = timetableItem.participant,

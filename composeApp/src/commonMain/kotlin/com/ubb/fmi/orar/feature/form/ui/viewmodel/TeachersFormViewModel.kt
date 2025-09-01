@@ -49,7 +49,6 @@ class TeachersFormViewModel(
         _uiState.update { it.copy(isLoading = true, isError = false) }
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val semester = Semester.getById(semesterId)
         val resource = teachersDataSource.getOwners(
             year = year,
             semesterId = semesterId
@@ -66,7 +65,6 @@ class TeachersFormViewModel(
                 teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
                 selectedTeacherId = teacher?.id,
                 selectedFilter = TeacherTitleFilter.getById(teacher?.titleId),
-                title = "$year - ${year.inc()}, ${semester.label}",
             )
         }
     }

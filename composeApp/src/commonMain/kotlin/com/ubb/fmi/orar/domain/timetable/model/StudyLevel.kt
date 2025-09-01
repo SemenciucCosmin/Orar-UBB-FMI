@@ -1,23 +1,29 @@
 package com.ubb.fmi.orar.domain.timetable.model
 
+import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.lbl_level_1
+import orar_ubb_fmi.composeapp.generated.resources.lbl_level_2
+import orar_ubb_fmi.composeapp.generated.resources.lbl_level_3
+import org.jetbrains.compose.resources.StringResource
+
 enum class StudyLevel(
     val id: String,
-    val label: String,
+    val labelRes: StringResource,
     val notation: String,
 ) {
     LEVEL_1(
         id = "Anul 1",
-        label = "Anul 1",
+        labelRes = Res.string.lbl_level_1,
         notation = "1"
     ),
     LEVEL_2(
         id = "Anul 2",
-        label = "Anul 2",
+        labelRes = Res.string.lbl_level_2,
         notation = "2"
     ),
     LEVEL_3(
         id = "Anul 3",
-        label = "Anul 3",
+        labelRes = Res.string.lbl_level_3,
         notation = "3"
     );
 

@@ -22,6 +22,10 @@ import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 import com.ubb.fmi.orar.ui.catalog.components.SearchBar
 import com.ubb.fmi.orar.ui.theme.Pds
+import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.lbl_no_results
+import orar_ubb_fmi.composeapp.generated.resources.lbl_subject
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +44,7 @@ fun SubjectsScreen(
                     SearchBar(
                         value = uiState.searchQuery,
                         onValueChange = onChangeSearchQuery,
-                        placeholder = "Disciplina",
+                        placeholder = stringResource(Res.string.lbl_subject),
                         onClearClick = { onChangeSearchQuery(String.BLANK) },
                         modifier = Modifier.padding(end = Pds.spacing.Medium)
                     )
@@ -76,7 +80,7 @@ fun SubjectsScreen(
                         .fillMaxSize()
                 ) {
                     Text(
-                        text = "No results found",
+                        text = stringResource(Res.string.lbl_no_results),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }

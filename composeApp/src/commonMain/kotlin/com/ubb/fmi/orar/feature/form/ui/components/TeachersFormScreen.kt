@@ -31,11 +31,14 @@ import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
+import orar_ubb_fmi.composeapp.generated.resources.lbl_next
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeachersFormScreen(
+    title: String,
     uiState: TeachersFormUiState,
     onTeacherClick: (String) -> Unit,
     onSelectFilter: (TeacherTitleFilter) -> Unit,
@@ -58,7 +61,7 @@ fun TeachersFormScreen(
                     },
                     title = {
                         Text(
-                            text = uiState.title,
+                            text = title,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
@@ -97,7 +100,11 @@ fun TeachersFormScreen(
                                 shape = CircleShape,
                                 selected = uiState.selectedFilter == teacherTitleFilter,
                                 onClick = { onSelectFilter(teacherTitleFilter) },
-                                label = { Text(text = teacherTitleFilter.label) }
+                                label = {
+                                    Text(
+                                        text = stringResource(teacherTitleFilter.labelRes)
+                                    )
+                                }
                             )
                         }
                     }
@@ -127,7 +134,7 @@ fun TeachersFormScreen(
                             .fillMaxWidth()
                             .padding(Pds.spacing.Medium)
                     ) {
-                        Text(text = "NEXT")
+                        Text(text = stringResource(Res.string.lbl_next))
                     }
                 }
             }

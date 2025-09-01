@@ -21,6 +21,7 @@ import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Comp
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 import com.ubb.fmi.orar.ui.theme.Pds
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TeachersScreen(
@@ -62,7 +63,11 @@ fun TeachersScreen(
                                 shape = CircleShape,
                                 selected = uiState.selectedFilter == teacherTitleFilter,
                                 onClick = { onSelectFilter(teacherTitleFilter) },
-                                label = { Text(text = teacherTitleFilter.label) }
+                                label = {
+                                    Text(
+                                        text = stringResource(teacherTitleFilter.labelRes)
+                                    )
+                                }
                             )
                         }
                     }
@@ -74,8 +79,10 @@ fun TeachersScreen(
                         items(uiState.filteredTeachers) { teacher ->
                             TeacherListItem(
                                 name = teacher.name,
-                                title = TeacherTitle.getById(teacher.titleId).label,
                                 onClick = { onTeacherClick(teacher.id) },
+                                title = stringResource(
+                                    TeacherTitle.getById(teacher.titleId).labelRes
+                                ),
                             )
                         }
                     }

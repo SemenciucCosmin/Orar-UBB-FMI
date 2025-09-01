@@ -23,6 +23,7 @@ import orar_ubb_fmi.composeapp.generated.resources.ic_check
 import orar_ubb_fmi.composeapp.generated.resources.ic_right_arrow
 import orar_ubb_fmi.composeapp.generated.resources.ic_study_line
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StudyLineListItem(
@@ -85,7 +86,7 @@ fun StudyLineListItem(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = studyLevel.label,
+                                    text = stringResource(studyLevel.labelRes),
                                     style = MaterialTheme.typography.labelMedium,
                                     modifier = Modifier.weight(1f)
                                 )

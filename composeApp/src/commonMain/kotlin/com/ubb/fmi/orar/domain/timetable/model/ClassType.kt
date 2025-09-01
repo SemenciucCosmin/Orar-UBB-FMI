@@ -6,35 +6,40 @@ import orar_ubb_fmi.composeapp.generated.resources.ic_laboratory
 import orar_ubb_fmi.composeapp.generated.resources.ic_lecture
 import orar_ubb_fmi.composeapp.generated.resources.ic_seminary
 import orar_ubb_fmi.composeapp.generated.resources.ic_staff
+import orar_ubb_fmi.composeapp.generated.resources.lbl_laboratory
+import orar_ubb_fmi.composeapp.generated.resources.lbl_lecture
+import orar_ubb_fmi.composeapp.generated.resources.lbl_seminary
+import orar_ubb_fmi.composeapp.generated.resources.lbl_staff
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 
 enum class ClassType(
     val id: String,
-    val label: String,
+    val labelRes: StringResource,
     val color: Color,
     val imageRes: DrawableResource,
 ) {
     LECTURE(
         id = "Curs",
-        label = "Curs",
+        labelRes = Res.string.lbl_lecture,
         color = Color(0xFF00A300),
         imageRes = Res.drawable.ic_lecture,
     ),
     SEMINARY(
         id = "Seminar",
-        label = "Seminar",
+        labelRes = Res.string.lbl_seminary,
         color = Color(0xFF5D3FD3),
         imageRes = Res.drawable.ic_seminary,
     ),
     LABORATORY(
         id = "Laborator",
-        label = "Laborator",
+        labelRes = Res.string.lbl_laboratory,
         color = Color(0xFF0000D1),
         imageRes = Res.drawable.ic_laboratory,
     ),
     STAFF (
         id = "Colectiv",
-        label = "Colectiv",
+        labelRes = Res.string.lbl_staff,
         color = Color(0xFFD12300),
         imageRes = Res.drawable.ic_staff,
     );

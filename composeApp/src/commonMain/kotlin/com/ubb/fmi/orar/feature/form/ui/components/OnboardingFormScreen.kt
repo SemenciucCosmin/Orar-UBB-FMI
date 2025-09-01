@@ -27,7 +27,15 @@ import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_left_arrow
+import orar_ubb_fmi.composeapp.generated.resources.lbl_timetable_configuration_title
+import orar_ubb_fmi.composeapp.generated.resources.lbl_next
+import orar_ubb_fmi.composeapp.generated.resources.lbl_semester
+import orar_ubb_fmi.composeapp.generated.resources.lbl_timetable_configuration_message
+import orar_ubb_fmi.composeapp.generated.resources.lbl_user
+import orar_ubb_fmi.composeapp.generated.resources.lbl_welcome
+import orar_ubb_fmi.composeapp.generated.resources.lbl_year
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +68,7 @@ fun OnboardingFormScreen(
                     },
                     title = {
                         Text(
-                            text = "Configurare orar",
+                            text = stringResource(Res.string.lbl_timetable_configuration_title),
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
@@ -71,7 +79,7 @@ fun OnboardingFormScreen(
         Column(modifier = Modifier.padding(paddingValues)) {
             if (configurationFormType == ConfigurationFormType.STARTUP) {
                 Text(
-                    text = "Bun venit!",
+                    text = stringResource(Res.string.lbl_welcome),
                     style = MaterialTheme.typography.displaySmall,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold,
@@ -90,13 +98,13 @@ fun OnboardingFormScreen(
                     .padding(horizontal = Pds.spacing.Medium),
             ) {
                 Text(
-                    text = "Alege configuratiile pentru orarul tau",
+                    text = stringResource(Res.string.lbl_timetable_configuration_message),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
                 FormInputListItem(
-                    title = "Anul",
+                    title = stringResource(Res.string.lbl_year),
                     selectedItemId = selectedStudyLevel,
                     onItemClick = onStudyLevelClick,
                     items = studyLevels.map { FormInputItem(it, "$it-${it.inc()}") }
@@ -105,19 +113,29 @@ fun OnboardingFormScreen(
                 HorizontalDivider()
 
                 FormInputListItem(
-                    title = "Semestrul",
+                    title = stringResource(Res.string.lbl_semester),
                     selectedItemId = selectedSemesterId,
                     onItemClick = onSemesterClick,
-                    items = Semester.entries.map { FormInputItem(it.id, it.label) }
+                    items = Semester.entries.map {
+                        FormInputItem(
+                            id = it.id,
+                            label = stringResource(it.labelRes)
+                        )
+                    }
                 )
 
                 HorizontalDivider()
 
                 FormInputListItem(
-                    title = "Utilizator",
+                    title = stringResource(Res.string.lbl_user),
                     selectedItemId = selectedUserTypeId,
                     onItemClick = onUserTypeClick,
-                    items = UserType.entries.map { FormInputItem(it.id, it.label) }
+                    items = UserType.entries.map {
+                        FormInputItem(
+                            id = it.id,
+                            label = stringResource(it.labelRes)
+                        )
+                    }
                 )
             }
 
@@ -129,7 +147,7 @@ fun OnboardingFormScreen(
                     .fillMaxWidth()
                     .padding(Pds.spacing.Medium)
             ) {
-                Text(text = "NEXT")
+                Text(text = stringResource(Res.string.lbl_next))
             }
         }
     }

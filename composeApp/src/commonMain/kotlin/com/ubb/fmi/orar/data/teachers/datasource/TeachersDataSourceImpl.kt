@@ -159,8 +159,8 @@ class TeachersDataSourceImpl(
             TimetableClass(
                 id = id,
                 day = dayCell.value,
-                startHour = "$startHour:00",
-                endHour = "$endHour:00",
+                startHour = startHour,
+                endHour = endHour,
                 frequencyId = frequencyCell.value,
                 room = room,
                 field = studyLine,

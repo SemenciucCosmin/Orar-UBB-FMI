@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import kotlin.collections.firstOrNull
 import kotlin.time.Duration.Companion.seconds
 
@@ -69,7 +70,7 @@ class GroupsFormViewModel(
                 isError = groupsResource.status.isError(),
                 groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
                 title = studyLine?.name,
-                subtitle = studyLevel.label,
+                studyLevel = studyLevel,
                 selectedGroupId = groupsResource.payload?.firstOrNull { groupId ->
                     groupId == configuration?.groupId
                 }

@@ -6,6 +6,8 @@ import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.domain.timetable.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
+import com.ubb.fmi.orar.ui.catalog.model.Day
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import kotlinx.collections.immutable.ImmutableList
@@ -16,7 +18,8 @@ import kotlin.String
 data class TimetableUiState(
     val classes: ImmutableList<TimetableClass> = persistentListOf(),
     val title: String = String.BLANK,
-    val subtitle: String? = null,
+    val studyLevel: StudyLevel? = null,
+    val group: String? = null,
     val selectedFrequency: Frequency = Frequency.WEEK_1,
     val isEditModeOn: Boolean = false,
     val isLoading: Boolean = false,
@@ -59,7 +62,7 @@ data class TimetableUiState(
                 }
 
                 return classes.groupBy { it.day }.map { (day, classes) ->
-                    val divider = TimetableListItem.Divider(day)
+                    val divider = TimetableListItem.Divider(Day.getById(day))
                     val classItems = classes.map { timetableClass ->
 
                         TimetableListItem.Class(

@@ -25,6 +25,7 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_down_arrow
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -38,7 +39,7 @@ fun TimetableListItem(
     room: String,
     enabled: Boolean,
     expanded: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
         onClick = {},
@@ -100,8 +101,13 @@ fun TimetableListItem(
                         textAlign = TextAlign.Center,
                         color = Color.White,
                         text = when {
-                            participant.isEmpty() -> classType.label
-                            else -> "${classType.label} - $participant"
+                            participant.isEmpty() -> {
+                                stringResource(classType.labelRes)
+                            }
+
+                            else -> {
+                                "${stringResource(classType.labelRes)} - $participant"
+                            }
                         },
                         modifier = Modifier.padding(
                             vertical = Pds.spacing.XSmall,

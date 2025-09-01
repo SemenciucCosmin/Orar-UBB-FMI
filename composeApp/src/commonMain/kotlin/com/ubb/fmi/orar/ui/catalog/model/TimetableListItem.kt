@@ -6,7 +6,7 @@ import com.ubb.fmi.orar.domain.timetable.model.ClassType
 sealed interface TimetableListItem {
 
     data class Divider(
-        val day: String
+        val day: Day
     ) : TimetableListItem
 
     data class Class(

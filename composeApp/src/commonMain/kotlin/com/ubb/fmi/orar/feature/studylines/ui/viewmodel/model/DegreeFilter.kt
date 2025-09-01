@@ -1,25 +1,30 @@
 package com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.groups.model.Degree
+import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.lbl_all
+import orar_ubb_fmi.composeapp.generated.resources.lbl_license
+import orar_ubb_fmi.composeapp.generated.resources.lbl_master
+import org.jetbrains.compose.resources.StringResource
 
 enum class DegreeFilter(
     val id: String,
-    val label: String,
+    val labelRes: StringResource,
     val orderIndex: Int,
 ) {
     ALL(
         id = "all",
-        label = "All",
+        labelRes = Res.string.lbl_all,
         orderIndex = 0
     ),
     LICENCE(
         id = Degree.LICENCE.id,
-        label = "Licenta",
+        labelRes = Res.string.lbl_license,
         orderIndex = 1
     ),
     MASTER(
         id = Degree.MASTER.id,
-        label = "Master",
+        labelRes = Res.string.lbl_master,
         orderIndex = 2
     );
 

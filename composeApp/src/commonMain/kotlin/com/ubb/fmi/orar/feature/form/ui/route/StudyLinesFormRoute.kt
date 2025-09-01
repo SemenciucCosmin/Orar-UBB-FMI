@@ -5,9 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.StudyLinesFormScreen
+import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -17,6 +19,7 @@ fun StudyLinesFormRoute(
     year: Int,
     semesterId: String,
 ) {
+    val semester = Semester.getById(semesterId)
     val viewModel = koinViewModel<StudyLinesFormViewModel>(
         parameters = { parametersOf(year, semesterId) }
     )
@@ -24,6 +27,7 @@ fun StudyLinesFormRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     StudyLinesFormScreen(
+        title = "$year - ${year.inc()}, ${stringResource(semester.labelRes)}",
         uiState = uiState,
         onStudyLineClick = viewModel::selectFieldId,
         onStudyLevelClick = viewModel::selectStudyLevel,

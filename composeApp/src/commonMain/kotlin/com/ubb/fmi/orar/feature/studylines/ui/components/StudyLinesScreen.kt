@@ -22,6 +22,7 @@ import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState.
 import com.ubb.fmi.orar.ui.catalog.components.FailureState
 import com.ubb.fmi.orar.ui.catalog.components.ProgressOverlay
 import com.ubb.fmi.orar.ui.theme.Pds
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StudyLinesScreen(
@@ -62,7 +63,7 @@ fun StudyLinesScreen(
                                 shape = CircleShape,
                                 selected = uiState.selectedFilter == degreeFilter,
                                 onClick = { onSelectFilter(degreeFilter) },
-                                label = { Text(text = degreeFilter.label) }
+                                label = { Text(text = stringResource(degreeFilter.labelRes)) }
                             )
                         }
                     }

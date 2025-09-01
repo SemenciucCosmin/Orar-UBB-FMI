@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -31,7 +32,7 @@ fun TimetableFrequencyTab(
             shape = CircleShape,
             label = {
                 Text(
-                    text = Frequency.WEEK_1.label,
+                    text = stringResource(Frequency.WEEK_1.labelRes),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -43,7 +44,7 @@ fun TimetableFrequencyTab(
             shape = CircleShape,
             label = {
                 Text(
-                    text = Frequency.WEEK_2.label,
+                    text = stringResource(Frequency.WEEK_2.labelRes),
                     style = MaterialTheme.typography.labelLarge
                 )
             }

@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.domain.extensions.BLANK
+import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -12,7 +13,6 @@ data class StudyLinesFormUiState(
     val selectedFilter: DegreeFilter = DegreeFilter.ALL,
     val selectedFieldId: String? = null,
     val selectedStudyLevelId: String? = null,
-    val title: String = String.BLANK,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
 ) {

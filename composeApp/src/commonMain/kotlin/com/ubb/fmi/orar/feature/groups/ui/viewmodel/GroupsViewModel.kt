@@ -62,7 +62,7 @@ class GroupsViewModel(
                 isError = groupsResource.status.isError(),
                 groups = groupsResource.payload?.toImmutableList()  ?: persistentListOf(),
                 title = studyLine?.name,
-                subtitle = studyLevel.label
+                studyLevel = studyLevel
             )
         }
     }

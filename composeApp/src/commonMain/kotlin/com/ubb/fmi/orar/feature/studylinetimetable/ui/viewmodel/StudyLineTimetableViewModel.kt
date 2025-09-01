@@ -64,7 +64,8 @@ class StudyLineTimetableViewModel(
                     isError = resource.status.isError(),
                     classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf(),
                     title = resource.payload?.owner?.name ?: String.BLANK,
-                    subtitle = "${studyLevel.label} - $groupId"
+                    studyLevel = studyLevel,
+                    group = groupId,
                 )
             }
         }

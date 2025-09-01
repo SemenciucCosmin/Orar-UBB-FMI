@@ -1,13 +1,21 @@
 package com.ubb.fmi.orar.ui.catalog.model
 
-enum class UserType(val id: String, val label: String) {
+import orar_ubb_fmi.composeapp.generated.resources.Res
+import orar_ubb_fmi.composeapp.generated.resources.lbl_student
+import orar_ubb_fmi.composeapp.generated.resources.lbl_teacher
+import org.jetbrains.compose.resources.StringResource
+
+enum class UserType(
+    val id: String,
+    val labelRes: StringResource
+) {
     STUDENT(
         id = "student",
-        label = "Student"
+        labelRes = Res.string.lbl_student
     ),
     TEACHER(
         id = "teacher",
-        label = "Profesor"
+        labelRes =  Res.string.lbl_teacher
     );
 
     companion object {

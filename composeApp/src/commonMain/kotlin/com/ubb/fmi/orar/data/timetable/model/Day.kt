@@ -1,6 +1,4 @@
-package com.ubb.fmi.orar.domain.timetable.model
-
-import com.ubb.fmi.orar.domain.timetable.model.ClassType.LECTURE
+package com.ubb.fmi.orar.data.timetable.model
 
 enum class Day(
     val id: String,
@@ -37,7 +35,7 @@ enum class Day(
 
     companion object {
         fun getById(id: String): Day {
-            return Day.entries.firstOrNull { it.id == id } ?: MONDAY
+            return entries.firstOrNull { it.id == id } ?: MONDAY
         }
     }
 }
