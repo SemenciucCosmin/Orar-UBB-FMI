@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import com.ubb.fmi.orar.ui.navigation.model.TimetableBottomBarItem
 import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.painterResource
@@ -23,15 +24,14 @@ fun TimetableBottomBar(navController: NavController) {
 
     BottomAppBar {
         TimetableBottomBarItem.entries.forEach { timetableBottomBarItem ->
+            val destination = timetableBottomBarItem.destination
+            val isSelected = currentDestination?.hasRoute(destination::class) == true
+
             NavigationBarItem(
-                selected = currentDestination?.hasRoute(
-                    timetableBottomBarItem.destination::class
-                ) == true,
+                selected = isSelected,
                 onClick = {
                     navController.navigate(timetableBottomBarItem.destination) {
-                        navController.graph.findStartDestination().route?.let {
-                            popUpTo(it) { saveState = true }
-                        }
+                        popUpTo(TimetableNavDestination.UserTimetable) { saveState = true }
                         launchSingleTop = true
                         restoreState = true
                     }

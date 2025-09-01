@@ -40,8 +40,7 @@ val DarkColorScheme = darkColorScheme(
     surfaceContainer = Color(0xFF1D2024),
     surfaceContainerHigh = Color(0xFF272A2F),
     surfaceContainerHighest = Color(0xFF32353A),
-
-    )
+)
 
 val LightColorScheme = lightColorScheme(
     primary = Color(0xFF38608F),
