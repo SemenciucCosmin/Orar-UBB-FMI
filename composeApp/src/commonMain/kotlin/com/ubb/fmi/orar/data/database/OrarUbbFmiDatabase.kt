@@ -3,7 +3,6 @@ package com.ubb.fmi.orar.data.database
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import com.ubb.fmi.orar.data.database.dao.RoomDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.SubjectDao

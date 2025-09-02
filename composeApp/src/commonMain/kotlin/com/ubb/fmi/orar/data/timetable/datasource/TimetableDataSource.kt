@@ -4,12 +4,12 @@ import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
+import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.model.TimetableClass
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
-import com.ubb.fmi.orar.data.timetable.model.Day
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "TooManyFunctions")
 abstract class TimetableDataSource<Owner : TimetableOwner>(
     private val timetableClassDao: TimetableClassDao,
 ) {
@@ -54,7 +54,7 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
             else -> {
                 if (owner == null) return Resource(null, Status.Error)
                 val timetableResource = getTimetableFromApi(year, semesterId, owner)
-                timetableResource.payload?.let{ saveTimetableInCache(it) }
+                timetableResource.payload?.let { saveTimetableInCache(it) }
 
                 val timetable = timetableResource.payload?.let { timetable ->
                     val sortedClasses = sortTimetableClasses(timetable.classes)
@@ -98,7 +98,7 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
     private suspend fun saveTimetableInCache(timetable: Timetable<Owner>) {
         saveOwnerInCache(timetable.owner)
         val classEntities = timetable.classes.map(::mapClassToEntity)
-        classEntities.forEach{ timetableClassDao.insert(it) }
+        classEntities.forEach { timetableClassDao.insert(it) }
     }
 
     private fun sortTimetableClasses(classes: List<TimetableClass>): List<TimetableClass> {

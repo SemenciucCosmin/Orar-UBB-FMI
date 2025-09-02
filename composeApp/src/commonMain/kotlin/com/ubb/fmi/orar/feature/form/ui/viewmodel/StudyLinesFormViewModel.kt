@@ -2,12 +2,12 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
-import com.ubb.fmi.orar.data.network.model.isError
-import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
-import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +30,7 @@ class StudyLinesFormViewModel(
 
     private val _uiState = MutableStateFlow(StudyLinesFormUiState())
     val uiState = _uiState.asStateFlow()
-        .onStart { getStudyLines()}
+        .onStart { getStudyLines() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
@@ -47,8 +47,8 @@ class StudyLinesFormViewModel(
         )
 
         val studyLevel = configuration?.studyLevelId?.let(StudyLevel::getById)
-        val lineId = studyLevel?.let { configuration.fieldId + studyLevel.notation}
-        val selectedStudyLine = studyLinesResource.payload?.firstOrNull{ it.id == lineId }
+        val lineId = studyLevel?.let { configuration.fieldId + studyLevel.notation }
+        val selectedStudyLine = studyLinesResource.payload?.firstOrNull { it.id == lineId }
         val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
             studyLine.fieldId
         }?.values?.toList()?.map { studyLines ->
@@ -79,7 +79,6 @@ class StudyLinesFormViewModel(
     fun selectStudyLevel(studyLevel: String) {
         _uiState.update { it.copy(selectedStudyLevelId = studyLevel) }
     }
-
 
     fun selectDegreeFilter(degreeFilterId: String) {
         _uiState.update {

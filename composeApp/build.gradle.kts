@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_SRC_DIR_JAVA
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_SRC_DIR_KOTLIN
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -6,9 +8,14 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.jetbrainsKotlinSerialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+}
+
+dependencies {
+    detektPlugins(libs.detekt.formatting)
 }
 
 kotlin {
@@ -62,8 +69,12 @@ kotlin {
             implementation(compose.ui)
 
             // DATA STORE
+
             implementation(libs.data.store)
             implementation(libs.data.store.preferences)
+
+            // DETEKT
+//            detektPlugins(libs.detekt.formatting)
 
             // KTOR
             implementation(libs.ktor.client.content.negotiation)
@@ -137,5 +148,19 @@ android {
 dependencies {
     implementation(libs.room.ktx)
     debugImplementation(compose.uiTooling)
+}
+
+detekt {
+    source.setFrom(
+        "${project.rootDir}/composeApp/src/androidMain/kotlin",
+        "${project.rootDir}/composeApp/src/commonMain/kotlin",
+        "${project.rootDir}/composeApp/src/iosMain/kotlin",
+    )
+
+    buildUponDefaultConfig = true
+    parallel = true
+    autoCorrect = true
+    config.setFrom("detekt-config.yml")
+    baseline = file("detekt-baseline.xml")
 }
 

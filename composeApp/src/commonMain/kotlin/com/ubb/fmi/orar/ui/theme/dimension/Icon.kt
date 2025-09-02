@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.ui.theme.dimension
 
 import androidx.compose.ui.unit.Dp
 
-@Suppress("PropertyName")
+@Suppress("PropertyName", "VariableNaming")
 interface Icon {
     val XXSmall: Dp
     val XSmall: Dp

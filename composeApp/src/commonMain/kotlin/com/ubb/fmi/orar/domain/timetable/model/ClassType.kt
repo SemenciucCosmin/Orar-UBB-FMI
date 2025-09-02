@@ -37,7 +37,7 @@ enum class ClassType(
         color = Color(0xFF0000D1),
         imageRes = Res.drawable.ic_laboratory,
     ),
-    STAFF (
+    STAFF(
         id = "Colectiv",
         labelRes = Res.string.lbl_staff,
         color = Color(0xFFD12300),

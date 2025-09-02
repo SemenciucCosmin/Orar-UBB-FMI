@@ -8,19 +8,19 @@ sealed class ConfigurationFormNavDestination {
     @Serializable
     data class OnboardingForm(
         val configurationFormTypeId: String
-    ): ConfigurationFormNavDestination()
+    ) : ConfigurationFormNavDestination()
 
     @Serializable
     data class TeachersForm(
         val year: Int,
         val semesterId: String,
-    ): ConfigurationFormNavDestination()
+    ) : ConfigurationFormNavDestination()
 
     @Serializable
     data class StudyLinesForm(
         val year: Int,
         val semesterId: String,
-    ): ConfigurationFormNavDestination()
+    ) : ConfigurationFormNavDestination()
 
     @Serializable
     data class GroupsForm(
@@ -29,5 +29,5 @@ sealed class ConfigurationFormNavDestination {
         val fieldId: String,
         val studyLevelId: String,
         val studyLineDegreeId: String,
-    ): ConfigurationFormNavDestination()
+    ) : ConfigurationFormNavDestination()
 }

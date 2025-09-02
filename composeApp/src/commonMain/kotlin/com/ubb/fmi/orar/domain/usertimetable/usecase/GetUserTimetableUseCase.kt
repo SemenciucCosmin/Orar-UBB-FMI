@@ -1,14 +1,14 @@
 package com.ubb.fmi.orar.domain.usertimetable.usecase
 
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
-import com.ubb.fmi.orar.ui.catalog.model.UserType
+import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
-import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
+import com.ubb.fmi.orar.ui.catalog.model.UserType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -46,10 +46,10 @@ class GetUserTimetableUseCase(
 
                 UserType.TEACHER -> {
                     if (configuration.teacherId == null) {
-                        return@mapLatest  Resource(null, Status.Error)
+                        return@mapLatest Resource(null, Status.Error)
                     }
 
-                    return@mapLatest  teachersDataSource.getTimetable(
+                    return@mapLatest teachersDataSource.getTimetable(
                         year = configuration.year,
                         semesterId = configuration.semesterId,
                         ownerId = configuration.teacherId,

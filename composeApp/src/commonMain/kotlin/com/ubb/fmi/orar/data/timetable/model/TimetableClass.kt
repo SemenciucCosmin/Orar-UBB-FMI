@@ -1,6 +1,5 @@
 package com.ubb.fmi.orar.data.timetable.model
 
-
 data class TimetableClass(
     val id: String,
     val day: String,

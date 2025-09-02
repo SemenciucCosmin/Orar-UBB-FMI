@@ -4,8 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.ubb.fmi.orar.feature.form.ui.route.OnboardingFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.GroupsFormRoute
+import com.ubb.fmi.orar.feature.form.ui.route.OnboardingFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.StudyLinesFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.TeachersFormRoute
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination

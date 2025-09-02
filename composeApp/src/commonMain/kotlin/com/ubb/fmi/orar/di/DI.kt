@@ -1,19 +1,19 @@
 package com.ubb.fmi.orar.di
 
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
-import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
-import com.ubb.fmi.orar.data.network.di.networkDataModule
-import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.groups.di.studyLinesDataModule
+import com.ubb.fmi.orar.data.network.di.networkDataModule
+import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
+import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
-import com.ubb.fmi.orar.feature.startup.di.startupFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
+import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
-import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
+import com.ubb.fmi.orar.feature.startup.di.startupFeatureModule
 import com.ubb.fmi.orar.feature.studylines.di.studyLinesFeatureModule
 import com.ubb.fmi.orar.feature.studylinetimetable.di.studyLineTimetableFeatureModule
 import com.ubb.fmi.orar.feature.subjects.di.subjectsFeatureModule

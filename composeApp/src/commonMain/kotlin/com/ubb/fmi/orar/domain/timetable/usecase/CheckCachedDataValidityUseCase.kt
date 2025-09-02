@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.domain.timetable.usecase
 
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.domain.timetable.model.Semester

@@ -44,5 +44,5 @@ enum class TimetableBottomBarItem(
         labelRes = Res.string.lbl_rooms,
         icon = Res.drawable.ic_building,
         destination = TimetableNavDestination.Rooms,
-    );
+    )
 }

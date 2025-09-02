@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.animation.AnimatedVisibility

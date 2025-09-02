@@ -1,8 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
-import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.feature.form.ui.model.Semester
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf

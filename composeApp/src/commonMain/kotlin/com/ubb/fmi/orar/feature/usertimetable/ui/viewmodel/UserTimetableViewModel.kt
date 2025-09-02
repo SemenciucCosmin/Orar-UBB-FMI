@@ -2,12 +2,12 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeTimetableClassVisibilityUseCase
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
+import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
-import com.ubb.fmi.orar.data.network.model.isError
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job

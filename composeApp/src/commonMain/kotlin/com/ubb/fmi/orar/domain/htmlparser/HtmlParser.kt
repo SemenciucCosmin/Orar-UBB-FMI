@@ -64,7 +64,7 @@ object HtmlParser {
                             val endIndex = cellHtml.lastIndexOf(HYPERLINK_TAG_CLOSED)
 
                             cellHtml
-                                .substring(startIndex + 1, endIndex -1)
+                                .substring(startIndex + 1, endIndex - 1)
                                 .select(TAG_RIGHT, TAG_LEFT)
                         }
 

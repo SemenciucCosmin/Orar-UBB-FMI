@@ -2,10 +2,10 @@ package com.ubb.fmi.orar.feature.studylines.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
-import com.ubb.fmi.orar.data.network.model.isError
-import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi

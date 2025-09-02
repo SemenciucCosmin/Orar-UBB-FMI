@@ -27,7 +27,7 @@ enum class TeacherTitle(
     ),
     ASSISTANT(
         id = "Asist.",
-        labelRes =Res.string.lbl_assistant_abr,
+        labelRes = Res.string.lbl_assistant_abr,
     ),
     CANDIDATE(
         id = "Drd.",

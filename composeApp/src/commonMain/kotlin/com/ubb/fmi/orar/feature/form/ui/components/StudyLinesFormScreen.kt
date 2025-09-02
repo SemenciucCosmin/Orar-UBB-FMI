@@ -17,10 +17,10 @@ import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Co
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
-import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemExpandable
-import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res

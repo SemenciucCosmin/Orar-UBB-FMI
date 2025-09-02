@@ -1,10 +1,10 @@
 package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedDataValidityUseCase
 import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupEvent
+import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch

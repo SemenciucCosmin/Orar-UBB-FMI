@@ -40,7 +40,7 @@ fun GroupsFormRoute(
     )
 
     EventHandler(viewModel.events) { event ->
-        when(event) {
+        when (event) {
             GroupsFromUiState.GroupsFromEvent.CONFIGURATION_DONE -> {
                 navController.navigate(TimetableNavDestination.UserTimetable) {
                     popUpTo(

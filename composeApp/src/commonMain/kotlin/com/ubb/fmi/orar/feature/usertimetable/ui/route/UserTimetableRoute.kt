@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.model.ConfigurationFormType
-import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
 import com.ubb.fmi.orar.feature.usertimetable.ui.components.UserTimetableTopBar
 import com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel.UserTimetableViewModel
+import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
 import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel

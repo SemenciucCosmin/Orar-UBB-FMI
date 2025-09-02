@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package com.ubb.fmi.orar.di
 
 import android.os.Build

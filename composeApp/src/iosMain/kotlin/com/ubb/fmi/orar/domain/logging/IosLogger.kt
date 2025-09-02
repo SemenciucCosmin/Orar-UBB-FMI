@@ -1,9 +1,8 @@
 package com.ubb.fmi.orar.domain.logging
 
-import com.ubb.fmi.orar.domain.logging.Logger
 import platform.Foundation.NSLog
 
-class IosLogger: Logger {
+class IosLogger : Logger {
     override fun d(tag: String, message: String) {
         NSLog("$tag: $message")
     }

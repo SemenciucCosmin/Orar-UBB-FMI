@@ -8,8 +8,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableFrequencyTab
+import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.ic_edit

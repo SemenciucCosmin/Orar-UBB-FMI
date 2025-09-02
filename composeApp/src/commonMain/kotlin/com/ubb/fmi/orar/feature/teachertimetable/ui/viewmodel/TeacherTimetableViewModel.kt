@@ -2,12 +2,12 @@ package com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
-import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.domain.extensions.BLANK
+import com.ubb.fmi.orar.ui.catalog.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,11 +24,11 @@ class TeacherTimetableViewModel(
     private val teacherId: String,
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TimetableUiState())
     val uiState = _uiState.asStateFlow()
-        .onStart { loadTimetable()}
+        .onStart { loadTimetable() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),

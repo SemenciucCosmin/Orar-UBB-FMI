@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
-import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.SearchBar
+import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res

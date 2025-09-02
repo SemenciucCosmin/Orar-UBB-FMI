@@ -14,9 +14,9 @@ import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
-import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.theme.Pds

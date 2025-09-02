@@ -2,10 +2,10 @@ package com.ubb.fmi.orar.feature.teachers.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.data.network.model.isError
+import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job

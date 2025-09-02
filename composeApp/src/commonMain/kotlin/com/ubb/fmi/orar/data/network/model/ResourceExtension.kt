@@ -23,7 +23,7 @@ suspend inline fun <reified T> processApiResource(
             in HTTP_OK -> {
                 try {
                     Resource(response.body<T>(), Status.Success)
-                } catch (e: NoTransformationFoundException) {
+                } catch (_: NoTransformationFoundException) {
                     Resource(null, Status.UnprocessableEntity)
                 }
             }
@@ -56,10 +56,10 @@ suspend inline fun <reified T> processApiResource(
         // We want only to log this exception event.
         // Throw it back in order not to intervene with the native coroutine flow or work.
         throw exception
-    } catch (exception: IOException) {
+    } catch (_: IOException) {
         // Error occurred while communicating to the server.
         Resource(null, Status.NetworkError)
-    } catch (throwable: Throwable) {
+    } catch (_: Throwable) {
         // An internal error occurred while attempting to execute a request.
         Resource(null, Status.Error)
     }

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.feature.studylines.ui.components.StudyLinesScreen
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.StudyLinesViewModel
 import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar

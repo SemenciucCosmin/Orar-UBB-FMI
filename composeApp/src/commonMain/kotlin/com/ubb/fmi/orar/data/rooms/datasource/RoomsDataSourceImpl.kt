@@ -6,9 +6,9 @@ import com.ubb.fmi.orar.data.database.model.RoomEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.rooms.api.RoomsApi
+import com.ubb.fmi.orar.data.timetable.datasource.TimetableDataSource
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.model.TimetableClass
-import com.ubb.fmi.orar.data.timetable.datasource.TimetableDataSource
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH

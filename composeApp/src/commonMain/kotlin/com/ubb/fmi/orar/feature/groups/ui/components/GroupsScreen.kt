@@ -9,8 +9,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
-import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res

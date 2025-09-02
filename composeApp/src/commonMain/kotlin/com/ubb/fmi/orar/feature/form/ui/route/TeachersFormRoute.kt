@@ -40,7 +40,7 @@ fun TeachersFormRoute(
     )
 
     EventHandler(viewModel.events) { event ->
-        when(event) {
+        when (event) {
             TeachersFormUiState.TeachersFormEvent.CONFIGURATION_DONE -> {
                 navController.navigate(TimetableNavDestination.UserTimetable) {
                     popUpTo(

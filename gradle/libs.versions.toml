@@ -25,6 +25,9 @@ compose-plugin = "1.7.0"
 # DATA STORE
 data-store = "1.1.7"
 
+# DETEKT
+detekt = "1.23.8"
+
 # KOIN
 koin = "4.1.0"
 
@@ -83,6 +86,9 @@ coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 data-store = { module = "androidx.datastore:datastore", version.ref = "data-store" }
 data-store-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "data-store" }
 
+# DETEKT
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
 # KTOR
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
@@ -131,6 +137,7 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 jetbrainsKotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

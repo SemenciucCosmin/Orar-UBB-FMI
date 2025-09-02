@@ -15,7 +15,7 @@ enum class UserType(
     ),
     TEACHER(
         id = "teacher",
-        labelRes =  Res.string.lbl_teacher
+        labelRes = Res.string.lbl_teacher
     );
 
     companion object {

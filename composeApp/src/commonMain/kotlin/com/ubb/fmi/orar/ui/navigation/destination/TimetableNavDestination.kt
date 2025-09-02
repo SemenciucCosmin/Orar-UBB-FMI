@@ -3,45 +3,45 @@ package com.ubb.fmi.orar.ui.navigation.destination
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class TimetableNavDestination() {
+sealed class TimetableNavDestination {
 
     @Serializable
-    data object Startup: TimetableNavDestination()
+    data object Startup : TimetableNavDestination()
 
     @Serializable
-    data object UserTimetable: TimetableNavDestination()
+    data object UserTimetable : TimetableNavDestination()
 
     @Serializable
-    data object StudyLines: TimetableNavDestination()
+    data object StudyLines : TimetableNavDestination()
 
     @Serializable
     data class Groups(
         val fieldId: String,
         val studyLevelId: String
-    ): TimetableNavDestination()
+    ) : TimetableNavDestination()
 
     @Serializable
     data class StudyLineTimetable(
         val fieldId: String,
         val studyLevelId: String,
         val groupId: String
-    ): TimetableNavDestination()
+    ) : TimetableNavDestination()
 
     @Serializable
-    data object Teachers: TimetableNavDestination()
+    data object Teachers : TimetableNavDestination()
 
     @Serializable
-    data class TeacherTimetable(val teacherId: String): TimetableNavDestination()
+    data class TeacherTimetable(val teacherId: String) : TimetableNavDestination()
 
     @Serializable
-    data object Subjects: TimetableNavDestination()
+    data object Subjects : TimetableNavDestination()
 
     @Serializable
-    data class SubjectTimetable(val subjectId: String): TimetableNavDestination()
+    data class SubjectTimetable(val subjectId: String) : TimetableNavDestination()
 
     @Serializable
-    data object Rooms: TimetableNavDestination()
+    data object Rooms : TimetableNavDestination()
 
     @Serializable
-    data class RoomTimetable(val roomId: String): TimetableNavDestination()
+    data class RoomTimetable(val roomId: String) : TimetableNavDestination()
 }

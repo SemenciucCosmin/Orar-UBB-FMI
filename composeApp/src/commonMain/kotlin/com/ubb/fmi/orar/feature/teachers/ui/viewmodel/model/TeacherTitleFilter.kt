@@ -5,7 +5,6 @@ import orar_ubb_fmi.composeapp.generated.resources.Res
 import orar_ubb_fmi.composeapp.generated.resources.lbl_all
 import org.jetbrains.compose.resources.StringResource
 
-
 enum class TeacherTitleFilter(
     val id: String,
     val labelRes: StringResource,
@@ -45,5 +44,5 @@ enum class TeacherTitleFilter(
         id = TeacherTitle.ASSOCIATE.id,
         labelRes = TeacherTitle.ASSOCIATE.labelRes,
         orderIndex = 6
-    );
+    )
 }

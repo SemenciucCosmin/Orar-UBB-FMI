@@ -26,5 +26,5 @@ enum class DegreeFilter(
         id = Degree.MASTER.id,
         labelRes = Res.string.lbl_master,
         orderIndex = 2
-    );
+    )
 }

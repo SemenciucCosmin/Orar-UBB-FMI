@@ -4,9 +4,9 @@ import com.ubb.fmi.orar.data.timetable.model.TimetableClass
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.domain.timetable.model.ClassType
 import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
+import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.ui.catalog.model.Day
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
@@ -52,7 +52,7 @@ data class TimetableUiState(
                         }
 
                         groupedClasses.values.mapNotNull { classes ->
-                            val joinedParticipant =  classes.joinToString(
+                            val joinedParticipant = classes.joinToString(
                                 String.COMMA + String.SPACE
                             ) { it.participant }
 

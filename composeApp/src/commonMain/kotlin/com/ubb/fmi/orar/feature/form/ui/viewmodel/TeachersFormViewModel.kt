@@ -1,13 +1,13 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.domain.timetable.usecase.SetConfigurationUseCase
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.model.UserType
-import com.ubb.fmi.orar.data.network.model.isError
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
-import com.ubb.fmi.orar.domain.timetable.usecase.SetConfigurationUseCase
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -31,7 +31,7 @@ class TeachersFormViewModel(
 
     private val _uiState = MutableStateFlow(TeachersFormUiState())
     val uiState = _uiState.asStateFlow()
-        .onStart { getTeachers()}
+        .onStart { getTeachers() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
@@ -53,7 +53,7 @@ class TeachersFormViewModel(
             semesterId = semesterId
         )
 
-        val teacher = resource.payload?.firstOrNull{
+        val teacher = resource.payload?.firstOrNull {
             it.id == configuration?.teacherId
         }
 

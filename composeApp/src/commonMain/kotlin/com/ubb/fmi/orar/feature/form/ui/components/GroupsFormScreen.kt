@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
-import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.composeapp.generated.resources.Res

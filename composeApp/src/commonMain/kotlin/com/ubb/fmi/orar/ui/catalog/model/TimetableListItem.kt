@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.ui.catalog.model
 
-import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.domain.timetable.model.ClassType
+import com.ubb.fmi.orar.domain.timetable.model.TimetableOwnerType
 
 sealed interface TimetableListItem {
 

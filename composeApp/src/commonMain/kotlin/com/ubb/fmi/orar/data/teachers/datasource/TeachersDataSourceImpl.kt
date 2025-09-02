@@ -5,12 +5,12 @@ import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.TeacherEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
+import com.ubb.fmi.orar.data.teachers.api.TeachersApi
+import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
+import com.ubb.fmi.orar.data.timetable.datasource.TimetableDataSource
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.model.TimetableClass
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
-import com.ubb.fmi.orar.data.timetable.datasource.TimetableDataSource
-import com.ubb.fmi.orar.data.teachers.api.TeachersApi
-import com.ubb.fmi.orar.data.teachers.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COLON
 import com.ubb.fmi.orar.domain.extensions.DASH
@@ -19,6 +19,7 @@ import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import okio.ByteString.Companion.encodeUtf8
 
+@Suppress("CyclomaticComplexMethod")
 class TeachersDataSourceImpl(
     private val teachersApi: TeachersApi,
     private val teacherDao: TeacherDao,

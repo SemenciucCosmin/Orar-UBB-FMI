@@ -2,11 +2,11 @@ package com.ubb.fmi.orar.feature.groups.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
-import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
-import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.groups.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.network.model.isError
+import com.ubb.fmi.orar.data.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
+import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +29,7 @@ class GroupsViewModel(
 
     private val _uiState = MutableStateFlow(GroupsUiState())
     val uiState = _uiState.asStateFlow()
-        .onStart { getGroups()}
+        .onStart { getGroups() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
@@ -60,7 +60,7 @@ class GroupsViewModel(
             it.copy(
                 isLoading = false,
                 isError = groupsResource.status.isError(),
-                groups = groupsResource.payload?.toImmutableList()  ?: persistentListOf(),
+                groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
                 title = studyLine?.name,
                 studyLevel = studyLevel
             )

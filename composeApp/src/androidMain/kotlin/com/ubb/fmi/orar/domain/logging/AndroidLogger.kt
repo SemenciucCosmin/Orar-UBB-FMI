@@ -1,9 +1,8 @@
 package com.ubb.fmi.orar.domain.logging
 
 import android.util.Log
-import com.ubb.fmi.orar.domain.logging.Logger
 
-class AndroidLogger: Logger {
+class AndroidLogger : Logger {
     override fun d(tag: String, message: String) {
         Log.d(tag, message)
     }
