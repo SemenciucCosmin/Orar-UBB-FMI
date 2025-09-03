@@ -9,7 +9,6 @@ object KoinInitializer {
         startKoin {
             config?.invoke(this)
             modules(
-                platformModule(),
                 commonModule()
             )
         }

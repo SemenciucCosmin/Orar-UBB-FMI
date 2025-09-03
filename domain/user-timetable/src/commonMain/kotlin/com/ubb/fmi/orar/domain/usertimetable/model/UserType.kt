@@ -1,0 +1,12 @@
+package com.ubb.fmi.orar.domain.usertimetable.model
+
+enum class UserType(val id: String) {
+    STUDENT(id = "student"),
+    TEACHER(id = "teacher");
+
+    companion object {
+        fun getById(id: String): UserType {
+            return entries.firstOrNull { it.id == id } ?: STUDENT
+        }
+    }
+}

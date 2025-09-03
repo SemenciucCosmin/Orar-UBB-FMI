@@ -1,5 +1,3 @@
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_SRC_DIR_JAVA
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_SRC_DIR_KOTLIN
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,13 +7,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.jetbrainsKotlinSerialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
 }
 
 kotlin {
@@ -37,26 +28,10 @@ kotlin {
         }
     }
 
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
-
     sourceSets {
         androidMain.dependencies {
-            // ANDROIDX
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            // COMPOSE
-            implementation(compose.preview)
-
             // KOIN
             implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
-
-            // KTOR
-            implementation(libs.ktor.client.okhttp)
         }
 
         commonMain.dependencies {
@@ -68,38 +43,41 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.ui)
 
-            // DATA STORE
-
-            implementation(libs.data.store)
-            implementation(libs.data.store.preferences)
-
-            // DETEKT
-//            detektPlugins(libs.detekt.formatting)
-
-            // KTOR
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.serialization.kotlinx.json)
-
             // KOIN
-            implementation(libs.koin.androidx.compose)
-
-            // KOTLINX
-            implementation(libs.kotlinx.date.time)
-            implementation(libs.kotlinx.immutableCollections)
-
-            // OKIO
-            implementation(libs.okio)
+            implementation(libs.koin.core)
 
             // NAVIGATION
             implementation(libs.navigation.compose)
 
-            // ROOM
-            implementation(libs.room.runtime)
-
-            // SQLITE
-            implementation(libs.sqlite.bundled)
+            // MODULES
+            implementation(projects.data.database)
+            implementation(projects.data.network)
+            implementation(projects.data.preferences)
+            implementation(projects.data.rooms)
+            implementation(projects.data.studyLines)
+            implementation(projects.data.subjects)
+            implementation(projects.data.teachers)
+            implementation(projects.data.timetable)
+            implementation(projects.domain.extensions)
+            implementation(projects.domain.htmlParser)
+            implementation(projects.domain.logging)
+            implementation(projects.domain.timetable)
+            implementation(projects.domain.userTimetable)
+            implementation(projects.feature.form)
+            implementation(projects.feature.groups)
+            implementation(projects.feature.roomTimetable)
+            implementation(projects.feature.rooms)
+            implementation(projects.feature.startup)
+            implementation(projects.feature.studyLineTimetable)
+            implementation(projects.feature.studyLines)
+            implementation(projects.feature.subjectTimetable)
+            implementation(projects.feature.subjects)
+            implementation(projects.feature.teacherTimetable)
+            implementation(projects.feature.teachers)
+            implementation(projects.feature.userTimetable)
+            implementation(projects.ui.catalog)
+            implementation(projects.ui.navigation)
+            implementation(projects.ui.theme)
         }
 
         iosMain.dependencies {
@@ -110,10 +88,6 @@ kotlin {
         commonTest.dependencies {
             // TEST
             implementation(libs.kotlin.test)
-        }
-
-        dependencies {
-            ksp(libs.room.compiler)
         }
     }
 }
@@ -140,14 +114,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
 dependencies {
-    implementation(libs.room.ktx)
-    debugImplementation(compose.uiTooling)
+    detektPlugins(libs.detekt.formatting)
 }
 
 detekt {

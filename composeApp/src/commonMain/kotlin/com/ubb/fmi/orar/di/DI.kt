@@ -1,12 +1,14 @@
 package com.ubb.fmi.orar.di
 
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
-import com.ubb.fmi.orar.data.groups.di.studyLinesDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
+import com.ubb.fmi.orar.data.studylines.di.studyLinesDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
+import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
+import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
@@ -17,17 +19,14 @@ import com.ubb.fmi.orar.feature.startup.di.startupFeatureModule
 import com.ubb.fmi.orar.feature.studylines.di.studyLinesFeatureModule
 import com.ubb.fmi.orar.feature.studylinetimetable.di.studyLineTimetableFeatureModule
 import com.ubb.fmi.orar.feature.subjects.di.subjectsFeatureModule
-import com.ubb.fmi.orar.feature.subjecttimetable.di.subjectTimetableFeatureModule
+import com.ubb.fmi.orar.feature.subjectstimetable.di.subjectTimetableFeatureModule
 import com.ubb.fmi.orar.feature.teachers.di.teachersFeatureModule
 import com.ubb.fmi.orar.feature.teachertimetable.di.teacherTimetableFeatureModule
 import com.ubb.fmi.orar.feature.usertimetable.di.userTimetableFeatureModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.koin.core.module.Module
 import org.koin.dsl.module
-
-expect fun platformModule(): Module
 
 fun commonModule() = module {
     // COMMON
@@ -38,6 +37,9 @@ fun commonModule() = module {
 
     // FORM
     includes(formFeatureModule())
+
+    // LOGGING
+    includes(loggingDomainModule())
 
     // NETWORK
     includes(networkDataModule())
@@ -70,6 +72,7 @@ fun commonModule() = module {
     includes(teacherTimetableFeatureModule())
 
     // TIMETABLE
+    includes(timetableDataModule())
     includes(timetableDomainModule())
     includes(userTimetableDomainModule())
     includes(userTimetableFeatureModule())
