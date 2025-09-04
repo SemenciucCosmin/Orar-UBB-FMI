@@ -13,6 +13,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Composable route with study lines that are selectable for timetable configuration
+ * @param navController: navigation controller for handling navigation actions
+ * @param year: selected study year from onboarding form
+ * @param semesterId: selected semester id from onboarding form
+ */
 @Composable
 fun StudyLinesFormRoute(
     navController: NavController,

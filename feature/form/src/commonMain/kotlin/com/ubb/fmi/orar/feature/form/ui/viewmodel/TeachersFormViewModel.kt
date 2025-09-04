@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
@@ -21,6 +21,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * ViewModel for managing the selection of teachers in a timetable form.
+ * This ViewModel fetches teachers based on the provided year and semester ID,
+ * and allows the user to select a teacher and filter by title.
+ *
+ * @param year The academic year for which teachers are being fetched.
+ * @param semesterId The ID of the semester for which teachers are being fetched.
+ * @param teachersDataSource The data source for fetching teachers.
+ * @param timetablePreferences Preferences for managing timetable configurations.
+ * @param setTimetableConfigurationUseCase Use case for setting the timetable configuration.
+ */
 class TeachersFormViewModel(
     private val year: Int,
     private val semesterId: String,
@@ -29,6 +40,10 @@ class TeachersFormViewModel(
     private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
 ) : EventViewModel<TeachersFormUiState.TeachersFormEvent>() {
 
+    /**
+     * Mutable state flow that holds the UI state for the teachers selection.
+     * It is initialized with a default state and will be updated as data is fetched.
+     */
     private val _uiState = MutableStateFlow(TeachersFormUiState())
     val uiState = _uiState.asStateFlow()
         .onStart { getTeachers() }
@@ -38,12 +53,21 @@ class TeachersFormViewModel(
             initialValue = _uiState.value
         )
 
+    /**
+     * Initializes the ViewModel by fetching the teachers based on the provided year and semester ID.
+     * This method updates the UI state with the fetched teachers, and sets the selected teacher
+     * and filter based on the current configuration.
+     */
     fun selectTeacherTitleFilter(teacherTitleFilterId: String) {
         _uiState.update {
             it.copy(selectedFilterId = teacherTitleFilterId)
         }
     }
 
+    /**
+     * Fetches the list of teachers from the data source and updates the UI state.
+     * It also checks the current configuration to set the selected teacher and filter.
+     */
     private fun getTeachers() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
 
@@ -68,14 +92,26 @@ class TeachersFormViewModel(
         }
     }
 
+    /**
+     * Selects a teacher by its ID and updates the UI state.
+     * @param teacherId The ID of the teacher to be selected.
+     */
     fun selectTeacher(teacherId: String) {
         _uiState.update { it.copy(selectedTeacherId = teacherId) }
     }
 
+    /**
+     * Retries fetching the teachers when an error occurs.
+     * This function can be called to refresh the list of teachers.
+     */
     fun retry() {
         getTeachers()
     }
 
+    /**
+     * Completes the selection of a teacher and updates the timetable configuration.
+     * This method is called when the user finishes selecting a teacher.
+     */
     fun finishSelection() {
         viewModelScope.launch {
             _uiState.value.selectedTeacherId?.let { teacherId ->

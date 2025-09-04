@@ -13,6 +13,14 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_staff
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Represents the type of a class in the timetable.
+ *
+ * @property id The unique identifier for the class type.
+ * @property labelRes The string resource for the label of the class type.
+ * @property color The color associated with the class type.
+ * @property imageRes The drawable resource for the icon representing the class type.
+ */
 enum class ClassType(
     val id: String,
     val labelRes: StringResource,

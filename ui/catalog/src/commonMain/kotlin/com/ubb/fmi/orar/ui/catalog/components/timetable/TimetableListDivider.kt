@@ -10,6 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.ui.theme.Pds
 
+/**
+ * A composable that displays a divider with a label in a timetable list.
+ *
+ * @param text The text to be displayed in the divider.
+ * @param modifier Modifier to be applied to the row.
+ */
 @Composable
 fun TimetableListDivider(
     text: String,

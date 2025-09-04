@@ -16,12 +16,19 @@ import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import okio.ByteString.Companion.encodeUtf8
 
+/**
+ * Data source for managing room related information
+ */
 class RoomsDataSourceImpl(
     private val roomsApi: RoomsApi,
     private val roomDao: RoomDao,
     timetableClassDao: TimetableClassDao,
 ) : RoomsDataSource, TimetableDataSource<TimetableOwner.Room>(timetableClassDao) {
 
+    /**
+     * Retrieve list of [TimetableOwner.Room] objects from cache or API
+     * by [year] and [semesterId]
+     */
     override suspend fun getOwners(
         year: Int,
         semesterId: String,
@@ -29,6 +36,10 @@ class RoomsDataSourceImpl(
         return super.getOwners(year, semesterId)
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.Room] for specific room from cache or
+     * API by [year], [semesterId] and [ownerId]
+     */
     override suspend fun getTimetable(
         year: Int,
         semesterId: String,
@@ -37,16 +48,25 @@ class RoomsDataSourceImpl(
         return super.getTimetable(year, semesterId, ownerId)
     }
 
+    /**
+     * Change visibility of specific room timetable class by [timetableClassId]
+     */
     override suspend fun changeTimetableClassVisibility(
         timetableClassId: String,
     ) {
         super.changeTimetableClassVisibility(timetableClassId)
     }
 
+    /**
+     * Invalidates all cached data for by [year] and [semesterId]
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         super.invalidate(year, semesterId)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.Room] objects from cache by [configurationId]
+     */
     override suspend fun getOwnersFromCache(
         configurationId: String,
     ): List<TimetableOwner.Room> {
@@ -54,11 +74,17 @@ class RoomsDataSourceImpl(
         return entities.map(::mapEntityToOwner)
     }
 
+    /**
+     * Saves new room [owner] to cache
+     */
     override suspend fun saveOwnerInCache(owner: TimetableOwner.Room) {
         val entity = mapOwnerToEntity(owner)
         roomDao.insert(entity)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.Room] objects from API by [year] and [semesterId]
+     */
     override suspend fun getOwnersFromApi(
         year: Int,
         semesterId: String,
@@ -85,6 +111,10 @@ class RoomsDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.Room] for specific room from API
+     * by [year], [semesterId] and [owner]
+     */
     override suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,
@@ -144,12 +174,18 @@ class RoomsDataSourceImpl(
         }
     }
 
+    /**
+     * Sorts rooms by name
+     */
     override fun sortOwners(
         owners: List<TimetableOwner.Room>,
     ): List<TimetableOwner.Room> {
         return owners.sortedBy { it.name }
     }
 
+    /**
+     * Maps a [TimetableOwner.Room] to a [RoomEntity]
+     */
     private fun mapOwnerToEntity(owner: TimetableOwner.Room): RoomEntity {
         return RoomEntity(
             id = owner.id,
@@ -159,6 +195,9 @@ class RoomsDataSourceImpl(
         )
     }
 
+    /**
+     * Maps a [RoomEntity] to a [TimetableOwner.Room]
+     */
     private fun mapEntityToOwner(entity: RoomEntity): TimetableOwner.Room {
         return TimetableOwner.Room(
             id = entity.id,

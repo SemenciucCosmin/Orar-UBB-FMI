@@ -6,15 +6,29 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ubb.fmi.orar.data.database.model.TeacherEntity
 
+/**
+ * Data Access Object (DAO) for managing teacher entities in the database.
+ * This interface provides methods to interact with the 'teachers' table,
+ * including retrieving, inserting, and deleting teacher records.
+ */
 @Dao
 interface TeacherDao {
 
+    /**
+     * Get all teacher entities by [configurationId]
+     */
     @Query("SELECT * FROM teachers WHERE configurationId LIKE :configurationId")
     suspend fun getAll(configurationId: String): List<TeacherEntity>
 
+    /**
+     * Insert new teacher [entity]
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: TeacherEntity)
 
+    /**
+     * Delete all teacher entities by [configurationId]
+     */
     @Query("DELETE FROM teachers WHERE configurationId LIKE :configurationId")
     suspend fun deleteAll(configurationId: String)
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
@@ -20,6 +20,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * ViewModel for managing the state of the Subject Timetable screen.
+ *
+ * @property subjectId The ID of the subject for which the timetable is displayed.
+ * @property subjectsDataSource The data source for fetching subject-related data.
+ * @property timetablePreferences Preferences related to the timetable configuration.
+ */
 class SubjectTimetableViewModel(
     private val subjectId: String,
     private val subjectsDataSource: SubjectsDataSource,

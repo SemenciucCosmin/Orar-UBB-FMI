@@ -6,6 +6,13 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_license
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_master
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Represents the degree filter options in the application.
+ *
+ * @property id The unique identifier for the degree filter.
+ * @property labelRes The string resource for the label of the degree filter.
+ * @property orderIndex The order index of the degree filter in the list.
+ */
 enum class DegreeFilter(
     val id: String,
     val labelRes: StringResource,

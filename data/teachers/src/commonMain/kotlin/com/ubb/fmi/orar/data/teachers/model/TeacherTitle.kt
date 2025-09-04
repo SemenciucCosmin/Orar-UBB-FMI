@@ -1,5 +1,10 @@
 package com.ubb.fmi.orar.data.teachers.model
 
+/**
+ * Enum class for all teacher title types
+ * @param [id]: unique id of the enum
+ * @param [orderIndex]: index by which teacher titles need to be ordered
+ */
 enum class TeacherTitle(
     val id: String,
     val orderIndex: Int,

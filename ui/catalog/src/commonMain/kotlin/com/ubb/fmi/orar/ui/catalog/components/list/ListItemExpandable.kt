@@ -22,6 +22,19 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_study_line
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A composable that displays an expandable list item with a headline, optional overline,
+ * leading icon, and expandable content.
+ *
+ * @param headline The main text displayed in the list item.
+ * @param isSelected Indicates whether the item is currently selected (expanded).
+ * @param onClick Callback invoked when the item is clicked to toggle expansion.
+ * @param expandedContent Composable content to display when the item is expanded.
+ * @param modifier Modifier to be applied to the card.
+ * @param textAlign Text alignment for the headline.
+ * @param overline Optional text displayed above the headline.
+ * @param leadingIcon Optional icon displayed at the start of the item.
+ */
 @Composable
 fun ListItemExpandable(
     headline: String,

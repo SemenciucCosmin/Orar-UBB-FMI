@@ -7,6 +7,14 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+/**
+ * UiState for teacher selection screen for timetable configuration
+ * @param teachers: list of teachers for list display
+ * @param selectedFilterId: id of selected teacher title filter
+ * @param selectedTeacherId: id of selected teacher
+ * @param isLoading: boolean for loading state
+ * @param isError: boolean for error state
+ */
 data class TeachersFormUiState(
     private val teachers: ImmutableList<TimetableOwner.Teacher> = persistentListOf(),
     val selectedFilterId: String = TeacherTitleFilter.ALL.id,
@@ -19,6 +27,9 @@ data class TeachersFormUiState(
     }
 
     companion object {
+        /**
+         * Filtered teachers by selected teacehr title filter
+         */
         val TeachersFormUiState.filteredTeachers: ImmutableList<TimetableOwner.Teacher>
             get() {
                 return teachers.filter { teacher ->

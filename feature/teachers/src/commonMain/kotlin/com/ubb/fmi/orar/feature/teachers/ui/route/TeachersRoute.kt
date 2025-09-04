@@ -10,6 +10,12 @@ import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Composable function that represents the Teachers route in the application.
+ * It initializes the TeachersViewModel and collects its UI state to display the TeachersScreen.
+ *
+ * @param navController The NavController used for navigation within the app.
+ */
 @Composable
 fun TeachersRoute(navController: NavController) {
     val viewModel: TeachersViewModel = koinViewModel()

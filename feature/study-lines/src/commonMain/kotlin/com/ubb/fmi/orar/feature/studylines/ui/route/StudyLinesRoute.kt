@@ -10,6 +10,12 @@ import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Composable function that represents the Study Lines route.
+ * It initializes the [StudyLinesViewModel], collects its UI state, and displays the [StudyLinesScreen].
+ * The screen allows users to view study lines, select filters, and navigate to study levels.
+ * @param navController The [NavController] used for navigation within the app.
+ */
 @Composable
 fun StudyLinesRoute(navController: NavController) {
     val viewModel = koinViewModel<StudyLinesViewModel>()

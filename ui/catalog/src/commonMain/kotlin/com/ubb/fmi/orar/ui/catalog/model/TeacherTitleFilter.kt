@@ -10,6 +10,13 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_professor_abr
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_speaker_abr
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Represents the teacher title filter options in the application.
+ *
+ * @property id The unique identifier for the teacher title filter.
+ * @property labelRes The string resource for the label of the teacher title filter.
+ * @property orderIndex The order index of the teacher title filter in the list.
+ */
 enum class TeacherTitleFilter(
     val id: String,
     val labelRes: StringResource,

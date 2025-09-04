@@ -6,6 +6,12 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_week_1
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_week_2
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Represents the frequency of classes in the timetable.
+ *
+ * @property id The unique identifier for the frequency.
+ * @property labelRes The string resource for the label of the frequency.
+ */
 enum class Frequency(
     val id: String,
     val labelRes: StringResource

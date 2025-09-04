@@ -5,8 +5,14 @@ import com.ubb.fmi.orar.data.network.model.processApiResource
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 
+/**
+ * Api service for fetching study line related information
+ */
 class StudyLinesApi(private val httpClient: HttpClient) {
 
+    /**
+     * Fetch study line table in html format by [year] and [semesterId]
+     */
     suspend fun getOwnersHtml(
         year: Int,
         semesterId: String,
@@ -16,6 +22,9 @@ class StudyLinesApi(private val httpClient: HttpClient) {
         }
     }
 
+    /**
+     * Fetch study line timetable in html format by [year], [semesterId] and [ownerId]
+     */
     suspend fun getTimetableHtml(
         year: Int,
         semesterId: String,

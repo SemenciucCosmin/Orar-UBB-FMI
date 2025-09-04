@@ -6,6 +6,13 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_level_2
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_level_3
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Represents the study levels in the academic program.
+ *
+ * @property id The unique identifier for the study level.
+ * @property labelRes The string resource for the label of the study level.
+ * @property notation The notation used to represent the study level.
+ */
 enum class StudyLevel(
     val id: String,
     val labelRes: StringResource,

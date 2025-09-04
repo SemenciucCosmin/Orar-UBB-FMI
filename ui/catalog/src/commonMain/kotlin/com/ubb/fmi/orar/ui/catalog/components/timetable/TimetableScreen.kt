@@ -20,6 +20,14 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_hour
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * A composable that displays the timetable screen with a list of timetable items.
+ * @param uiState The current state of the timetable UI.
+ * @param onRetryClick Callback invoked when the retry button is clicked.
+ * @param topBar Composable for the top bar of the screen.
+ * @param bottomBar Composable for the bottom bar of the screen (optional).
+ * @param onItemVisibilityChange Callback invoked when the visibility of a timetable item changes.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetableScreen(

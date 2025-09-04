@@ -10,6 +10,12 @@ import com.ubb.fmi.orar.feature.form.ui.route.StudyLinesFormRoute
 import com.ubb.fmi.orar.feature.form.ui.route.TeachersFormRoute
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 
+/**
+ * Navigation graph for configuration forms in the Orar UBB FMI application.
+ * This function defines the routes for various configuration forms such as onboarding,
+ * teachers, study lines, and groups.
+ * Each form is represented by a composable function that handles the specific form logic.
+ */
 fun NavGraphBuilder.configurationFormGraph(navController: NavController) {
     composable<ConfigurationFormNavDestination.OnboardingForm> { navBackStackEntry ->
         val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.OnboardingForm>()

@@ -1,5 +1,8 @@
 package com.ubb.fmi.orar.data.network.model
 
+/**
+ * Class for status of a information fetching process
+ */
 sealed class Status {
 
     data object Loading : Status()

@@ -17,6 +17,11 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Composable function that displays the bottom navigation bar for the timetable.
+ *
+ * @param navController The NavController used for navigation.
+ */
 @Composable
 fun TimetableBottomBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()

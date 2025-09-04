@@ -15,6 +15,19 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlin.String
 
+/**
+ * Represents the UI state of the timetable, including the list of classes, title, study level,
+ * group, selected frequency, edit mode status, loading status, and error status.
+ * This state is used to manage the display and interaction of the timetable in the UI.
+ * @property classes The list of classes in the timetable.
+ * @property title The title of the timetable, typically representing the academic program or semester.
+ * @property studyLevel The study level associated with the timetable, such as first year, second year, etc.
+ * @property group The group identifier for the classes in the timetable.
+ * @property selectedFrequency The frequency of classes to be displayed, such as weekly or bi-weekly.
+ * @property isEditModeOn Indicates whether the timetable is in edit mode, allowing modifications
+ * @property isLoading Indicates whether the timetable data is currently being loaded.
+ * @property isError Indicates whether there was an error loading the timetable data.
+ */
 data class TimetableUiState(
     val classes: ImmutableList<TimetableClass> = persistentListOf(),
     val title: String = String.BLANK,
@@ -26,6 +39,10 @@ data class TimetableUiState(
     val isError: Boolean = false,
 ) {
     companion object {
+        /**
+         * Creates an initial state for the timetable UI.
+         * This state is used when the timetable is first loaded or reset.
+         */
         val TimetableUiState.timetableListItems: ImmutableList<TimetableListItem>
             get() {
                 val filteredClasses = classes.filter { timetableClass ->

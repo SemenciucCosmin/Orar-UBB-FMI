@@ -12,6 +12,12 @@ import com.ubb.fmi.orar.ui.theme.Pds
 
 private const val ALPHA = 0.7f
 
+/**
+ * A composable that displays a progress indicator overlay.
+ *
+ * @param modifier Modifier to be applied to the overlay.
+ * @param hasBackground Whether the overlay should have a background color.
+ */
 @Composable
 fun ProgressOverlay(modifier: Modifier = Modifier, hasBackground: Boolean = false) {
     Box(

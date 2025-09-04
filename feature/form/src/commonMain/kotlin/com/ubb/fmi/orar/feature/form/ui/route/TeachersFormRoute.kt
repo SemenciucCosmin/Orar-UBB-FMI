@@ -16,6 +16,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Composable route with teachers that are selectable for timetable configuration
+ * @param navController: navigation controller for handling navigation actions
+ * @param year: selected study year from previous screen
+ * @param semesterId: selected semester id from previous screen
+ */
 @Composable
 fun TeachersFormRoute(
     navController: NavController,

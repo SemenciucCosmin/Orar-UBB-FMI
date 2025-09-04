@@ -21,6 +21,15 @@ import orar_ubb_fmi.feature.form.generated.resources.Res
 import orar_ubb_fmi.feature.form.generated.resources.lbl_next
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Composable screen that displays the list of groups for a certain study line that can
+ * be selectable for configuring personal timetable
+ * @param uiState: screen ui state
+ * @param onGroupClick: lambda for group selection
+ * @param onNextClick: lambda for next button action
+ * @param onRetryClick: lambda for retry button action
+ * @param onBack: lambda for back button action
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupsFormScreen(

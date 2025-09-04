@@ -14,6 +14,12 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_error_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_retry
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * A composable that displays a failure state with an error message and a retry button.
+ *
+ * @param onRetry Callback invoked when the retry button is clicked.
+ * @param modifier Modifier to be applied to the column.
+ */
 @Composable
 fun FailureState(
     onRetry: () -> Unit,

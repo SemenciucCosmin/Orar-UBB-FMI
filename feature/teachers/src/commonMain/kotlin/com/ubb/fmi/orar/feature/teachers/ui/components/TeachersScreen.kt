@@ -22,6 +22,16 @@ import orar_ubb_fmi.feature.teachers.generated.resources.ic_teacher
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * TeachersScreen is a composable function that displays a list of teachers with filtering options.
+ * It includes a chip selection row for filtering teachers by title and a lazy column to display the list of teachers.
+ * It also handles loading and error states with a scaffold layout.
+ * @param uiState The current state of the teachers UI, containing the list of teachers and filter options.
+ * @param onTeacherClick Callback function to handle teacher item clicks, providing the teacher's ID.
+ * @param onSelectFilter Callback function to handle filter selection, providing the selected filter ID.
+ * @param onRetryClick Callback function to handle retry actions when an error occurs.
+ * @param bottomBar A composable function for the bottom bar, which can be used to
+ */
 @Composable
 fun TeachersScreen(
     uiState: TeachersUiState,

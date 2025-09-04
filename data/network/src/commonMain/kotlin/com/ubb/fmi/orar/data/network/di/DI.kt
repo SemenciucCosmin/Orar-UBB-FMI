@@ -20,8 +20,16 @@ import org.koin.dsl.module
 
 private const val TIMEOUT_MILLIS = 20_000L
 
+/**
+ * Provides the platform-specific Koin module for network operations.
+ * This module includes the HTTP client and API service instances for making network requests.
+ */
 expect fun platformModule(): Module
 
+/**
+ * Koin module for providing network-related dependencies.
+ * This module includes the HTTP client and API service instances for making network requests.
+ */
 fun networkDataModule() = module {
     includes(platformModule())
     single<HttpClient> {

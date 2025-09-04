@@ -16,6 +16,16 @@ import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A row of selectable chips that can be used for filtering or selecting options.
+ *
+ * @param chips The list of chips to display.
+ * @param selectedChipId The ID of the currently selected chip, or null if none is selected.
+ * @param onClick Callback invoked when a chip is clicked, passing the ID of the clicked chip.
+ * @param modifier Modifier to be applied to the row.
+ * @param shape The shape of the chips.
+ * @param contentPadding Padding values for the content inside the row.
+ */
 @Composable
 fun <T>ChipSelectionRow(
     chips: List<Chip<T>>,

@@ -19,6 +19,9 @@ import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import okio.ByteString.Companion.encodeUtf8
 
+/**
+ * Data source for managing teacher related information
+ */
 @Suppress("CyclomaticComplexMethod")
 class TeachersDataSourceImpl(
     private val teachersApi: TeachersApi,
@@ -26,6 +29,10 @@ class TeachersDataSourceImpl(
     timetableClassDao: TimetableClassDao,
 ) : TeachersDataSource, TimetableDataSource<TimetableOwner.Teacher>(timetableClassDao) {
 
+    /**
+     * Retrieve list of [TimetableOwner.Teacher] objects from cache or API
+     * by [year] and [semesterId]
+     */
     override suspend fun getOwners(
         year: Int,
         semesterId: String,
@@ -33,6 +40,10 @@ class TeachersDataSourceImpl(
         return super.getOwners(year, semesterId)
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.Teacher] for specific teacher from cache or
+     * API by [year], [semesterId] and [ownerId]
+     */
     override suspend fun getTimetable(
         year: Int,
         semesterId: String,
@@ -41,16 +52,25 @@ class TeachersDataSourceImpl(
         return super.getTimetable(year, semesterId, ownerId)
     }
 
+    /**
+     * Change visibility of specific teacher timetable class by [timetableClassId]
+     */
     override suspend fun changeTimetableClassVisibility(
         timetableClassId: String,
     ) {
         super.changeTimetableClassVisibility(timetableClassId)
     }
 
+    /**
+     * Invalidates all cached data for by [year] and [semesterId]
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         super.invalidate(year, semesterId)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.Teacher] objects from cache by [configurationId]
+     */
     override suspend fun getOwnersFromCache(
         configurationId: String,
     ): List<TimetableOwner.Teacher> {
@@ -58,11 +78,17 @@ class TeachersDataSourceImpl(
         return entities.map(::mapEntityToOwner)
     }
 
+    /**
+     * Saves new teacher [owner] to cache
+     */
     override suspend fun saveOwnerInCache(owner: TimetableOwner.Teacher) {
         val entity = mapOwnerToEntity(owner)
         teacherDao.insert(entity)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.Teacher] objects from API by [year] and [semesterId]
+     */
     override suspend fun getOwnersFromApi(
         year: Int,
         semesterId: String,
@@ -95,6 +121,10 @@ class TeachersDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.Teacher] for specific teacher from API
+     * by [year], [semesterId] and [owner]
+     */
     override suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,
@@ -183,6 +213,9 @@ class TeachersDataSourceImpl(
         }
     }
 
+    /**
+     * Sorts rooms by order index and name
+     */
     override fun sortOwners(
         owners: List<TimetableOwner.Teacher>,
     ): List<TimetableOwner.Teacher> {
@@ -194,6 +227,9 @@ class TeachersDataSourceImpl(
         )
     }
 
+    /**
+     * Maps a [TimetableOwner.Teacher] to a [TeacherEntity]
+     */
     private fun mapOwnerToEntity(owner: TimetableOwner.Teacher): TeacherEntity {
         return TeacherEntity(
             id = owner.id,
@@ -203,6 +239,9 @@ class TeachersDataSourceImpl(
         )
     }
 
+    /**
+     * Maps a [TeacherEntity] to a [TimetableOwner.Teacher]
+     */
     private fun mapEntityToOwner(entity: TeacherEntity): TimetableOwner.Teacher {
         return TimetableOwner.Teacher(
             id = entity.id,

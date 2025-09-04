@@ -12,6 +12,14 @@ import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Composable function that represents the User Timetable route.
+ *
+ * This function sets up the User Timetable screen with its ViewModel and UI state.
+ * It includes a top bar for frequency selection and edit mode, and a bottom bar for navigation.
+ *
+ * @param navController The NavController used for navigation within the app.
+ */
 @Composable
 fun UserTimetableRoute(navController: NavController) {
     val viewModel: UserTimetableViewModel = koinViewModel()

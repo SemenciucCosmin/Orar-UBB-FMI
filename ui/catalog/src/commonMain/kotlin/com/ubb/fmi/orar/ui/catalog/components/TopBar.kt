@@ -19,6 +19,15 @@ import org.jetbrains.compose.resources.painterResource
 
 private const val MAX_LINES = 1
 
+/**
+ * A composable that displays a top app bar with a title, optional subtitle, and back navigation icon.
+ *
+ * @param title The title text to be displayed in the top bar.
+ * @param modifier Modifier to be applied to the top bar.
+ * @param subtitle Optional subtitle text to be displayed below the title.
+ * @param onBack Callback invoked when the back button is clicked.
+ * @param trailingContent Composable content to be displayed in the trailing area of the top bar.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(

@@ -10,6 +10,15 @@ import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Composable function that represents the route for displaying groups in a timetable.
+ * It initializes the GroupsViewModel with the provided field and study level IDs,
+ * collects the UI state, and displays the GroupsScreen with the necessary callbacks.
+ *
+ * @param navController The NavController for navigating between screens.
+ * @param fieldId The ID of the field of study.
+ * @param studyLevelId The ID of the study level (e.g., Bachelor, Master).
+ */
 @Composable
 fun GroupsRoute(
     navController: NavController,

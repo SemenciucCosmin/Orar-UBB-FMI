@@ -30,6 +30,20 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A composable that displays a timetable list item with details about a class.
+ *
+ * @param startHour The starting hour of the class.
+ * @param endHour The ending hour of the class.
+ * @param subject The name of the subject.
+ * @param classType The type of class (e.g., lecture, laboratory).
+ * @param participant The participant or group associated with the class.
+ * @param teacher The name of the teacher.
+ * @param room The room where the class takes place
+ * @param enabled Indicates whether the item is enabled (clickable).
+ * @param expanded Indicates whether the item is expanded (showing additional details).
+ * @param modifier Modifier to be applied to the card.
+ */
 @Composable
 fun TimetableListItem(
     startHour: String,

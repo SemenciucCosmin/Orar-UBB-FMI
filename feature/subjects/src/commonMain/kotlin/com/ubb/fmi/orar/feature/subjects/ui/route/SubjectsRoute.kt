@@ -10,6 +10,13 @@ import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Composable function that represents the Subjects route.
+ * It initializes the [SubjectsViewModel] and collects its UI state.
+ * It displays the [SubjectsScreen] with the current UI state and provides callbacks for user interactions
+ * such as retrying, changing the search query, and navigating to a subject's timetable.
+ * @param navController The [NavController] used for navigation within the app.
+ */
 @Composable
 fun SubjectsRoute(navController: NavController) {
     val viewModel: SubjectsViewModel = koinViewModel()

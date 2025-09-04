@@ -4,6 +4,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Dark scheme for the Orar UBB-FMI application.
+ */
 val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFA2C9FE),
     onPrimary = Color(0xFF00325B),
@@ -42,6 +45,9 @@ val DarkColorScheme = darkColorScheme(
     surfaceContainerHighest = Color(0xFF32353A),
 )
 
+/**
+ * Light color scheme for the Orar UBB-FMI application.
+ */
 val LightColorScheme = lightColorScheme(
     primary = Color(0xFF38608F),
     onPrimary = Color(0xFFFFFFFF),

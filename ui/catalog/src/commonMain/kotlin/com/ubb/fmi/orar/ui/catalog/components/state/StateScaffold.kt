@@ -21,6 +21,26 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_no_results
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * A composable that provides a scaffold layout with different states: loading, empty, error, or content.
+ * It displays a top bar, bottom bar, snackbar host, and floating action button,
+ * and handles different states of the content.
+ * @param modifier Modifier to be applied to the scaffold.
+ * @param isLoading Indicates if the content is currently loading.
+ * @param isEmpty Indicates if the content is empty.
+ * @param isError Indicates if there was an error loading the content.
+ * @param onRetryClick Callback invoked when the retry button is clicked in case of an error.
+ * @param topBar Composable for the top bar of the scaffold.
+ * @param bottomBar Composable for the bottom bar of the scaffold.
+ * @param snackbarHost Composable for the snackbar host of the scaffold.
+ * @param floatingActionButton Composable for the floating action button of the scaffold.
+ * @param floatingActionButtonPosition Position of the floating action button.
+ * @param containerColor Color of the scaffold container.
+ * @param contentColor Color of the content within the scaffold.
+ * @param contentWindowInsets Insets for the content area of the scaffold.
+ * @param content Composable that provides the main content of the scaffold when not in
+ * loading, empty, or error state.
+ */
 @Composable
 fun StateScaffold(
     modifier: Modifier = Modifier,

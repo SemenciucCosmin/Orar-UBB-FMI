@@ -35,6 +35,15 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_search
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A composable that displays a search bar with a text field, search icon, and clear button.
+ *
+ * @param value The current text in the search bar.
+ * @param onValueChange Callback invoked when the text changes.
+ * @param placeholder The placeholder text to display when the search bar is empty.
+ * @param onClearClick Callback invoked when the clear button is clicked.
+ * @param modifier Modifier to be applied to the search bar.
+ */
 @Composable
 fun SearchBar(
     value: String,

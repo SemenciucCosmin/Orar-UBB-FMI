@@ -18,6 +18,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import com.ubb.fmi.orar.ui.theme.Pds
 
+/**
+ * A composable that displays a row with a headline, optional overline and underline text,
+ * and optional leading and trailing icons.
+ *
+ * @param headline The main text displayed in the row.
+ * @param modifier Modifier to be applied to the row.
+ * @param textAlign Text alignment for the headline.
+ * @param headlineTextStyle Text style for the headline.
+ * @param overline Optional text displayed above the headline.
+ * @param underLine Optional text displayed below the headline.
+ * @param leadingIcon Optional icon displayed at the start of the row.
+ * @param trailingIcon Optional icon displayed at the end of the row.
+ * @param trailingIconSize Size of the trailing icon.
+ */
 @Composable
 fun ListRow(
     headline: String,

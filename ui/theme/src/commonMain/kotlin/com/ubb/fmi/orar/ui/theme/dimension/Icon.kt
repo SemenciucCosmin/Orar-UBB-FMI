@@ -2,6 +2,9 @@ package com.ubb.fmi.orar.ui.theme.dimension
 
 import androidx.compose.ui.unit.Dp
 
+/**
+ * Represents the dimensions for icons used in the application.
+ */
 @Suppress("PropertyName", "VariableNaming")
 interface Icon {
     val XXSmall: Dp

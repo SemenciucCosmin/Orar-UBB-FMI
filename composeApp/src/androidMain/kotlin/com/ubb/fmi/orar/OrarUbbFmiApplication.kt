@@ -4,6 +4,10 @@ import android.app.Application
 import com.ubb.fmi.orar.di.KoinInitializer
 import org.koin.android.ext.koin.androidContext
 
+/**
+ * Main application class for the Orar UBB FMI application.
+ * This class initializes Koin for dependency injection.
+ */
 class OrarUbbFmiApplication : Application() {
 
     override fun onCreate() {

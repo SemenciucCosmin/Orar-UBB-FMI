@@ -2,6 +2,9 @@ package com.ubb.fmi.orar.ui.theme.dimension
 
 import androidx.compose.ui.unit.dp
 
+/**
+ * Represents the spacing dimensions used throughout the application.
+ */
 class DefaultSpacing : Spacing {
     override val XXSmall = 2.dp
     override val XSmall = 4.dp

@@ -11,6 +11,12 @@ import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Composable function that represents the Subject Timetable route.
+ *
+ * @param navController The NavController for navigation actions.
+ * @param subjectId The ID of the subject for which the timetable is displayed.
+ */
 @Composable
 fun SubjectTimetableRoute(
     navController: NavController,

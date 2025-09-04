@@ -14,6 +14,16 @@ import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Composable route that displays the list of groups for a certain study line that can
+ * be selectable for configuring personal timetable
+ * @param navController: navigation controller for handling navigation actions
+ * @param year: selected study year from the previous screen
+ * @param semesterId: selected semester id from the previous screen
+ * @param fieldId: selected field id from the previous screen
+ * @param studyLevelId: selected study level id from the previous screen
+ * @param studyLineDegreeId: selected study line degree id from the previous screen
+ */
 @Composable
 fun GroupsFormRoute(
     navController: NavController,

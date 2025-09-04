@@ -12,6 +12,18 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Composable function that represents the Study Line Timetable route.
+ *
+ * This function initializes the [StudyLineTimetableViewModel] and observes its UI state.
+ * It displays a timetable screen with a top bar that includes the title, back navigation,
+ * and a frequency tab for selecting timetable frequencies.
+ *
+ * @param navController The navigation controller for handling navigation actions.
+ * @param fieldId The ID of the field of study.
+ * @param studyLevelId The ID of the study level.
+ * @param groupId The ID of the group.
+ */
 @Composable
 fun StudyLineTimetableRoute(
     navController: NavController,

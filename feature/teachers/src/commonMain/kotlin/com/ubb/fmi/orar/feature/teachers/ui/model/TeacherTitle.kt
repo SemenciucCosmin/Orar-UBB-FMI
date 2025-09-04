@@ -9,6 +9,12 @@ import orar_ubb_fmi.feature.teachers.generated.resources.lbl_professor_abr
 import orar_ubb_fmi.feature.teachers.generated.resources.lbl_speaker_abr
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Enum class representing different teacher titles with their respective IDs and label resources.
+ * Provides a method to retrieve a title by its ID.
+ * @property id The unique identifier for the teacher title.
+ * @property labelRes The string resource for the label of the teacher title.
+ */
 enum class TeacherTitle(
     val id: String,
     val labelRes: StringResource,

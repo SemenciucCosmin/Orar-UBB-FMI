@@ -1,5 +1,10 @@
 package com.ubb.fmi.orar.data.timetable.model
 
+/**
+ * Enum class for all days of the week found on each timetable class
+ * @param [id]: unique id found on each timetable class
+ * @param [orderIndex]: index by which instances have to be sorted
+ */
 enum class Day(
     val id: String,
     val orderIndex: Int

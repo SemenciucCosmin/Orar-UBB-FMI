@@ -1,5 +1,11 @@
 package com.ubb.fmi.orar.domain.timetable.model
 
+/**
+ * Represents the study levels in the academic program.
+ * Each level is identified by a unique ID and notation.
+ * @property id The unique identifier for the study level.
+ * @property notation The notation used to represent the study level.
+ */
 enum class StudyLevel(
     val id: String,
     val notation: String,

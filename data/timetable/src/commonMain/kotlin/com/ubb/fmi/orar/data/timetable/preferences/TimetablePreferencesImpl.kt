@@ -1,18 +1,25 @@
-package com.ubb.fmi.orar.data.preferences
+package com.ubb.fmi.orar.data.timetable.preferences
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.ubb.fmi.orar.data.timetable.model.TimetableConfiguration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
+/**
+ * Class for preferences with timetable user configuration
+ */
 class TimetablePreferencesImpl(
     private val dataStore: DataStore<Preferences>
 ) : TimetablePreferences {
 
+    /**
+     * Get [Flow] with [TimetableConfiguration] of user
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getConfiguration(): Flow<TimetableConfiguration?> {
         return dataStore.data.mapLatest { preferences ->
@@ -38,34 +45,58 @@ class TimetablePreferencesImpl(
         }
     }
 
+    /**
+     * Sets [year]
+     */
     override suspend fun setYear(year: Int) {
         dataStore.edit { it[YEAR] = year }
     }
 
+    /**
+     * Sets [semesterId]
+     */
     override suspend fun setSemester(semesterId: String) {
         dataStore.edit { it[SEMESTER_ID] = semesterId }
     }
 
+    /**
+     * Sets [userTypeId]
+     */
     override suspend fun setUserType(userTypeId: String) {
         dataStore.edit { it[USER_TYPE_ID] = userTypeId }
     }
 
+    /**
+     * Sets [degreeId]
+     */
     override suspend fun setDegreeId(degreeId: String) {
         dataStore.edit { it[DEGREE_ID] = degreeId }
     }
 
+    /**
+     * Sets [fieldId]
+     */
     override suspend fun setFieldId(fieldId: String) {
         dataStore.edit { it[STUDY_LINE_BASE_ID] = fieldId }
     }
 
+    /**
+     * Sets [studyLevelId]
+     */
     override suspend fun setStudyLevelId(studyLevelId: String) {
         dataStore.edit { it[STUDY_LINE_YEAR_ID] = studyLevelId }
     }
 
+    /**
+     * Sets [groupId]
+     */
     override suspend fun setGroupId(groupId: String) {
         dataStore.edit { it[GROUP_ID] = groupId }
     }
 
+    /**
+     * Sets [teacherId]
+     */
     override suspend fun setTeacherId(teacherId: String) {
         dataStore.edit { it[TEACHER_ID] = teacherId }
     }

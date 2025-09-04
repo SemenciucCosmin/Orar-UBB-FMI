@@ -3,6 +3,9 @@ package com.ubb.fmi.orar.ui.theme.dimension
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * Represents the dimensions for icons used in the application.
+ */
 class DefaultIcon : Icon {
     override val XXSmall: Dp = 8.dp
     override val XSmall: Dp = 16.dp

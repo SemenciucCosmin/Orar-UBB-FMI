@@ -10,8 +10,15 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
+/**
+ * Ios platform specific implementation of factory for creating [DataStore] instance
+ */
 actual class DataStoreFactory {
 
+    /**
+     * Creates a [DataStore] instance for storing preferences.
+     * The preferences are stored in a file named [PREFERENCES_NAME] in the application's documents directory.
+     */
     @OptIn(ExperimentalForeignApi::class)
     actual fun create(): DataStore<Preferences> {
         return PreferenceDataStoreFactory.createWithPath(

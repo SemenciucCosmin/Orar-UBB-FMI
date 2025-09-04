@@ -17,6 +17,12 @@ import com.ubb.fmi.orar.feature.teachertimetable.ui.route.TeacherTimetableRoute
 import com.ubb.fmi.orar.feature.usertimetable.ui.route.UserTimetableRoute
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 
+/**
+ * Navigation graph for the timetable feature in the Orar UBB FMI application.
+ * This function defines the routes for various timetable-related screens such as user timetable,
+ * study lines, groups, teachers, subjects, and rooms.
+ * Each screen is represented by a composable function that handles the specific route logic.
+ */
 fun NavGraphBuilder.timetableGraph(navController: NavController) {
     composable<TimetableNavDestination.Startup> { navBackStackEntry ->
         StartupRoute(navController)

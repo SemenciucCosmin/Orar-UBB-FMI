@@ -19,6 +19,20 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A clickable list item that displays a headline, optional overline and underline text,
+ * and optional leading and trailing icons.
+ *
+ * @param headline The main text displayed in the list item.
+ * @param onClick Callback invoked when the item is clicked.
+ * @param modifier Modifier to be applied to the card.
+ * @param textAlign Text alignment for the headline.
+ * @param headlineTextStyle Text style for the headline.
+ * @param overline Optional text displayed above the headline.
+ * @param underLine Optional text displayed below the headline.
+ * @param leadingIcon Optional icon displayed at the start of the item.
+ * @param trailingIconSize Size of the trailing icon.
+ */
 @Composable
 fun ListItemClickable(
     headline: String,

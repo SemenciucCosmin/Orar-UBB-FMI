@@ -13,6 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 
+/**
+ * A composable that displays a primary button with customizable properties.
+ *
+ * @param text The text to be displayed on the button.
+ * @param onClick Callback invoked when the button is clicked.
+ * @param modifier Modifier to be applied to the button.
+ * @param enabled Whether the button is enabled or not.
+ * @param shape The shape of the button.
+ * @param colors The colors used for the button.
+ * @param elevation The elevation of the button.
+ * @param border The border of the button, if any.
+ * @param contentPadding Padding values for the content inside the button.
+ * @param interactionSource The interaction source for this button, used for handling interactions.
+ */
 @Composable
 fun PrimaryButton(
     text: String,

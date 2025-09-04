@@ -6,6 +6,15 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+/**
+ * TeachersUiState represents the state of the teachers screen in the application.
+ * It holds a list of teachers, the selected filter ID, loading and error states.
+ * It provides a computed property to filter teachers based on the selected filter ID.
+ * @property teachers The list of teachers to be displayed.
+ * @property selectedFilterId The ID of the currently selected filter for teacher titles.
+ * @property isLoading Indicates whether the data is currently being loaded.
+ * @property isError Indicates whether there was an error loading the data.
+ */
 data class TeachersUiState(
     private val teachers: ImmutableList<TimetableOwner.Teacher> = persistentListOf(),
     val selectedFilterId: String = TeacherTitleFilter.ALL.id,
@@ -13,6 +22,10 @@ data class TeachersUiState(
     val isError: Boolean = true,
 ) {
     companion object {
+        /**
+         * A default instance of TeachersUiState with no teachers, selected filter set to ALL,
+         * and both loading and error states set to false.
+         */
         val TeachersUiState.filteredTeachers: ImmutableList<TimetableOwner.Teacher>
             get() {
                 return teachers.filter { teacher ->

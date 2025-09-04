@@ -15,6 +15,13 @@ import orar_ubb_fmi.ui.navigation.generated.resources.lbl_teachers
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Represents the items in the bottom navigation bar of the timetable.
+ *
+ * @property labelRes The string resource for the label of the item.
+ * @property icon The drawable resource for the icon of the item.
+ * @property destination The navigation destination associated with the item.
+ */
 enum class TimetableBottomBarItem(
     val labelRes: StringResource,
     val icon: DrawableResource,

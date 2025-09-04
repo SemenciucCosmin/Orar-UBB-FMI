@@ -18,6 +18,17 @@ import orar_ubb_fmi.feature.groups.generated.resources.ic_group
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Composable function that displays a screen with a list of groups.
+ * It shows a loading state while fetching data, an error state if fetching fails,
+ * and a list of groups when data is successfully fetched.
+ * The screen includes a top bar with a title and subtitle,
+ * and allows navigation back to the previous screen.
+ * @param uiState The current state of the groups UI, containing loading, error, and group data.
+ * @param onGroupClick Callback function to handle group item clicks, passing the group ID.
+ * @param onRetryClick Callback function to handle retry actions when an error occurs.
+ * @param onBack Callback function to handle back navigation.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupsScreen(

@@ -7,6 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 
+/**
+ * Main navigation graph for the Orar UBB FMI application.
+ * This function sets up the navigation host and defines the start destination.
+ * It includes the configuration form and timetable graphs.
+ */
 @Composable
 fun AppGraph() {
     val navController = rememberNavController()

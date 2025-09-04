@@ -24,6 +24,16 @@ import orar_ubb_fmi.feature.study_lines.generated.resources.ic_study_line
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Composable function that displays the Study Lines screen.
+ * It shows a list of study lines grouped by fields, with options to filter and select study levels.
+ * @param uiState The current state of the study lines UI.
+ * @param onStudyLineClick Callback invoked when a study line is clicked, passing the field ID.
+ * @param onStudyLevelClick Callback invoked when a study level is clicked, passing the level ID.
+ * @param onSelectFilter Callback invoked when a filter is selected, passing the filter ID.
+ * @param onRetryClick Callback invoked when the user wants to retry loading data after an error.
+ * @param bottomBar Composable function for the bottom bar of the screen.
+ */
 @Composable
 fun StudyLinesScreen(
     uiState: StudyLinesUiState,

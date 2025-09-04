@@ -12,6 +12,11 @@ import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Composable route with multiple available choices for timetable configuration.
+ * @param navController: navigation controller for handling navigation actions
+ * @param configurationFormTypeId: id of the configuration form type, either STARTUP or SETTINGS
+ */
 @Composable
 fun OnboardingFormRoute(
     navController: NavController,
@@ -23,17 +28,17 @@ fun OnboardingFormRoute(
 
     OnboardingFormScreen(
         configurationFormType = configurationFormType,
-        studyLevels = uiState.studyLevels,
-        selectedStudyLevel = uiState.selectedStudyLevel,
+        studyYears = uiState.studyYears,
+        selectedStudyYear = uiState.selectedStudyYear,
         selectedSemesterId = uiState.selectedSemesterId,
         selectedUserTypeId = uiState.selectedUserTypeId,
         isNextEnabled = uiState.isNextEnabled,
-        onStudyLevelClick = viewModel::selectStudyLevel,
+        onStudyYearClick = viewModel::selectStudyYear,
         onSemesterClick = viewModel::selectSemester,
         onUserTypeClick = viewModel::selectUserType,
         onBack = navController::navigateUp,
         onNextClick = {
-            val year = uiState.selectedStudyLevel ?: return@OnboardingFormScreen
+            val year = uiState.selectedStudyYear ?: return@OnboardingFormScreen
             val semesterId = uiState.selectedSemesterId ?: return@OnboardingFormScreen
             val userTypeId = uiState.selectedUserTypeId ?: return@OnboardingFormScreen
             val userType = UserType.getById(userTypeId)

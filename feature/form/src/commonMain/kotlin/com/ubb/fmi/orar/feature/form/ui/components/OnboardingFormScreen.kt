@@ -35,16 +35,30 @@ import orar_ubb_fmi.feature.form.generated.resources.lbl_year
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * Composable screen with multiple available choices for timetable configuration.
+ * @param configurationFormType: type of the form, either STARTUP or SETTINGS
+ * @param studyYears: list of available study years
+ * @param selectedStudyYear: currently selected study year
+ * @param selectedSemesterId: currently selected semester id
+ * @param selectedUserTypeId: currently selected user type id
+ * @param isNextEnabled: flag to enable or disable the next button
+ * @param onStudyYearClick: lambda for study year selection
+ * @param onSemesterClick: lambda for semester selection
+ * @param onUserTypeClick: lambda for user type selection
+ * @param onNextClick: lambda for next button action
+ * @param onBack: lambda for back button action
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingFormScreen(
     configurationFormType: ConfigurationFormType,
-    studyLevels: List<Int>,
-    selectedStudyLevel: Int?,
+    studyYears: List<Int>,
+    selectedStudyYear: Int?,
     selectedSemesterId: String?,
     selectedUserTypeId: String?,
     isNextEnabled: Boolean,
-    onStudyLevelClick: (Int) -> Unit,
+    onStudyYearClick: (Int) -> Unit,
     onSemesterClick: (String) -> Unit,
     onUserTypeClick: (String) -> Unit,
     onNextClick: () -> Unit,
@@ -89,9 +103,9 @@ fun OnboardingFormScreen(
 
                 FormSelectionRow(
                     headline = stringResource(Res.string.lbl_year),
-                    selectedItemId = selectedStudyLevel,
-                    onClick = onStudyLevelClick,
-                    items = studyLevels.map { level ->
+                    selectedItemId = selectedStudyYear,
+                    onClick = onStudyYearClick,
+                    items = studyYears.map { level ->
                         FormSelectionItem(
                             id = level,
                             label = "$level-${level.inc()}"
@@ -146,12 +160,12 @@ private fun PreviewOnboardingFormScreen() {
     OrarUbbFmiTheme {
         OnboardingFormScreen(
             configurationFormType = ConfigurationFormType.STARTUP,
-            studyLevels = listOf(2024, 2025),
-            selectedStudyLevel = 2025,
+            studyYears = listOf(2024, 2025),
+            selectedStudyYear = 2025,
             selectedSemesterId = Semester.FIRST.id,
             selectedUserTypeId = UserType.TEACHER.id,
             isNextEnabled = true,
-            onStudyLevelClick = {},
+            onStudyYearClick = {},
             onSemesterClick = {},
             onUserTypeClick = {},
             onNextClick = {},

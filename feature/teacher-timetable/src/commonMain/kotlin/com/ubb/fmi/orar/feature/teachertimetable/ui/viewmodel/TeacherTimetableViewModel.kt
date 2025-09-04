@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
@@ -20,12 +20,26 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * ViewModel for managing the teacher's timetable.
+ *
+ * This ViewModel fetches the timetable data for a specific teacher and manages the UI state
+ * related to the timetable, including loading states, error handling, and frequency selection.
+ *
+ * @property teacherId The ID of the teacher whose timetable is being managed.
+ * @property teachersDataSource The data source for fetching teacher-related data.
+ * @property timetablePreferences Preferences related to the timetable configuration.
+ */
 class TeacherTimetableViewModel(
     private val teacherId: String,
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences
 ) : ViewModel() {
 
+    /**
+     * Mutable state flow representing the UI state of the timetable.
+     * It is updated with loading states, error states, and fetched classes.
+     */
     private val _uiState = MutableStateFlow(TimetableUiState())
     val uiState = _uiState.asStateFlow()
         .onStart { loadTimetable() }
@@ -35,6 +49,11 @@ class TeacherTimetableViewModel(
             initialValue = _uiState.value
         )
 
+    /**
+     * Initializes the ViewModel and starts loading the timetable.
+     * This function is called when the ViewModel is created.
+     * It fetches the timetable configuration and loads the timetable data.
+     */
     private fun loadTimetable() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, isError = false) }
@@ -62,10 +81,21 @@ class TeacherTimetableViewModel(
         }
     }
 
+    /**
+     * Selects a frequency for the timetable.
+     * This function updates the UI state with the selected frequency.
+     *
+     * @param frequency The frequency to be selected.
+     */
     fun selectFrequency(frequency: Frequency) {
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
+    /**
+     * Retries loading the timetable.
+     * This function is called when the user wants to retry fetching the timetable data,
+     * typically after an error has occurred.
+     */
     fun retry() {
         loadTimetable()
     }

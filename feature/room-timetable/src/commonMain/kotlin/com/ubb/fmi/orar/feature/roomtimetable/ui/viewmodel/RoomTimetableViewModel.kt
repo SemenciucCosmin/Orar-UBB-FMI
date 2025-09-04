@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
-import com.ubb.fmi.orar.data.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
@@ -20,12 +20,24 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * ViewModel for the Room Timetable screen.
+ * It fetches the timetable data for a specific room and manages the UI state.
+ *
+ * @param roomId The ID of the room for which the timetable is displayed.
+ * @param roomsDataSource The data source to fetch room timetable data.
+ * @param timetablePreferences Preferences related to the timetable configuration.
+ */
 class RoomTimetableViewModel(
     private val roomId: String,
     private val roomsDataSource: RoomsDataSource,
     private val timetablePreferences: TimetablePreferences,
 ) : ViewModel() {
 
+    /**
+     * Mutable state flow that holds the UI state for the timetable.
+     * It is updated with loading status, error status, and fetched classes.
+     */
     private val _uiState = MutableStateFlow(TimetableUiState())
     val uiState = _uiState.asStateFlow()
         .onStart { loadTimetable() }
@@ -35,6 +47,10 @@ class RoomTimetableViewModel(
             initialValue = _uiState.value
         )
 
+    /**
+     * Initializes the ViewModel and starts loading the timetable data.
+     * The timetable is loaded when the ViewModel is created.
+     */
     private fun loadTimetable() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, isError = false) }
@@ -62,10 +78,20 @@ class RoomTimetableViewModel(
         }
     }
 
+    /**
+     * Selects a frequency for the timetable.
+     * This updates the UI state with the selected frequency.
+     *
+     * @param frequency The frequency to be selected.
+     */
     fun selectFrequency(frequency: Frequency) {
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
+    /**
+     * Retries loading the timetable data.
+     * This is typically called when the user wants to refresh the timetable after an error.
+     */
     fun retry() {
         loadTimetable()
     }

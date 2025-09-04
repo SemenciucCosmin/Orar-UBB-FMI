@@ -24,6 +24,16 @@ import orar_ubb_fmi.feature.form.generated.resources.Res
 import orar_ubb_fmi.feature.form.generated.resources.lbl_next
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Composable screen with teachers that are selectable for timetable configuration
+ * @param title: screen title
+ * @param uiState: screen ui state
+ * @param onTeacherClick: lambda for teacher selection
+ * @param onSelectFilter: lambda for filter selection
+ * @param onNextClick: lambda for next button action
+ * @param onRetryClick: lambda for retry button action
+ * @param onBack: lambda for back button action
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeachersFormScreen(

@@ -4,6 +4,17 @@ import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+/**
+ * Represents the UI state for the Groups feature in the application.
+ * This state holds information about the groups, title, study level,
+ * loading status, and error status.
+ *
+ * @property groups The list of groups available for selection.
+ * @property title The title of the groups view.
+ * @property studyLevel The study level associated with the groups.
+ * @property isLoading Indicates whether the data is currently being loaded.
+ * @property isError Indicates whether there was an error loading the data.
+ */
 data class GroupsUiState(
     val groups: ImmutableList<String> = persistentListOf(),
     val title: String? = null,

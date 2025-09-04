@@ -40,8 +40,24 @@ private const val HREF_TAG_CLOSED = "\" >"
 private const val HTML_EXTENSION = ".html"
 private const val NULL = "null"
 
+/**
+ * Utility object for parsing HTML strings and extracting structured data
+ * such as tables, rows, and cells.
+ * This object provides a method to parse a given HTML string
+ * and extract a list of [Table] objects that match the tables found in the HTML.
+ * Each table contains rows, and each row contains cells with their respective IDs and values.
+ * The parsing logic handles various HTML tags and structures to ensure accurate extraction.
+ * It also includes utility methods for formatting hyperlinks and selecting specific HTML elements.
+ */
 object HtmlParser {
 
+    /**
+     * Extracts tables from a given HTML string.
+     * The method looks for headline tags to identify table titles,
+     * and then searches for table structures within the HTML.
+     * Each table is represented by a [Table] object, which contains a title and a list of [Row] objects.
+     * Each row contains a list of [Cell] objects, where each cell has an ID and a value.
+     */
     fun extractTables(html: String): List<Table> {
         val headers = html.select(HEADLINE_TAG_OPEN, HEADLINE_TAG_CLOSED).drop(1).map {
             it.select(TAG_RIGHT, TAG_LEFT)
@@ -104,6 +120,12 @@ object HtmlParser {
         return tables
     }
 
+    /**
+     * Formats a hyperlink ID by removing unnecessary characters
+     * such as quotes, equal signs, HTML file extensions, and spaces.
+     * The method extracts the last segment of the hyperlink ID,
+     * which is typically the relevant part of the URL or identifier.
+     */
     private fun String.formatHyperlinkId(): String {
         val lastSegmentIndex = this.indexOfLast { it.toString() == String.SLASH } + 1
         val hyperlinkId = when {
@@ -118,6 +140,15 @@ object HtmlParser {
             .replace(String.SPACE, String.BLANK)
     }
 
+    /**
+     * Selects and extracts substrings from the HTML string
+     * that are enclosed within the specified open and closed tags.
+     * The method iterates through the HTML string,
+     * finding the indices of the open and closed tags,
+     * and extracts the content between them.
+     * It continues this process until no more occurrences of the tags are found.
+     * The extracted items are returned as a list of strings.
+     */
     private fun String.select(openTag: String, closedTag: String): List<String> {
         var html = this
         val items = mutableListOf<String>()

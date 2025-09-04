@@ -16,6 +16,17 @@ import orar_ubb_fmi.feature.user_timetable.generated.resources.ic_edit
 import orar_ubb_fmi.feature.user_timetable.generated.resources.ic_settings
 import org.jetbrains.compose.resources.painterResource
 
+/**
+ * Top bar for the User Timetable screen.
+ * This bar includes a settings button, an edit toggle button,
+ * and a frequency selection tab.
+ * @param isEditModeOn Indicates if the edit mode is active.
+ * @param selectedFrequency The currently selected frequency.
+ * @param onSettingsClick Callback for when the settings button is clicked.
+ * @param onEditClick Callback for when the edit toggle button is clicked.
+ * @param onFrequencyClick Callback for when a frequency is selected.
+ * @param modifier Optional modifier for styling.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserTimetableTopBar(

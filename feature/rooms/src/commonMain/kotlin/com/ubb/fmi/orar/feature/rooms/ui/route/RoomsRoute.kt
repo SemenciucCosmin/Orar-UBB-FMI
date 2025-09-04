@@ -10,6 +10,12 @@ import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Composable function that represents the Rooms route in the application.
+ * It initializes the RoomsViewModel and observes its UI state.
+ *
+ * @param navController The NavController used for navigation within the app.
+ */
 @Composable
 fun RoomsRoute(navController: NavController) {
     val viewModel: RoomsViewModel = koinViewModel()

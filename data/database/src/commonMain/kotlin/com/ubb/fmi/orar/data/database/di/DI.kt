@@ -6,8 +6,16 @@ import com.ubb.fmi.orar.data.database.OrarUbbFmiDatabase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
+/**
+ * Provides the platform-specific Koin module for database operations.
+ * This module includes the DatabaseFactory and DAO instances for database access.
+ */
 expect fun platformModule(): Module
 
+/**
+ * Koin module for providing database-related dependencies.
+ * This module includes the DatabaseFactory and DAO instances for database access.
+ */
 fun databaseDataModule() = module {
     includes(platformModule())
     single { get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build() }

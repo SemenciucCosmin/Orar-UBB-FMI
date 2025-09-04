@@ -7,6 +7,10 @@ import com.ubb.fmi.orar.feature.form.ui.viewmodel.TeachersFormViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+/**
+ * Koin module for the Form feature.
+ * This module provides the ViewModels for the Form screens.
+ */
 fun formFeatureModule() = module {
     viewModelOf(::OnboardingFormViewModel)
     viewModelOf(::TeachersFormViewModel)

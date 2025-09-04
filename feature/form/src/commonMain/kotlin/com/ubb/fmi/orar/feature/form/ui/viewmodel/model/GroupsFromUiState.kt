@@ -5,6 +5,15 @@ import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+/**
+ * UiState for group selection screen for timetable configuration
+ * @param groups: list of groups for list display
+ * @param selectedGroupId: id of group selected by user
+ * @param title: screen top bar title
+ * @param studyLevel: study level for which [groups] belong to
+ * @param isLoading: boolean for loading state
+ * @param isError: boolean for error state
+ */
 data class GroupsFromUiState(
     val groups: ImmutableList<String> = persistentListOf(),
     val selectedGroupId: String? = null,
@@ -13,10 +22,16 @@ data class GroupsFromUiState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
 ) {
+    /**
+     * Enum class for one time events on groups form screen
+     */
     enum class GroupsFromEvent : Event {
         CONFIGURATION_DONE
     }
 }
 
+/**
+ * Computed value for specific button on groups form screen
+ */
 val GroupsFromUiState.isNextEnabled: Boolean
     get() = selectedGroupId != null

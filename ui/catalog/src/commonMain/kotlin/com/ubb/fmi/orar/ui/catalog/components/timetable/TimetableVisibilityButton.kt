@@ -11,6 +11,12 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_hide
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_show
 import org.jetbrains.compose.resources.painterResource
 
+/**
+ * A composable that displays a button to toggle the visibility of a timetable.
+ *
+ * @param isVisible Indicates whether the timetable is currently visible.
+ * @param onClick Callback invoked when the button is clicked to toggle visibility.
+ */
 @Composable
 fun TimetableVisibilityButton(
     isVisible: Boolean,

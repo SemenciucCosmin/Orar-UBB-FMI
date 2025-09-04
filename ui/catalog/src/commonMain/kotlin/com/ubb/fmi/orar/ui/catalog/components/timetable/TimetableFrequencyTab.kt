@@ -15,6 +15,12 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A composable that displays a tab for selecting the frequency of a timetable.
+ * @param selectedFrequency The currently selected frequency.
+ * @param onFrequencyClick Callback invoked when a frequency is clicked, passing the selected frequency.
+ * @param modifier Modifier to be applied to the row.
+ */
 @Composable
 fun TimetableFrequencyTab(
     selectedFrequency: Frequency,

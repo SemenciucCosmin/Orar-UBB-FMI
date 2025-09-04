@@ -22,6 +22,16 @@ import orar_ubb_fmi.feature.subjects.generated.resources.lbl_subject
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Composable function that displays the Subjects screen.
+ * It shows a list of subjects with a search bar at the top.
+ * It handles loading, empty, and error states using [StateScaffold].
+ * @param uiState The current state of the subjects UI.
+ * @param onSubjectClick Callback invoked when a subject is clicked, passing the subject ID.
+ * @param onChangeSearchQuery Callback invoked when the search query changes.
+ * @param onRetryClick Callback invoked when the user wants to retry loading subjects.
+ * @param bottomBar Composable function for the bottom bar, if any.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubjectsScreen(

@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.data.studylines.datasource
 
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
+import com.ubb.fmi.orar.data.database.model.RoomEntity
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
@@ -20,12 +21,19 @@ import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.domain.htmlparser.model.Table
 import okio.ByteString.Companion.encodeUtf8
 
+/**
+ * Data source for managing study line related information
+ */
 class StudyLinesDataSourceImpl(
     private val studyLinesApi: StudyLinesApi,
     private val studyLineDao: StudyLineDao,
     timetableClassDao: TimetableClassDao,
 ) : StudyLinesDataSource, TimetableDataSource<TimetableOwner.StudyLine>(timetableClassDao) {
 
+    /**
+     * Retrieve list of [TimetableOwner.StudyLine] objects from cache or API
+     * by [year] and [semesterId]
+     */
     override suspend fun getOwners(
         year: Int,
         semesterId: String,
@@ -33,6 +41,10 @@ class StudyLinesDataSourceImpl(
         return super.getOwners(year, semesterId)
     }
 
+    /**
+     * Retrieve list of groups of a [TimetableOwner.StudyLine] from cache or API
+     * by [year], [semesterId] and [ownerId]
+     */
     override suspend fun getGroups(
         year: Int,
         semesterId: String,
@@ -43,6 +55,10 @@ class StudyLinesDataSourceImpl(
         return Resource(groups, resource.status)
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.StudyLine] for specific study line from cache or
+     * API by [year], [semesterId], [ownerId] and [groupId]
+     */
     override suspend fun getTimetable(
         year: Int,
         semesterId: String,
@@ -55,16 +71,25 @@ class StudyLinesDataSourceImpl(
         return Resource(timetable, resource.status)
     }
 
+    /**
+     * Change visibility of specific study line timetable class by [timetableClassId]
+     */
     override suspend fun changeTimetableClassVisibility(
         timetableClassId: String,
     ) {
         super.changeTimetableClassVisibility(timetableClassId)
     }
 
+    /**
+     * Invalidates all cached data for by [year] and [semesterId]
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         super.invalidate(year, semesterId)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.StudyLine] objects from cache by [configurationId]
+     */
     override suspend fun getOwnersFromCache(
         configurationId: String,
     ): List<TimetableOwner.StudyLine> {
@@ -72,11 +97,17 @@ class StudyLinesDataSourceImpl(
         return entities.map(::mapEntityToOwner)
     }
 
+    /**
+     * Saves new study line [owner] to cache
+     */
     override suspend fun saveOwnerInCache(owner: TimetableOwner.StudyLine) {
         val entity = mapOwnerToEntity(owner)
         studyLineDao.insert(entity)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.StudyLine] objects from API by [year] and [semesterId]
+     */
     override suspend fun getOwnersFromApi(
         year: Int,
         semesterId: String,
@@ -123,6 +154,10 @@ class StudyLinesDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.StudyLine] for specific room from API
+     * by [year], [semesterId] and [owner]
+     */
     override suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,
@@ -201,12 +236,18 @@ class StudyLinesDataSourceImpl(
         }
     }
 
+    /**
+     * Sorts rooms by name
+     */
     override fun sortOwners(
         owners: List<TimetableOwner.StudyLine>,
     ): List<TimetableOwner.StudyLine> {
         return owners.sortedBy { it.name }
     }
 
+    /**
+     * Maps a [TimetableOwner.StudyLine] to a [StudyLineEntity]
+     */
     private fun mapOwnerToEntity(owner: TimetableOwner.StudyLine): StudyLineEntity {
         return StudyLineEntity(
             id = owner.id,
@@ -218,6 +259,9 @@ class StudyLinesDataSourceImpl(
         )
     }
 
+    /**
+     * Maps a [StudyLineEntity] to a [TimetableOwner.StudyLine]
+     */
     private fun mapEntityToOwner(entity: StudyLineEntity): TimetableOwner.StudyLine {
         return TimetableOwner.StudyLine(
             id = entity.id,

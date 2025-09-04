@@ -12,6 +12,16 @@ import com.ubb.fmi.orar.ui.catalog.model.FormSelectionItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * A composable that displays a row of selectable chips with a headline.
+ *
+ * @param headline The title of the selection row.
+ * @param items The list of items to display as chips.
+ * @param selectedItemId The ID of the currently selected item, or null if none is selected.
+ * @param onClick Callback invoked when a chip is clicked, passing the ID of the clicked item.
+ * @param modifier Modifier to be applied to the row.
+ * @param shape The shape of the chips.
+ */
 @Composable
 fun <T> FormSelectionRow(
     headline: String,

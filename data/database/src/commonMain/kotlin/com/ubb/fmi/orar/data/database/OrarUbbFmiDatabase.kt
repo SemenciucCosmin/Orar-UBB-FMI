@@ -14,6 +14,11 @@ import com.ubb.fmi.orar.data.database.model.SubjectEntity
 import com.ubb.fmi.orar.data.database.model.TeacherEntity
 import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
 
+/**
+ * Database class for Orar UBB FMI application.
+ * This class defines the database schema and serves as the main access point for the underlying SQLite database.
+ * It includes entities for rooms, study lines, subjects, teachers, and timetable classes.
+ */
 @Database(
     version = 1,
     entities = [

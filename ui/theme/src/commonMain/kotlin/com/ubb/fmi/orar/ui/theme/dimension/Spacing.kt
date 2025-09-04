@@ -2,6 +2,9 @@ package com.ubb.fmi.orar.ui.theme.dimension
 
 import androidx.compose.ui.unit.Dp
 
+/**
+ * Represents the spacing dimensions used throughout the application.
+ */
 @Suppress("PropertyName", "VariableNaming")
 interface Spacing {
     val XXSmall: Dp

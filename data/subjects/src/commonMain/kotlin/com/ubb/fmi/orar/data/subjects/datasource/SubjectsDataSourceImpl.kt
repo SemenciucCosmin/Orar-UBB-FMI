@@ -16,12 +16,19 @@ import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import okio.ByteString.Companion.encodeUtf8
 
+/**
+ * Data source for managing subject related information
+ */
 class SubjectsDataSourceImpl(
     private val subjectsApi: SubjectsApi,
     private val subjectDao: SubjectDao,
     timetableClassDao: TimetableClassDao,
 ) : SubjectsDataSource, TimetableDataSource<TimetableOwner.Subject>(timetableClassDao) {
 
+    /**
+     * Retrieve list of [TimetableOwner.Subject] objects from cache or API
+     * by [year] and [semesterId]
+     */
     override suspend fun getOwners(
         year: Int,
         semesterId: String,
@@ -29,6 +36,10 @@ class SubjectsDataSourceImpl(
         return super.getOwners(year, semesterId)
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.Subject] for specific subject from cache or
+     * API by [year], [semesterId] and [ownerId]
+     */
     override suspend fun getTimetable(
         year: Int,
         semesterId: String,
@@ -37,16 +48,25 @@ class SubjectsDataSourceImpl(
         return super.getTimetable(year, semesterId, ownerId)
     }
 
+    /**
+     * Change visibility of specific subject timetable class by [timetableClassId]
+     */
     override suspend fun changeTimetableClassVisibility(
         timetableClassId: String,
     ) {
         super.changeTimetableClassVisibility(timetableClassId)
     }
 
+    /**
+     * Invalidates all cached data for by [year] and [semesterId]
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         super.invalidate(year, semesterId)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.Subject] objects from cache by [configurationId]
+     */
     override suspend fun getOwnersFromCache(
         configurationId: String,
     ): List<TimetableOwner.Subject> {
@@ -54,11 +74,17 @@ class SubjectsDataSourceImpl(
         return entities.map(::mapEntityToOwner)
     }
 
+    /**
+     * Saves new subject [owner] to cache
+     */
     override suspend fun saveOwnerInCache(owner: TimetableOwner.Subject) {
         val entity = mapOwnerToEntity(owner)
         subjectDao.insert(entity)
     }
 
+    /**
+     * Retrieve list of [TimetableOwner.Subject] objects from API by [year] and [semesterId]
+     */
     override suspend fun getOwnersFromApi(
         year: Int,
         semesterId: String,
@@ -84,6 +110,10 @@ class SubjectsDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieve timetable of [TimetableOwner.Subject] for specific subject from API
+     * by [year], [semesterId] and [owner]
+     */
     override suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,
@@ -143,12 +173,18 @@ class SubjectsDataSourceImpl(
         }
     }
 
+    /**
+     * Sorts subjects by name
+     */
     override fun sortOwners(
         owners: List<TimetableOwner.Subject>,
     ): List<TimetableOwner.Subject> {
         return owners.sortedBy { it.name }
     }
 
+    /**
+     * Maps a [TimetableOwner.Subject] to a [SubjectEntity]
+     */
     private fun mapOwnerToEntity(owner: TimetableOwner.Subject): SubjectEntity {
         return SubjectEntity(
             id = owner.id,
@@ -157,6 +193,9 @@ class SubjectsDataSourceImpl(
         )
     }
 
+    /**
+     * Maps a [SubjectEntity] to a [TimetableOwner.Subject]
+     */
     private fun mapEntityToOwner(entity: SubjectEntity): TimetableOwner.Subject {
         return TimetableOwner.Subject(
             id = entity.id,

@@ -10,6 +10,14 @@ import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestinatio
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Composable function that defines the startup route of the application.
+ *
+ * This function listens for events from the StartupViewModel and navigates to the appropriate screen
+ * based on whether the configuration is complete or incomplete.
+ *
+ * @param navController The NavController used for navigation between screens.
+ */
 @Composable
 fun StartupRoute(navController: NavController) {
     val viewModel: StartupViewModel = koinViewModel()

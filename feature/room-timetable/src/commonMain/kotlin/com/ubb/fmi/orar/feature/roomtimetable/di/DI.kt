@@ -4,6 +4,10 @@ import com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel.RoomTimetableViewMode
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+/**
+ * Koin module for the Room Timetable feature.
+ * This module provides the ViewModel for the Room Timetable screen.
+ */
 fun roomTimetableFeatureModule() = module {
     viewModelOf(::RoomTimetableViewModel)
 }

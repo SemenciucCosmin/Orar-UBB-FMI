@@ -16,6 +16,13 @@ import orar_ubb_fmi.feature.rooms.generated.resources.Res
 import orar_ubb_fmi.feature.rooms.generated.resources.ic_location
 import org.jetbrains.compose.resources.painterResource
 
+/**
+ * Composable function that displays a list of rooms.
+ * @param uiState The state of the rooms UI, containing the list of rooms and loading/error states.
+ * @param onRoomClick Callback function to be invoked when a room is clicked, passing the room ID.
+ * @param onRetryClick Callback function to be invoked when the user clicks the retry button in case of an error.
+ * @param bottomBar Composable function for the bottom bar
+ */
 @Composable
 fun RoomsScreen(
     uiState: RoomsUiState,

@@ -5,6 +5,12 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_student
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher
 import org.jetbrains.compose.resources.StringResource
 
+/**
+ * Represents the user types in the application.
+ *
+ * @property id The unique identifier for the user type.
+ * @property labelRes The string resource for the label of the user type.
+ */
 enum class UserType(
     val id: String,
     val labelRes: StringResource
