@@ -5,10 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.GroupsFormScreen
-import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.GroupsFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
+import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel

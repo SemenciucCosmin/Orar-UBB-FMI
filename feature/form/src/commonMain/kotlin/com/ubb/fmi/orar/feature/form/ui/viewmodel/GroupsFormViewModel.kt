@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
+import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf

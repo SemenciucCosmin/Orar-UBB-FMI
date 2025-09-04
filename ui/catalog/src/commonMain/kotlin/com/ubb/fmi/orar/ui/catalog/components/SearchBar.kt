@@ -127,7 +127,7 @@ fun SearchBar(
 private fun PreviewSearchBar() {
     OrarUbbFmiTheme {
         SearchBar(
-            value = "asdasd",
+            value = "Query",
             placeholder = "Search something",
             onValueChange = {},
             onClearClick = {}

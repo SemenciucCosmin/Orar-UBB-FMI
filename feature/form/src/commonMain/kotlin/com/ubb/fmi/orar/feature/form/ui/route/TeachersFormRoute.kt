@@ -5,11 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.TeachersFormScreen
-import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
-import com.ubb.fmi.orar.ui.catalog.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.TeachersFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
+import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
+import com.ubb.fmi.orar.ui.catalog.model.Semester
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.jetbrains.compose.resources.stringResource

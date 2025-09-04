@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
@@ -19,10 +20,13 @@ import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.feature.form.generated.resources.Res
 import orar_ubb_fmi.feature.form.generated.resources.lbl_next
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable screen with teachers that are selectable for timetable configuration
@@ -95,5 +99,34 @@ fun TeachersFormScreen(
                     .padding(Pds.spacing.Medium)
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTeachersFormScreen() {
+    OrarUbbFmiTheme {
+        TeachersFormScreen(
+            title = "2024-2025, Semester 1",
+            onTeacherClick = {},
+            onSelectFilter = {},
+            onNextClick = {},
+            onRetryClick = {},
+            onBack = {},
+            uiState = TeachersFormUiState(
+                selectedFilterId = "Prof.",
+                selectedTeacherId = "",
+                isLoading = false,
+                isError = false,
+                teachers = List(4) {
+                    TimetableOwner.Teacher(
+                        id = "",
+                        name = "Teacher $it",
+                        configurationId = "20241",
+                        titleId = "Prof."
+                    )
+                }.toImmutableList()
+            )
+        )
     }
 }

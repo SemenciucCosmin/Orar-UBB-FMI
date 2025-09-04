@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
@@ -18,11 +19,14 @@ import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemExpandable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.Chip
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.feature.study_lines.generated.resources.Res
 import orar_ubb_fmi.feature.study_lines.generated.resources.ic_study_line
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable function that displays the Study Lines screen.
@@ -91,5 +95,37 @@ fun StudyLinesScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewStudyLinesScreen() {
+    OrarUbbFmiTheme {
+        StudyLinesScreen(
+            onStudyLineClick = {},
+            onStudyLevelClick = {},
+            onSelectFilter = {},
+            onRetryClick = {},
+            bottomBar = {},
+            uiState = StudyLinesUiState(
+                isLoading = false,
+                isError = false,
+                selectedFilterId = "Licenta",
+                selectedFieldId = "IE",
+                groupedStudyLines = List(2) {
+                    List(2) {
+                        TimetableOwner.StudyLine(
+                            id = "IE1",
+                            name = "Informatica Engleza",
+                            configurationId = "20241",
+                            fieldId = "IE",
+                            levelId = "Anul1",
+                            degreeId = "Licenta"
+                        )
+                    }.toImmutableList()
+                }.toImmutableList(),
+            )
+        )
     }
 }

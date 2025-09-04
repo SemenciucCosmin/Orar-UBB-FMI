@@ -8,13 +8,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.feature.rooms.generated.resources.Res
 import orar_ubb_fmi.feature.rooms.generated.resources.ic_location
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable function that displays a list of rooms.
@@ -51,5 +55,29 @@ fun RoomsScreen(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewRoomsScreen() {
+    OrarUbbFmiTheme {
+        RoomsScreen(
+            onRoomClick = {},
+            onRetryClick = {},
+            bottomBar = {},
+            uiState = RoomsUiState(
+                isLoading = false,
+                isError = false,
+                rooms = List(5) {
+                    TimetableOwner.Room(
+                        id = it.toString(),
+                        name = "Room $it",
+                        configurationId = "20241",
+                        location = "Locations $it"
+                    )
+                }.toImmutableList()
+            )
+        )
     }
 }

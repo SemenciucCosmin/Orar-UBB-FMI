@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.OnboardingFormScreen
-import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.OnboardingFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
+import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.koin.compose.viewmodel.koinViewModel

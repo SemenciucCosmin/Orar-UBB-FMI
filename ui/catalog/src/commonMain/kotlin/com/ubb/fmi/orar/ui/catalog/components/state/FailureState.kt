@@ -8,11 +8,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_error_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_retry
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a failure state with an error message and a retry button.
@@ -38,5 +40,15 @@ fun FailureState(
         ) {
             Text(text = stringResource(Res.string.lbl_retry))
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewFailureState() {
+    OrarUbbFmiTheme {
+        FailureState(
+            onRetry = {},
+        )
     }
 }

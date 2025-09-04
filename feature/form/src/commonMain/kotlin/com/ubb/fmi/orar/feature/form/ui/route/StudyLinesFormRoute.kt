@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.form.ui.components.StudyLinesFormScreen
-import com.ubb.fmi.orar.ui.catalog.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
+import com.ubb.fmi.orar.ui.catalog.model.Semester
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

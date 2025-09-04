@@ -16,10 +16,14 @@ import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.persistentListOf
 import orar_ubb_fmi.feature.form.generated.resources.Res
 import orar_ubb_fmi.feature.form.generated.resources.lbl_next
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable screen that displays the list of groups for a certain study line that can
@@ -77,5 +81,26 @@ fun GroupsFormScreen(
                     .padding(Pds.spacing.Medium)
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewGroupsFormScreen() {
+    OrarUbbFmiTheme {
+        GroupsFormScreen(
+            onGroupClick = {},
+            onNextClick = {},
+            onRetryClick = {},
+            onBack = {},
+            uiState = GroupsFromUiState(
+                groups = persistentListOf("913", "914", "915", "916", "917"),
+                selectedGroupId = "916",
+                title = "Informatica Engleza",
+                studyLevel = StudyLevel.LEVEL_1,
+                isLoading = false,
+                isError = false
+            )
+        )
     }
 }

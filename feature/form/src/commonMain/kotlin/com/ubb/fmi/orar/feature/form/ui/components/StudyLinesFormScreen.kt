@@ -11,7 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
@@ -22,10 +22,14 @@ import com.ubb.fmi.orar.ui.catalog.components.list.ListItemExpandable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
+import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.feature.form.generated.resources.Res
 import orar_ubb_fmi.feature.form.generated.resources.lbl_next
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable screen with study lines that are selectable for timetable configuration
@@ -117,5 +121,40 @@ fun StudyLinesFormScreen(
                     .padding(Pds.spacing.Medium)
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewStudyLinesFormScreen() {
+    OrarUbbFmiTheme {
+        StudyLinesFormScreen(
+            title = "2024-2025, Semester 1",
+            onStudyLineClick = {},
+            onStudyLevelClick = {},
+            onSelectFilter = {},
+            onNextClick = {},
+            onRetryClick = {},
+            onBack = {},
+            uiState = StudyLinesFormUiState(
+                selectedFilterId = "Licenta",
+                selectedFieldId = "IE",
+                selectedStudyLevelId = "Anul1",
+                isLoading = false,
+                isError = false,
+                groupedStudyLines = List(2) {
+                    List(2) {
+                        TimetableOwner.StudyLine(
+                            id = "IE1",
+                            name = "Informatica Engleza",
+                            configurationId = "20241",
+                            fieldId = "IE",
+                            levelId = "Anul1",
+                            degreeId = "Licenta"
+                        )
+                    }.toImmutableList()
+                }.toImmutableList(),
+            )
+        )
     }
 }

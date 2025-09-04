@@ -11,11 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import com.ubb.fmi.orar.ui.navigation.model.TimetableBottomBarItem
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable function that displays the bottom navigation bar for the timetable.
@@ -53,5 +56,15 @@ fun TimetableBottomBar(navController: NavController) {
                 }
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTimetableBottomBar() {
+    OrarUbbFmiTheme {
+        TimetableBottomBar(
+            navController = rememberNavController()
+        )
     }
 }

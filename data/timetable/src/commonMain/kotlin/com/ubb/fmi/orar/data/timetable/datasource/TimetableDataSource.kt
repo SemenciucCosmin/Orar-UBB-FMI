@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.data.timetable.datasource
 
 import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
-import com.ubb.fmi.orar.data.database.model.RoomEntity
 import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status

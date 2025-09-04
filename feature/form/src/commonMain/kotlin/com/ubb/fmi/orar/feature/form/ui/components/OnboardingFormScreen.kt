@@ -14,13 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
-import com.ubb.fmi.orar.ui.catalog.model.Semester
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.FormSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.catalog.model.FormSelectionItem
+import com.ubb.fmi.orar.ui.catalog.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds

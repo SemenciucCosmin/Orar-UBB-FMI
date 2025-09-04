@@ -8,19 +8,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.feature.teachers.ui.model.TeacherTitle
-import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.Chip
+import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.feature.teachers.generated.resources.Res
 import orar_ubb_fmi.feature.teachers.generated.resources.ic_teacher
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * TeachersScreen is a composable function that displays a list of teachers with filtering options.
@@ -75,5 +79,31 @@ fun TeachersScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTeachersScreen() {
+    OrarUbbFmiTheme {
+        TeachersScreen(
+            onTeacherClick = {},
+            onSelectFilter = {},
+            onRetryClick = {},
+            bottomBar = {},
+            uiState = TeachersUiState(
+                selectedFilterId = "Licenta",
+                isLoading = false,
+                isError = false,
+                teachers = List(5) {
+                    TimetableOwner.Teacher(
+                        id = it.toString(),
+                        name = "Teacher $it",
+                        configurationId = "20241",
+                        titleId = "Prof.",
+                    )
+                }.toImmutableList()
+            )
+        )
     }
 }

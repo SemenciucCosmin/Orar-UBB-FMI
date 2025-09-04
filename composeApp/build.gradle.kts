@@ -125,9 +125,127 @@ dependencies {
 
 detekt {
     source.setFrom(
+        // APP
         "${project.rootDir}/composeApp/src/androidMain/kotlin",
         "${project.rootDir}/composeApp/src/commonMain/kotlin",
         "${project.rootDir}/composeApp/src/iosMain/kotlin",
+
+        // DATA
+        "${project.rootDir}/data/database/src/androidMain/kotlin",
+        "${project.rootDir}/data/database/src/commonMain/kotlin",
+        "${project.rootDir}/data/database/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/network/src/androidMain/kotlin",
+        "${project.rootDir}/data/network/src/commonMain/kotlin",
+        "${project.rootDir}/data/network/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/preferences/src/androidMain/kotlin",
+        "${project.rootDir}/data/preferences/src/commonMain/kotlin",
+        "${project.rootDir}/data/preferences/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/rooms/src/androidMain/kotlin",
+        "${project.rootDir}/data/rooms/src/commonMain/kotlin",
+        "${project.rootDir}/data/rooms/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/study-lines/src/androidMain/kotlin",
+        "${project.rootDir}/data/study-lines/src/commonMain/kotlin",
+        "${project.rootDir}/data/study-lines/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/subjects/src/androidMain/kotlin",
+        "${project.rootDir}/data/subjects/src/commonMain/kotlin",
+        "${project.rootDir}/data/subjects/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/teachers/src/androidMain/kotlin",
+        "${project.rootDir}/data/teachers/src/commonMain/kotlin",
+        "${project.rootDir}/data/teachers/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/timetable/src/androidMain/kotlin",
+        "${project.rootDir}/data/timetable/src/commonMain/kotlin",
+        "${project.rootDir}/data/timetable/src/iosMain/kotlin",
+
+        // DOMAIN
+        "${project.rootDir}/domain/extensions/src/androidMain/kotlin",
+        "${project.rootDir}/domain/extensions/src/commonMain/kotlin",
+        "${project.rootDir}/domain/extensions/src/iosMain/kotlin",
+
+        "${project.rootDir}/domain/html-parser/src/androidMain/kotlin",
+        "${project.rootDir}/domain/html-parser/src/commonMain/kotlin",
+        "${project.rootDir}/domain/html-parser/src/iosMain/kotlin",
+
+        "${project.rootDir}/domain/logging/src/androidMain/kotlin",
+        "${project.rootDir}/domain/logging/src/commonMain/kotlin",
+        "${project.rootDir}/domain/logging/src/iosMain/kotlin",
+
+        "${project.rootDir}/domain/timetable/src/androidMain/kotlin",
+        "${project.rootDir}/domain/timetable/src/commonMain/kotlin",
+        "${project.rootDir}/domain/timetable/src/iosMain/kotlin",
+
+        "${project.rootDir}/domain/user-timetable/src/androidMain/kotlin",
+        "${project.rootDir}/domain/user-timetable/src/commonMain/kotlin",
+        "${project.rootDir}/domain/user-timetable/src/iosMain/kotlin",
+
+        // FEATURE
+        "${project.rootDir}/feature/form/src/androidMain/kotlin",
+        "${project.rootDir}/feature/form/src/commonMain/kotlin",
+        "${project.rootDir}/feature/form/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/groups/src/androidMain/kotlin",
+        "${project.rootDir}/feature/groups/src/commonMain/kotlin",
+        "${project.rootDir}/feature/groups/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/room-timetable/src/androidMain/kotlin",
+        "${project.rootDir}/feature/room-timetable/src/commonMain/kotlin",
+        "${project.rootDir}/feature/room-timetable/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/rooms/src/androidMain/kotlin",
+        "${project.rootDir}/feature/rooms/src/commonMain/kotlin",
+        "${project.rootDir}/feature/rooms/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/startup/src/androidMain/kotlin",
+        "${project.rootDir}/feature/startup/src/commonMain/kotlin",
+        "${project.rootDir}/feature/startup/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/study-line-timetable/src/androidMain/kotlin",
+        "${project.rootDir}/feature/study-line-timetable/src/commonMain/kotlin",
+        "${project.rootDir}/feature/study-line-timetable/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/study-line/src/androidMain/kotlin",
+        "${project.rootDir}/feature/study-line/src/commonMain/kotlin",
+        "${project.rootDir}/feature/study-line/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/subject-timetable/src/androidMain/kotlin",
+        "${project.rootDir}/feature/subject-timetable/src/commonMain/kotlin",
+        "${project.rootDir}/feature/subject-timetable/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/subject/src/androidMain/kotlin",
+        "${project.rootDir}/feature/subject/src/commonMain/kotlin",
+        "${project.rootDir}/feature/subject/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/teacher-timetable/src/androidMain/kotlin",
+        "${project.rootDir}/feature/teacher-timetable/src/commonMain/kotlin",
+        "${project.rootDir}/feature/teacher-timetable/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/teachers/src/androidMain/kotlin",
+        "${project.rootDir}/feature/teachers/src/commonMain/kotlin",
+        "${project.rootDir}/feature/teachers/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/user-timetable/src/androidMain/kotlin",
+        "${project.rootDir}/feature/user-timetable/src/commonMain/kotlin",
+        "${project.rootDir}/feature/user-timetable/src/iosMain/kotlin",
+
+        // UI
+        "${project.rootDir}/ui/catalog/src/androidMain/kotlin",
+        "${project.rootDir}/ui/catalog/src/commonMain/kotlin",
+        "${project.rootDir}/ui/catalog/src/iosMain/kotlin",
+
+        "${project.rootDir}/ui/navigation/src/androidMain/kotlin",
+        "${project.rootDir}/ui/navigation/src/commonMain/kotlin",
+        "${project.rootDir}/ui/navigation/src/iosMain/kotlin",
+
+        "${project.rootDir}/ui/theme/src/androidMain/kotlin",
+        "${project.rootDir}/ui/theme/src/commonMain/kotlin",
+        "${project.rootDir}/ui/theme/src/iosMain/kotlin",
+
     )
 
     buildUponDefaultConfig = true

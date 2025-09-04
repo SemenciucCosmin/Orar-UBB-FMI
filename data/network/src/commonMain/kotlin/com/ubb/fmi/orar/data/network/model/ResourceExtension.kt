@@ -15,11 +15,12 @@ const val HTTP_NOT_FOUND = 410
 val HTTP_OK = 200..299
 
 /**
- * Processes the API resource by executing the provided operation and returning a [Resource] with the appropriate status.
- * If the operation is successful, it attempts to transform the response body into the specified type [T].
- * If the transformation fails, it returns a [Resource] with a status of [Status.UnprocessableEntity].
- * If the operation fails due to network issues, it returns a [Resource] with a status of [Status.NetworkError].
- * If the operation fails for any other reason, it returns a [Resource] with a status of [Status.Error].
+ * Processes the API resource by executing the provided operation and returning a [Resource] with
+ * the appropriate status. If the operation is successful, it attempts to transform the response
+ * body into the specified type [T]. If the transformation fails, it returns a [Resource] with
+ * a status of [Status.UnprocessableEntity]. If the operation fails due to network issues,
+ * it returns a [Resource] with a status of [Status.NetworkError]. If the operation fails for
+ * any other reason, it returns a [Resource] with a status of [Status.Error].
  */
 suspend inline fun <reified T> processApiResource(
     operation: suspend () -> HttpResponse

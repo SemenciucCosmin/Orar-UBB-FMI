@@ -5,10 +5,10 @@ import com.ubb.fmi.orar.data.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.ClassType
 import com.ubb.fmi.orar.ui.catalog.model.Day
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf

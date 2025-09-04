@@ -6,8 +6,8 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

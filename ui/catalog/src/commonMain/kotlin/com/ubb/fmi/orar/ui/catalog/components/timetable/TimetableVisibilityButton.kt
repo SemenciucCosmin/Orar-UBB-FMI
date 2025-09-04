@@ -5,11 +5,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_hide
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_show
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a button to toggle the visibility of a timetable.
@@ -33,6 +35,28 @@ fun TimetableVisibilityButton(
                 isVisible -> painterResource(Res.drawable.ic_show)
                 else -> painterResource(Res.drawable.ic_hide)
             }
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTimetableVisibilityButtonVisible() {
+    OrarUbbFmiTheme {
+        TimetableVisibilityButton(
+            isVisible = true,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTimetableVisibilityButtonNotVisible() {
+    OrarUbbFmiTheme {
+        TimetableVisibilityButton(
+            isVisible = false,
+            onClick = {}
         )
     }
 }

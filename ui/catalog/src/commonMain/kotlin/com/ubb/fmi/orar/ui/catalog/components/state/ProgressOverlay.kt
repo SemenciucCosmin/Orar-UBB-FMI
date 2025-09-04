@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.ui.catalog.extensions.conditional
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val ALPHA = 0.7f
 
@@ -19,7 +21,10 @@ private const val ALPHA = 0.7f
  * @param hasBackground Whether the overlay should have a background color.
  */
 @Composable
-fun ProgressOverlay(modifier: Modifier = Modifier, hasBackground: Boolean = false) {
+fun ProgressOverlay(
+    modifier: Modifier = Modifier,
+    hasBackground: Boolean = false
+) {
     Box(
         contentAlignment = Alignment.Center,
         content = { CircularProgressIndicator(strokeWidth = Pds.spacing.XXSmall) },
@@ -27,4 +32,12 @@ fun ProgressOverlay(modifier: Modifier = Modifier, hasBackground: Boolean = fals
             background(MaterialTheme.colorScheme.background.copy(alpha = ALPHA))
         }
     )
+}
+
+@Preview
+@Composable
+private fun PreviewProgressOverlay() {
+    OrarUbbFmiTheme {
+        ProgressOverlay()
+    }
 }

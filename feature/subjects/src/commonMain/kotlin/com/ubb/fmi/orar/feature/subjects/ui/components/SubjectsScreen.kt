@@ -9,18 +9,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
 import com.ubb.fmi.orar.ui.catalog.components.SearchBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.feature.subjects.generated.resources.Res
 import orar_ubb_fmi.feature.subjects.generated.resources.ic_subject
 import orar_ubb_fmi.feature.subjects.generated.resources.lbl_subject
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable function that displays the Subjects screen.
@@ -77,5 +81,30 @@ fun SubjectsScreen(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewSubjectsScreen() {
+    OrarUbbFmiTheme {
+        SubjectsScreen(
+            onSubjectClick = {},
+            onChangeSearchQuery = {},
+            onRetryClick = {},
+            bottomBar = {},
+            uiState = SubjectsUiState(
+                searchQuery = "",
+                isLoading = false,
+                isError = false,
+                subjects = List(5) {
+                    TimetableOwner.Subject(
+                        id = it.toString(),
+                        name = "Subject $it",
+                        configurationId = "20241",
+                    )
+                }.toImmutableList()
+            )
+        )
     }
 }

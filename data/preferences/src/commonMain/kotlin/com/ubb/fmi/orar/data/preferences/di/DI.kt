@@ -7,4 +7,3 @@ import org.koin.core.module.Module
  * This module includes the DataStoreFactory for managing preferences.
  */
 expect fun preferencesDataModule(): Module
-

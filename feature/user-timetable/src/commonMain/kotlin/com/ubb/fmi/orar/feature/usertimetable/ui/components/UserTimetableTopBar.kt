@@ -10,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableFrequencyTab
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.feature.user_timetable.generated.resources.Res
 import orar_ubb_fmi.feature.user_timetable.generated.resources.ic_edit
 import orar_ubb_fmi.feature.user_timetable.generated.resources.ic_settings
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Top bar for the User Timetable screen.
@@ -67,4 +69,18 @@ fun UserTimetableTopBar(
             )
         }
     )
+}
+
+@Preview
+@Composable
+private fun PreviewUserTimetableTopBar() {
+    OrarUbbFmiTheme {
+        UserTimetableTopBar(
+            isEditModeOn = false,
+            selectedFrequency = Frequency.WEEK_1,
+            onSettingsClick = {},
+            onEditClick = {},
+            onFrequencyClick = {},
+        )
+    }
 }

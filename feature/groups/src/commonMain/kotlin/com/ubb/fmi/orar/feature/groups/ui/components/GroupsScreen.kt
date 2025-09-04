@@ -12,11 +12,15 @@ import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
+import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.persistentListOf
 import orar_ubb_fmi.feature.groups.generated.resources.Res
 import orar_ubb_fmi.feature.groups.generated.resources.ic_group
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable function that displays a screen with a list of groups.
@@ -64,5 +68,24 @@ fun GroupsScreen(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewGroupsScreen() {
+    OrarUbbFmiTheme {
+        GroupsScreen(
+            onGroupClick = {},
+            onRetryClick = {},
+            onBack = {},
+            uiState = GroupsUiState(
+                groups = persistentListOf("913", "914", "915", "916", "917"),
+                title = "Informatica Engleza",
+                studyLevel = StudyLevel.LEVEL_1,
+                isLoading = false,
+                isError = false
+            )
+        )
     }
 }
