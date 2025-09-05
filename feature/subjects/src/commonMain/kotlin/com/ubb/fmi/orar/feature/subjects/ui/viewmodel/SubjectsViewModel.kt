@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.subjects.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 class SubjectsViewModel(
     private val subjectsDataSource: SubjectsDataSource,
     private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -55,6 +57,7 @@ class SubjectsViewModel(
      * @param searchQuery The new search query to set.
      */
     fun setSearchQuery(searchQuery: String) {
+        logger.d(TAG, "setSearchQuery: $searchQuery")
         _uiState.update {
             it.copy(searchQuery = searchQuery)
         }
@@ -68,6 +71,7 @@ class SubjectsViewModel(
     private fun getSubjects() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
         timetablePreferences.getConfiguration().collectLatest { configuration ->
+            logger.d(TAG, "getSubjects configuration: $configuration")
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@collectLatest
@@ -78,6 +82,7 @@ class SubjectsViewModel(
                 semesterId = configuration.semesterId
             )
 
+            logger.d(TAG, "getSubjects resource: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -93,7 +98,12 @@ class SubjectsViewModel(
      * This is useful in case of an error or when the user wants to refresh the subjects list.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         job.cancel()
         job = getSubjects()
+    }
+
+    companion object {
+        private const val TAG = "SubjectsViewModel"
     }
 }

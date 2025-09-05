@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.rooms.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -24,7 +25,8 @@ import kotlinx.coroutines.launch
  */
 class RoomsViewModel(
     private val roomsDataSource: RoomsDataSource,
-    private val timetablePreferences: TimetablePreferences
+    private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -54,8 +56,11 @@ class RoomsViewModel(
      * The UI state is updated with loading, error, and room data accordingly.
      */
     private fun getRooms() = viewModelScope.launch {
+        logger.d(TAG, "getRooms")
         _uiState.update { it.copy(isLoading = true, isError = false) }
+
         timetablePreferences.getConfiguration().collectLatest { configuration ->
+            logger.d(TAG, "getRooms configuration: $configuration")
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@collectLatest
@@ -66,6 +71,7 @@ class RoomsViewModel(
                 semesterId = configuration.semesterId
             )
 
+            logger.d(TAG, "getRooms resource: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -81,7 +87,12 @@ class RoomsViewModel(
      * This is useful for retrying the fetch operation in case of an error.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         job.cancel()
         job = getRooms()
+    }
+
+    companion object {
+        private const val TAG = "RoomsViewModel"
     }
 }

@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.subjectstimetable.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json.Default.configuration
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -31,6 +33,7 @@ class SubjectTimetableViewModel(
     private val subjectId: String,
     private val subjectsDataSource: SubjectsDataSource,
     private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TimetableUiState())
@@ -44,9 +47,12 @@ class SubjectTimetableViewModel(
 
     private fun loadTimetable() {
         viewModelScope.launch {
+            logger.d(TAG, "loadTimetable subjectId: $subjectId")
             _uiState.update { it.copy(isLoading = true, isError = false) }
 
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            logger.d(TAG, "loadTimetable configuration: $configuration")
+
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@launch
@@ -57,6 +63,8 @@ class SubjectTimetableViewModel(
                 semesterId = configuration.semesterId,
                 ownerId = subjectId,
             )
+
+            logger.d(TAG, "loadTimetable resource: $resource")
 
             _uiState.update {
                 it.copy(
@@ -70,10 +78,16 @@ class SubjectTimetableViewModel(
     }
 
     fun selectFrequency(frequency: Frequency) {
+        logger.d(TAG, "selectFrequency: $frequency")
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
     fun retry() {
+        logger.d(TAG, "retry")
         loadTimetable()
+    }
+
+    companion object {
+        private const val TAG = "SubjectTimetableViewModel"
     }
 }

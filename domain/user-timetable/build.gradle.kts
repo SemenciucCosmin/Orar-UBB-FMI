@@ -43,6 +43,7 @@ kotlin {
             implementation(projects.data.timetable)
             implementation(projects.data.network)
             implementation(projects.domain.timetable)
+            implementation(projects.domain.logging)
         }
 
         iosMain.dependencies {

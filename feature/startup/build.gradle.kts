@@ -51,6 +51,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.timetable)
+            implementation(projects.domain.logging)
             implementation(projects.domain.timetable)
             implementation(projects.ui.catalog)
             implementation(projects.ui.navigation)

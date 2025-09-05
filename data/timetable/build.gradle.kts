@@ -42,6 +42,7 @@ kotlin {
             implementation(projects.data.database)
             implementation(projects.data.network)
             implementation(projects.data.preferences)
+            implementation(projects.domain.logging)
         }
 
         iosMain.dependencies {

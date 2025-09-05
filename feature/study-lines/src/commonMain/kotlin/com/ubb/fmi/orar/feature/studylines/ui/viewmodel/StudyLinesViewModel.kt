@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.studylines.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 class StudyLinesViewModel(
     private val studyLinesDataSource: StudyLinesDataSource,
     private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -59,8 +61,8 @@ class StudyLinesViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
-
         timetablePreferences.getConfiguration().collectLatest { configuration ->
+            logger.d(TAG, "getStudyLines configuration: $configuration")
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@collectLatest
@@ -71,12 +73,15 @@ class StudyLinesViewModel(
                 semesterId = configuration.semesterId
             )
 
+            logger.d(TAG, "getStudyLines studyLinesResource: $studyLinesResource")
+
             val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
                 studyLine.fieldId
             }?.values?.toList()?.map { studyLines ->
                 studyLines.sortedBy { it.levelId }.toImmutableList()
             }?.toImmutableList() ?: persistentListOf()
 
+            logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -94,6 +99,7 @@ class StudyLinesViewModel(
      * @param fieldId The ID of the field to select.
      */
     fun selectFieldId(fieldId: String) {
+        logger.d(TAG, "selectFieldId: $fieldId")
         _uiState.update {
             it.copy(selectedFieldId = fieldId)
         }
@@ -106,6 +112,7 @@ class StudyLinesViewModel(
      * @param degreeFilterId The ID of the degree filter to select.
      */
     fun selectDegreeFilter(degreeFilterId: String) {
+        logger.d(TAG, "selectDegreeFilter: $degreeFilterId")
         _uiState.update {
             it.copy(
                 selectedFilterId = degreeFilterId,
@@ -119,7 +126,12 @@ class StudyLinesViewModel(
      * This is useful when the user wants to refresh the data after an error.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         job.cancel()
         job = getStudyLines()
+    }
+
+    companion object {
+        private const val TAG = "StudyLinesViewModel"
     }
 }

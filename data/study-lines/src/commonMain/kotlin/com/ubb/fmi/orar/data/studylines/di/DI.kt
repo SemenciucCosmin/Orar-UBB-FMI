@@ -9,5 +9,5 @@ import org.koin.dsl.module
  * This module includes the StudyLinesDataSource for managing study line-related data.
  */
 fun studyLinesDataModule() = module {
-    factory<StudyLinesDataSource> { StudyLinesDataSourceImpl(get(), get(), get()) }
+    factory<StudyLinesDataSource> { StudyLinesDataSourceImpl(get(), get(), get(), get()) }
 }

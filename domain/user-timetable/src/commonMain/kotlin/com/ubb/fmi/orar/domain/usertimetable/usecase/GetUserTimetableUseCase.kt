@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.domain.usertimetable.usecase
 
+import Logger
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
@@ -26,6 +27,7 @@ class GetUserTimetableUseCase(
     private val studyLinesDataSource: StudyLinesDataSource,
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) {
 
     /**
@@ -38,6 +40,8 @@ class GetUserTimetableUseCase(
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend operator fun invoke(): Flow<Resource<Timetable<TimetableOwner>>> {
         return timetablePreferences.getConfiguration().mapLatest { configuration ->
+            logger.d(TAG, "configuration $configuration")
+
             if (configuration == null) {
                 return@mapLatest Resource(null, Status.Error)
             }
@@ -73,5 +77,9 @@ class GetUserTimetableUseCase(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "GetUserTimetableUseCase"
     }
 }

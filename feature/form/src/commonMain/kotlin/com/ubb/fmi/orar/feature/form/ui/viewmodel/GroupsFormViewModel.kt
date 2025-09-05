@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
@@ -46,6 +47,7 @@ class GroupsFormViewModel(
     private val studyLinesDataSource: StudyLinesDataSource,
     private val timetablePreferences: TimetablePreferences,
     private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
+    private val logger: Logger,
 ) : EventViewModel<GroupsFromUiState.GroupsFromEvent>() {
 
     /**
@@ -72,6 +74,8 @@ class GroupsFormViewModel(
         val studyLevel = StudyLevel.getById(studyLevelId)
         val lineId = fieldId + studyLevel.notation
 
+        logger.d(TAG, "getGroups for year: $year, semester: $semesterId")
+
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
         val studyLinesResource = studyLinesDataSource.getOwners(
             year = year,
@@ -79,12 +83,15 @@ class GroupsFormViewModel(
         )
 
         val studyLine = studyLinesResource.payload?.firstOrNull { it.id == lineId }
+        logger.d(TAG, "getGroups studyLine: $studyLine ${studyLinesResource.status}")
+
         val groupsResource = studyLinesDataSource.getGroups(
             year = year,
             semesterId = semesterId,
             ownerId = lineId
         )
 
+        logger.d(TAG, "getGroups groups resource: $groupsResource")
         _uiState.update {
             it.copy(
                 isLoading = false,
@@ -105,6 +112,7 @@ class GroupsFormViewModel(
      * @param groupId: The ID of the group to select.
      */
     fun selectGroup(groupId: String) {
+        logger.d(TAG, "selectGroup group: $groupId")
         _uiState.update { it.copy(selectedGroupId = groupId) }
     }
 
@@ -113,6 +121,7 @@ class GroupsFormViewModel(
      * This function is called when the user wants to retry fetching groups after an error occurs.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         getGroups()
     }
 
@@ -121,8 +130,10 @@ class GroupsFormViewModel(
      * This function is called when the user confirms their selection.
      */
     fun finishSelection() {
+        logger.d(TAG, "finishSelection")
         viewModelScope.launch {
             _uiState.value.selectedGroupId?.let { groupId ->
+                logger.d(TAG, "finishSelection group: $groupId")
                 setTimetableConfigurationUseCase(
                     year = year,
                     semesterId = semesterId,
@@ -137,5 +148,9 @@ class GroupsFormViewModel(
                 registerEvent(GroupsFromUiState.GroupsFromEvent.CONFIGURATION_DONE)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "GroupsFormViewModel"
     }
 }

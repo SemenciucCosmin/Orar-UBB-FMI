@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -38,7 +39,8 @@ class StudyLineTimetableViewModel(
     private val studyLevelId: String,
     private val groupId: String,
     private val studyLinesDataSource: StudyLinesDataSource,
-    private val timetablePreferences: TimetablePreferences
+    private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -66,7 +68,13 @@ class StudyLineTimetableViewModel(
             val studyLevel = StudyLevel.getById(studyLevelId)
             val lineId = fieldId + studyLevel.notation
 
+            logger.d(TAG, "loadTimetable studyLevel: $studyLevel")
+            logger.d(TAG, "loadTimetable fieldId: $fieldId")
+            logger.d(TAG, "loadTimetable groupId: $groupId")
+
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            logger.d(TAG, "loadTimetable configuration: $configuration")
+
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@launch
@@ -79,6 +87,7 @@ class StudyLineTimetableViewModel(
                 groupId = groupId
             )
 
+            logger.d(TAG, "loadTimetable resource: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -99,6 +108,7 @@ class StudyLineTimetableViewModel(
      * @param frequency The frequency to be selected.
      */
     fun selectFrequency(frequency: Frequency) {
+        logger.d(TAG, "selectFrequency: $frequency")
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
@@ -107,6 +117,11 @@ class StudyLineTimetableViewModel(
      * This is typically called when an error occurs and the user wants to try loading the data again.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         loadTimetable()
+    }
+
+    companion object {
+        private const val TAG = "StudyLineTimetableViewModel"
     }
 }

@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json.Default.configuration
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -32,6 +34,7 @@ class RoomTimetableViewModel(
     private val roomId: String,
     private val roomsDataSource: RoomsDataSource,
     private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -53,9 +56,12 @@ class RoomTimetableViewModel(
      */
     private fun loadTimetable() {
         viewModelScope.launch {
+            logger.d(TAG, "loadTimetable room: $roomId")
             _uiState.update { it.copy(isLoading = true, isError = false) }
 
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            logger.d(TAG, "loadTimetable configuration: $configuration")
+
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@launch
@@ -67,6 +73,7 @@ class RoomTimetableViewModel(
                 ownerId = roomId,
             )
 
+            logger.d(TAG, "loadTimetable resource: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -85,6 +92,7 @@ class RoomTimetableViewModel(
      * @param frequency The frequency to be selected.
      */
     fun selectFrequency(frequency: Frequency) {
+        logger.d(TAG, "selectFrequency: $frequency")
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
@@ -93,6 +101,11 @@ class RoomTimetableViewModel(
      * This is typically called when the user wants to refresh the timetable after an error.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         loadTimetable()
+    }
+
+    companion object {
+        private const val TAG = "RoomTimetableViewModel"
     }
 }

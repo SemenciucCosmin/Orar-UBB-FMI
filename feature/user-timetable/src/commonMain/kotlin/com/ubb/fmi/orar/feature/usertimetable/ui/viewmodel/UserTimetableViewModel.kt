@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
     private val changeTimetableClassVisibilityUseCase: ChangeTimetableClassVisibilityUseCase,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -59,6 +61,7 @@ class UserTimetableViewModel(
     private fun loadTimetable() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
         getUserTimetableUseCase().collectLatest { resource ->
+            logger.d(TAG, "loadTimetable: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -75,6 +78,7 @@ class UserTimetableViewModel(
      * @param frequency The frequency to select.
      */
     fun selectFrequency(frequency: Frequency) {
+        logger.d(TAG, "selectFrequency: $frequency")
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
@@ -83,7 +87,10 @@ class UserTimetableViewModel(
      * This updates the UI state to reflect whether edit mode is currently on or off.
      */
     fun changeEditMode() {
-        _uiState.update { it.copy(isEditModeOn = !it.isEditModeOn) }
+        _uiState.update {
+            logger.d(TAG, "changeEditMode to: ${!it.isEditModeOn}")
+            it.copy(isEditModeOn = !it.isEditModeOn)
+        }
     }
 
     /**
@@ -93,6 +100,7 @@ class UserTimetableViewModel(
      */
     fun changeTimetableClassVisibility(timetableClass: TimetableListItem.Class) {
         viewModelScope.launch {
+            logger.d(TAG, "changeTimetableClassVisibility class: $timetableClass")
             changeTimetableClassVisibilityUseCase(
                 timetableClassId = timetableClass.id,
                 timetableOwnerType = timetableClass.timetableOwnerType,
@@ -116,7 +124,12 @@ class UserTimetableViewModel(
      * This cancels the current job and starts a new one to load the timetable again.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         job.cancel()
         job = loadTimetable()
+    }
+
+    companion object {
+        private const val TAG = "UserTimetableViewModel"
     }
 }

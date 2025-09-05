@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.teachers.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 class TeachersViewModel(
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -56,6 +58,7 @@ class TeachersViewModel(
     private fun getTeachers() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
         timetablePreferences.getConfiguration().collectLatest { configuration ->
+            logger.d(TAG, "getTeachers configuration: $configuration")
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@collectLatest
@@ -66,6 +69,7 @@ class TeachersViewModel(
                 semesterId = configuration.semesterId
             )
 
+            logger.d(TAG, "getTeachers resource: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -82,6 +86,7 @@ class TeachersViewModel(
      * @param teacherTitleFilterId The ID of the selected teacher title filter.
      */
     fun selectTeacherTitleFilter(teacherTitleFilterId: String) {
+        logger.d(TAG, "selectTeacherTitleFilter: $teacherTitleFilterId")
         _uiState.update {
             it.copy(selectedFilterId = teacherTitleFilterId)
         }
@@ -93,7 +98,12 @@ class TeachersViewModel(
      * wants to refresh the teacher list.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         job.cancel()
         job = getTeachers()
+    }
+
+    companion object {
+        private const val TAG = "TeachersViewModel"
     }
 }

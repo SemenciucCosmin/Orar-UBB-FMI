@@ -9,5 +9,5 @@ import org.koin.dsl.module
  * This module includes the RoomsDataSource for managing room-related data.
  */
 fun roomsDataModule() = module {
-    factory<RoomsDataSource> { RoomsDataSourceImpl(get(), get(), get()) }
+    factory<RoomsDataSource> { RoomsDataSourceImpl(get(), get(), get(), get()) }
 }

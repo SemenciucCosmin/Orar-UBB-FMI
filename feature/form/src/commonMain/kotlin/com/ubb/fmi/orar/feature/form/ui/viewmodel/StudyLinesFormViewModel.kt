@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -35,7 +36,8 @@ class StudyLinesFormViewModel(
     private val year: Int,
     private val semesterId: String,
     private val studyLinesDataSource: StudyLinesDataSource,
-    private val timetablePreferences: TimetablePreferences
+    private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -59,11 +61,16 @@ class StudyLinesFormViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, isError = false) }
+
+        logger.d(TAG, "getStudyLines for year: $year, semester: $semesterId")
+
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
         val studyLinesResource = studyLinesDataSource.getOwners(
             year = year,
             semesterId = semesterId
         )
+
+        logger.d(TAG, "getStudyLines studyLinesResource: $studyLinesResource")
 
         val studyLevel = configuration?.studyLevelId?.let(StudyLevel::getById)
         val lineId = studyLevel?.let { configuration.fieldId + studyLevel.notation }
@@ -73,6 +80,9 @@ class StudyLinesFormViewModel(
         }?.values?.toList()?.map { studyLines ->
             studyLines.sortedBy { it.levelId }.toImmutableList()
         }?.toImmutableList() ?: persistentListOf()
+
+        logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")
+        logger.d(TAG, "getStudyLines selectedStudyLine: $selectedStudyLine")
 
         _uiState.update {
             it.copy(
@@ -92,6 +102,7 @@ class StudyLinesFormViewModel(
      * @param fieldId The ID of the field to be selected.
      */
     fun selectFieldId(fieldId: String) {
+        logger.d(TAG, "selectFieldId: $fieldId")
         _uiState.update {
             it.copy(
                 selectedFieldId = fieldId,
@@ -106,6 +117,7 @@ class StudyLinesFormViewModel(
      * @param studyLevel The ID of the study level to be selected.
      */
     fun selectStudyLevel(studyLevel: String) {
+        logger.d(TAG, "selectStudyLevel: $studyLevel")
         _uiState.update { it.copy(selectedStudyLevelId = studyLevel) }
     }
 
@@ -115,6 +127,7 @@ class StudyLinesFormViewModel(
      * @param degreeFilterId The ID of the degree filter to be selected.
      */
     fun selectDegreeFilter(degreeFilterId: String) {
+        logger.d(TAG, "selectDegreeFilter: $degreeFilterId")
         _uiState.update {
             it.copy(
                 selectedFilterId = degreeFilterId,
@@ -129,6 +142,11 @@ class StudyLinesFormViewModel(
      * This method is called when the user confirms their selection.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         getStudyLines()
+    }
+
+    companion object {
+        private const val TAG = "StudyLinesFormViewModel"
     }
 }

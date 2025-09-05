@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.subjects.datasource
 
+import Logger
 import com.ubb.fmi.orar.data.database.dao.SubjectDao
 import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.SubjectEntity
@@ -22,8 +23,13 @@ import okio.ByteString.Companion.encodeUtf8
 class SubjectsDataSourceImpl(
     private val subjectsApi: SubjectsApi,
     private val subjectDao: SubjectDao,
+    private val logger: Logger,
     timetableClassDao: TimetableClassDao,
-) : SubjectsDataSource, TimetableDataSource<TimetableOwner.Subject>(timetableClassDao) {
+) : SubjectsDataSource, TimetableDataSource<TimetableOwner.Subject>(
+    timetableClassDao = timetableClassDao,
+    logger = logger,
+    tag = TAG,
+) {
 
     /**
      * Retrieve list of [TimetableOwner.Subject] objects from cache or API
@@ -89,11 +95,20 @@ class SubjectsDataSourceImpl(
         year: Int,
         semesterId: String,
     ): Resource<List<TimetableOwner.Subject>> {
+        logger.d(TAG, "getOwnersFromApi for year: $year, semester: $semesterId")
+
         val configurationId = year.toString() + semesterId
         val resource = subjectsApi.getOwnersHtml(year, semesterId)
+
+        logger.d(TAG, "getOwnersFromApi resource: $resource")
+
         val ownersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
         val table = HtmlParser.extractTables(ownersHtml).firstOrNull()
+
+        logger.d(TAG, "getOwnersFromApi table: $table")
+
         val owners = table?.rows?.mapNotNull { row ->
+            logger.d(TAG, "getOwnersFromApi row: $row")
             val idCell = row.cells.getOrNull(ID_INDEX) ?: return@mapNotNull null
             val nameCell = row.cells.getOrNull(NAME_INDEX) ?: return@mapNotNull null
 
@@ -103,6 +118,8 @@ class SubjectsDataSourceImpl(
                 configurationId = configurationId,
             )
         }
+
+        logger.d(TAG, "getOwnersFromApi owners: $owners")
 
         return when {
             owners.isNullOrEmpty() -> Resource(null, Status.Error)
@@ -119,11 +136,20 @@ class SubjectsDataSourceImpl(
         semesterId: String,
         owner: TimetableOwner.Subject,
     ): Resource<Timetable<TimetableOwner.Subject>> {
+        logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId")
+
         val configurationId = year.toString() + semesterId
         val resource = subjectsApi.getTimetableHtml(year, semesterId, owner.id)
+
+        logger.d(TAG, "getTimetableFromApi resource: $resource")
+
         val timetableHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
         val table = HtmlParser.extractTables(timetableHtml).firstOrNull()
+
+        logger.d(TAG, "getTimetableFromApi table: $table")
+
         val classes = table?.rows?.mapNotNull { row ->
+            logger.d(TAG, "getTimetableFromApi row: $row")
             val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
             val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
             val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
@@ -167,6 +193,8 @@ class SubjectsDataSourceImpl(
             )
         }
 
+        logger.d(TAG, "getTimetableFromApi classes: $classes")
+
         return when {
             classes == null -> Resource(null, Status.Error)
             else -> Resource(Timetable(owner, classes), Status.Success)
@@ -205,6 +233,8 @@ class SubjectsDataSourceImpl(
     }
 
     companion object {
+        private const val TAG = "SubjectsDataSource"
+
         // Subjects map column indexes
         private const val ID_INDEX = 0
         private const val NAME_INDEX = 1

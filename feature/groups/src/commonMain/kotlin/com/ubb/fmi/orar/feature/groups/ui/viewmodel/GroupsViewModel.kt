@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.groups.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -34,7 +35,8 @@ class GroupsViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
     private val studyLinesDataSource: StudyLinesDataSource,
-    private val timetablePreferences: TimetablePreferences
+    private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -62,18 +64,26 @@ class GroupsViewModel(
         val lineId = fieldId + studyLevel.notation
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
+        logger.d(TAG, "getGroups configuration: $configuration")
+
         val studyLinesResource = studyLinesDataSource.getOwners(
             year = configuration?.year ?: return@launch,
             semesterId = configuration.semesterId,
         )
 
+        logger.d(TAG, "getGroups studyLinesResource: $studyLinesResource")
+
         val studyLine = studyLinesResource.payload?.firstOrNull { it.id == lineId }
+
+        logger.d(TAG, "getGroups studyLine: $studyLine")
+
         val groupsResource = studyLinesDataSource.getGroups(
             year = configuration.year,
             semesterId = configuration.semesterId,
             ownerId = lineId
         )
 
+        logger.d(TAG, "getGroups groupsResource: $groupsResource")
         _uiState.update {
             it.copy(
                 isLoading = false,
@@ -88,10 +98,13 @@ class GroupsViewModel(
     /**
      * Selects a group and updates the UI state accordingly.
      * This method also saves the selected group in the timetable preferences.
-     *
-     * @param groupId The ID of the group to be selected.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         getGroups()
+    }
+
+    companion object {
+        private const val TAG = "GroupsViewModel"
     }
 }

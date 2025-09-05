@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.timetable.datasource
 
+import Logger
 import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
 import com.ubb.fmi.orar.data.network.model.Resource
@@ -15,6 +16,8 @@ import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 @Suppress("UNCHECKED_CAST", "TooManyFunctions")
 abstract class TimetableDataSource<Owner : TimetableOwner>(
     private val timetableClassDao: TimetableClassDao,
+    private val logger: Logger,
+    private val tag: String,
 ) {
 
     /**
@@ -25,12 +28,15 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
         year: Int,
         semesterId: String,
     ): Resource<List<Owner>> {
+        logger.d(tag, "getOwners for year: $year, semester: $semesterId")
+
         val configurationId = year.toString() + semesterId
         val cachedOwners = getOwnersFromCache(configurationId)
 
         return when {
             cachedOwners.isNotEmpty() -> {
                 val sortedOwners = sortOwners(cachedOwners)
+                logger.d(tag, "getOwners from cache: $sortedOwners")
                 Resource(sortedOwners, Status.Success)
             }
 
@@ -39,6 +45,8 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
                 ownersResource.payload?.forEach { saveOwnerInCache(it) }
 
                 val sortedOwners = ownersResource.payload?.let(::sortOwners)
+                logger.d(tag, "getOwners from API: $sortedOwners, ${ownersResource.status}")
+
                 Resource(sortedOwners, ownersResource.status)
             }
         }
@@ -53,14 +61,21 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
         semesterId: String,
         ownerId: String,
     ): Resource<Timetable<Owner>> {
+        logger.d(tag, "getTimetable for year: $year, semester: $semesterId, owner: $ownerId")
+
         val configurationId = year.toString() + semesterId
         val owner = getOwners(year, semesterId).payload?.firstOrNull { it.id == ownerId }
+
+        logger.d(tag, "getTimetable owner: $owner")
         val cachedTimetable = owner?.let { getTimetableFromCache(configurationId, it) }
 
         return when {
             cachedTimetable?.classes?.isNotEmpty() == true -> {
                 val sortedClasses = sortTimetableClasses(cachedTimetable.classes)
-                Resource(cachedTimetable.copy(classes = sortedClasses), Status.Success)
+                val timetable = cachedTimetable.copy(classes = sortedClasses)
+                logger.d(tag, "getTimetable from cache: $timetable")
+
+                Resource(timetable, Status.Success)
             }
 
             else -> {
@@ -73,6 +88,7 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
                     timetable.copy(classes = sortedClasses)
                 }
 
+                logger.d(tag, "getTimetable from API: $timetable ${timetableResource.status}")
                 Resource(timetable, timetableResource.status)
             }
         }
@@ -82,6 +98,7 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
      * Change visibility of specific timetable class by [timetableClassId]
      */
     protected open suspend fun changeTimetableClassVisibility(timetableClassId: String) {
+        logger.d(tag, "changeTimetableClassVisibility for timetableClassId: $timetableClassId")
         val timetableClassEntity = timetableClassDao.getById(timetableClassId)
         val newTimetableClassEntity = timetableClassEntity.copy(
             isVisible = !timetableClassEntity.isVisible
@@ -94,6 +111,7 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
      * Invalidates all cached data for by [year] and [semesterId]
      */
     protected open suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(tag, "invalidate for year: $year, semester: $semesterId")
         val configurationId = year.toString() + semesterId
         timetableClassDao.deleteAll(configurationId)
     }

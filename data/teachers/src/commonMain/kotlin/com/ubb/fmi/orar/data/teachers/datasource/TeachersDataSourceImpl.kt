@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.teachers.datasource
 
+import Logger
 import com.ubb.fmi.orar.data.database.dao.TeacherDao
 import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.TeacherEntity
@@ -26,8 +27,13 @@ import okio.ByteString.Companion.encodeUtf8
 class TeachersDataSourceImpl(
     private val teachersApi: TeachersApi,
     private val teacherDao: TeacherDao,
+    private val logger: Logger,
     timetableClassDao: TimetableClassDao,
-) : TeachersDataSource, TimetableDataSource<TimetableOwner.Teacher>(timetableClassDao) {
+) : TeachersDataSource, TimetableDataSource<TimetableOwner.Teacher>(
+    timetableClassDao = timetableClassDao,
+    logger = logger,
+    tag = TAG,
+) {
 
     /**
      * Retrieve list of [TimetableOwner.Teacher] objects from cache or API
@@ -93,12 +99,22 @@ class TeachersDataSourceImpl(
         year: Int,
         semesterId: String,
     ): Resource<List<TimetableOwner.Teacher>> {
+        logger.d(TAG, "getOwnersFromApi for year: $year, semester: $semesterId")
+
         val configurationId = year.toString() + semesterId
         val resource = teachersApi.getOwnersHtml(year, semesterId)
+
+        logger.d(TAG, "getOwnersFromApi resource: $resource")
+
         val ownersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
         val table = HtmlParser.extractTables(ownersHtml).firstOrNull()
+
+        logger.d(TAG, "getOwnersFromApi table: $table")
+
         val cells = table?.rows?.map { it.cells }?.flatten()
         val owners = cells?.mapNotNull { cell ->
+            logger.d(TAG, "getOwnersFromApi cell: $cell")
+
             val title = TeacherTitle.entries.firstOrNull {
                 cell.value.contains(it.id)
             } ?: return@mapNotNull null
@@ -115,6 +131,8 @@ class TeachersDataSourceImpl(
             )
         }?.filter { it.name != NULL }
 
+        logger.d(TAG, "getOwnersFromApi owners: $owners")
+
         return when {
             owners.isNullOrEmpty() -> Resource(null, Status.Error)
             else -> Resource(owners, Status.Success)
@@ -130,11 +148,20 @@ class TeachersDataSourceImpl(
         semesterId: String,
         owner: TimetableOwner.Teacher,
     ): Resource<Timetable<TimetableOwner.Teacher>> {
+        logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId")
+
         val configurationId = year.toString() + semesterId
         val resource = teachersApi.getTimetableHtml(year, semesterId, owner.id)
+
+        logger.d(TAG, "getTimetableFromApi resource: $resource")
+
         val timetableHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
         val table = HtmlParser.extractTables(timetableHtml).firstOrNull()
+
+        logger.d(TAG, "getTimetableFromApi table: $table")
+
         val classes = table?.rows?.mapNotNull { row ->
+            logger.d(TAG, "getTimetableFromApi row: $row")
             val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
             val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
             val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
@@ -207,6 +234,8 @@ class TeachersDataSourceImpl(
             )
         }
 
+        logger.d(TAG, "getTimetableFromApi classes: $classes")
+
         return when {
             classes == null -> Resource(null, Status.Error)
             else -> Resource(Timetable(owner, classes), Status.Success)
@@ -252,6 +281,8 @@ class TeachersDataSourceImpl(
     }
 
     companion object {
+        private const val TAG = "TeachersDataSource"
+
         // Teacher timetable column indexes
         private const val DAY_INDEX = 0
         private const val INTERVAL_INDEX = 1

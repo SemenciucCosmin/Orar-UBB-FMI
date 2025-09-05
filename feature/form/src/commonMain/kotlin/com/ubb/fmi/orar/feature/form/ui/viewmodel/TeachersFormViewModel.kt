@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
@@ -38,6 +39,7 @@ class TeachersFormViewModel(
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences,
     private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
+    private val logger: Logger,
 ) : EventViewModel<TeachersFormUiState.TeachersFormEvent>() {
 
     /**
@@ -59,6 +61,7 @@ class TeachersFormViewModel(
      * and filter based on the current configuration.
      */
     fun selectTeacherTitleFilter(teacherTitleFilterId: String) {
+        logger.d(TAG, "selectTeacherTitleFilter: $teacherTitleFilterId")
         _uiState.update {
             it.copy(selectedFilterId = teacherTitleFilterId)
         }
@@ -77,9 +80,14 @@ class TeachersFormViewModel(
             semesterId = semesterId
         )
 
+        logger.d(TAG, "getTeachers for year: $year, semester: $semesterId")
+        logger.d(TAG, "resource $resource")
+
         val teacher = resource.payload?.firstOrNull {
             it.id == configuration?.teacherId
         }
+
+        logger.d(TAG, "teacher $teacher")
 
         _uiState.update {
             it.copy(
@@ -97,6 +105,7 @@ class TeachersFormViewModel(
      * @param teacherId The ID of the teacher to be selected.
      */
     fun selectTeacher(teacherId: String) {
+        logger.d(TAG, "selectTeacher $teacherId")
         _uiState.update { it.copy(selectedTeacherId = teacherId) }
     }
 
@@ -105,6 +114,7 @@ class TeachersFormViewModel(
      * This function can be called to refresh the list of teachers.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         getTeachers()
     }
 
@@ -113,8 +123,10 @@ class TeachersFormViewModel(
      * This method is called when the user finishes selecting a teacher.
      */
     fun finishSelection() {
+        logger.d(TAG, "finishSelection")
         viewModelScope.launch {
             _uiState.value.selectedTeacherId?.let { teacherId ->
+                logger.d(TAG, "finishSelection teacher: $teacherId")
                 setTimetableConfigurationUseCase(
                     year = year,
                     semesterId = semesterId,
@@ -129,5 +141,9 @@ class TeachersFormViewModel(
                 registerEvent(TeachersFormUiState.TeachersFormEvent.CONFIGURATION_DONE)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "TeachersFormViewModel"
     }
 }

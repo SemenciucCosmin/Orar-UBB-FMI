@@ -53,6 +53,7 @@ kotlin {
             implementation(projects.data.network)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
+            implementation(projects.domain.logging)
             implementation(projects.ui.catalog)
             implementation(projects.ui.navigation)
             implementation(projects.ui.theme)

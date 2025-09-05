@@ -43,6 +43,7 @@ kotlin {
             implementation(projects.data.subjects)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
+            implementation(projects.domain.logging)
         }
 
         iosMain.dependencies {

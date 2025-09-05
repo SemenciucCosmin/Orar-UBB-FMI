@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
@@ -33,7 +34,8 @@ import kotlin.time.Duration.Companion.seconds
 class TeacherTimetableViewModel(
     private val teacherId: String,
     private val teachersDataSource: TeachersDataSource,
-    private val timetablePreferences: TimetablePreferences
+    private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -56,9 +58,12 @@ class TeacherTimetableViewModel(
      */
     private fun loadTimetable() {
         viewModelScope.launch {
+            logger.d(TAG, "loadTimetable teacher: $teacherId")
             _uiState.update { it.copy(isLoading = true, isError = false) }
 
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            logger.d(TAG, "loadTimetable configuration: $configuration")
+
             if (configuration == null) {
                 _uiState.update { it.copy(isLoading = false, isError = true) }
                 return@launch
@@ -70,6 +75,7 @@ class TeacherTimetableViewModel(
                 ownerId = teacherId,
             )
 
+            logger.d(TAG, "loadTimetable resource: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -88,6 +94,7 @@ class TeacherTimetableViewModel(
      * @param frequency The frequency to be selected.
      */
     fun selectFrequency(frequency: Frequency) {
+        logger.d(TAG, "selectFrequency: $frequency")
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
@@ -97,6 +104,11 @@ class TeacherTimetableViewModel(
      * typically after an error has occurred.
      */
     fun retry() {
+        logger.d(TAG, "retry")
         loadTimetable()
+    }
+
+    companion object {
+        private const val TAG = "TeacherTimetableViewModel"
     }
 }

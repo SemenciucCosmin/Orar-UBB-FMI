@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.domain.timetable.usecase
 
+import Logger
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 
 /**
@@ -9,7 +10,10 @@ import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
  *
  * @property timetablePreferences The preferences manager for storing timetable configurations.
  */
-class SetTimetableConfigurationUseCase(private val timetablePreferences: TimetablePreferences) {
+class SetTimetableConfigurationUseCase(
+    private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
+) {
 
     /**
      * Sets the timetable configuration based on the provided parameters.
@@ -33,6 +37,13 @@ class SetTimetableConfigurationUseCase(private val timetablePreferences: Timetab
         groupId: String?,
         teacherId: String?,
     ) {
+        logger.d(TAG, "year $year, semester: $semesterId, userType: $userTypeId")
+        logger.d(TAG, "fieldId $fieldId")
+        logger.d(TAG, "studyLevelId $studyLevelId")
+        logger.d(TAG, "studyLineDegreeId $studyLineDegreeId")
+        logger.d(TAG, "groupId $groupId")
+        logger.d(TAG, "teacherId $teacherId")
+
         timetablePreferences.setYear(year)
         timetablePreferences.setSemester(semesterId)
         timetablePreferences.setUserType(userTypeId)
@@ -42,5 +53,9 @@ class SetTimetableConfigurationUseCase(private val timetablePreferences: Timetab
         studyLineDegreeId?.let { timetablePreferences.setDegreeId(it) }
         groupId?.let { timetablePreferences.setGroupId(it) }
         teacherId?.let { timetablePreferences.setTeacherId(it) }
+    }
+
+    companion object {
+        private const val TAG = "SetTimetableConfigurationUseCase"
     }
 }

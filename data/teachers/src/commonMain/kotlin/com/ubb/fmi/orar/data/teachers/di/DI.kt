@@ -9,5 +9,5 @@ import org.koin.dsl.module
  * This module includes the TeachersDataSource for managing teacher-related data.
  */
 fun teachersDataModule() = module {
-    factory<TeachersDataSource> { TeachersDataSourceImpl(get(), get(), get()) }
+    factory<TeachersDataSource> { TeachersDataSourceImpl(get(), get(), get(), get()) }
 }

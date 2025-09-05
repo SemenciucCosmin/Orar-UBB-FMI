@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.json.Json.Default.configuration
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
@@ -27,7 +29,8 @@ import kotlin.time.ExperimentalTime
  * @param timetablePreferences Preferences for managing timetable configurations.
  */
 class OnboardingFormViewModel(
-    private val timetablePreferences: TimetablePreferences
+    private val timetablePreferences: TimetablePreferences,
+    private val logger: Logger,
 ) : ViewModel() {
 
     /**
@@ -51,6 +54,8 @@ class OnboardingFormViewModel(
     private fun loadConfiguration() {
         viewModelScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            logger.d(TAG, "loadConfiguration configuration: $configuration")
+
             _uiState.update {
                 it.copy(
                     studyYears = getStudyYears().toImmutableList(),
@@ -67,6 +72,7 @@ class OnboardingFormViewModel(
      * @param studyYear The year to be selected.
      */
     fun selectStudyYear(studyYear: Int) {
+        logger.d(TAG, "selectStudyYear: $studyYear")
         _uiState.update { it.copy(selectedStudyYear = studyYear) }
     }
 
@@ -75,6 +81,7 @@ class OnboardingFormViewModel(
      * @param semesterId The ID of the semester to be selected.
      */
     fun selectSemester(semesterId: String) {
+        logger.d(TAG, "selectSemester: $semesterId")
         _uiState.update { it.copy(selectedSemesterId = semesterId) }
     }
 
@@ -83,6 +90,7 @@ class OnboardingFormViewModel(
      * @param userTypeId The ID of the user type to be selected.
      */
     fun selectUserType(userTypeId: String) {
+        logger.d(TAG, "selectUserType: $userTypeId")
         _uiState.update { it.copy(selectedUserTypeId = userTypeId) }
     }
 
@@ -96,6 +104,13 @@ class OnboardingFormViewModel(
         val currentDate = currentInstant.toLocalDateTime(TimeZone.currentSystemDefault())
         val currentYear = currentDate.year
         val previousYear = currentYear.dec()
-        return listOf(previousYear, currentYear)
+        val years = listOf(previousYear, currentYear)
+        logger.d(TAG, "getStudyYears: $years")
+
+        return years
+    }
+
+    companion object {
+        private const val TAG = "OnboardingFormViewModel"
     }
 }

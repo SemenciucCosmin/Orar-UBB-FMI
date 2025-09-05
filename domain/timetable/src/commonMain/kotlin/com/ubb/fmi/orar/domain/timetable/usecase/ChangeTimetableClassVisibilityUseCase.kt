@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.domain.timetable.usecase
 
+import Logger
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
@@ -19,7 +20,8 @@ class ChangeTimetableClassVisibilityUseCase(
     private val roomsDataSource: RoomsDataSource,
     private val studyLineDataSource: StudyLinesDataSource,
     private val subjectsDataSource: SubjectsDataSource,
-    private val teachersDataSource: TeachersDataSource
+    private val teachersDataSource: TeachersDataSource,
+    private val logger: Logger,
 ) {
     /**
      * Changes the visibility of a timetable class based on its ID and owner type.
@@ -31,6 +33,7 @@ class ChangeTimetableClassVisibilityUseCase(
         timetableClassId: String,
         timetableOwnerType: TimetableOwnerType,
     ) {
+        logger.d(TAG, "class: $timetableOwnerType, owner:$timetableOwnerType")
         when (timetableOwnerType) {
             TimetableOwnerType.ROOM -> {
                 roomsDataSource.changeTimetableClassVisibility(
@@ -56,5 +59,9 @@ class ChangeTimetableClassVisibilityUseCase(
                 )
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "ChangeTimetableClassVisibilityUseCase"
     }
 }

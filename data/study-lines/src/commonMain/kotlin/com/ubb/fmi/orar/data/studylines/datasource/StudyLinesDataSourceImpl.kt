@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.studylines.datasource
 
+import Logger
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
@@ -26,8 +27,13 @@ import okio.ByteString.Companion.encodeUtf8
 class StudyLinesDataSourceImpl(
     private val studyLinesApi: StudyLinesApi,
     private val studyLineDao: StudyLineDao,
+    private val logger: Logger,
     timetableClassDao: TimetableClassDao,
-) : StudyLinesDataSource, TimetableDataSource<TimetableOwner.StudyLine>(timetableClassDao) {
+) : StudyLinesDataSource, TimetableDataSource<TimetableOwner.StudyLine>(
+    timetableClassDao = timetableClassDao,
+    logger = logger,
+    tag = TAG,
+) {
 
     /**
      * Retrieve list of [TimetableOwner.StudyLine] objects from cache or API
@@ -49,8 +55,13 @@ class StudyLinesDataSourceImpl(
         semesterId: String,
         ownerId: String,
     ): Resource<List<String>> {
+        logger.d(TAG, "getGroups for year: $year, semester: $semesterId, ownerId: $ownerId")
         val resource = super.getTimetable(year, semesterId, ownerId)
+
+        logger.d(TAG, "getGroups resource: $resource")
         val groups = resource.payload?.classes?.map { it.groupId }?.distinct()?.sortedBy { it }
+
+        logger.d(TAG, "getGroups groups: $groups")
         return Resource(groups, resource.status)
     }
 
@@ -64,9 +75,18 @@ class StudyLinesDataSourceImpl(
         ownerId: String,
         groupId: String,
     ): Resource<Timetable<TimetableOwner.StudyLine>> {
+        logger.d(TAG, "getTimetable for year: $year, semester: $semesterId")
+        logger.d(TAG, "getTimetable for ownerId: $ownerId, groupId: $groupId")
+
         val resource = super.getTimetable(year, semesterId, ownerId)
+        logger.d(TAG, "getTimetable resource: $resource")
+
         val filteredClasses = resource.payload?.classes?.filter { it.groupId == groupId }
+        logger.d(TAG, "getTimetable filteredClasses: $filteredClasses")
+
         val timetable = filteredClasses?.let { resource.payload?.copy(classes = filteredClasses) }
+        logger.d(TAG, "getTimetable timetable: $timetable")
+
         return Resource(timetable, resource.status)
     }
 
@@ -111,12 +131,22 @@ class StudyLinesDataSourceImpl(
         year: Int,
         semesterId: String,
     ): Resource<List<TimetableOwner.StudyLine>> {
+        logger.d(TAG, "getOwnersFromApi for year: $year, semester: $semesterId")
+
         val configurationId = year.toString() + semesterId
         val resource = studyLinesApi.getOwnersHtml(year, semesterId)
+
+        logger.d(TAG, "getOwnersFromApi resource: $resource")
+
         val ownersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
         val tables = HtmlParser.extractTables(ownersHtml)
+
+        logger.d(TAG, "getOwnersFromApi tables: $tables")
+
         val owners = tables.mapIndexed { tableIndex, table ->
+            logger.d(TAG, "getOwnersFromApi table: $table")
             table.rows.mapNotNull { row ->
+                logger.d(TAG, "getOwnersFromApi row: $row")
                 val nameCell = row.cells.getOrNull(NAME_INDEX) ?: return@mapNotNull null
                 val level1Cell = row.cells.getOrNull(LEVEL_1_INDEX)
                 val level2Cell = row.cells.getOrNull(LEVEL_2_INDEX)
@@ -147,6 +177,8 @@ class StudyLinesDataSourceImpl(
             }.flatten()
         }.flatten()
 
+        logger.d(TAG, "getOwnersFromApi owners: $owners")
+
         return when {
             owners.isEmpty() -> Resource(null, Status.Error)
             else -> Resource(owners, Status.Success)
@@ -162,10 +194,18 @@ class StudyLinesDataSourceImpl(
         semesterId: String,
         owner: TimetableOwner.StudyLine,
     ): Resource<Timetable<TimetableOwner.StudyLine>> {
+        logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId, owner: $owner")
+
         val configurationId = year.toString() + semesterId
         val resource = studyLinesApi.getTimetableHtml(year, semesterId, owner.id)
+
+        logger.d(TAG, "getTimetableFromApi resource: $resource")
+
         val timetableHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
         val tables = HtmlParser.extractTables(timetableHtml)
+
+        logger.d(TAG, "getTimetableFromApi tables: $tables")
+
         val joinedTables = tables.map { table ->
             val groupTitle = table.title.substringBefore(String.SLASH)
             val groupId = groupTitle.substringAfter(String.SPACE)
@@ -177,10 +217,14 @@ class StudyLinesDataSourceImpl(
             )
         }
 
+        logger.d(TAG, "getTimetableFromApi joinedTables: $joinedTables")
         val rowsCount = joinedTables.sumOf { table -> table.rows.size }
         val classes = joinedTables.map { table ->
+            logger.d(TAG, "getTimetableFromApi table: $table")
             val groupId = table.title
+
             table.rows.mapNotNull { row ->
+                logger.d(TAG, "getTimetableFromApi row: $row")
                 val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
                 val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
                 val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
@@ -229,6 +273,8 @@ class StudyLinesDataSourceImpl(
             }
         }.flatten()
 
+        logger.d(TAG, "getTimetableFromApi classes: $classes")
+
         return when {
             classes.size != rowsCount -> Resource(null, Status.Error)
             else -> Resource(Timetable(owner, classes), Status.Success)
@@ -273,6 +319,8 @@ class StudyLinesDataSourceImpl(
     }
 
     companion object {
+        private const val TAG = "StudyLinesDataSource"
+
         // StudyLine column indexes
         private const val NAME_INDEX = 0
         private const val LEVEL_1_INDEX = 1

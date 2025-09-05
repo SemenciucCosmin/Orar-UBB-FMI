@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.domain.timetable.usecase
 
+import Logger
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
@@ -25,6 +26,7 @@ class CheckCachedDataValidityUseCase(
     private val studyLineDataSource: StudyLinesDataSource,
     private val subjectsDataSource: SubjectsDataSource,
     private val teachersDataSource: TeachersDataSource,
+    private val logger: Logger,
 ) {
     /**
      * Checks the validity of cached data by invalidating entries for the last two years
@@ -40,11 +42,16 @@ class CheckCachedDataValidityUseCase(
         val currentYear = currentDate.year
         val invalidYear = currentYear - 2
 
+        logger.d(TAG, "invalidYear $invalidYear")
         Semester.entries.forEach { semester ->
             roomsDataSource.invalidate(invalidYear, semester.id)
             studyLineDataSource.invalidate(invalidYear, semester.id)
             subjectsDataSource.invalidate(invalidYear, semester.id)
             teachersDataSource.invalidate(invalidYear, semester.id)
         }
+    }
+
+    companion object {
+        private const val TAG = "CheckCachedDataValidityUseCase"
     }
 }

@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedDataValidityUseCase
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
  */
 class StartupViewModel(
     private val timetablePreferences: TimetablePreferences,
-    private val checkCachedDataValidityUseCase: CheckCachedDataValidityUseCase
+    private val checkCachedDataValidityUseCase: CheckCachedDataValidityUseCase,
+    private val logger: Logger,
 ) : EventViewModel<StartupEvent>() {
 
     /**
@@ -35,12 +37,15 @@ class StartupViewModel(
      * whether the configuration is complete or incomplete.
      */
     private fun checkConfiguration() {
+        logger.d(TAG, "checkConfiguration")
+
         viewModelScope.launch {
             checkCachedDataValidityUseCase()
 
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
-            val hasDegree = configuration?.degreeId != null
+            logger.d(TAG, "checkConfiguration configuration: $configuration")
 
+            val hasDegree = configuration?.degreeId != null
             val hasStudyLineBase = configuration?.fieldId != null
             val hasStudyLineYear = configuration?.studyLevelId != null
             val hasStudyLine = hasStudyLineBase && hasStudyLineYear
@@ -48,18 +53,30 @@ class StartupViewModel(
             val hasGroup = configuration?.groupId != null
             val hasStudyLineInfo = hasStudyLine && hasGroup
 
+            logger.d(TAG, "checkConfiguration hasGroup: $hasGroup")
+            logger.d(TAG, "checkConfiguration hasStudyLineInfo: $hasStudyLineInfo")
+
             val isStudent = configuration?.userTypeId == UserType.STUDENT.id
             val isTeacher = configuration?.userTypeId == UserType.TEACHER.id
 
             val hasStudentInfo = isStudent && hasDegree && hasStudyLineInfo
             val hasTeacherInfo = isTeacher && configuration.teacherId != null
 
+            logger.d(TAG, "checkConfiguration hasStudentInfo: $hasStudentInfo")
+            logger.d(TAG, "checkConfiguration hasTeacherInfo: $hasTeacherInfo")
+
             val hasUserInfo = hasStudentInfo || hasTeacherInfo
+
+            logger.d(TAG, "checkConfiguration hasUserInfo: $hasUserInfo")
 
             when {
                 hasUserInfo -> registerEvent(StartupEvent.CONFIGURATION_COMPLETE)
                 else -> registerEvent(StartupEvent.CONFIGURATION_INCOMPLETE)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "StartupViewModel"
     }
 }
