@@ -1,6 +1,6 @@
 [versions]
 # ANDROID
-agp = "8.11.1"
+agp = "8.11.2"
 compileSdk = "36"
 minSdk = "24"
 targetSdk = "36"
@@ -35,19 +35,19 @@ kotlinx-immutableCollections = "0.4.0"
 ksp = "2.2.10-2.0.2"
 
 # KTOR
-ktor = "3.2.3"
+ktor = "3.3.0"
 
 # NAVIGATION
-navigation-compose = "2.9.0-rc01"
+navigation-compose = "2.9.0-rc02"
 
 # OKIO
 okio = "3.16.0"
 
 # SQLITE
-sqlite = "2.5.2"
+sqlite = "2.6.0"
 
 # ROOM
-room = "2.7.2"
+room = "2.8.0"
 
 # TEST
 androidx-espresso = "3.7.0"

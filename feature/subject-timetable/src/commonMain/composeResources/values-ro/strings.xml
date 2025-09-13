@@ -69,4 +69,12 @@
     <string name="lbl_friday">Vineri</string>
     <string name="lbl_saturday">Sâmbătă</string>
     <string name="lbl_sunday">Duminică</string>
+
+    <!--  SETTINGS  -->
+    <string name="lbl_settings">Setări</string>
+    <string name="lbl_change_configuration">Schimbă configurația</string>
+    <string name="lbl_theme">Tema</string>
+    <string name="lbl_light">Light</string>
+    <string name="lbl_dark">Dark</string>
+    <string name="lbl_system">Sistem</string>
 </resources>

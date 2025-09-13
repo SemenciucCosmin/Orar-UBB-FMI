@@ -38,7 +38,7 @@ class GetUserTimetableUseCase(
      * @return A flow of Resource containing the user's timetable or an error status.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend operator fun invoke(): Flow<Resource<Timetable<TimetableOwner>>> {
+    operator fun invoke(): Flow<Resource<Timetable<TimetableOwner>>> {
         return timetablePreferences.getConfiguration().mapLatest { configuration ->
             logger.d(TAG, "configuration $configuration")
 

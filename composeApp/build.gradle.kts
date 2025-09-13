@@ -38,6 +38,7 @@ kotlin {
             // COMPOSE
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.uiTooling)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.runtime)
@@ -54,6 +55,7 @@ kotlin {
             implementation(projects.data.network)
             implementation(projects.data.preferences)
             implementation(projects.data.rooms)
+            implementation(projects.data.settings)
             implementation(projects.data.studyLines)
             implementation(projects.data.subjects)
             implementation(projects.data.teachers)
@@ -61,12 +63,14 @@ kotlin {
             implementation(projects.domain.extensions)
             implementation(projects.domain.htmlParser)
             implementation(projects.domain.logging)
+            implementation(projects.domain.theme)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
             implementation(projects.feature.form)
             implementation(projects.feature.groups)
             implementation(projects.feature.roomTimetable)
             implementation(projects.feature.rooms)
+            implementation(projects.feature.settings)
             implementation(projects.feature.startup)
             implementation(projects.feature.studyLineTimetable)
             implementation(projects.feature.studyLines)
@@ -151,6 +155,10 @@ detekt {
         "${project.rootDir}/data/study-lines/src/commonMain/kotlin",
         "${project.rootDir}/data/study-lines/src/iosMain/kotlin",
 
+        "${project.rootDir}/data/settings/src/androidMain/kotlin",
+        "${project.rootDir}/data/settings/src/commonMain/kotlin",
+        "${project.rootDir}/data/settings/src/iosMain/kotlin",
+
         "${project.rootDir}/data/subjects/src/androidMain/kotlin",
         "${project.rootDir}/data/subjects/src/commonMain/kotlin",
         "${project.rootDir}/data/subjects/src/iosMain/kotlin",
@@ -176,6 +184,10 @@ detekt {
         "${project.rootDir}/domain/logging/src/commonMain/kotlin",
         "${project.rootDir}/domain/logging/src/iosMain/kotlin",
 
+        "${project.rootDir}/domain/theme/src/androidMain/kotlin",
+        "${project.rootDir}/domain/theme/src/commonMain/kotlin",
+        "${project.rootDir}/domain/theme/src/iosMain/kotlin",
+
         "${project.rootDir}/domain/timetable/src/androidMain/kotlin",
         "${project.rootDir}/domain/timetable/src/commonMain/kotlin",
         "${project.rootDir}/domain/timetable/src/iosMain/kotlin",
@@ -200,6 +212,10 @@ detekt {
         "${project.rootDir}/feature/rooms/src/androidMain/kotlin",
         "${project.rootDir}/feature/rooms/src/commonMain/kotlin",
         "${project.rootDir}/feature/rooms/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/settings/src/androidMain/kotlin",
+        "${project.rootDir}/feature/settings/src/commonMain/kotlin",
+        "${project.rootDir}/feature/settings/src/iosMain/kotlin",
 
         "${project.rootDir}/feature/startup/src/androidMain/kotlin",
         "${project.rootDir}/feature/startup/src/commonMain/kotlin",

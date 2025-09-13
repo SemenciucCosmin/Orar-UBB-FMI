@@ -4,17 +4,20 @@ import com.ubb.fmi.orar.data.database.di.databaseDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
+import com.ubb.fmi.orar.data.settings.di.settingsDataModule
 import com.ubb.fmi.orar.data.studylines.di.studyLinesDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
+import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
 import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
+import com.ubb.fmi.orar.feature.settings.di.settingsFeatureModule
 import com.ubb.fmi.orar.feature.startup.di.startupFeatureModule
 import com.ubb.fmi.orar.feature.studylines.di.studyLinesFeatureModule
 import com.ubb.fmi.orar.feature.studylinetimetable.di.studyLineTimetableFeatureModule
@@ -59,6 +62,10 @@ fun commonModule() = module {
     // STARTUP
     includes(startupFeatureModule())
 
+    // SETTINGS
+    includes(settingsDataModule())
+    includes(settingsFeatureModule())
+
     // STUDY LINES
     includes(studyLinesDataModule())
     includes(studyLinesFeatureModule())
@@ -74,6 +81,9 @@ fun commonModule() = module {
     includes(teachersDataModule())
     includes(teachersFeatureModule())
     includes(teacherTimetableFeatureModule())
+
+    // THEME
+    includes(themeDomainModule())
 
     // TIMETABLE
     includes(timetableDataModule())

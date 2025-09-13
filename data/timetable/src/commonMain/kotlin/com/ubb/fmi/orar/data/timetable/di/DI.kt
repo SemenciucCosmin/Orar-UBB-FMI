@@ -10,5 +10,9 @@ import org.koin.dsl.module
  * This module includes the TimetablePreferences for managing timetable-related preferences.
  */
 fun timetableDataModule() = module {
-    single<TimetablePreferences> { TimetablePreferencesImpl(get<DataStoreFactory>().create()) }
+    single<TimetablePreferences> {
+        TimetablePreferencesImpl(
+            get<DataStoreFactory>().create(TimetablePreferences.PREFERENCES_NAME)
+        )
+    }
 }

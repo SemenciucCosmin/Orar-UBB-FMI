@@ -36,6 +36,7 @@ kotlin {
             // COMPOSE
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.uiTooling)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.runtime)
@@ -52,6 +53,7 @@ kotlin {
             // MODULES
             implementation(projects.data.network)
             implementation(projects.data.timetable)
+            implementation(projects.domain.logging)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
             implementation(projects.ui.catalog)

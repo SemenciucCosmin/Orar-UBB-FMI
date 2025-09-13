@@ -7,9 +7,8 @@ import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.usertimetable.ui.components.UserTimetableTopBar
 import com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel.UserTimetableViewModel
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
-import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
-import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -37,13 +36,7 @@ fun UserTimetableRoute(navController: NavController) {
                     selectedFrequency = uiState.selectedFrequency,
                     onFrequencyClick = viewModel::selectFrequency,
                     onEditClick = viewModel::changeEditMode,
-                    onSettingsClick = {
-                        navController.navigate(
-                            ConfigurationFormNavDestination.OnboardingForm(
-                                configurationFormTypeId = ConfigurationFormType.SETTINGS.id
-                            )
-                        )
-                    }
+                    onSettingsClick = { navController.navigate(SettingsNavDestination.Settings) }
                 )
             }
         }

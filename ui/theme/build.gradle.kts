@@ -36,10 +36,20 @@ kotlin {
             // COMPOSE
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.uiTooling)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.runtime)
             implementation(compose.ui)
+
+            // KOIN
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.core)
+
+            // MODULES
+            implementation(projects.data.settings)
+            implementation(projects.domain.theme)
         }
 
         iosMain.dependencies {

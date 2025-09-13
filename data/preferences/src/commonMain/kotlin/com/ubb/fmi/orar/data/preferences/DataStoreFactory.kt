@@ -11,9 +11,5 @@ expect class DataStoreFactory {
     /**
      * Creates a [DataStore] instance
      */
-    fun create(): DataStore<Preferences>
-
-    companion object {
-        internal val PREFERENCES_NAME: String
-    }
+    fun create(name: String): DataStore<Preferences>
 }

@@ -26,5 +26,6 @@ fun AppGraph() {
     ) {
         configurationFormGraph(navController)
         timetableGraph(navController)
+        settingsGraph(navController)
     }
 }

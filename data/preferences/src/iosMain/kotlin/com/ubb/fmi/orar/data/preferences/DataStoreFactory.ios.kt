@@ -20,7 +20,7 @@ actual class DataStoreFactory {
      * The preferences are stored in a file named [PREFERENCES_NAME] in the application's documents directory.
      */
     @OptIn(ExperimentalForeignApi::class)
-    actual fun create(): DataStore<Preferences> {
+    actual fun create(name: String): DataStore<Preferences> {
         return PreferenceDataStoreFactory.createWithPath(
             produceFile = {
                 val documentDirectory: NSURL? = NSFileManager.Companion.defaultManager.URLForDirectory(
@@ -31,12 +31,12 @@ actual class DataStoreFactory {
                     error = null,
                 )
 
-                (requireNotNull(documentDirectory).path + "/$PREFERENCES_NAME").toPath()
+                (requireNotNull(documentDirectory).path + "/$name$PREFERENCES_FILE_EXTENSION").toPath()
             }
         )
     }
 
-    actual companion object {
-        internal actual const val PREFERENCES_NAME = "dice.preferences_pb"
+    companion object {
+        private const val PREFERENCES_FILE_EXTENSION = ".preferences_pb"
     }
 }

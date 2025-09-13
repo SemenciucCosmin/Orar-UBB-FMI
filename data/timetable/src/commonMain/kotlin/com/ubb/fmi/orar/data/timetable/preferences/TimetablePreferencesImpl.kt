@@ -21,7 +21,7 @@ class TimetablePreferencesImpl(
      * Get [Flow] with [TimetableConfiguration] of user
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getConfiguration(): Flow<TimetableConfiguration?> {
+    override fun getConfiguration(): Flow<TimetableConfiguration?> {
         return dataStore.data.mapLatest { preferences ->
             val year = preferences[YEAR] ?: return@mapLatest null
             val semesterId = preferences[SEMESTER_ID] ?: return@mapLatest null
@@ -102,13 +102,13 @@ class TimetablePreferencesImpl(
     }
 
     companion object {
-        val YEAR = intPreferencesKey(name = "YEAR")
-        val SEMESTER_ID = stringPreferencesKey(name = "SEMESTER_ID")
-        val USER_TYPE_ID = stringPreferencesKey(name = "USER_TYPE_ID")
-        val DEGREE_ID = stringPreferencesKey(name = "DEGREE_ID")
-        val STUDY_LINE_BASE_ID = stringPreferencesKey(name = "STUDY_LINE_BASE_ID")
-        val STUDY_LINE_YEAR_ID = stringPreferencesKey(name = "STUDY_LINE_YEAR_ID")
-        val GROUP_ID = stringPreferencesKey(name = "GROUP_ID")
-        val TEACHER_ID = stringPreferencesKey(name = "TEACHER_ID")
+        private val YEAR = intPreferencesKey(name = "YEAR")
+        private val SEMESTER_ID = stringPreferencesKey(name = "SEMESTER_ID")
+        private val USER_TYPE_ID = stringPreferencesKey(name = "USER_TYPE_ID")
+        private val DEGREE_ID = stringPreferencesKey(name = "DEGREE_ID")
+        private val STUDY_LINE_BASE_ID = stringPreferencesKey(name = "STUDY_LINE_BASE_ID")
+        private val STUDY_LINE_YEAR_ID = stringPreferencesKey(name = "STUDY_LINE_YEAR_ID")
+        private val GROUP_ID = stringPreferencesKey(name = "GROUP_ID")
+        private val TEACHER_ID = stringPreferencesKey(name = "TEACHER_ID")
     }
 }

@@ -11,7 +11,7 @@ interface TimetablePreferences {
     /**
      * Get [Flow] with [TimetableConfiguration] of user
      */
-    suspend fun getConfiguration(): Flow<TimetableConfiguration?>
+    fun getConfiguration(): Flow<TimetableConfiguration?>
 
     /**
      * Sets [year]
@@ -52,4 +52,8 @@ interface TimetablePreferences {
      * Sets [teacherId]
      */
     suspend fun setTeacherId(teacherId: String)
+
+    companion object {
+        const val PREFERENCES_NAME = "TIMETABLE_PREFERENCES"
+    }
 }

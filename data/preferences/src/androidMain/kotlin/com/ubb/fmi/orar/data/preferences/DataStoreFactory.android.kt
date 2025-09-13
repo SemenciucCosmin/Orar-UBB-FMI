@@ -13,17 +13,17 @@ actual class DataStoreFactory(private val context: Context) {
 
     /**
      * Creates a [DataStore] instance for storing preferences.
-     * The preferences are stored in a file named [PREFERENCES_NAME] in the application's files directory.
+     * The preferences are stored in a file with [name] in the application's files directory.
      */
-    actual fun create(): DataStore<Preferences> {
+    actual fun create(name: String): DataStore<Preferences> {
         return PreferenceDataStoreFactory.createWithPath(
             produceFile = {
-                context.filesDir.resolve(PREFERENCES_NAME).absolutePath.toPath()
+                context.filesDir.resolve(name + PREFERENCES_FILE_EXTENSION).absolutePath.toPath()
             }
         )
     }
 
-    actual companion object {
-        internal actual const val PREFERENCES_NAME = "dice.preferences_pb"
+    companion object {
+        private const val PREFERENCES_FILE_EXTENSION = ".preferences_pb"
     }
 }
