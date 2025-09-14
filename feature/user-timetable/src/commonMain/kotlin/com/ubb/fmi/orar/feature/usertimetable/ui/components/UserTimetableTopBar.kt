@@ -22,6 +22,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * Top bar for the User Timetable screen.
  * This bar includes a settings button, an edit toggle button,
  * and a frequency selection tab.
+ * @param isLoading Indicates if the data is loading
+ * @param isError Indicates if the data load failed
  * @param isEditModeOn Indicates if the edit mode is active.
  * @param selectedFrequency The currently selected frequency.
  * @param onSettingsClick Callback for when the settings button is clicked.
@@ -32,6 +34,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserTimetableTopBar(
+    isLoading: Boolean,
+    isError: Boolean,
     isEditModeOn: Boolean,
     selectedFrequency: Frequency,
     onSettingsClick: () -> Unit,
@@ -51,22 +55,26 @@ fun UserTimetableTopBar(
             }
         },
         title = {
-            FilledIconToggleButton(
-                checked = isEditModeOn,
-                onCheckedChange = { onEditClick() }
-            ) {
-                Icon(
-                    modifier = Modifier.size(Pds.icon.Medium),
-                    painter = painterResource(Res.drawable.ic_edit),
-                    contentDescription = null,
-                )
+            if (!isError && !isLoading) {
+                FilledIconToggleButton(
+                    checked = isEditModeOn,
+                    onCheckedChange = { onEditClick() }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(Pds.icon.Medium),
+                        painter = painterResource(Res.drawable.ic_edit),
+                        contentDescription = null,
+                    )
+                }
             }
         },
         actions = {
-            TimetableFrequencyTab(
-                selectedFrequency = selectedFrequency,
-                onFrequencyClick = onFrequencyClick
-            )
+            if (!isError && !isLoading) {
+                TimetableFrequencyTab(
+                    selectedFrequency = selectedFrequency,
+                    onFrequencyClick = onFrequencyClick
+                )
+            }
         }
     )
 }
@@ -76,6 +84,8 @@ fun UserTimetableTopBar(
 private fun PreviewUserTimetableTopBar() {
     OrarUbbFmiTheme {
         UserTimetableTopBar(
+            isLoading = false,
+            isError = false,
             isEditModeOn = false,
             selectedFrequency = Frequency.WEEK_1,
             onSettingsClick = {},

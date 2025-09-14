@@ -66,7 +66,10 @@ fun TeachersFormScreen(
             ChipSelectionRow(
                 selectedChipId = uiState.selectedFilterId,
                 onClick = onSelectFilter,
-                contentPadding = PaddingValues(horizontal = Pds.spacing.Medium),
+                contentPadding = PaddingValues(
+                    horizontal = Pds.spacing.Medium,
+                    vertical = Pds.spacing.Small,
+                ),
                 chips = TeacherTitleFilter.entries.sortedBy { it.orderIndex }.map {
                     Chip(
                         id = it.id,
@@ -76,9 +79,9 @@ fun TeachersFormScreen(
             )
 
             LazyColumn(
-                contentPadding = PaddingValues(Pds.spacing.Medium),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-                modifier = Modifier.weight(1f)
+                contentPadding = PaddingValues(horizontal = Pds.spacing.Medium)
             ) {
                 items(uiState.filteredTeachers) { teacher ->
                     ListItemSelectable(

@@ -69,19 +69,27 @@ class TeacherTimetableViewModel(
                 return@launch
             }
 
-            val resource = teachersDataSource.getTimetable(
+            val timetableResource = teachersDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
                 ownerId = teacherId,
             )
 
-            logger.d(TAG, "loadTimetable resource: $resource")
+            val teachersResource = teachersDataSource.getOwners(
+                year = configuration.year,
+                semesterId = configuration.semesterId,
+            )
+
+            logger.d(TAG, "loadTimetable resource: $timetableResource")
+            val classes = timetableResource.payload?.classes?.toImmutableList()
+            val teacher = teachersResource.payload?.firstOrNull { it.id == teacherId }
+
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = resource.status.isError(),
-                    classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf(),
-                    title = resource.payload?.owner?.name ?: String.BLANK
+                    isError = timetableResource.status.isError(),
+                    classes = classes ?: persistentListOf (),
+                    title = teacher?.name ?: String.BLANK
                 )
             }
         }

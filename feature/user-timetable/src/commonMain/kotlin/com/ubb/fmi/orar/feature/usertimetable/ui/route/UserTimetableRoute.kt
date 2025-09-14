@@ -30,15 +30,15 @@ fun UserTimetableRoute(navController: NavController) {
         bottomBar = { TimetableBottomBar(navController) },
         onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
         topBar = {
-            if (!uiState.isLoading && !uiState.isError) {
-                UserTimetableTopBar(
-                    isEditModeOn = uiState.isEditModeOn,
-                    selectedFrequency = uiState.selectedFrequency,
-                    onFrequencyClick = viewModel::selectFrequency,
-                    onEditClick = viewModel::changeEditMode,
-                    onSettingsClick = { navController.navigate(SettingsNavDestination.Settings) }
-                )
-            }
+            UserTimetableTopBar(
+                isLoading = uiState.isLoading,
+                isError = uiState.isError,
+                isEditModeOn = uiState.isEditModeOn,
+                selectedFrequency = uiState.selectedFrequency,
+                onFrequencyClick = viewModel::selectFrequency,
+                onEditClick = viewModel::changeEditMode,
+                onSettingsClick = { navController.navigate(SettingsNavDestination.Settings) }
+            )
         }
     )
 }

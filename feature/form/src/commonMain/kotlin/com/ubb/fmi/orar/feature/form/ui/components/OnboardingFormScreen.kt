@@ -93,12 +93,12 @@ fun OnboardingFormScreen(
                 verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
                 modifier = Modifier
                     .weight(0.8f)
-                    .padding(horizontal = Pds.spacing.Medium),
+                    .padding(Pds.spacing.Medium),
             ) {
                 Text(
                     text = stringResource(Res.string.lbl_timetable_configuration_message),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 FormSelectionRow(

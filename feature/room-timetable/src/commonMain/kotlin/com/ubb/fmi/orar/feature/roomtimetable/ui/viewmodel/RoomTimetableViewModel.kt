@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.firstOrNull
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -66,19 +67,27 @@ class RoomTimetableViewModel(
                 return@launch
             }
 
-            val resource = roomsDataSource.getTimetable(
+            val timetableResource = roomsDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
                 ownerId = roomId,
             )
 
-            logger.d(TAG, "loadTimetable resource: $resource")
+            val roomResource = roomsDataSource.getOwners(
+                year = configuration.year,
+                semesterId = configuration.semesterId,
+            )
+
+            logger.d(TAG, "loadTimetable resource: $timetableResource")
+            val classes = timetableResource.payload?.classes?.toImmutableList()
+            val subject = roomResource.payload?.firstOrNull { it.id == roomId }
+
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = resource.status.isError(),
-                    classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf(),
-                    title = resource.payload?.owner?.name ?: String.BLANK
+                    isError = timetableResource.status.isError(),
+                    classes = classes?.toImmutableList() ?: persistentListOf(),
+                    title = subject?.name ?: String.BLANK
                 )
             }
         }

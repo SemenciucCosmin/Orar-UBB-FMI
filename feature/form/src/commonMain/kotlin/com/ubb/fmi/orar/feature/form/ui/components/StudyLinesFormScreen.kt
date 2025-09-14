@@ -71,7 +71,10 @@ fun StudyLinesFormScreen(
             ChipSelectionRow(
                 selectedChipId = uiState.selectedFilterId,
                 onClick = onSelectFilter,
-                contentPadding = PaddingValues(horizontal = Pds.spacing.Medium),
+                contentPadding = PaddingValues(
+                    horizontal = Pds.spacing.Medium,
+                    vertical = Pds.spacing.Small,
+                ),
                 chips = DegreeFilter.entries.sortedBy { it.orderIndex }.map {
                     Chip(
                         id = it.id,
@@ -81,9 +84,9 @@ fun StudyLinesFormScreen(
             )
 
             LazyColumn(
-                contentPadding = PaddingValues(Pds.spacing.Medium),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-                modifier = Modifier.weight(1f)
+                contentPadding = PaddingValues(horizontal = Pds.spacing.Medium)
             ) {
                 items(uiState.filteredGroupedStudyLines) { groupedStudyLines ->
                     val fieldId = groupedStudyLines.firstOrNull()?.fieldId ?: return@items
