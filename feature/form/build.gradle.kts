@@ -36,7 +36,6 @@ kotlin {
             // COMPOSE
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(compose.uiTooling)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.runtime)
@@ -108,4 +107,5 @@ android {
 }
 
 dependencies {
+    debugImplementation(compose.uiTooling)
 }
