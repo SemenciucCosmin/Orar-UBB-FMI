@@ -1,26 +1,17 @@
 package com.ubb.fmi.orar.feature.settings.ui.route
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.ubb.fmi.orar.ui.catalog.components.TopBar
-import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
+import com.ubb.fmi.orar.domain.extensions.getAppVersion
+import com.ubb.fmi.orar.domain.extensions.openUrl
+import com.ubb.fmi.orar.feature.settings.ui.components.SettingsScreen
+import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
-import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
-import com.ubb.fmi.orar.ui.theme.Pds
-import orar_ubb_fmi.feature.settings.generated.resources.Res
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_change_configuration
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_settings
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_theme
-import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private const val GITHUB_URL = "https://github.com/SemenciucCosmin/Orar-UBB-FMI"
+private const val DEVELOPER_NAME = "Semenciuc Cosmin"
 
 /**
  * Route for all settings options.
@@ -28,45 +19,21 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Composable
 fun SettingsRoute(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopBar(
-                title = stringResource(Res.string.lbl_settings),
-                onBack = navController::navigateUp
+    val context = getContext()
+    val appVersion = getAppVersion(context)
+
+    SettingsScreen(
+        appVersion = appVersion,
+        developerName = DEVELOPER_NAME,
+        onGithubUrlClick = { openUrl(GITHUB_URL, context) {} },
+        onBack = navController::navigateUp,
+        onThemeClick = { navController.navigate(SettingsNavDestination.Theme) },
+        onChangeConfigurationClick = {
+            navController.navigate(
+                ConfigurationFormNavDestination.OnboardingForm(
+                    configurationFormTypeId = ConfigurationFormType.SETTINGS.id
+                )
             )
         }
-    ) { paddingValues ->
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(Pds.spacing.Medium)
-        ) {
-            ListItemClickable(
-                headline = stringResource(Res.string.lbl_change_configuration),
-                onClick = {
-                    navController.navigate(
-                        ConfigurationFormNavDestination.OnboardingForm(
-                            configurationFormTypeId = ConfigurationFormType.SETTINGS.id
-                        )
-                    )
-                }
-            )
-
-            ListItemClickable(
-                headline = stringResource(Res.string.lbl_theme),
-                onClick = { navController.navigate(SettingsNavDestination.Theme) }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewSettingsRoute() {
-    OrarUbbFmiTheme {
-        SettingsRoute(
-            navController = rememberNavController()
-        )
-    }
+    )
 }

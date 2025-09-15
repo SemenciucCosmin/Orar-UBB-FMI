@@ -53,3 +53,9 @@ val String.Companion.COLON: String
  */
 val String.Companion.COMMA: String
     get() = ","
+
+/**
+ * String extension for dot sign
+ */
+val String.Companion.DOT: String
+    get() = "."

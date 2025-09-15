@@ -77,5 +77,8 @@
     <string name="lbl_light">Light</string>
     <string name="lbl_dark">Dark</string>
     <string name="lbl_system">Sistem</string>
+    <string name="lbl_version">Versiunea %1$s</string>
+    <string name="lbl_open_source">Codul sursă este disponibil pe</string>
+    <string name="lbl_github">GitHub</string>
 
 </resources>

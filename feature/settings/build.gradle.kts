@@ -54,6 +54,7 @@ kotlin {
             implementation(projects.data.settings)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
+            implementation(projects.domain.extensions)
             implementation(projects.domain.logging)
             implementation(projects.domain.theme)
             implementation(projects.ui.catalog)
