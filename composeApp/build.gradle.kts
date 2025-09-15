@@ -30,6 +30,9 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            // ANDROIDX
+            implementation(libs.androidx.core.splashscreen)
+
             // KOIN
             implementation(libs.koin.android)
         }
