@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeTimetableClassVisibilityUseCase
+import com.ubb.fmi.orar.domain.usertimetable.model.Week
+import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
     private val changeTimetableClassVisibilityUseCase: ChangeTimetableClassVisibilityUseCase,
+    private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -50,6 +53,7 @@ class UserTimetableViewModel(
      * This is done in the init block to ensure it starts loading as soon as the ViewModel is created.
      */
     init {
+        getWeek()
         job = loadTimetable()
     }
 
@@ -69,6 +73,21 @@ class UserTimetableViewModel(
                     classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf()
                 )
             }
+        }
+    }
+
+    /**
+     * Retrieves the current week for proper timetable filtering
+     */
+    private fun getWeek() = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true, isError = false) }
+        getCurrentWeekUseCase().collectLatest { week ->
+            val frequency = when (week) {
+                Week.ODD -> Frequency.WEEK_1
+                Week.EVEN -> Frequency.WEEK_2
+            }
+
+            selectFrequency(frequency)
         }
     }
 

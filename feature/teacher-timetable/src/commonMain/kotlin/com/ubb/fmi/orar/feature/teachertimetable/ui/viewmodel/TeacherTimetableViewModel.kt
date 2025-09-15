@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
+import com.ubb.fmi.orar.domain.usertimetable.model.Week
+import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
@@ -14,6 +16,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -35,6 +38,7 @@ class TeacherTimetableViewModel(
     private val teacherId: String,
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences,
+    private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -44,7 +48,10 @@ class TeacherTimetableViewModel(
      */
     private val _uiState = MutableStateFlow(TimetableUiState())
     val uiState = _uiState.asStateFlow()
-        .onStart { loadTimetable() }
+        .onStart {
+            getWeek()
+            loadTimetable()
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
@@ -92,6 +99,21 @@ class TeacherTimetableViewModel(
                     title = teacher?.name ?: String.BLANK
                 )
             }
+        }
+    }
+
+    /**
+     * Retrieves the current week for proper timetable filtering
+     */
+    private fun getWeek() = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true, isError = false) }
+        getCurrentWeekUseCase().collectLatest { week ->
+            val frequency = when (week) {
+                Week.ODD -> Frequency.WEEK_1
+                Week.EVEN -> Frequency.WEEK_2
+            }
+
+            selectFrequency(frequency)
         }
     }
 

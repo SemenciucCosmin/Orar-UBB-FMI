@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.koin.core)
 
             // KOTLINX
+            implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.coroutines.core)
 
             // MODULES
