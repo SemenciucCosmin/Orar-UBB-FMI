@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.firebaseCrashlitycs)
+    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -33,6 +35,14 @@ kotlin {
             // ANDROIDX
             implementation(libs.androidx.core.splashscreen)
 
+            // FIREBASE
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.crashlytics)
+
+            // KOTLINX
+            implementation(libs.kotlinx.coroutines.play.services)
+
             // KOIN
             implementation(libs.koin.android)
         }
@@ -48,6 +58,9 @@ kotlin {
 
             // KOIN
             implementation(libs.koin.core)
+
+            // KOTLINX
+            implementation(libs.kotlinx.coroutines.core)
 
             // NAVIGATION
             implementation(libs.navigation.compose)
@@ -114,9 +127,35 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("/Users/semenciuccosm/Documents/PersonalProjects/KeyStore/Keystore.jks")
+            keyAlias = "orar_ubb_fmi"
+            storePassword = "Keystore8*"
+            keyPassword = "OrarUbbFmi10*"
+        }
+
+        create("release") {
+            storeFile = file("/Users/semenciuccosm/Documents/PersonalProjects/KeyStore/Keystore.jks")
+            keyAlias = "orar_ubb_fmi"
+            storePassword = "Keystore8*"
+            keyPassword = "OrarUbbFmi10*"
+        }
+    }
+
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {

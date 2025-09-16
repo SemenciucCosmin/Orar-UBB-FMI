@@ -102,7 +102,7 @@ fun SettingsScreen(
                 verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                appVersion?.let{
+                appVersion?.let {
                     Text(
                         text = stringResource(Res.string.lbl_version, appVersion),
                         color = MaterialTheme.colorScheme.onBackground,
