@@ -10,7 +10,7 @@ actual fun getAppVersion(platformContext: Any?): String? {
     val context = platformContext as? Context ?: return null
     return try {
         context.packageManager.getPackageInfo(context.packageName, 0).versionName
-    } catch (e: PackageManager.NameNotFoundException) {
+    } catch (_: PackageManager.NameNotFoundException) {
         null
     }
 }

@@ -95,7 +95,7 @@ class TeacherTimetableViewModel(
                 it.copy(
                     isLoading = false,
                     isError = timetableResource.status.isError(),
-                    classes = classes ?: persistentListOf (),
+                    classes = classes ?: persistentListOf(),
                     title = teacher?.name ?: String.BLANK
                 )
             }
