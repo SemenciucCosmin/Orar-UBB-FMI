@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -12,7 +13,7 @@ import kotlinx.collections.immutable.toImmutableList
  * @param selectedFilterId: id of selected degree filter
  * @param selectedFieldId: id of selected study line field
  * @param isLoading: boolean for loading state
- * @param isError: boolean for error state
+ * @param errorStatus: error state
  */
 data class StudyLinesFormUiState(
     private val groupedStudyLines: ImmutableList<ImmutableList<TimetableOwner.StudyLine>> = persistentListOf(),
@@ -20,7 +21,7 @@ data class StudyLinesFormUiState(
     val selectedFieldId: String? = null,
     val selectedStudyLevelId: String? = null,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val errorStatus: ErrorStatus? = null,
 ) {
     companion object {
         /**

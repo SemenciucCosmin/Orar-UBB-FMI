@@ -11,7 +11,7 @@ const val HTTP_UNAUTHORIZED = 401
 const val HTTP_FORBIDDEN = 403
 const val HTTP_INTERNAL_ERROR = 500
 const val HTTP_GONE = 410
-const val HTTP_NOT_FOUND = 410
+const val HTTP_NOT_FOUND = 404
 val HTTP_OK = 200..299
 
 /**

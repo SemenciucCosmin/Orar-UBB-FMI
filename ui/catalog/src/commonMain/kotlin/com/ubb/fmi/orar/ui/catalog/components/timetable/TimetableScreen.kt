@@ -46,7 +46,7 @@ fun TimetableScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = topBar,
         bottomBar = bottomBar
@@ -130,7 +130,7 @@ private fun PreviewTimetableScreen() {
                 selectedFrequency = Frequency.WEEK_1,
                 isEditModeOn = false,
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 classes = List(10) {
                     TimetableClass(
                         id = "$it",
@@ -172,7 +172,7 @@ private fun PreviewTimetableScreenEditMode() {
                 selectedFrequency = Frequency.WEEK_1,
                 isEditModeOn = true,
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 classes = List(10) {
                     TimetableClass(
                         id = "$it",

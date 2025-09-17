@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -58,7 +59,7 @@ class GroupsViewModel(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getGroups() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         val studyLevel = StudyLevel.getById(studyLevelId)
         val lineId = fieldId + studyLevel.notation
@@ -87,7 +88,7 @@ class GroupsViewModel(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                isError = groupsResource.status.isError(),
+                errorStatus = groupsResource.status.toErrorStatus(),
                 groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
                 title = studyLine?.name,
                 studyLevel = studyLevel

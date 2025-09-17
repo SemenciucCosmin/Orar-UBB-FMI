@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -15,14 +16,14 @@ import kotlinx.collections.immutable.toImmutableList
  * @property selectedFilterId The ID of the currently selected degree filter.
  * @property selectedFieldId The ID of the currently selected field, or null if none is selected.
  * @property isLoading Indicates whether the data is currently being loaded.
- * @property isError Indicates whether there was an error loading the data.
+ * @property errorStatus Indicates whether there was an error loading the data.
  */
 data class StudyLinesUiState(
     private val groupedStudyLines: ImmutableList<ImmutableList<TimetableOwner.StudyLine>> = persistentListOf(),
     val selectedFilterId: String = DegreeFilter.ALL.id,
     val selectedFieldId: String? = null,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val errorStatus: ErrorStatus? = null,
 ) {
     companion object {
         /**

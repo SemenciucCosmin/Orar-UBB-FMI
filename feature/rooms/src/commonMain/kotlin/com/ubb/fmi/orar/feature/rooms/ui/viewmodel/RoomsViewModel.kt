@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -57,12 +59,12 @@ class RoomsViewModel(
      */
     private fun getRooms() = viewModelScope.launch {
         logger.d(TAG, "getRooms")
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         timetablePreferences.getConfiguration().collectLatest { configuration ->
             logger.d(TAG, "getRooms configuration: $configuration")
             if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, isError = true) }
+                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
                 return@collectLatest
             }
 
@@ -75,7 +77,7 @@ class RoomsViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = resource.status.isError(),
+                    errorStatus = resource.status.toErrorStatus(),
                     rooms = resource.payload?.toImmutableList() ?: persistentListOf()
                 )
             }

@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
 import kotlinx.collections.immutable.ImmutableList
@@ -12,7 +13,7 @@ import kotlinx.collections.immutable.persistentListOf
  * @param title: screen top bar title
  * @param studyLevel: study level for which [groups] belong to
  * @param isLoading: boolean for loading state
- * @param isError: boolean for error state
+ * @param errorStatus: error state
  */
 data class GroupsFromUiState(
     val groups: ImmutableList<String> = persistentListOf(),
@@ -20,7 +21,7 @@ data class GroupsFromUiState(
     val title: String? = null,
     val studyLevel: StudyLevel? = null,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val errorStatus: ErrorStatus? = null,
 ) {
     /**
      * Enum class for one time events on groups form screen

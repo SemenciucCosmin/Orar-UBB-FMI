@@ -8,6 +8,7 @@ import com.ubb.fmi.orar.domain.timetable.usecase.ChangeTimetableClassVisibilityU
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
@@ -63,13 +64,13 @@ class UserTimetableViewModel(
      * The timetable classes are collected and converted to an immutable list for UI consumption.
      */
     private fun loadTimetable() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
         getUserTimetableUseCase().collectLatest { resource ->
             logger.d(TAG, "loadTimetable: $resource")
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = resource.status.isError(),
+                    errorStatus = resource.status.toErrorStatus(),
                     classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf()
                 )
             }
@@ -80,7 +81,7 @@ class UserTimetableViewModel(
      * Retrieves the current week for proper timetable filtering
      */
     private fun getWeek() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
         getCurrentWeekUseCase().collectLatest { week ->
             val frequency = when (week) {
                 Week.ODD -> Frequency.WEEK_1

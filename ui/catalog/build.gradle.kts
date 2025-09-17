@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.kotlinx.immutableCollections)
 
             // MODULES
+            implementation(projects.data.network)
             implementation(projects.data.timetable)
             implementation(projects.domain.extensions)
             implementation(projects.ui.theme)

@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -13,13 +14,13 @@ import kotlinx.collections.immutable.toImmutableList
  * @property teachers The list of teachers to be displayed.
  * @property selectedFilterId The ID of the currently selected filter for teacher titles.
  * @property isLoading Indicates whether the data is currently being loaded.
- * @property isError Indicates whether there was an error loading the data.
+ * @property errorStatus Indicates whether there was an error loading the data.
  */
 data class TeachersUiState(
     private val teachers: ImmutableList<TimetableOwner.Teacher> = persistentListOf(),
     val selectedFilterId: String = TeacherTitleFilter.ALL.id,
     val isLoading: Boolean = true,
-    val isError: Boolean = true,
+    val errorStatus: ErrorStatus? = null,
 ) {
     companion object {
         /**

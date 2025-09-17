@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.ui.catalog.model.ClassType
 import com.ubb.fmi.orar.ui.catalog.model.Day
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
@@ -26,7 +27,7 @@ import kotlin.String
  * @property selectedFrequency The frequency of classes to be displayed, such as weekly or bi-weekly.
  * @property isEditModeOn Indicates whether the timetable is in edit mode, allowing modifications
  * @property isLoading Indicates whether the timetable data is currently being loaded.
- * @property isError Indicates whether there was an error loading the timetable data.
+ * @property errorStatus Indicates whether there was an error loading the timetable data.
  */
 data class TimetableUiState(
     val classes: ImmutableList<TimetableClass> = persistentListOf(),
@@ -36,7 +37,7 @@ data class TimetableUiState(
     val selectedFrequency: Frequency = Frequency.WEEK_1,
     val isEditModeOn: Boolean = false,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val errorStatus: ErrorStatus? = null,
 ) {
     companion object {
         /**

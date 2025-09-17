@@ -138,12 +138,12 @@ class StudyLinesDataSourceImpl(
 
         logger.d(TAG, "getOwnersFromApi resource: $resource")
 
-        val ownersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val tables = HtmlParser.extractTables(ownersHtml)
+        val ownersHtml = resource.payload
+        val tables = ownersHtml?.let(HtmlParser::extractTables)
 
         logger.d(TAG, "getOwnersFromApi tables: $tables")
 
-        val owners = tables.mapIndexed { tableIndex, table ->
+        val owners = tables?.mapIndexed { tableIndex, table ->
             logger.d(TAG, "getOwnersFromApi table: $table")
             table.rows.mapNotNull { row ->
                 logger.d(TAG, "getOwnersFromApi row: $row")
@@ -175,7 +175,7 @@ class StudyLinesDataSourceImpl(
                     )
                 }
             }.flatten()
-        }.flatten()
+        }?.flatten() ?: emptyList()
 
         logger.d(TAG, "getOwnersFromApi owners: $owners")
 
@@ -201,16 +201,16 @@ class StudyLinesDataSourceImpl(
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
-        val timetableHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val tables = HtmlParser.extractTables(timetableHtml)
+        val timetableHtml = resource.payload
+        val tables = timetableHtml?.let(HtmlParser::extractTables)
 
         logger.d(TAG, "getTimetableFromApi tables: $tables")
 
-        val joinedTables = tables.map { table ->
+        val joinedTables = tables?.map { table ->
             val groupTitle = table.title.substringBefore(String.SLASH)
             val groupId = groupTitle.substringAfter(String.SPACE)
             table.copy(title = groupId)
-        }.groupBy { it.title }.map { (groupId, tables) ->
+        }?.groupBy { it.title }?.map { (groupId, tables) ->
             Table(
                 title = groupId,
                 rows = tables.flatMap { it.rows }.distinct()
@@ -218,8 +218,8 @@ class StudyLinesDataSourceImpl(
         }
 
         logger.d(TAG, "getTimetableFromApi joinedTables: $joinedTables")
-        val rowsCount = joinedTables.sumOf { table -> table.rows.size }
-        val classes = joinedTables.map { table ->
+        val rowsCount = joinedTables?.sumOf { table -> table.rows.size }
+        val classes = joinedTables?.map { table ->
             logger.d(TAG, "getTimetableFromApi table: $table")
             val groupId = table.title
 
@@ -271,7 +271,7 @@ class StudyLinesDataSourceImpl(
                     configurationId = configurationId
                 )
             }
-        }.flatten()
+        }?.flatten() ?: emptyList()
 
         logger.d(TAG, "getTimetableFromApi classes: $classes")
 

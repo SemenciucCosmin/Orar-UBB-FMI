@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.groups.ui.viewmodel.model
 
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -13,12 +14,12 @@ import kotlinx.collections.immutable.persistentListOf
  * @property title The title of the groups view.
  * @property studyLevel The study level associated with the groups.
  * @property isLoading Indicates whether the data is currently being loaded.
- * @property isError Indicates whether there was an error loading the data.
+ * @property errorStatus Indicates whether there was an error loading the data.
  */
 data class GroupsUiState(
     val groups: ImmutableList<String> = persistentListOf(),
     val title: String? = null,
     val studyLevel: StudyLevel? = null,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val errorStatus: ErrorStatus? = null,
 )

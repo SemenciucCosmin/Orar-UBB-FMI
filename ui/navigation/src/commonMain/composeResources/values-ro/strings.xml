@@ -2,7 +2,9 @@
     <!--  COMMON  -->
     <string name="lbl_next">Pasul următor</string>
     <string name="lbl_retry">Reîncercați</string>
-    <string name="lbl_error_message">Ceva nu a mers bine. Vă rugăm să încercați din nou.</string>
+    <string name="lbl_generic_error_message">Ceva nu a mers bine. Vă rugăm să încercați din nou.</string>
+    <string name="lbl_network_error_message">Verificați conexiunea la internet și încercați din nou.</string>
+    <string name="lbl_not_found_error_message">Nu există date disponibile în acest moment. Vă rugăm să încercați din nou mai târziu sau schimbați configurația.</string>
     <string name="lbl_no_results">Nu s-au găsit rezultate</string>
     <string name="lbl_all">Toate</string>
     <string name="lbl_hour">%1$s:00</string>

@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
 import kotlinx.collections.immutable.ImmutableList
@@ -13,14 +14,14 @@ import kotlinx.collections.immutable.toImmutableList
  * @param selectedFilterId: id of selected teacher title filter
  * @param selectedTeacherId: id of selected teacher
  * @param isLoading: boolean for loading state
- * @param isError: boolean for error state
+ * @param errorStatus: error state
  */
 data class TeachersFormUiState(
     private val teachers: ImmutableList<TimetableOwner.Teacher> = persistentListOf(),
     val selectedFilterId: String = TeacherTitleFilter.ALL.id,
     val selectedTeacherId: String? = null,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val errorStatus: ErrorStatus? = null,
 ) {
     enum class TeachersFormEvent : Event {
         CONFIGURATION_DONE

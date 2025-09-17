@@ -102,8 +102,8 @@ class SubjectsDataSourceImpl(
 
         logger.d(TAG, "getOwnersFromApi resource: $resource")
 
-        val ownersHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val table = HtmlParser.extractTables(ownersHtml).firstOrNull()
+        val ownersHtml = resource.payload
+        val table = ownersHtml?.let(HtmlParser::extractTables)?.firstOrNull()
 
         logger.d(TAG, "getOwnersFromApi table: $table")
 
@@ -143,8 +143,8 @@ class SubjectsDataSourceImpl(
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
-        val timetableHtml = resource.payload ?: return Resource(null, Status.NotFoundError)
-        val table = HtmlParser.extractTables(timetableHtml).firstOrNull()
+        val timetableHtml = resource.payload
+        val table = timetableHtml?.let(HtmlParser::extractTables)?.firstOrNull()
 
         logger.d(TAG, "getTimetableFromApi table: $table")
 

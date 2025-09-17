@@ -56,7 +56,7 @@ fun StudyLinesFormScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
             if (!uiState.isLoading) {
@@ -144,7 +144,7 @@ private fun PreviewStudyLinesFormScreen() {
                 selectedFieldId = "IE",
                 selectedStudyLevelId = "Anul1",
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 groupedStudyLines = List(2) {
                     List(2) {
                         TimetableOwner.StudyLine(

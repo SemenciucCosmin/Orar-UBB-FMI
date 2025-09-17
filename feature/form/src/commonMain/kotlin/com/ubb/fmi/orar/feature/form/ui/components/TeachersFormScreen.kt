@@ -51,7 +51,7 @@ fun TeachersFormScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
             if (!uiState.isLoading) {
@@ -120,7 +120,7 @@ private fun PreviewTeachersFormScreen() {
                 selectedFilterId = "Prof.",
                 selectedTeacherId = "",
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 teachers = List(4) {
                     TimetableOwner.Teacher(
                         id = "",

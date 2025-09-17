@@ -9,6 +9,8 @@ import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
@@ -54,13 +56,13 @@ class SubjectTimetableViewModel(
     private fun loadTimetable() {
         viewModelScope.launch {
             logger.d(TAG, "loadTimetable subjectId: $subjectId")
-            _uiState.update { it.copy(isLoading = true, isError = false) }
+            _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
             logger.d(TAG, "loadTimetable configuration: $configuration")
 
             if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, isError = true) }
+                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
                 return@launch
             }
 
@@ -82,7 +84,7 @@ class SubjectTimetableViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = timetableResource.status.isError(),
+                    errorStatus = timetableResource.status.toErrorStatus(),
                     classes = classes ?: persistentListOf(),
                     title = subject?.name ?: String.BLANK
                 )
@@ -94,7 +96,7 @@ class SubjectTimetableViewModel(
      * Retrieves the current week for proper timetable filtering
      */
     private fun getWeek() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
         getCurrentWeekUseCase().collectLatest { week ->
             val frequency = when (week) {
                 Week.ODD -> Frequency.WEEK_1
