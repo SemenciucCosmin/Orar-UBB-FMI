@@ -45,7 +45,7 @@ fun GroupsFormScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
             if (uiState.title != null && uiState.studyLevel != null) {
@@ -99,7 +99,7 @@ private fun PreviewGroupsFormScreen() {
                 title = "Informatica Engleza",
                 studyLevel = StudyLevel.LEVEL_1,
                 isLoading = false,
-                isError = false
+                errorStatus = null
             )
         )
     }

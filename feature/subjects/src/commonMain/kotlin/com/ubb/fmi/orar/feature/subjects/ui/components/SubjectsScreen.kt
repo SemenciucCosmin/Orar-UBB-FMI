@@ -48,11 +48,11 @@ fun SubjectsScreen(
     StateScaffold(
         isLoading = uiState.isLoading,
         isEmpty = uiState.filteredSubjects.isEmpty(),
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         bottomBar = bottomBar,
         topBar = {
-            if (!uiState.isError && !uiState.isLoading) {
+            if (uiState.errorStatus == null && !uiState.isLoading) {
                 TopAppBar(
                     title = {
                         SearchBar(
@@ -96,7 +96,7 @@ private fun PreviewSubjectsScreen() {
             uiState = SubjectsUiState(
                 searchQuery = "",
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 subjects = List(5) {
                     TimetableOwner.Subject(
                         id = it.toString(),

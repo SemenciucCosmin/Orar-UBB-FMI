@@ -2,11 +2,14 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
@@ -69,7 +72,7 @@ class GroupsFormViewModel(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getGroups() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         val studyLevel = StudyLevel.getById(studyLevelId)
         val lineId = fieldId + studyLevel.notation
@@ -95,7 +98,7 @@ class GroupsFormViewModel(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                isError = groupsResource.status.isError(),
+                errorStatus = groupsResource.status.toErrorStatus(),
                 groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
                 title = studyLine?.name,
                 studyLevel = studyLevel,

@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -56,11 +58,11 @@ class TeachersViewModel(
      * If the configuration is null or an error occurs, it updates the UI state accordingly.
      */
     private fun getTeachers() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
         timetablePreferences.getConfiguration().collectLatest { configuration ->
             logger.d(TAG, "getTeachers configuration: $configuration")
             if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, isError = true) }
+                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
                 return@collectLatest
             }
 
@@ -73,7 +75,7 @@ class TeachersViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = resource.status.isError(),
+                    errorStatus = resource.status.toErrorStatus(),
                     teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
                 )
             }

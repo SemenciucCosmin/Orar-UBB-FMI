@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
@@ -72,7 +73,7 @@ class TeachersFormViewModel(
      * It also checks the current configuration to set the selected teacher and filter.
      */
     private fun getTeachers() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
         val resource = teachersDataSource.getOwners(
@@ -92,7 +93,7 @@ class TeachersFormViewModel(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                isError = resource.status.isError(),
+                errorStatus = resource.status.toErrorStatus(),
                 teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
                 selectedTeacherId = teacher?.id,
                 selectedFilterId = teacher?.titleId ?: TeacherTitleFilter.ALL.id,

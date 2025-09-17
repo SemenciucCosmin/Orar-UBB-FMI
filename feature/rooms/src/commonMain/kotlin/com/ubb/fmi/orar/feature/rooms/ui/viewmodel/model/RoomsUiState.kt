@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -10,10 +11,10 @@ import kotlinx.collections.immutable.persistentListOf
  *
  * @property rooms The list of rooms to be displayed.
  * @property isLoading Indicates whether the data is currently being loaded.
- * @property isError Indicates whether there was an error loading the data.
+ * @property errorStatus Indicates whether there was an error loading the data.
  */
 data class RoomsUiState(
     val rooms: ImmutableList<TimetableOwner.Room> = persistentListOf(),
     val isLoading: Boolean = true,
-    val isError: Boolean = true
+    val errorStatus: ErrorStatus? = null,
 )

@@ -36,7 +36,7 @@ fun RoomsScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         bottomBar = bottomBar
     ) { paddingValues ->
@@ -68,7 +68,7 @@ private fun PreviewRoomsScreen() {
             bottomBar = {},
             uiState = RoomsUiState(
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 rooms = List(5) {
                     TimetableOwner.Room(
                         id = it.toString(),

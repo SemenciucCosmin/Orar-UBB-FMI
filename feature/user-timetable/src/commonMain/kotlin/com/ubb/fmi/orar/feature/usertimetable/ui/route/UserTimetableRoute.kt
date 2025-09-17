@@ -32,7 +32,7 @@ fun UserTimetableRoute(navController: NavController) {
         topBar = {
             UserTimetableTopBar(
                 isLoading = uiState.isLoading,
-                isError = uiState.isError,
+                isError = uiState.errorStatus != null,
                 isEditModeOn = uiState.isEditModeOn,
                 selectedFrequency = uiState.selectedFrequency,
                 onFrequencyClick = viewModel::selectFrequency,

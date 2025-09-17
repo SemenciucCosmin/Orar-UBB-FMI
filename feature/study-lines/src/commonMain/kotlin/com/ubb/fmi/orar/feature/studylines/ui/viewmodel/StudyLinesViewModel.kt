@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,7 +65,7 @@ class StudyLinesViewModel(
         timetablePreferences.getConfiguration().collectLatest { configuration ->
             logger.d(TAG, "getStudyLines configuration: $configuration")
             if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, isError = true) }
+                _uiState.update { it.copy(isLoading = false, errorStatus = null) }
                 return@collectLatest
             }
 
@@ -85,7 +86,7 @@ class StudyLinesViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = studyLinesResource.status.isError(),
+                    errorStatus = studyLinesResource.status.toErrorStatus(),
                     groupedStudyLines = groupedStudyLines
                 )
             }

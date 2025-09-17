@@ -46,7 +46,7 @@ fun TeachersScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         bottomBar = bottomBar
     ) { paddingValues ->
@@ -94,7 +94,7 @@ private fun PreviewTeachersScreen() {
             uiState = TeachersUiState(
                 selectedFilterId = "Licenta",
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 teachers = List(5) {
                     TimetableOwner.Teacher(
                         id = it.toString(),

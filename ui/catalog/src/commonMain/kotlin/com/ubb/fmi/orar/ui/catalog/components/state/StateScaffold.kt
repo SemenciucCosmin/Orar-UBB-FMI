@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_no_results
@@ -28,7 +29,7 @@ import org.jetbrains.compose.resources.stringResource
  * @param modifier Modifier to be applied to the scaffold.
  * @param isLoading Indicates if the content is currently loading.
  * @param isEmpty Indicates if the content is empty.
- * @param isError Indicates if there was an error loading the content.
+ * @param errorStatus Indicates if there was an error loading the content.
  * @param onRetryClick Callback invoked when the retry button is clicked in case of an error.
  * @param topBar Composable for the top bar of the scaffold.
  * @param bottomBar Composable for the bottom bar of the scaffold.
@@ -46,7 +47,7 @@ fun StateScaffold(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     isEmpty: Boolean = false,
-    isError: Boolean = false,
+    errorStatus: ErrorStatus? = null,
     onRetryClick: () -> Unit = {},
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
@@ -76,7 +77,8 @@ fun StateScaffold(
                     .fillMaxSize()
             )
 
-            isError -> FailureState(
+            errorStatus != null -> ErrorState(
+                errorStatus = errorStatus,
                 onRetry = onRetryClick,
                 modifier = Modifier
                     .padding(paddingValues)

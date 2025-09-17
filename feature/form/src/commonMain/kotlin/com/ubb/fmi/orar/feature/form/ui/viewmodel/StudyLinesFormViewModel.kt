@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import kotlinx.collections.immutable.persistentListOf
@@ -60,7 +61,7 @@ class StudyLinesFormViewModel(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getStudyLines() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         logger.d(TAG, "getStudyLines for year: $year, semester: $semesterId")
 
@@ -87,7 +88,7 @@ class StudyLinesFormViewModel(
         _uiState.update {
             it.copy(
                 isLoading = false,
-                isError = studyLinesResource.status.isError(),
+                errorStatus = studyLinesResource.status.toErrorStatus(),
                 groupedStudyLines = groupedStudyLines,
                 selectedFilterId = selectedStudyLine?.degreeId ?: DegreeFilter.ALL.id,
                 selectedFieldId = selectedStudyLine?.fieldId,

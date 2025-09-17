@@ -37,7 +37,7 @@ fun SubjectTimetableRoute(
                     title = uiState.title,
                     onBack = navController::navigateUp,
                     trailingContent = {
-                        if (!uiState.isError && !uiState.isLoading) {
+                        if (uiState.errorStatus == null && !uiState.isLoading) {
                             TimetableFrequencyTab(
                                 selectedFrequency = uiState.selectedFrequency,
                                 onFrequencyClick = viewModel::selectFrequency

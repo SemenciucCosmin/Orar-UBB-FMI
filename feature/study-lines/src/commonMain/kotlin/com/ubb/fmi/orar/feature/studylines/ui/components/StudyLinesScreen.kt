@@ -49,7 +49,7 @@ fun StudyLinesScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
-        isError = uiState.isError,
+        errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         bottomBar = bottomBar
     ) { paddingValues ->
@@ -110,7 +110,7 @@ private fun PreviewStudyLinesScreen() {
             bottomBar = {},
             uiState = StudyLinesUiState(
                 isLoading = false,
-                isError = false,
+                errorStatus = null,
                 selectedFilterId = "Licenta",
                 selectedFieldId = "IE",
                 groupedStudyLines = List(2) {

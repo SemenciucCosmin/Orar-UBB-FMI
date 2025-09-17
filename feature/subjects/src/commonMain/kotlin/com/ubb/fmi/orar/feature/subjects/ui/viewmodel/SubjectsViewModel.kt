@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
+import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
+import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -69,11 +71,11 @@ class SubjectsViewModel(
      * The UI state is updated with the loading status, error status, and the list of subjects.
      */
     private fun getSubjects() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true, isError = false) }
+        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
         timetablePreferences.getConfiguration().collectLatest { configuration ->
             logger.d(TAG, "getSubjects configuration: $configuration")
             if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, isError = true) }
+                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
                 return@collectLatest
             }
 
@@ -86,7 +88,7 @@ class SubjectsViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isError = resource.status.isError(),
+                    errorStatus = resource.status.toErrorStatus(),
                     subjects = resource.payload?.toImmutableList() ?: persistentListOf()
                 )
             }
