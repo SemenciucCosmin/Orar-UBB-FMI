@@ -134,7 +134,7 @@ class TeachersDataSourceImpl(
         logger.d(TAG, "getOwnersFromApi owners: $owners")
 
         return when {
-            owners.isNullOrEmpty() -> Resource(null, Status.Error)
+            owners.isNullOrEmpty() -> Resource(null, resource.status)
             else -> Resource(owners, Status.Success)
         }
     }
@@ -237,7 +237,7 @@ class TeachersDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi classes: $classes")
 
         return when {
-            classes == null -> Resource(null, Status.Error)
+            classes == null -> Resource(null, resource.status)
             else -> Resource(Timetable(owner, classes), Status.Success)
         }
     }

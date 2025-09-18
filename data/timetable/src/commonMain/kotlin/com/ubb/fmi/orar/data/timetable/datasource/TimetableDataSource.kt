@@ -64,7 +64,8 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
         logger.d(tag, "getTimetable for year: $year, semester: $semesterId, owner: $ownerId")
 
         val configurationId = year.toString() + semesterId
-        val owner = getOwners(year, semesterId).payload?.firstOrNull { it.id == ownerId }
+        val resource = getOwners(year, semesterId)
+        val owner = resource.payload?.firstOrNull { it.id == ownerId }
 
         logger.d(tag, "getTimetable owner: $owner")
         val cachedTimetable = owner?.let { getTimetableFromCache(configurationId, it) }
@@ -79,7 +80,7 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
             }
 
             else -> {
-                if (owner == null) return Resource(null, Status.Error)
+                if (owner == null) return Resource(null, resource.status)
                 val timetableResource = getTimetableFromApi(year, semesterId, owner)
                 timetableResource.payload?.let { saveTimetableInCache(it) }
 
