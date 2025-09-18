@@ -180,7 +180,7 @@ class StudyLinesDataSourceImpl(
         logger.d(TAG, "getOwnersFromApi owners: $owners")
 
         return when {
-            owners.isEmpty() -> Resource(null, Status.Error)
+            owners.isEmpty() -> Resource(null, resource.status)
             else -> Resource(owners, Status.Success)
         }
     }
@@ -276,7 +276,7 @@ class StudyLinesDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi classes: $classes")
 
         return when {
-            classes.size != rowsCount -> Resource(null, Status.Error)
+            classes.size != rowsCount -> Resource(null, resource.status)
             else -> Resource(Timetable(owner, classes), Status.Success)
         }
     }
