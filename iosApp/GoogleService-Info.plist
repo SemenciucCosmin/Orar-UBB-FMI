@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDlfNjPTrnNz9W2AULmBaKEoQe3k6xcqks</string>
+	<key>GCM_SENDER_ID</key>
+	<string>737974025604</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ubb.fmi.orar.Orar-UBB-FMI</string>
+	<key>PROJECT_ID</key>
+	<string>orar-ubb-fmi</string>
+	<key>STORAGE_BUCKET</key>
+	<string>orar-ubb-fmi.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:737974025604:ios:910ff66c3155abee4e31d1</string>
+</dict>
+</plist>
