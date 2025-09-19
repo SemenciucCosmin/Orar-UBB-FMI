@@ -23,8 +23,8 @@ import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
-import orar_ubb_fmi.feature.form.generated.resources.Res
-import orar_ubb_fmi.feature.form.generated.resources.lbl_next
+import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_next
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

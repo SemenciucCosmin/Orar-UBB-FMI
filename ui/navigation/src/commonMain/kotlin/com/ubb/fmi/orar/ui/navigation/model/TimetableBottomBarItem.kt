@@ -1,17 +1,17 @@
 package com.ubb.fmi.orar.ui.navigation.model
 
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
-import orar_ubb_fmi.ui.navigation.generated.resources.Res
-import orar_ubb_fmi.ui.navigation.generated.resources.ic_building
-import orar_ubb_fmi.ui.navigation.generated.resources.ic_home
-import orar_ubb_fmi.ui.navigation.generated.resources.ic_student
-import orar_ubb_fmi.ui.navigation.generated.resources.ic_subject
-import orar_ubb_fmi.ui.navigation.generated.resources.ic_teacher
-import orar_ubb_fmi.ui.navigation.generated.resources.lbl_home
-import orar_ubb_fmi.ui.navigation.generated.resources.lbl_rooms
-import orar_ubb_fmi.ui.navigation.generated.resources.lbl_students
-import orar_ubb_fmi.ui.navigation.generated.resources.lbl_subjects
-import orar_ubb_fmi.ui.navigation.generated.resources.lbl_teachers
+import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_building
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_home
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_student
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_subject
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_home
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_rooms
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_students
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_subjects
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teachers
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
