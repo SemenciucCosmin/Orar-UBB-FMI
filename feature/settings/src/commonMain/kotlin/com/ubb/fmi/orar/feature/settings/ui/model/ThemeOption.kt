@@ -1,10 +1,10 @@
 package com.ubb.fmi.orar.feature.settings.ui.model
 
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
-import orar_ubb_fmi.feature.settings.generated.resources.Res
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_dark
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_light
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_system
+import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_dark
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_light
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_system
 import org.jetbrains.compose.resources.StringResource
 
 /**

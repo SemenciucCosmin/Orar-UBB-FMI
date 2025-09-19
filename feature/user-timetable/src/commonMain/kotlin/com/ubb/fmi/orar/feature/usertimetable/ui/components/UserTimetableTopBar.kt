@@ -12,9 +12,9 @@ import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableFrequencyTab
 import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
-import orar_ubb_fmi.feature.user_timetable.generated.resources.Res
-import orar_ubb_fmi.feature.user_timetable.generated.resources.ic_edit
-import orar_ubb_fmi.feature.user_timetable.generated.resources.ic_settings
+import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_edit
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_settings
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

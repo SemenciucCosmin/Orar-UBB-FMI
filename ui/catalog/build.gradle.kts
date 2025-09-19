@@ -91,6 +91,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
+    compose.resources {
+        publicResClass = true
+    }
 }
 
 dependencies {

@@ -23,13 +23,13 @@ import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
-import orar_ubb_fmi.feature.settings.generated.resources.Res
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_change_configuration
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_github
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_open_source
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_settings
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_theme
-import orar_ubb_fmi.feature.settings.generated.resources.lbl_version
+import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_change_configuration
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_github
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_open_source
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_settings
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_theme
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_version
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

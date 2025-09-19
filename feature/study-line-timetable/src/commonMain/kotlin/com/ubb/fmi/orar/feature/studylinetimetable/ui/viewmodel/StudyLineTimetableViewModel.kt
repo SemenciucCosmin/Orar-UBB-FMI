@@ -3,7 +3,6 @@ package com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK

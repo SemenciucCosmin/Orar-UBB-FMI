@@ -1,12 +1,12 @@
 package com.ubb.fmi.orar.feature.teachers.ui.model
 
-import orar_ubb_fmi.feature.teachers.generated.resources.Res
-import orar_ubb_fmi.feature.teachers.generated.resources.lbl_assistant_abr
-import orar_ubb_fmi.feature.teachers.generated.resources.lbl_associate_abr
-import orar_ubb_fmi.feature.teachers.generated.resources.lbl_candidate_abr
-import orar_ubb_fmi.feature.teachers.generated.resources.lbl_lecturer_abr
-import orar_ubb_fmi.feature.teachers.generated.resources.lbl_professor_abr
-import orar_ubb_fmi.feature.teachers.generated.resources.lbl_speaker_abr
+import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_assistant_abr
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_associate_abr
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_candidate_abr
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_lecturer_abr
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_professor_abr
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_speaker_abr
 import org.jetbrains.compose.resources.StringResource
 
 /**
