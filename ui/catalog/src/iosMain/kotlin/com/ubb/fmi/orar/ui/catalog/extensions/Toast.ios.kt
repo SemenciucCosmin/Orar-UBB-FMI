@@ -10,8 +10,8 @@ import platform.darwin.dispatch_after
 import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_time
 
-private const val LENGTH_LONG_SECONDS = 3L
-private const val LENGTH_SHORT_SECONDS = 2L
+private const val LENGTH_LONG_SECONDS = 2L
+private const val LENGTH_SHORT_SECONDS = 1L
 
 /**
  * Ios specific implementation of function to show toast

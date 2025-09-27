@@ -16,6 +16,10 @@ actual fun openUrl(
 ) {
     val nsUrl = NSURL.URLWithString(url)
     if (nsUrl != null) {
-        UIApplication.sharedApplication.openURL(nsUrl)
+        UIApplication.sharedApplication.openURL(
+            url = nsUrl,
+            options = emptyMap<Any?, Any>(),
+            completionHandler = null
+        )
     }
 }
