@@ -151,8 +151,8 @@ abstract class TimetableDataSource<Owner : TimetableOwner>(
     private fun sortTimetableClasses(classes: List<TimetableClass>): List<TimetableClass> {
         return classes.sortedWith(
             compareBy<TimetableClass> { Day.Companion.getById(it.day).orderIndex }
-                .thenBy { it.startHour }
-                .thenBy { it.endHour }
+                .thenBy { it.startHour.toIntOrNull() }
+                .thenBy { it.endHour.toIntOrNull() }
         )
     }
 
