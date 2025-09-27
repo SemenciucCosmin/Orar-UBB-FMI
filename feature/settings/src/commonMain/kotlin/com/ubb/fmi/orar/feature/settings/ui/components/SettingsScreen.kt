@@ -27,6 +27,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_change_configuration
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_github
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_open_source
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_refresh_data
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_settings
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_theme
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_version
@@ -45,6 +46,7 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onChangeConfigurationClick: () -> Unit,
     onThemeClick: () -> Unit,
+    onRefreshDataClick: () -> Unit,
 ) {
     val annotatedGithubUrl = buildAnnotatedString {
         withStyle(SpanStyle(MaterialTheme.colorScheme.onBackground)) {
@@ -96,6 +98,11 @@ fun SettingsScreen(
                 onClick = onThemeClick
             )
 
+            ListItemClickable(
+                headline = stringResource(Res.string.lbl_refresh_data),
+                onClick = onRefreshDataClick
+            )
+
             Spacer(modifier = Modifier.weight(1f))
 
             Column(
@@ -139,7 +146,8 @@ private fun PreviewSettingsScreen() {
             onGithubUrlClick = {},
             onBack = {},
             onChangeConfigurationClick = {},
-            onThemeClick = {}
+            onThemeClick = {},
+            onRefreshDataClick = {},
         )
     }
 }

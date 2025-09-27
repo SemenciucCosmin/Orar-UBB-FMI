@@ -53,6 +53,11 @@ interface TimetablePreferences {
      */
     suspend fun setTeacherId(teacherId: String)
 
+    /**
+     * Clear data and then sets it again to trigger recollection of data
+     */
+    suspend fun refresh()
+
     companion object {
         const val PREFERENCES_NAME = "TIMETABLE_PREFERENCES"
     }
