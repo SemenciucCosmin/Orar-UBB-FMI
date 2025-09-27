@@ -57,6 +57,7 @@ kotlin {
             implementation(projects.domain.extensions)
             implementation(projects.domain.logging)
             implementation(projects.domain.theme)
+            implementation(projects.domain.timetable)
             implementation(projects.ui.catalog)
             implementation(projects.ui.navigation)
             implementation(projects.ui.theme)

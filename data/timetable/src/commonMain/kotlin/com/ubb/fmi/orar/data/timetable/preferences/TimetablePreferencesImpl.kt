@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ubb.fmi.orar.data.timetable.model.TimetableConfiguration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
 
 /**
@@ -27,8 +28,8 @@ class TimetablePreferencesImpl(
             val semesterId = preferences[SEMESTER_ID] ?: return@mapLatest null
             val userTypeId = preferences[USER_TYPE_ID] ?: return@mapLatest null
             val degreeId = preferences[DEGREE_ID]
-            val fieldId = preferences[STUDY_LINE_BASE_ID]
-            val studyLevelId = preferences[STUDY_LINE_YEAR_ID]
+            val fieldId = preferences[FIELD_ID]
+            val studyLevelId = preferences[STUDY_LEVEL_ID]
             val groupId = preferences[GROUP_ID]
             val teacherId = preferences[TEACHER_ID]
 
@@ -77,14 +78,14 @@ class TimetablePreferencesImpl(
      * Sets [fieldId]
      */
     override suspend fun setFieldId(fieldId: String) {
-        dataStore.edit { it[STUDY_LINE_BASE_ID] = fieldId }
+        dataStore.edit { it[FIELD_ID] = fieldId }
     }
 
     /**
      * Sets [studyLevelId]
      */
     override suspend fun setStudyLevelId(studyLevelId: String) {
-        dataStore.edit { it[STUDY_LINE_YEAR_ID] = studyLevelId }
+        dataStore.edit { it[STUDY_LEVEL_ID] = studyLevelId }
     }
 
     /**
@@ -101,13 +102,33 @@ class TimetablePreferencesImpl(
         dataStore.edit { it[TEACHER_ID] = teacherId }
     }
 
+    /**
+     * Clear data and then sets it again to trigger recollection of data
+     */
+    override suspend fun refresh() {
+        val configuration = getConfiguration().firstOrNull()
+        configuration?.let {
+            dataStore.edit { it.clear() }
+            dataStore.edit { preferences ->
+                preferences[YEAR] = configuration.year
+                preferences[SEMESTER_ID] = configuration.semesterId
+                preferences[USER_TYPE_ID] = configuration.userTypeId
+                configuration.degreeId?.let { preferences[DEGREE_ID] = it }
+                configuration.fieldId?.let { preferences[FIELD_ID] = it }
+                configuration.studyLevelId?.let { preferences[STUDY_LEVEL_ID] = it }
+                configuration.groupId?.let { preferences[GROUP_ID] = it }
+                configuration.teacherId?.let { preferences[TEACHER_ID] = it }
+            }
+        }
+    }
+
     companion object {
         private val YEAR = intPreferencesKey(name = "YEAR")
         private val SEMESTER_ID = stringPreferencesKey(name = "SEMESTER_ID")
         private val USER_TYPE_ID = stringPreferencesKey(name = "USER_TYPE_ID")
         private val DEGREE_ID = stringPreferencesKey(name = "DEGREE_ID")
-        private val STUDY_LINE_BASE_ID = stringPreferencesKey(name = "STUDY_LINE_BASE_ID")
-        private val STUDY_LINE_YEAR_ID = stringPreferencesKey(name = "STUDY_LINE_YEAR_ID")
+        private val FIELD_ID = stringPreferencesKey(name = "FIELD_ID")
+        private val STUDY_LEVEL_ID = stringPreferencesKey(name = "STUDY_LEVEL_ID")
         private val GROUP_ID = stringPreferencesKey(name = "GROUP_ID")
         private val TEACHER_ID = stringPreferencesKey(name = "TEACHER_ID")
     }
