@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -60,6 +61,7 @@ fun SearchBar(
     val isFocused = interactionSource.collectIsFocusedAsState().value
     val shouldClearFocus = !isActive && isFocused
     val shouldRequestFocus = isActive && !isFocused
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(isActive) {
         if (shouldClearFocus) focusManager.clearFocus()
@@ -72,9 +74,14 @@ fun SearchBar(
         onValueChange = onValueChange,
         singleLine = true,
         interactionSource = interactionSource,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { isActive = false }),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                isActive = false
+                keyboardController?.hide()
+            }
+        ),
         textStyle = MaterialTheme.typography.bodyLarge.copy(
             color = MaterialTheme.colorScheme.onSurface
         ),
@@ -117,6 +124,7 @@ fun SearchBar(
                                 .clickable {
                                     isActive = true
                                     onClearClick()
+                                    keyboardController?.hide()
                                 }
                         )
                     }
