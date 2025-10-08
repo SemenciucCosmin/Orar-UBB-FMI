@@ -89,14 +89,16 @@ class TeacherTimetableViewModel(
             )
 
             logger.d(TAG, "loadTimetable resource: $timetableResource")
-            val classes = timetableResource.payload?.classes?.toImmutableList()
             val teacher = teachersResource.payload?.firstOrNull { it.id == teacherId }
+            val classes = timetableResource.payload?.classes?.map {
+                it.copy(isVisible = true)
+            }?.toImmutableList() ?: persistentListOf()
 
             _uiState.update {
                 it.copy(
                     isLoading = false,
                     errorStatus = timetableResource.status.toErrorStatus(),
-                    classes = classes ?: persistentListOf(),
+                    classes = classes,
                     title = teacher?.name ?: String.BLANK
                 )
             }
