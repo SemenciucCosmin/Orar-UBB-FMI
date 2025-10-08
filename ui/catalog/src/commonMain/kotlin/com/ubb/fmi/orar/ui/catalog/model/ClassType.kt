@@ -18,37 +18,43 @@ import org.jetbrains.compose.resources.StringResource
  *
  * @property id The unique identifier for the class type.
  * @property labelRes The string resource for the label of the class type.
- * @property color The color associated with the class type.
+ * @property colorLight The color associated with the class type for light theme.
+ * @property colorDark The color associated with the class type for dark theme.
  * @property imageRes The drawable resource for the icon representing the class type.
  */
 enum class ClassType(
     val id: String,
     val labelRes: StringResource,
-    val color: Color,
+    val colorLight: Color,
+    val colorDark: Color,
     val imageRes: DrawableResource,
 ) {
     LECTURE(
         id = "Curs",
         labelRes = Res.string.lbl_lecture,
-        color = Color(0xFF00A300),
+        colorLight = Color(0xFF00A300),
+        colorDark = Color(0xF1DB954),
         imageRes = Res.drawable.ic_lecture,
     ),
     SEMINARY(
         id = "Seminar",
         labelRes = Res.string.lbl_seminary,
-        color = Color(0xFF5D3FD3),
+        colorLight = Color(0xFF5D3FD3),
+        colorDark = Color(0xFF8C6FF0),
         imageRes = Res.drawable.ic_seminary,
     ),
     LABORATORY(
         id = "Laborator",
         labelRes = Res.string.lbl_laboratory,
-        color = Color(0xFF0000D1),
+        colorLight = Color(0xFF0000D1),
+        colorDark = Color(0xFF3D5AFE),
         imageRes = Res.drawable.ic_laboratory,
     ),
     STAFF(
         id = "Colectiv",
         labelRes = Res.string.lbl_staff,
-        color = Color(0xFFD12300),
+        colorLight = Color(0xFFD12300),
+        colorDark = Color(0xFFFF6E40),
         imageRes = Res.drawable.ic_staff,
     );
 
