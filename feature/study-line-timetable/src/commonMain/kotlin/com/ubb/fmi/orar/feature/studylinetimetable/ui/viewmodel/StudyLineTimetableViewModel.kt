@@ -88,20 +88,24 @@ class StudyLineTimetableViewModel(
                 return@launch
             }
 
-            val resource = studyLinesDataSource.getTimetable(
+            val timetableResource = studyLinesDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
                 ownerId = lineId,
                 groupId = groupId
             )
 
-            logger.d(TAG, "loadTimetable resource: $resource")
+            logger.d(TAG, "loadTimetable resource: $timetableResource")
+            val classes = timetableResource.payload?.classes?.map {
+                it.copy(isVisible = true)
+            }?.toImmutableList() ?: persistentListOf()
+
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    errorStatus = resource.status.toErrorStatus(),
-                    classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf(),
-                    title = resource.payload?.owner?.name ?: String.BLANK,
+                    errorStatus = timetableResource.status.toErrorStatus(),
+                    classes = classes,
+                    title = timetableResource.payload?.owner?.name ?: String.BLANK,
                     studyLevel = studyLevel,
                     group = groupId,
                 )
