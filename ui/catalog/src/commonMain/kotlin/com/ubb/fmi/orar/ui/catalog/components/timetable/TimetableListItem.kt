@@ -3,6 +3,7 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -105,12 +106,15 @@ fun TimetableListItem(
 
                 Surface(
                     shape = MaterialTheme.shapes.extraLarge,
-                    color = classType.color.copy(
+                    color = when {
+                        isSystemInDarkTheme() -> classType.colorLight
+                        else -> classType.colorLight
+                    }.copy(
                         alpha = when {
                             enabled -> 1f
                             else -> 0.5f
                         }
-                    ),
+                    )
                 ) {
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
