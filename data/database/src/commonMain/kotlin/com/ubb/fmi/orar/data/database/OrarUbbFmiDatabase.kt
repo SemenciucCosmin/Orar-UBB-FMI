@@ -3,11 +3,13 @@ package com.ubb.fmi.orar.data.database
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.ubb.fmi.orar.data.database.dao.GroupDao
 import com.ubb.fmi.orar.data.database.dao.RoomDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.SubjectDao
 import com.ubb.fmi.orar.data.database.dao.TeacherDao
 import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
+import com.ubb.fmi.orar.data.database.model.GroupEntity
 import com.ubb.fmi.orar.data.database.model.RoomEntity
 import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.database.model.SubjectEntity
@@ -22,6 +24,7 @@ import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
 @Database(
     version = 1,
     entities = [
+        GroupEntity::class,
         RoomEntity::class,
         StudyLineEntity::class,
         SubjectEntity::class,
@@ -31,6 +34,8 @@ import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
 )
 @ConstructedBy(OrarUbbFmiDatabaseConstructor::class)
 abstract class OrarUbbFmiDatabase : RoomDatabase() {
+
+    abstract val groupDao: GroupDao
 
     abstract val roomDao: RoomDao
 

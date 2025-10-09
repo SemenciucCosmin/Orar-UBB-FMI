@@ -120,10 +120,7 @@ class UserTimetableViewModel(
     fun changeTimetableClassVisibility(timetableClass: TimetableListItem.Class) {
         viewModelScope.launch {
             logger.d(TAG, "changeTimetableClassVisibility class: $timetableClass")
-            changeTimetableClassVisibilityUseCase(
-                timetableClassId = timetableClass.id,
-                timetableOwnerType = timetableClass.timetableOwnerType,
-            )
+            changeTimetableClassVisibilityUseCase(timetableClass.id)
         }
 
         _uiState.update { state ->

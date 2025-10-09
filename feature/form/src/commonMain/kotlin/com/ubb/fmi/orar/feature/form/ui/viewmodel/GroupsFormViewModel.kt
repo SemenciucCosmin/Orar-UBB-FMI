@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.seconds
  * @param fieldId: The ID of the field of study.
  * @param studyLevelId: The ID of the study level (e.g., Bachelor, Master).
  * @param degreeId: The ID of the degree.
- * @param studyLinesDataSource: The data source for fetching study lines and groups.
+ * @param groupsDataSource: The data source for fetching groups.
  * @param timetablePreferences: Preferences for the timetable configuration.
  * @param setTimetableConfigurationUseCase: Use case for setting the timetable configuration
  */
@@ -44,7 +44,7 @@ class GroupsFormViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
     private val degreeId: String,
-    private val studyLinesDataSource: StudyLinesDataSource,
+    private val groupsDataSource: GroupsDataSource,
     private val timetablePreferences: TimetablePreferences,
     private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
     private val logger: Logger,
@@ -77,18 +77,10 @@ class GroupsFormViewModel(
         logger.d(TAG, "getGroups for year: $year, semester: $semesterId")
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val studyLinesResource = studyLinesDataSource.getOwners(
+        val groupsResource = groupsDataSource.getGroups(
             year = year,
             semesterId = semesterId,
-        )
-
-        val studyLine = studyLinesResource.payload?.firstOrNull { it.id == lineId }
-        logger.d(TAG, "getGroups studyLine: $studyLine ${studyLinesResource.status}")
-
-        val groupsResource = studyLinesDataSource.getGroups(
-            year = year,
-            semesterId = semesterId,
-            ownerId = lineId
+            studyLineId = lineId
         )
 
         logger.d(TAG, "getGroups groups resource: $groupsResource")
@@ -97,11 +89,11 @@ class GroupsFormViewModel(
                 isLoading = false,
                 errorStatus = groupsResource.status.toErrorStatus(),
                 groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
-                title = studyLine?.name,
+                title = groupsResource.payload?.firstOrNull()?.studyLine?.name,
                 studyLevel = studyLevel,
-                selectedGroupId = groupsResource.payload?.firstOrNull { groupId ->
-                    groupId == configuration?.groupId
-                }
+                selectedGroupId = groupsResource.payload?.firstOrNull { group ->
+                    group.id == configuration?.groupId
+                }?.id
             )
         }
     }

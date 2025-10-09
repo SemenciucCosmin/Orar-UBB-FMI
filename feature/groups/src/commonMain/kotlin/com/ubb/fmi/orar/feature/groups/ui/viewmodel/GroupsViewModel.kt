@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.feature.groups.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -28,13 +28,13 @@ import kotlin.time.Duration.Companion.seconds
  *
  * @param fieldId The ID of the field of study.
  * @param studyLevelId The ID of the study level (e.g., Bachelor, Master).
- * @param studyLinesDataSource The data source for fetching study lines and groups.
+ * @param groupsDataSource The data source for fetching groups.
  * @param timetablePreferences Preferences for managing timetable configurations.
  */
 class GroupsViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
-    private val studyLinesDataSource: StudyLinesDataSource,
+    private val groupsDataSource: GroupsDataSource,
     private val timetablePreferences: TimetablePreferences,
     private val logger: Logger,
 ) : ViewModel() {
@@ -66,21 +66,10 @@ class GroupsViewModel(
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
         logger.d(TAG, "getGroups configuration: $configuration")
 
-        val studyLinesResource = studyLinesDataSource.getOwners(
+        val groupsResource = groupsDataSource.getGroups(
             year = configuration?.year ?: return@launch,
             semesterId = configuration.semesterId,
-        )
-
-        logger.d(TAG, "getGroups studyLinesResource: $studyLinesResource")
-
-        val studyLine = studyLinesResource.payload?.firstOrNull { it.id == lineId }
-
-        logger.d(TAG, "getGroups studyLine: $studyLine")
-
-        val groupsResource = studyLinesDataSource.getGroups(
-            year = configuration.year,
-            semesterId = configuration.semesterId,
-            ownerId = lineId
+            studyLineId = lineId
         )
 
         logger.d(TAG, "getGroups groupsResource: $groupsResource")
@@ -89,7 +78,7 @@ class GroupsViewModel(
                 isLoading = false,
                 errorStatus = groupsResource.status.toErrorStatus(),
                 groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
-                title = studyLine?.name,
+                title = groupsResource.payload?.firstOrNull()?.studyLine?.name,
                 studyLevel = studyLevel
             )
         }

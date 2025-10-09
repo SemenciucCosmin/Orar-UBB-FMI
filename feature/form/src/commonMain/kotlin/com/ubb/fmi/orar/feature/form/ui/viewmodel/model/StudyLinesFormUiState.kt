@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.ImmutableList
@@ -16,7 +16,7 @@ import kotlinx.collections.immutable.toImmutableList
  * @param errorStatus: error state
  */
 data class StudyLinesFormUiState(
-    private val groupedStudyLines: ImmutableList<ImmutableList<TimetableOwner.StudyLine>> = persistentListOf(),
+    private val groupedStudyLines: ImmutableList<ImmutableList<StudyLine>> = persistentListOf(),
     val selectedFilterId: String = DegreeFilter.ALL.id,
     val selectedFieldId: String? = null,
     val selectedStudyLevelId: String? = null,
@@ -27,7 +27,7 @@ data class StudyLinesFormUiState(
         /**
          * Filtered grouped study lines by selected degree filter
          */
-        val StudyLinesFormUiState.filteredGroupedStudyLines: ImmutableList<ImmutableList<TimetableOwner.StudyLine>>
+        val StudyLinesFormUiState.filteredGroupedStudyLines: ImmutableList<ImmutableList<StudyLine>>
             get() {
                 return groupedStudyLines.filter { studyLines ->
                     studyLines.all {

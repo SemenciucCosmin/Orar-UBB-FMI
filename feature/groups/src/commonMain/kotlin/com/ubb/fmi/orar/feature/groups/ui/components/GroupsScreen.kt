@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
@@ -15,7 +17,7 @@ import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_group
 import org.jetbrains.compose.resources.painterResource
@@ -62,8 +64,8 @@ fun GroupsScreen(
         ) {
             items(uiState.groups) { group ->
                 ListItemClickable(
-                    headline = group,
-                    onClick = { onGroupClick(group) },
+                    headline = group.name,
+                    onClick = { onGroupClick(group.id) },
                     leadingIcon = painterResource(Res.drawable.ic_group),
                 )
             }
@@ -80,7 +82,21 @@ private fun PreviewGroupsScreen() {
             onRetryClick = {},
             onBack = {},
             uiState = GroupsUiState(
-                groups = persistentListOf("913", "914", "915", "916", "917"),
+                groups = List(5) {
+                    Owner.Group(
+                        id = "$it",
+                        name = "$it",
+                        configurationId = "$it",
+                        studyLine = StudyLine(
+                            id = "$it",
+                            name = "$it",
+                            fieldId = "$it",
+                            levelId = "$it",
+                            degreeId = "$it",
+                            configurationId = "$it"
+                        )
+                    )
+                }.toImmutableList(),
                 title = "Informatica Engleza",
                 studyLevel = StudyLevel.LEVEL_1,
                 isLoading = false,

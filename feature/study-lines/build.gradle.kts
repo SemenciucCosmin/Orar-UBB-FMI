@@ -51,7 +51,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.network)
-            implementation(projects.data.studyLines)
+            implementation(projects.data.students)
             implementation(projects.data.timetable)
             implementation(projects.domain.logging)
             implementation(projects.ui.catalog)
@@ -80,7 +80,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.ubb.fmi.orar.feature.studyline"
+    namespace = "com.ubb.fmi.orar.feature.studylines"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

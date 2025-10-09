@@ -11,7 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
@@ -147,7 +147,7 @@ private fun PreviewStudyLinesFormScreen() {
                 errorStatus = null,
                 groupedStudyLines = List(2) {
                     List(2) {
-                        TimetableOwner.StudyLine(
+                        StudyLine(
                             id = "IE1",
                             name = "Informatica Engleza",
                             configurationId = "20241",

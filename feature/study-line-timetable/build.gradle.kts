@@ -51,7 +51,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.network)
-            implementation(projects.data.studyLines)
+            implementation(projects.data.students)
             implementation(projects.data.timetable)
             implementation(projects.domain.extensions)
             implementation(projects.domain.logging)

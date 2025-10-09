@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
@@ -35,14 +35,14 @@ import kotlin.time.Duration.Companion.seconds
  * @property fieldId The ID of the field of study.
  * @property studyLevelId The ID of the study level.
  * @property groupId The ID of the group.
- * @property studyLinesDataSource The data source for fetching study lines data.
+ * @property groupsDataSource The data source for fetching groups data.
  * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class StudyLineTimetableViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
     private val groupId: String,
-    private val studyLinesDataSource: StudyLinesDataSource,
+    private val groupsDataSource: GroupsDataSource,
     private val timetablePreferences: TimetablePreferences,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
@@ -88,10 +88,10 @@ class StudyLineTimetableViewModel(
                 return@launch
             }
 
-            val timetableResource = studyLinesDataSource.getTimetable(
+            val timetableResource = groupsDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
-                ownerId = lineId,
+                studyLineId = lineId,
                 groupId = groupId
             )
 

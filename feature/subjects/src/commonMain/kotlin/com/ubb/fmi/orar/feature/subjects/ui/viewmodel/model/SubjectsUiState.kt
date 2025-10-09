@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model
 
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.ImmutableList
@@ -17,7 +17,7 @@ import kotlinx.collections.immutable.toImmutableList
  * @property errorStatus Indicates whether there was an error loading the data.
  */
 data class SubjectsUiState(
-    private val subjects: ImmutableList<TimetableOwner.Subject> = persistentListOf(),
+    private val subjects: ImmutableList<Owner.Subject> = persistentListOf(),
     val searchQuery: String = String.BLANK,
     val isLoading: Boolean = true,
     val errorStatus: ErrorStatus? = null
@@ -27,7 +27,7 @@ data class SubjectsUiState(
          * Creates an empty [SubjectsUiState] with no subjects, an empty search query,
          * and both loading and error states set to true.
          */
-        val SubjectsUiState.filteredSubjects: ImmutableList<TimetableOwner.Subject>
+        val SubjectsUiState.filteredSubjects: ImmutableList<Owner.Subject>
             get() {
                 return subjects.filter { subject ->
                     searchQuery.isBlank() || subject.name.lowercase().contains(searchQuery)

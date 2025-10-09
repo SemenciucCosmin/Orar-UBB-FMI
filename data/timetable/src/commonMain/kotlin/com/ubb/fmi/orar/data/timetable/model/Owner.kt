@@ -1,25 +1,36 @@
 package com.ubb.fmi.orar.data.timetable.model
 
 /**
- * Class for any [TimetableOwner]
+ * Class for any [Owner]
  * @param [id]: unique identifier
  * @param [name]: name of the owner
  * @param [configurationId]: configuration id to which this owner belongs to
- * @param [type]: owner type (Room, Study Line, Subject, Teacher)
  */
-sealed class TimetableOwner(
+sealed class Owner(
     open val id: String,
     open val name: String,
     open val configurationId: String,
-    open val type: TimetableOwnerType
 ) {
 
     /**
-     * Room [TimetableOwner]
+     * StudyLine [Owner]
      * @param [id]: unique identifier
      * @param [name]: name of the owner
      * @param [configurationId]: configuration id to which this owner belongs to
-     * @param [type]: owner type (Room, Study Line, Subject, Teacher)
+     * @param [studyLine]: study line to which this group belongs
+     */
+    data class Group(
+        override val id: String,
+        override val name: String,
+        override val configurationId: String,
+        val studyLine: StudyLine,
+    ) : Owner(id, name, configurationId)
+
+    /**
+     * Room [Owner]
+     * @param [id]: unique identifier
+     * @param [name]: name of the owner
+     * @param [configurationId]: configuration id to which this owner belongs to
      * @param [location]: location of the room
      */
     data class Room(
@@ -27,46 +38,25 @@ sealed class TimetableOwner(
         override val name: String,
         override val configurationId: String,
         val location: String
-    ) : TimetableOwner(id, name, configurationId, TimetableOwnerType.ROOM)
+    ) : Owner(id, name, configurationId)
 
     /**
-     * StudyLine [TimetableOwner]
+     * Subject [Owner]
      * @param [id]: unique identifier
      * @param [name]: name of the owner
      * @param [configurationId]: configuration id to which this owner belongs to
-     * @param [type]: owner type (Room, Study Line, Subject, Teacher)
-     * @param [fieldId]: study line field
-     * @param [levelId]: study line level (Year1, Year2, Year3)
-     * @param [degreeId]: study line degree (License or Master)
-     */
-    data class StudyLine(
-        override val id: String,
-        override val name: String,
-        override val configurationId: String,
-        val fieldId: String,
-        val levelId: String,
-        val degreeId: String,
-    ) : TimetableOwner(id, name, configurationId, TimetableOwnerType.STUDY_LINE)
-
-    /**
-     * Subject [TimetableOwner]
-     * @param [id]: unique identifier
-     * @param [name]: name of the owner
-     * @param [configurationId]: configuration id to which this owner belongs to
-     * @param [type]: owner type (Room, Study Line, Subject, Teacher)
      */
     data class Subject(
         override val id: String,
         override val name: String,
         override val configurationId: String,
-    ) : TimetableOwner(id, name, configurationId, TimetableOwnerType.SUBJECT)
+    ) : Owner(id, name, configurationId)
 
     /**
-     * Teacher [TimetableOwner]
+     * Teacher [Owner]
      * @param [id]: unique identifier
      * @param [name]: name of the owner
      * @param [configurationId]: configuration id to which this owner belongs to
-     * @param [type]: owner type (Room, Study Line, Subject, Teacher)
      * @param [titleId]: teacher title
      */
     data class Teacher(
@@ -74,5 +64,5 @@ sealed class TimetableOwner(
         override val name: String,
         override val configurationId: String,
         val titleId: String,
-    ) : TimetableOwner(id, name, configurationId, TimetableOwnerType.TEACHER)
+    ) : Owner(id, name, configurationId)
 }

@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
@@ -16,7 +17,7 @@ import kotlinx.collections.immutable.persistentListOf
  * @param errorStatus: error state
  */
 data class GroupsFromUiState(
-    val groups: ImmutableList<String> = persistentListOf(),
+    val groups: ImmutableList<Owner.Group> = persistentListOf(),
     val selectedGroupId: String? = null,
     val title: String? = null,
     val studyLevel: StudyLevel? = null,

@@ -6,14 +6,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 
 /**
- * Api service for fetching study line related information
+ * Api service for fetching students related information
  */
-class StudyLinesApi(private val httpClient: HttpClient) {
+class StudentsApi(private val httpClient: HttpClient) {
 
     /**
      * Fetch study line table in html format by [year] and [semesterId]
      */
-    suspend fun getOwnersHtml(
+    suspend fun getStudyLines(
         year: Int,
         semesterId: String,
     ): Resource<String> {
@@ -23,7 +23,7 @@ class StudyLinesApi(private val httpClient: HttpClient) {
     }
 
     /**
-     * Fetch study line timetable in html format by [year], [semesterId] and [ownerId]
+     * Fetch students timetable in html format by [year], [semesterId] and [ownerId]
      */
     suspend fun getTimetableHtml(
         year: Int,

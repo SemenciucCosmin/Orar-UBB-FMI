@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.ui.catalog.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.TimetableClass
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwnerType
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
@@ -62,8 +61,6 @@ data class TimetableUiState(
                                 timetableClass.room,
                                 timetableClass.classType,
                                 timetableClass.ownerId,
-                                timetableClass.groupId,
-                                timetableClass.ownerTypeId,
                                 timetableClass.subject,
                                 timetableClass.teacher,
                             )
@@ -89,7 +86,6 @@ data class TimetableUiState(
                             endHour = timetableClass.endHour,
                             subject = timetableClass.subject,
                             classType = ClassType.getById(timetableClass.classType),
-                            timetableOwnerType = TimetableOwnerType.getById(timetableClass.ownerTypeId),
                             participant = timetableClass.participant,
                             teacher = timetableClass.teacher,
                             room = timetableClass.room,

@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -65,7 +65,7 @@ class StudyLinesFormViewModel(
         logger.d(TAG, "getStudyLines for year: $year, semester: $semesterId")
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val studyLinesResource = studyLinesDataSource.getOwners(
+        val studyLinesResource = studyLinesDataSource.getStudyLines(
             year = year,
             semesterId = semesterId
         )

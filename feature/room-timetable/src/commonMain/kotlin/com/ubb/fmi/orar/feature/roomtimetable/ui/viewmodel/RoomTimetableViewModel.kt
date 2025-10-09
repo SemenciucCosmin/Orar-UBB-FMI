@@ -78,10 +78,10 @@ class RoomTimetableViewModel(
             val timetableResource = roomsDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
-                ownerId = roomId,
+                roomId = roomId,
             )
 
-            val roomResource = roomsDataSource.getOwners(
+            val roomResource = roomsDataSource.getRooms(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
             )
@@ -96,7 +96,7 @@ class RoomTimetableViewModel(
                 it.copy(
                     isLoading = false,
                     errorStatus = timetableResource.status.toErrorStatus(),
-                    classes = classes?.toImmutableList() ?: persistentListOf(),
+                    classes = classes,
                     title = subject?.name ?: String.BLANK
                 )
             }

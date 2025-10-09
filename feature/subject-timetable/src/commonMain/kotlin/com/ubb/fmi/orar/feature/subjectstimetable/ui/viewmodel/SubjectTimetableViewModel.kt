@@ -68,10 +68,10 @@ class SubjectTimetableViewModel(
             val timetableResource = subjectsDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
-                ownerId = subjectId,
+                subjectId = subjectId,
             )
 
-            val subjectsResource = subjectsDataSource.getOwners(
+            val subjectsResource = subjectsDataSource.getSubjects(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
             )

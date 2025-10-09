@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
@@ -122,7 +122,7 @@ private fun PreviewTeachersFormScreen() {
                 isLoading = false,
                 errorStatus = null,
                 teachers = List(4) {
-                    TimetableOwner.Teacher(
+                    Owner.Teacher(
                         id = "",
                         name = "Teacher $it",
                         configurationId = "20241",

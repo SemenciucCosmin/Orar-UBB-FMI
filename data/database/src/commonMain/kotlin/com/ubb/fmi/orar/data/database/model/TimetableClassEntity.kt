@@ -15,8 +15,6 @@ import androidx.room.Entity
  * @param [participant]: participant to the class (a group, whole year ...)
  * @param [classType]: type of the class (Lecture, Seminary, Laboratory, Staff)
  * @param [ownerId]: owner of the class (a room, a teacher, a study line ...)
- * @param [groupId]: group of which the class belongs (only available for study line classes)
- * @param [ownerTypeId]: owner type of the class (a room, a teacher, a study line ...)
  * @param [subject]: subject which takes place during the class
  * @param [teacher]: teacher that hosts the class
  * @param [isVisible]: determines the visibility of this class on the users timetable
@@ -37,8 +35,6 @@ data class TimetableClassEntity(
     @ColumnInfo(name = "participant") val participant: String,
     @ColumnInfo(name = "classType") val classType: String,
     @ColumnInfo(name = "ownerId") val ownerId: String,
-    @ColumnInfo(name = "groupId") val groupId: String,
-    @ColumnInfo(name = "ownerTypeId") val ownerTypeId: String,
     @ColumnInfo(name = "subject") val subject: String,
     @ColumnInfo(name = "teacher") val teacher: String,
     @ColumnInfo(name = "isVisible") val isVisible: Boolean,

@@ -75,7 +75,7 @@ class TeachersFormViewModel(
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val resource = teachersDataSource.getOwners(
+        val resource = teachersDataSource.getTeachers(
             year = year,
             semesterId = semesterId
         )

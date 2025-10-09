@@ -1,7 +1,5 @@
 package com.ubb.fmi.orar.ui.catalog.model
 
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwnerType
-
 /**
  * Represents an item in the timetable list, which can either be a class or a divider for a specific day.
  * This interface is used to define the structure of items displayed in the timetable.
@@ -25,7 +23,6 @@ sealed interface TimetableListItem {
      * @property endHour The ending hour of the class.
      * @property subject The subject of the class.
      * @property classType The type of the class (e.g., lecture, lab).
-     * @property timetableOwnerType The type of owner for the timetable (e.g., student, teacher).
      * @property participant The participant in the class (e.g., student name).
      * @property teacher The teacher conducting the class.
      * @property room The room where the class is held.
@@ -37,7 +34,6 @@ sealed interface TimetableListItem {
         val endHour: String,
         val subject: String,
         val classType: ClassType,
-        val timetableOwnerType: TimetableOwnerType,
         val participant: String,
         val teacher: String,
         val room: String,

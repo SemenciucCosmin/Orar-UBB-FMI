@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
@@ -115,7 +115,7 @@ private fun PreviewStudyLinesScreen() {
                 selectedFieldId = "IE",
                 groupedStudyLines = List(2) {
                     List(2) {
-                        TimetableOwner.StudyLine(
+                        StudyLine(
                             id = "IE1",
                             name = "Informatica Engleza",
                             configurationId = "20241",

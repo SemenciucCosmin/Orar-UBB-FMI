@@ -2,7 +2,8 @@ package com.ubb.fmi.orar.domain.timetable.usecase
 
 import Logger
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
+import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.domain.timetable.model.Semester
@@ -22,6 +23,7 @@ import kotlin.time.ExperimentalTime
  * @property teachersDataSource The data source for teacher-related operations.
  */
 class CheckCachedDataValidityUseCase(
+    private val groupsDataSource: GroupsDataSource,
     private val roomsDataSource: RoomsDataSource,
     private val studyLineDataSource: StudyLinesDataSource,
     private val subjectsDataSource: SubjectsDataSource,
@@ -44,6 +46,7 @@ class CheckCachedDataValidityUseCase(
 
         logger.d(TAG, "invalidYear $invalidYear")
         Semester.entries.forEach { semester ->
+            groupsDataSource.invalidate(invalidYear, semester.id)
             roomsDataSource.invalidate(invalidYear, semester.id)
             studyLineDataSource.invalidate(invalidYear, semester.id)
             subjectsDataSource.invalidate(invalidYear, semester.id)

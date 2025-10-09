@@ -12,8 +12,6 @@ package com.ubb.fmi.orar.data.timetable.model
  * @param [participant]: participant to the class (a group, whole year ...)
  * @param [classType]: type of the class (Lecture, Seminary, Laboratory, Staff)
  * @param [ownerId]: owner of the class (a room, a teacher, a study line ...)
- * @param [groupId]: group of which the class belongs (only available for study line classes)
- * @param [ownerTypeId]: owner type of the class (a room, a teacher, a study line ...)
  * @param [subject]: subject which takes place during the class
  * @param [teacher]: teacher that hosts the class
  * @param [isVisible]: determines the visibility of this class on the users timetable
@@ -30,8 +28,6 @@ data class TimetableClass(
     val participant: String,
     val classType: String,
     val ownerId: String,
-    val groupId: String,
-    val ownerTypeId: String,
     val subject: String,
     val teacher: String,
     val isVisible: Boolean,

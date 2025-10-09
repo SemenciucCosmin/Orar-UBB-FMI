@@ -80,10 +80,10 @@ class TeacherTimetableViewModel(
             val timetableResource = teachersDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
-                ownerId = teacherId,
+                teacherId = teacherId,
             )
 
-            val teachersResource = teachersDataSource.getOwners(
+            val teachersResource = teachersDataSource.getTeachers(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
             )

@@ -67,7 +67,7 @@ class RoomsViewModel(
                 return@collectLatest
             }
 
-            val resource = roomsDataSource.getOwners(
+            val resource = roomsDataSource.getRooms(
                 year = configuration.year,
                 semesterId = configuration.semesterId
             )
