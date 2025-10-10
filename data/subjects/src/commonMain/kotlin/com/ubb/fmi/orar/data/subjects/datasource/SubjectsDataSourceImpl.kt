@@ -6,10 +6,18 @@ import com.ubb.fmi.orar.data.database.model.SubjectEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.SubjectsApi
-import com.ubb.fmi.orar.data.timetable.datasource.TimetableClassDataSource
+import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
+import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.timetable.model.Activity
+import com.ubb.fmi.orar.data.timetable.model.Day
+import com.ubb.fmi.orar.data.timetable.model.Event
+import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Host
+import com.ubb.fmi.orar.data.timetable.model.Location
 import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.Participant
 import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.timetable.model.TimetableClass
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
@@ -19,7 +27,8 @@ import okio.ByteString.Companion.encodeUtf8
  * Data source for managing subject related information
  */
 class SubjectsDataSourceImpl(
-    private val timetableClassDataSource: TimetableClassDataSource,
+    private val eventsDataSource: EventsDataSource,
+    private val roomsDataSource: RoomsDataSource,
     private val subjectsApi: SubjectsApi,
     private val subjectDao: SubjectDao,
     private val logger: Logger,
@@ -73,14 +82,14 @@ class SubjectsDataSourceImpl(
         val subject = resource.payload?.firstOrNull { it.id == subjectId }
 
         logger.d(TAG, "getTimetable subject: $subject")
-        val cachedClasses = subject?.let {
-            timetableClassDataSource.getTimetableClassesFromCache(configurationId, it.id)
+        val cachedEvents = subject?.let {
+            eventsDataSource.getEventsFromCache(configurationId, it.id)
         }
 
         return when {
-            cachedClasses?.isNotEmpty() == true -> {
-                val sortedClasses = timetableClassDataSource.sortTimetableClasses(cachedClasses)
-                val timetable = Timetable(subject, sortedClasses)
+            cachedEvents?.isNotEmpty() == true -> {
+                val sortedEvents = eventsDataSource.sortEvents(cachedEvents)
+                val timetable = Timetable(subject, sortedEvents)
                 logger.d(TAG, "getTimetable from cache: $timetable")
 
                 Resource(timetable, Status.Success)
@@ -91,12 +100,12 @@ class SubjectsDataSourceImpl(
                 val timetableResource = getTimetableFromApi(year, semesterId, subject)
                 timetableResource.payload?.let {
                     saveSubjectInCache(it.owner)
-                    timetableClassDataSource.saveTimetableClassesInCache(it.classes)
+                    eventsDataSource.saveEventsInCache(it.events)
                 }
 
                 val timetable = timetableResource.payload?.let { timetable ->
-                    val sortedClasses = timetableClassDataSource.sortTimetableClasses(timetable.classes)
-                    timetable.copy(classes = sortedClasses)
+                    val sortedEvents = eventsDataSource.sortEvents(timetable.events)
+                    timetable.copy(events = sortedEvents)
                 }
 
                 logger.d(TAG, "getTimetable from API: $timetable ${timetableResource.status}")
@@ -192,7 +201,7 @@ class SubjectsDataSourceImpl(
 
         logger.d(TAG, "getTimetableFromApi table: $table")
 
-        val classes = table?.rows?.mapNotNull { row ->
+        val events = table?.rows?.mapNotNull { row ->
             logger.d(TAG, "getTimetableFromApi row: $row")
             val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
             val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
@@ -200,7 +209,7 @@ class SubjectsDataSourceImpl(
             val roomCell = row.cells.getOrNull(ROOM_INDEX) ?: return@mapNotNull null
             val studyLineCell = row.cells.getOrNull(STUDY_LINE_INDEX) ?: return@mapNotNull null
             val participantCell = row.cells.getOrNull(PARTICIPANT_INDEX) ?: return@mapNotNull null
-            val classTypeCell = row.cells.getOrNull(CLASS_TYPE_INDEX) ?: return@mapNotNull null
+            val eventTypeCell = row.cells.getOrNull(EVENT_TYPE_INDEX) ?: return@mapNotNull null
             val teacherCell = row.cells.getOrNull(TEACHER_INDEX) ?: return@mapNotNull null
             val intervals = intervalCell.value.split(String.DASH)
             val startHour = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
@@ -213,33 +222,59 @@ class SubjectsDataSourceImpl(
                 roomCell.value,
                 studyLineCell.value,
                 participantCell.value,
-                classTypeCell.value,
+                eventTypeCell.value,
                 teacherCell.value,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
-            TimetableClass(
+            val room = roomsDataSource.getRooms(year, semesterId).payload?.firstOrNull {
+                it.id == roomCell.id
+            }
+
+            val location = room?.let {
+                Location(
+                    id = room.id,
+                    name = room.name,
+                    address = room.address
+                )
+            }
+
+            val activity = Activity(
+                id = subject.id,
+                name = subject.name
+            )
+
+            val participant = Participant(
+                id = participantCell.id,
+                name = participantCell.value
+            )
+
+            val host = Host(
+                id = teacherCell.id,
+                name = teacherCell.value
+            )
+
+            Event(
                 id = id,
-                day = dayCell.value,
-                startHour = startHour,
-                endHour = endHour,
-                frequencyId = frequencyCell.value,
-                room = roomCell.value,
-                subject = subject.name,
-                field = studyLineCell.value,
-                participant = participantCell.value,
-                classType = classTypeCell.value,
+                configurationId = configurationId,
                 ownerId = subject.id,
-                teacher = teacherCell.value,
-                isVisible = true,
-                configurationId = configurationId
+                day = Day.getById(dayCell.value),
+                frequency = Frequency.getById(frequencyCell.value),
+                startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
+                endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
+                location = location,
+                activity = activity,
+                type = EventType.getById(eventTypeCell.value),
+                participant = participant,
+                host = host,
+                isVisible = true
             )
         }
 
-        logger.d(TAG, "getTimetableFromApi classes: $classes")
+        logger.d(TAG, "getTimetableFromApi events: $events")
 
         return when {
-            classes == null -> Resource(null, resource.status)
-            else -> Resource(Timetable(subject, classes), Status.Success)
+            events == null -> Resource(null, resource.status)
+            else -> Resource(Timetable(subject, events), Status.Success)
         }
     }
 
@@ -288,7 +323,7 @@ class SubjectsDataSourceImpl(
         private const val ROOM_INDEX = 3
         private const val STUDY_LINE_INDEX = 4
         private const val PARTICIPANT_INDEX = 5
-        private const val CLASS_TYPE_INDEX = 6
+        private const val EVENT_TYPE_INDEX = 6
         private const val TEACHER_INDEX = 7
 
         // Interval indexes

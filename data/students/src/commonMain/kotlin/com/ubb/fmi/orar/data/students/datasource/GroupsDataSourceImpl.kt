@@ -6,11 +6,19 @@ import com.ubb.fmi.orar.data.database.model.GroupEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.StudentsApi
-import com.ubb.fmi.orar.data.timetable.datasource.TimetableClassDataSource
+import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
+import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.timetable.model.Activity
+import com.ubb.fmi.orar.data.timetable.model.Day
+import com.ubb.fmi.orar.data.timetable.model.Event
+import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Host
+import com.ubb.fmi.orar.data.timetable.model.Location
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.timetable.model.TimetableClass
 import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.Participant
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.extensions.SLASH
@@ -23,7 +31,8 @@ import okio.ByteString.Companion.encodeUtf8
  * Data source for managing study line related information
  */
 class GroupsDataSourceImpl(
-    private val timetableClassDataSource: TimetableClassDataSource,
+    private val eventsDataSource: EventsDataSource,
+    private val roomsDataSource: RoomsDataSource,
     private val studentsApi: StudentsApi,
     private val studyLinesDataSource: StudyLinesDataSource,
     private val groupDao: GroupDao,
@@ -86,14 +95,14 @@ class GroupsDataSourceImpl(
         val group = resource.payload?.firstOrNull { it.id == groupId }
 
         logger.d(TAG, "get group timetable for: $group")
-        val cachedClasses = group?.let {
-            timetableClassDataSource.getTimetableClassesFromCache(configurationId, it.id)
+        val cachedEvents = group?.let {
+            eventsDataSource.getEventsFromCache(configurationId, it.id)
         }
 
         return when {
-            cachedClasses?.isNotEmpty() == true -> {
-                val sortedClasses = timetableClassDataSource.sortTimetableClasses(cachedClasses)
-                val timetable = Timetable(owner = group, classes = sortedClasses)
+            cachedEvents?.isNotEmpty() == true -> {
+                val sortedEvents = eventsDataSource.sortEvents(cachedEvents)
+                val timetable = Timetable(owner = group, events = sortedEvents)
                 logger.d(TAG, "get group timetable from cache: $timetable")
 
                 Resource(timetable, Status.Success)
@@ -104,19 +113,15 @@ class GroupsDataSourceImpl(
                 val timetableResource = getTimetableFromApi(year, semesterId, group)
                 timetableResource.payload?.let {
                     saveGroupInCache(it.owner)
-                    timetableClassDataSource.saveTimetableClassesInCache(it.classes)
+                    eventsDataSource.saveEventsInCache(it.events)
                 }
 
                 val timetable = timetableResource.payload?.let { timetable ->
-                    val sortedClasses =
-                        timetableClassDataSource.sortTimetableClasses(timetable.classes)
-                    timetable.copy(classes = sortedClasses)
+                    val sortedEvents = eventsDataSource.sortEvents(timetable.events)
+                    timetable.copy(events = sortedEvents)
                 }
 
-                logger.d(
-                    TAG,
-                    "get group timetable from API: $timetable ${timetableResource.status}"
-                )
+                logger.d(TAG, "get group timetable from API: $timetable ${timetableResource.status}")
                 Resource(timetable, timetableResource.status)
             }
         }
@@ -229,13 +234,13 @@ class GroupsDataSourceImpl(
         val table = joinedTables?.firstOrNull { it.title == group.id }
         logger.d(TAG, "getTimetableFromApi table: $table")
 
-        val classes = table?.rows?.mapNotNull { row ->
+        val events = table?.rows?.mapNotNull { row ->
             logger.d(TAG, "getTimetableFromApi row: $row")
             val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
             val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
             val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
             val roomCell = row.cells.getOrNull(ROOM_INDEX) ?: return@mapNotNull null
-            val classTypeCell = row.cells.getOrNull(CLASS_TYPE_INDEX) ?: return@mapNotNull null
+            val eventTypeCell = row.cells.getOrNull(EVENT_TYPE_INDEX) ?: return@mapNotNull null
             val subjectCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
             val teacherCell = row.cells.getOrNull(TEACHER_INDEX) ?: return@mapNotNull null
             val intervals = intervalCell.value.split(String.DASH)
@@ -252,35 +257,62 @@ class GroupsDataSourceImpl(
                 roomCell.id,
                 group.name,
                 participantCell.value,
-                classTypeCell.value,
+                eventTypeCell.value,
                 group.id,
                 subjectCell.id,
                 teacherCell.id,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
-            TimetableClass(
+
+            val room = roomsDataSource.getRooms(year, semesterId).payload?.firstOrNull {
+                it.id == roomCell.id
+            }
+
+            val location = room?.let {
+                Location(
+                    id = room.id,
+                    name = room.name,
+                    address = room.address
+                )
+            }
+
+            val activity = Activity(
+                id = subjectCell.id,
+                name = subjectCell.value
+            )
+
+            val participant = Participant(
+                id = participantCell.id,
+                name = participantCell.value
+            )
+
+            val host = Host(
+                id = teacherCell.id,
+                name = teacherCell.value
+            )
+
+            Event(
                 id = id,
-                day = dayCell.value,
-                startHour = startHour,
-                endHour = endHour,
-                frequencyId = frequencyCell.value,
-                room = roomCell.value,
-                field = group.studyLine.name,
-                participant = participantCell.value,
-                classType = classTypeCell.value,
+                configurationId = configurationId,
                 ownerId = group.id,
-                subject = subjectCell.value,
-                teacher = teacherCell.value,
-                isVisible = true,
-                configurationId = configurationId
+                day = Day.getById(dayCell.value),
+                frequency = Frequency.getById(frequencyCell.value),
+                startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
+                endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
+                location = location,
+                activity = activity,
+                type = EventType.getById(eventTypeCell.value),
+                participant = participant,
+                host = host,
+                isVisible = true
             )
         }
 
-        logger.d(TAG, "getTimetableFromApi classes: $classes")
+        logger.d(TAG, "getTimetableFromApi events: $events")
 
         return when {
-            classes == null -> Resource(null, resource.status)
-            else -> Resource(Timetable(group, classes), Status.Success)
+            events == null -> Resource(null, resource.status)
+            else -> Resource(Timetable(group, events), Status.Success)
         }
     }
 
@@ -330,7 +362,7 @@ class GroupsDataSourceImpl(
         private const val FREQUENCY_INDEX = 2
         private const val ROOM_INDEX = 3
         private const val PARTICIPANT_INDEX = 4
-        private const val CLASS_TYPE_INDEX = 5
+        private const val EVENT_TYPE_INDEX = 5
         private const val SUBJECT_INDEX = 6
         private const val TEACHER_INDEX = 7
 

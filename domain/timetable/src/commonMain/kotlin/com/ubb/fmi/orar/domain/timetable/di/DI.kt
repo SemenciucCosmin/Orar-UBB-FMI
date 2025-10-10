@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.domain.timetable.di
 
-import com.ubb.fmi.orar.domain.timetable.usecase.ChangeTimetableClassVisibilityUseCase
+import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedDataValidityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.InvalidateCachedDataUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
@@ -12,7 +12,7 @@ import org.koin.dsl.module
  * This module includes use cases for managing timetable configurations and class visibility.
  */
 fun timetableDomainModule() = module {
-    factoryOf(::ChangeTimetableClassVisibilityUseCase)
+    factoryOf(::ChangeEventVisibilityUseCase)
     factoryOf(::SetTimetableConfigurationUseCase)
     factoryOf(::CheckCachedDataValidityUseCase)
     factoryOf(::InvalidateCachedDataUseCase)

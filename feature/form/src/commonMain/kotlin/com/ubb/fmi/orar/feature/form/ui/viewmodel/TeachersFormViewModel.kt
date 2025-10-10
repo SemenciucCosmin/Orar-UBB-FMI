@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
+import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
-import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -40,7 +40,7 @@ class TeachersFormViewModel(
     private val timetablePreferences: TimetablePreferences,
     private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
     private val logger: Logger,
-) : EventViewModel<TeachersFormUiState.TeachersFormEvent>() {
+) : EventViewModel<TeachersFormUiState.TeachersFormUiEvent>() {
 
     /**
      * Mutable state flow that holds the UI state for the teachers selection.
@@ -95,7 +95,7 @@ class TeachersFormViewModel(
                 errorStatus = resource.status.toErrorStatus(),
                 teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
                 selectedTeacherId = teacher?.id,
-                selectedFilterId = teacher?.titleId ?: TeacherTitleFilter.ALL.id,
+                selectedFilterId = teacher?.title?.id ?: TeacherTitleFilter.ALL.id,
             )
         }
     }
@@ -138,7 +138,7 @@ class TeachersFormViewModel(
                     groupId = null
                 )
 
-                registerEvent(TeachersFormUiState.TeachersFormEvent.CONFIGURATION_DONE)
+                registerEvent(TeachersFormUiState.TeachersFormUiEvent.CONFIGURATION_DONE)
             }
         }
     }

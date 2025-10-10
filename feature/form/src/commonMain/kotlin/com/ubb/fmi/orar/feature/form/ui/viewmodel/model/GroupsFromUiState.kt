@@ -1,9 +1,9 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
-import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -27,7 +27,7 @@ data class GroupsFromUiState(
     /**
      * Enum class for one time events on groups form screen
      */
-    enum class GroupsFromEvent : Event {
+    enum class GroupsFromUiEvent : UiEvent {
         CONFIGURATION_DONE
     }
 }

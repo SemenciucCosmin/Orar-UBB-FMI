@@ -1,14 +1,12 @@
 package com.ubb.fmi.orar.ui.catalog.viewmodel.model
 
-import com.ubb.fmi.orar.data.timetable.model.TimetableClass
+import com.ubb.fmi.orar.data.timetable.model.Event
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COMMA
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.ui.catalog.model.ClassType
-import com.ubb.fmi.orar.ui.catalog.model.Day
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -29,7 +27,7 @@ import kotlin.String
  * @property errorStatus Indicates whether there was an error loading the timetable data.
  */
 data class TimetableUiState(
-    val classes: ImmutableList<TimetableClass> = persistentListOf(),
+    val events: ImmutableList<Event> = persistentListOf(),
     val title: String = String.BLANK,
     val studyLevel: StudyLevel? = null,
     val group: String? = null,
@@ -45,55 +43,74 @@ data class TimetableUiState(
          */
         val TimetableUiState.timetableListItems: ImmutableList<TimetableListItem>
             get() {
-                val filteredClasses = classes.filter { timetableClass ->
-                    timetableClass.frequencyId in listOf(Frequency.BOTH.id, selectedFrequency.id)
+                val filteredEvents = events.filter { event ->
+                    event.frequency.id in listOf(Frequency.BOTH.id, selectedFrequency.id)
                 }
 
-                val classes = when {
-                    isEditModeOn -> filteredClasses
-                    else -> {
-                        val visibleClasses = filteredClasses.filter { it.isVisible }
-                        val groupedClasses = visibleClasses.groupBy { timetableClass ->
-                            listOf(
-                                timetableClass.day,
-                                timetableClass.startHour,
-                                timetableClass.endHour,
-                                timetableClass.room,
-                                timetableClass.classType,
-                                timetableClass.ownerId,
-                                timetableClass.subject,
-                                timetableClass.teacher,
-                            )
+                val groupedEvents = filteredEvents.groupBy { it.day }.mapKeys { (day, _) ->
+                    TimetableListItem.Divider(day)
+                }
+
+                val timetableItems = groupedEvents.mapValues { (_, events) ->
+                    when {
+                        isEditModeOn -> {
+                            events.map { event ->
+                                TimetableListItem.Event(
+                                    id = event.id,
+                                    startHour = event.startHour,
+                                    endHour = event.endHour,
+                                    location = event.location,
+                                    title = event.activity.name,
+                                    type = event.type,
+                                    participantName = event.participant?.name ?: String.BLANK,
+                                    hostName = event.host?.name ?: String.BLANK,
+                                    isVisible = event.isVisible
+                                )
+                            }
                         }
 
-                        groupedClasses.values.mapNotNull { classes ->
-                            val joinedParticipant = classes.joinToString(
-                                String.COMMA + String.SPACE
-                            ) { it.participant }
+                        else -> {
+                            val visibleEvents = events.filter { it.isVisible }
+                            val groupedEvents = visibleEvents.groupBy { event ->
+                                listOf(
+                                    event.ownerId,
+                                    event.day,
+                                    event.startHour,
+                                    event.endHour,
+                                    event.location,
+                                    event.activity,
+                                    event.type,
+                                    event.host,
+                                )
+                            }
 
-                            classes.firstOrNull()?.copy(participant = joinedParticipant)
+                            groupedEvents.values.mapNotNull { events ->
+                                val joinedParticipantName = events.joinToString(
+                                    String.COMMA + String.SPACE
+                                ) { it.participant?.name ?: String.BLANK }
+
+                                val event = events.firstOrNull() ?: return@mapNotNull null
+
+                                TimetableListItem.Event(
+                                    id = event.id,
+                                    startHour = event.startHour,
+                                    endHour = event.endHour,
+                                    location = event.location,
+                                    title = event.activity.name,
+                                    type = event.type,
+                                    participantName = joinedParticipantName,
+                                    hostName = event.host?.name ?: String.BLANK,
+                                    isVisible = event.isVisible
+                                )
+                            }
                         }
                     }
                 }
 
-                return classes.groupBy { it.day }.map { (day, classes) ->
-                    val divider = TimetableListItem.Divider(Day.getById(day))
-                    val classItems = classes.map { timetableClass ->
-
-                        TimetableListItem.Class(
-                            id = timetableClass.id,
-                            startHour = timetableClass.startHour,
-                            endHour = timetableClass.endHour,
-                            subject = timetableClass.subject,
-                            classType = ClassType.getById(timetableClass.classType),
-                            participant = timetableClass.participant,
-                            teacher = timetableClass.teacher,
-                            room = timetableClass.room,
-                            isVisible = timetableClass.isVisible,
-                        )
-                    }
-
-                    listOf(divider) + classItems
+                return timetableItems.filter { (_, events) ->
+                    events.isNotEmpty()
+                }.map { (day, events) ->
+                    listOf(day) + events
                 }.flatten().toImmutableList()
             }
     }

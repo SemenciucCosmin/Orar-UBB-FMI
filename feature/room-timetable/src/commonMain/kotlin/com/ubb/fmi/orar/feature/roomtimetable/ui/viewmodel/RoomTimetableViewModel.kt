@@ -4,13 +4,13 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
+import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -88,7 +88,7 @@ class RoomTimetableViewModel(
 
             logger.d(TAG, "loadTimetable resource: $timetableResource")
             val subject = roomResource.payload?.firstOrNull { it.id == roomId }
-            val classes = timetableResource.payload?.classes?.map {
+            val events = timetableResource.payload?.events?.map {
                 it.copy(isVisible = true)
             }?.toImmutableList() ?: persistentListOf()
 
@@ -96,7 +96,7 @@ class RoomTimetableViewModel(
                 it.copy(
                     isLoading = false,
                     errorStatus = timetableResource.status.toErrorStatus(),
-                    classes = classes,
+                    events = events,
                     title = subject?.name ?: String.BLANK
                 )
             }

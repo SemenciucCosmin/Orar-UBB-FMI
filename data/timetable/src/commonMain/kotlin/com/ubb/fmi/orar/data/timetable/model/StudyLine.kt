@@ -13,7 +13,7 @@ data class StudyLine(
     val id: String,
     val name: String,
     val fieldId: String,
-    val levelId: String,
-    val degreeId: String,
+    val level: StudyLevel,
+    val degree: Degree,
     val configurationId: String,
 )

@@ -31,7 +31,7 @@ data class StudyLinesFormUiState(
             get() {
                 return groupedStudyLines.filter { studyLines ->
                     studyLines.all {
-                        it.degreeId == selectedFilterId
+                        it.degree.id == selectedFilterId
                     } || selectedFilterId == DegreeFilter.ALL.id
                 }.toImmutableList()
             }

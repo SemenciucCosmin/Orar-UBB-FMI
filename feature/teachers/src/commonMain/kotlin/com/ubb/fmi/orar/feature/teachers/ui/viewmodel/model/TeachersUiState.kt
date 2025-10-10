@@ -31,7 +31,7 @@ data class TeachersUiState(
             get() {
                 return teachers.filter { teacher ->
                     selectedFilterId in listOf(
-                        teacher.titleId,
+                        teacher.title.id,
                         TeacherTitleFilter.ALL.id
                     )
                 }.toImmutableList()

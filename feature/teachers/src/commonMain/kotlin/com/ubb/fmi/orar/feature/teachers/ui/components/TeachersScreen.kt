@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Owner
-import com.ubb.fmi.orar.feature.teachers.ui.model.TeacherTitle
+import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
@@ -68,11 +68,9 @@ fun TeachersScreen(
                 verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
             ) {
                 items(uiState.filteredTeachers) { teacher ->
-                    val teacherTitle = TeacherTitle.getById(teacher.titleId)
-
                     ListItemClickable(
                         headline = teacher.name,
-                        overline = stringResource(teacherTitle.labelRes),
+                        overline = teacher.title.label,
                         onClick = { onTeacherClick(teacher.id) },
                         leadingIcon = painterResource(Res.drawable.ic_teacher),
                     )
@@ -100,7 +98,7 @@ private fun PreviewTeachersScreen() {
                         id = it.toString(),
                         name = "Teacher $it",
                         configurationId = "20241",
-                        titleId = "Prof.",
+                        title = TeacherTitle.entries.random(),
                     )
                 }.toImmutableList()
             )

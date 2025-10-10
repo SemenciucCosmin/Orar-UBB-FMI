@@ -6,7 +6,8 @@ import com.ubb.fmi.orar.data.database.model.StudyLineEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.StudentsApi
-import com.ubb.fmi.orar.data.students.model.Degree
+import com.ubb.fmi.orar.data.timetable.model.Degree
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
@@ -116,17 +117,17 @@ class StudyLinesDataSourceImpl(
                         char.isLetter()
                     }.joinToString(separator = String.BLANK)
 
-                    val degreeId = when {
-                        tableIndex == MASTER_DEGREE_TABLE_INDEX -> Degree.MASTER.id
-                        else -> Degree.LICENCE.id
+                    val degree = when {
+                        tableIndex == MASTER_DEGREE_TABLE_INDEX -> Degree.MASTER
+                        else -> Degree.LICENCE
                     }
 
                     StudyLine(
                         id = lineId,
                         name = nameCell.value,
                         fieldId = fieldId,
-                        levelId = levelCell.value,
-                        degreeId = degreeId,
+                        level = StudyLevel.getById(levelCell.value),
+                        degree = degree,
                         configurationId = configurationId,
                     )
                 }
@@ -159,8 +160,8 @@ class StudyLinesDataSourceImpl(
             name = studyLine.name,
             configurationId = studyLine.configurationId,
             fieldId = studyLine.fieldId,
-            levelId = studyLine.levelId,
-            degreeId = studyLine.degreeId
+            levelId = studyLine.level.id,
+            degreeId = studyLine.degree.id
         )
     }
 
@@ -173,8 +174,8 @@ class StudyLinesDataSourceImpl(
             name = entity.name,
             configurationId = entity.configurationId,
             fieldId = entity.fieldId,
-            levelId = entity.levelId,
-            degreeId = entity.degreeId,
+            level = StudyLevel.getById(entity.levelId),
+            degree = Degree.getById(entity.degreeId),
         )
     }
 

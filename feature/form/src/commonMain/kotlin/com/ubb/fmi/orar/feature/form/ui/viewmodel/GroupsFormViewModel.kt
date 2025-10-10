@@ -3,12 +3,12 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
+import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
-import com.ubb.fmi.orar.ui.catalog.model.UserType
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -48,7 +48,7 @@ class GroupsFormViewModel(
     private val timetablePreferences: TimetablePreferences,
     private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
     private val logger: Logger,
-) : EventViewModel<GroupsFromUiState.GroupsFromEvent>() {
+) : EventViewModel<GroupsFromUiState.GroupsFromUiEvent>() {
 
     /**
      * Mutable state flow that holds the UI state for the groups selection.
@@ -137,7 +137,7 @@ class GroupsFormViewModel(
                     teacherId = null
                 )
 
-                registerEvent(GroupsFromUiState.GroupsFromEvent.CONFIGURATION_DONE)
+                registerEvent(GroupsFromUiState.GroupsFromUiEvent.CONFIGURATION_DONE)
             }
         }
     }

@@ -19,10 +19,10 @@ expect fun platformModule(): Module
 fun databaseDataModule() = module {
     includes(platformModule())
     single { get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build() }
+    single { get<OrarUbbFmiDatabase>().eventDao }
     single { get<OrarUbbFmiDatabase>().groupDao }
     single { get<OrarUbbFmiDatabase>().roomDao }
     single { get<OrarUbbFmiDatabase>().studyLineDao }
     single { get<OrarUbbFmiDatabase>().subjectDao }
     single { get<OrarUbbFmiDatabase>().teacherDao }
-    single { get<OrarUbbFmiDatabase>().timetableClassDao }
 }

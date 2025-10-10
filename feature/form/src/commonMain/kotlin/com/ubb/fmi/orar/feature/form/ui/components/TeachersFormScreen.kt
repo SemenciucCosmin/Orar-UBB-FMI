@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
@@ -86,7 +87,7 @@ fun TeachersFormScreen(
                 items(uiState.filteredTeachers) { teacher ->
                     ListItemSelectable(
                         headline = teacher.name,
-                        overline = teacher.titleId,
+                        overline = teacher.title.label,
                         isSelected = uiState.selectedTeacherId == teacher.id,
                         onClick = { onTeacherClick(teacher.id) }
                     )
@@ -126,7 +127,7 @@ private fun PreviewTeachersFormScreen() {
                         id = "",
                         name = "Teacher $it",
                         configurationId = "20241",
-                        titleId = "Prof."
+                        title = TeacherTitle.entries.random()
                     )
                 }.toImmutableList()
             )

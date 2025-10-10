@@ -4,11 +4,11 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -78,7 +78,7 @@ class StudyLinesFormViewModel(
         val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
             studyLine.fieldId
         }?.values?.toList()?.map { studyLines ->
-            studyLines.sortedBy { it.levelId }.toImmutableList()
+            studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
         }?.toImmutableList() ?: persistentListOf()
 
         logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")
@@ -89,9 +89,9 @@ class StudyLinesFormViewModel(
                 isLoading = false,
                 errorStatus = studyLinesResource.status.toErrorStatus(),
                 groupedStudyLines = groupedStudyLines,
-                selectedFilterId = selectedStudyLine?.degreeId ?: DegreeFilter.ALL.id,
+                selectedFilterId = selectedStudyLine?.degree?.id ?: DegreeFilter.ALL.id,
                 selectedFieldId = selectedStudyLine?.fieldId,
-                selectedStudyLevelId = selectedStudyLine?.levelId,
+                selectedStudyLevelId = selectedStudyLine?.level?.id,
             )
         }
     }

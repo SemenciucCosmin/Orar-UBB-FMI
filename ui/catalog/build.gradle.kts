@@ -49,6 +49,8 @@ kotlin {
             implementation(projects.data.network)
             implementation(projects.data.timetable)
             implementation(projects.domain.extensions)
+            implementation(projects.domain.timetable)
+            implementation(projects.domain.userTimetable)
             implementation(projects.ui.theme)
         }
 

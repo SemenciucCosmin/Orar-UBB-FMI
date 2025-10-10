@@ -11,6 +11,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.data.timetable.model.Degree
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
@@ -20,9 +22,9 @@ import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemExpandable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
@@ -102,11 +104,9 @@ fun StudyLinesFormScreen(
                                 shape = MaterialTheme.shapes.small,
                                 onClick = onStudyLevelClick,
                                 chips = groupedStudyLines.map {
-                                    val studyLevel = StudyLevel.getById(it.levelId)
-
                                     Chip(
-                                        id = studyLevel.id,
-                                        label = stringResource(studyLevel.labelRes)
+                                        id = it.level.id,
+                                        label = stringResource(it.level.labelRes)
                                     )
                                 }
                             )
@@ -152,8 +152,8 @@ private fun PreviewStudyLinesFormScreen() {
                             name = "Informatica Engleza",
                             configurationId = "20241",
                             fieldId = "IE",
-                            levelId = "Anul1",
-                            degreeId = "Licenta"
+                            level = StudyLevel.entries.random(),
+                            degree = Degree.entries.random()
                         )
                     }.toImmutableList()
                 }.toImmutableList(),

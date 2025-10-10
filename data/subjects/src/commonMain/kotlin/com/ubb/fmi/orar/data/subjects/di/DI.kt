@@ -9,5 +9,5 @@ import org.koin.dsl.module
  * This module includes the SubjectsDataSource for managing subject-related data.
  */
 fun subjectsDataModule() = module {
-    factory<SubjectsDataSource> { SubjectsDataSourceImpl(get(), get(), get(), get()) }
+    factory<SubjectsDataSource> { SubjectsDataSourceImpl(get(), get(), get(), get(), get()) }
 }

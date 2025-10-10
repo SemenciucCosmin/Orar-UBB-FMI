@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
+import com.ubb.fmi.orar.data.database.model.EventEntity
 
 /**
  * Data Access Object (DAO) for managing timetable class entities in the database.
@@ -12,32 +12,32 @@ import com.ubb.fmi.orar.data.database.model.TimetableClassEntity
  * including retrieving, inserting, and deleting timetable class records.
  */
 @Dao
-interface TimetableClassDao {
+interface EventDao {
 
     /**
      * Get all timetable class entities by [configurationId] and [ownerId]
      */
-    @Query("SELECT * FROM timetable_classes WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
+    @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
     suspend fun getAllByConfigurationAndOwner(
         configurationId: String,
         ownerId: String,
-    ): List<TimetableClassEntity>
+    ): List<EventEntity>
 
     /**
-     * Get timetable class entity [id]
+     * Get timetable event entity [id]
      */
-    @Query("SELECT * FROM timetable_classes WHERE id LIKE :id ")
-    suspend fun getById(id: String): TimetableClassEntity
+    @Query("SELECT * FROM events WHERE id LIKE :id ")
+    suspend fun getById(id: String): EventEntity
 
     /**
-     * Insert new timetable class [entity]
+     * Insert new timetable event [entity]
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: TimetableClassEntity)
+    suspend fun insert(entity: EventEntity)
 
     /**
-     * Delete all timetable class entities by [configurationId]
+     * Delete all timetable event entities by [configurationId]
      */
-    @Query("DELETE FROM timetable_classes WHERE configurationId LIKE :configurationId")
+    @Query("DELETE FROM events WHERE configurationId LIKE :configurationId")
     suspend fun deleteAll(configurationId: String)
 }

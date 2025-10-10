@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.ui.catalog.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.ui.catalog.viewmodel.model.Event
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -17,10 +17,10 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * View model wrapper for ui event driven management.
  * The ui state of the view model that is extending this abstract class should
- * contain an enum (or other preferred model type) that implements interface [Event].
+ * contain an enum (or other preferred model type) that implements interface [UiEvent].
  * https://developer.android.com/topic/architecture/ui-layer/events
  */
-abstract class EventViewModel<T : Event> : ViewModel() {
+abstract class EventViewModel<T : UiEvent> : ViewModel() {
     private val _events: MutableStateFlow<ImmutableList<T>> = MutableStateFlow(
         persistentListOf()
     )

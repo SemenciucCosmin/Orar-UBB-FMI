@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ubb.fmi.orar.data.timetable.model.Degree
 import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
@@ -18,7 +20,7 @@ import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
@@ -105,8 +107,8 @@ private fun PreviewGroupsFormScreen() {
                             id = "$it",
                             name = "$it",
                             fieldId = "$it",
-                            levelId = "$it",
-                            degreeId = "$it",
+                            level = StudyLevel.entries.random(),
+                            degree = Degree.entries.random(),
                             configurationId = "$it"
                         )
                     )

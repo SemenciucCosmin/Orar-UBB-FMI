@@ -31,13 +31,13 @@ sealed class Owner(
      * @param [id]: unique identifier
      * @param [name]: name of the owner
      * @param [configurationId]: configuration id to which this owner belongs to
-     * @param [location]: location of the room
+     * @param [address]: address of the room
      */
     data class Room(
         override val id: String,
         override val name: String,
         override val configurationId: String,
-        val location: String
+        val address: String
     ) : Owner(id, name, configurationId)
 
     /**
@@ -57,12 +57,12 @@ sealed class Owner(
      * @param [id]: unique identifier
      * @param [name]: name of the owner
      * @param [configurationId]: configuration id to which this owner belongs to
-     * @param [titleId]: teacher title
+     * @param [title]: teacher title
      */
     data class Teacher(
         override val id: String,
         override val name: String,
         override val configurationId: String,
-        val titleId: String,
+        val title: TeacherTitle,
     ) : Owner(id, name, configurationId)
 }

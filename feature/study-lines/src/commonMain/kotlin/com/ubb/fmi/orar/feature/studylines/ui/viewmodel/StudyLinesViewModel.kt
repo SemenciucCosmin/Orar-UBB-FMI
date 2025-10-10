@@ -78,7 +78,7 @@ class StudyLinesViewModel(
             val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
                 studyLine.fieldId
             }?.values?.toList()?.map { studyLines ->
-                studyLines.sortedBy { it.levelId }.toImmutableList()
+                studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
             }?.toImmutableList() ?: persistentListOf()
 
             logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")

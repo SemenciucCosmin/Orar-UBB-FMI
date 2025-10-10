@@ -12,5 +12,5 @@ import org.koin.dsl.module
  */
 fun studentsDataModule() = module {
     factory<StudyLinesDataSource> { StudyLinesDataSourceImpl(get(), get(), get()) }
-    factory<GroupsDataSource> { GroupsDataSourceImpl(get(), get(), get(), get(), get()) }
+    factory<GroupsDataSource> { GroupsDataSourceImpl(get(), get(), get(), get(), get(), get()) }
 }
