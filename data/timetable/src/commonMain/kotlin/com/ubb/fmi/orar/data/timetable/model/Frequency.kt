@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.data.timetable.model
 
 /**
- * Represents the frequency of classes in the timetable.
+ * Represents the frequency of events in the timetable.
  *
  * @property id The unique identifier for the frequency.
  */

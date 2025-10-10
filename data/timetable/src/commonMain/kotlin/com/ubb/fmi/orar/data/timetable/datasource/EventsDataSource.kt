@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.data.timetable.datasource
 import com.ubb.fmi.orar.data.timetable.model.Event
 
 /**
- * Data source for managing all timetable classes
+ * Data source for managing all timetable events
  */
 interface EventsDataSource {
 
@@ -27,7 +27,7 @@ interface EventsDataSource {
     fun sortEvents(events: List<Event>): List<Event>
 
     /**
-     * Change visibility of specific timetable class by [timetableClassId]
+     * Change visibility of specific timetable event by [eventId]
      */
     suspend fun changeEventVisibility(eventId: String)
 

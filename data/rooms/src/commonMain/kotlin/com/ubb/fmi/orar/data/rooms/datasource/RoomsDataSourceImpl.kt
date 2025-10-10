@@ -183,6 +183,7 @@ class RoomsDataSourceImpl(
      * Retrieve timetable of [Owner.Room] for specific room from API
      * by [year], [semesterId] and [room]
      */
+    @Suppress("CyclomaticComplexMethod")
     private suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,

@@ -1,8 +1,8 @@
 package com.ubb.fmi.orar.ui.catalog.model
 
+import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Location
-import com.ubb.fmi.orar.data.timetable.model.Day
 
 /**
  * Represents an item in the timetable list, which can either be a class or a divider for a specific day.

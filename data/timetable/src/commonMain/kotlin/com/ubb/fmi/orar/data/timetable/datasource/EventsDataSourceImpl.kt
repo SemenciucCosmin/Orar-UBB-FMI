@@ -13,13 +13,17 @@ import com.ubb.fmi.orar.data.timetable.model.Location
 import com.ubb.fmi.orar.data.timetable.model.Participant
 
 /**
- * Data source for managing all timetable classes
+ * Data source for managing all timetable events
  */
 class EventsDataSourceImpl(
     private val eventDao: EventDao,
     private val logger: Logger,
 ) : EventsDataSource {
 
+    /**
+     * Retrieve list of [Event] for specific [ownerId] from cache
+     * by [configurationId]
+     */
     override suspend fun getEventsFromCache(
         configurationId: String,
         ownerId: String,
@@ -32,11 +36,17 @@ class EventsDataSourceImpl(
         return eventEntities.map(::mapEntityToEvent)
     }
 
+    /**
+     * Saves new list of [Event] to cache
+     */
     override suspend fun saveEventsInCache(events: List<Event>) {
         val eventEntities = events.map(::mapEventToEntity)
         eventEntities.forEach { eventDao.insert(it) }
     }
 
+    /**
+     * Sorts [Event] objects by day order index, start hour and end hour
+     */
     override fun sortEvents(events: List<Event>): List<Event> {
         return events.sortedWith(
             compareBy<Event> { it.day.orderIndex }
@@ -45,6 +55,9 @@ class EventsDataSourceImpl(
         )
     }
 
+    /**
+     * Change visibility of specific timetable event by [eventId]
+     */
     override suspend fun changeEventVisibility(eventId: String) {
         logger.d(TAG, "changeTimetableClassVisibility for eventId: $eventId")
         val eventEntity = eventDao.getById(eventId)

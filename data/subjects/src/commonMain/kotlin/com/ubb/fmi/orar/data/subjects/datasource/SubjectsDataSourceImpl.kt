@@ -184,6 +184,7 @@ class SubjectsDataSourceImpl(
      * Retrieve timetable of [Owner.Subject] for specific subject from API
      * by [year], [semesterId] and [subject]
      */
+    @Suppress("CyclomaticComplexMethod")
     private suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,
