@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.database
 
+import androidx.room.AutoMigration
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -22,7 +23,7 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
  * It includes entities for rooms, study lines, subjects, teachers, and timetable classes.
  */
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         EventEntity::class,
         GroupEntity::class,
@@ -31,6 +32,9 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
         SubjectEntity::class,
         TeacherEntity::class,
     ],
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2, spec = AutoMigrations.AutoMigrationSpec1To2::class),
+    ]
 )
 @ConstructedBy(OrarUbbFmiDatabaseConstructor::class)
 abstract class OrarUbbFmiDatabase : RoomDatabase() {
