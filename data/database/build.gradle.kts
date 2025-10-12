@@ -33,7 +33,6 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-
         }
 
         commonMain.dependencies {
@@ -54,10 +53,6 @@ kotlin {
         commonTest.dependencies {
 
 
-        }
-
-        dependencies {
-            ksp(libs.room.compiler)
         }
     }
 }
@@ -88,4 +83,5 @@ android {
 
 dependencies {
     implementation(libs.room.ktx)
+    add("ksp", libs.room.compiler)
 }
