@@ -23,8 +23,9 @@ fun TeachersRoute(navController: NavController) {
 
     TeachersScreen(
         uiState = uiState,
-        onRetryClick = viewModel::retry,
         onSelectFilter = viewModel::selectTeacherTitleFilter,
+        onChangeSearchQuery = viewModel::setSearchQuery,
+        onRetryClick = viewModel::retry,
         bottomBar = { TimetableBottomBar(navController) },
         onTeacherClick = { roomId ->
             navController.navigate(TimetableNavDestination.TeacherTimetable(roomId))

@@ -24,13 +24,13 @@ data class SubjectsUiState(
 ) {
     companion object {
         /**
-         * Creates an empty [SubjectsUiState] with no subjects, an empty search query,
-         * and both loading and error states set to true.
+         * Filtered list of subjects by search query
          */
         val SubjectsUiState.filteredSubjects: ImmutableList<Owner.Subject>
             get() {
                 return subjects.filter { subject ->
-                    searchQuery.isBlank() || subject.name.lowercase().contains(searchQuery)
+                    val isMatching = subject.name.lowercase().contains(searchQuery.lowercase())
+                    searchQuery.isBlank() || isMatching
                 }.toImmutableList()
             }
     }

@@ -24,6 +24,7 @@ fun RoomsRoute(navController: NavController) {
     RoomsScreen(
         uiState = uiState,
         onRetryClick = viewModel::retry,
+        onChangeSearchQuery = viewModel::setSearchQuery,
         bottomBar = { TimetableBottomBar(navController) },
         onRoomClick = { roomId ->
             navController.navigate(TimetableNavDestination.RoomTimetable(roomId))

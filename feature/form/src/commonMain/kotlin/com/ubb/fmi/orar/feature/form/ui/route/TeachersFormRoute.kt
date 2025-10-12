@@ -41,6 +41,7 @@ fun TeachersFormRoute(
         uiState = uiState,
         onTeacherClick = viewModel::selectTeacher,
         onSelectFilter = viewModel::selectTeacherTitleFilter,
+        onChangeSearchQuery = viewModel::setSearchQuery,
         onNextClick = viewModel::finishSelection,
         onRetryClick = viewModel::retry,
         onBack = navController::navigateUp,

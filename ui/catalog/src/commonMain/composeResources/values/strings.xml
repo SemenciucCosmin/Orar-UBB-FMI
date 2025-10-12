@@ -9,6 +9,7 @@
     <string name="lbl_all">All</string>
     <string name="lbl_hour">%1$s:00</string>
     <string name="lbl_subject">Subject</string>
+    <string name="lbl_room">Room</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Welcome!</string>
