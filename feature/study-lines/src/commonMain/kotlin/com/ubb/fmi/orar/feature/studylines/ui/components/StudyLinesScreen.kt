@@ -9,8 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
+import com.ubb.fmi.orar.data.timetable.model.Degree
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
+import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState.Companion.filteredGroupedStudyLines
@@ -18,6 +19,7 @@ import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemExpandable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -82,10 +84,9 @@ fun StudyLinesScreen(
                         leadingIcon = painterResource(Res.drawable.ic_study_line),
                         expandedContent = {
                             groupedStudyLines.forEach {
-                                val studyLevel = StudyLevel.getById(it.levelId)
                                 ListItemClickable(
-                                    headline = stringResource(studyLevel.labelRes),
-                                    onClick = { onStudyLevelClick(studyLevel.id) },
+                                    headline = stringResource(it.level.labelRes),
+                                    onClick = { onStudyLevelClick(it.level.id) },
                                     trailingIconSize = Pds.icon.Small,
                                     headlineTextStyle = MaterialTheme.typography.bodySmall
                                 )
@@ -115,13 +116,13 @@ private fun PreviewStudyLinesScreen() {
                 selectedFieldId = "IE",
                 groupedStudyLines = List(2) {
                     List(2) {
-                        TimetableOwner.StudyLine(
+                        StudyLine(
                             id = "IE1",
                             name = "Informatica Engleza",
                             configurationId = "20241",
                             fieldId = "IE",
-                            levelId = "Anul1",
-                            degreeId = "Licenta"
+                            level = StudyLevel.LEVEL_1,
+                            degree = Degree.LICENCE
                         )
                     }.toImmutableList()
                 }.toImmutableList(),

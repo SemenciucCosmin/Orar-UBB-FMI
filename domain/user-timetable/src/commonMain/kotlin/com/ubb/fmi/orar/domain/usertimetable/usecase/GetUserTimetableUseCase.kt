@@ -3,12 +3,12 @@ package com.ubb.fmi.orar.domain.usertimetable.usecase
 import Logger
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.timetable.model.StudyLevel
 import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -16,15 +16,15 @@ import kotlinx.coroutines.flow.mapLatest
 
 /**
  * Use case for retrieving the user's timetable based on their configuration.
- * This use case interacts with the study lines and teachers data sources to fetch the timetable.
+ * This use case interacts with the groups and teachers data sources to fetch the timetable.
  * It checks the user's type (student or teacher) and retrieves the appropriate timetable data accordingly.
- * @property studyLinesDataSource The data source for study lines operations.
+ * @property groupsDataSource The data source for groups operations.
  * @property teachersDataSource The data source for teachers operations.
  * @property timetablePreferences The preferences manager for storing and retrieving timetable configurations.
  */
 @Suppress("UNCHECKED_CAST")
 class GetUserTimetableUseCase(
-    private val studyLinesDataSource: StudyLinesDataSource,
+    private val groupsDataSource: GroupsDataSource,
     private val teachersDataSource: TeachersDataSource,
     private val timetablePreferences: TimetablePreferences,
     private val logger: Logger,
@@ -38,7 +38,7 @@ class GetUserTimetableUseCase(
      * @return A flow of Resource containing the user's timetable or an error status.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(): Flow<Resource<Timetable<TimetableOwner>>> {
+    operator fun invoke(): Flow<Resource<Timetable<Owner>>> {
         return timetablePreferences.getConfiguration().mapLatest { configuration ->
             logger.d(TAG, "configuration $configuration")
 
@@ -56,12 +56,12 @@ class GetUserTimetableUseCase(
                         return@mapLatest Resource(null, Status.Error)
                     }
 
-                    return@mapLatest studyLinesDataSource.getTimetable(
+                    return@mapLatest groupsDataSource.getTimetable(
                         year = configuration.year,
                         semesterId = configuration.semesterId,
-                        ownerId = fieldId + studyLevel.notation,
+                        studyLineId = fieldId + studyLevel.notation,
                         groupId = groupId,
-                    ) as Resource<Timetable<TimetableOwner>>
+                    ) as Resource<Timetable<Owner>>
                 }
 
                 UserType.TEACHER -> {
@@ -72,8 +72,8 @@ class GetUserTimetableUseCase(
                     return@mapLatest teachersDataSource.getTimetable(
                         year = configuration.year,
                         semesterId = configuration.semesterId,
-                        ownerId = configuration.teacherId!!,
-                    ) as Resource<Timetable<TimetableOwner>>
+                        teacherId = configuration.teacherId!!,
+                    ) as Resource<Timetable<Owner>>
                 }
             }
         }

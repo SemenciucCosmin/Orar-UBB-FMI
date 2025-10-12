@@ -11,11 +11,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.data.timetable.model.TimetableClass
+import com.ubb.fmi.orar.data.timetable.model.Activity
+import com.ubb.fmi.orar.data.timetable.model.Day
+import com.ubb.fmi.orar.data.timetable.model.Event
+import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Host
+import com.ubb.fmi.orar.data.timetable.model.Location
+import com.ubb.fmi.orar.data.timetable.model.Participant
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
-import com.ubb.fmi.orar.ui.catalog.model.ClassType
-import com.ubb.fmi.orar.ui.catalog.model.Day
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.timetableListItems
@@ -42,7 +47,7 @@ fun TimetableScreen(
     onRetryClick: () -> Unit,
     topBar: @Composable () -> Unit,
     bottomBar: @Composable () -> Unit = {},
-    onItemVisibilityChange: (TimetableListItem.Class) -> Unit = {},
+    onItemVisibilityChange: (TimetableListItem.Event) -> Unit = {},
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
@@ -51,7 +56,6 @@ fun TimetableScreen(
         topBar = topBar,
         bottomBar = bottomBar
     ) { paddingValues ->
-
         LazyColumn(
             modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
@@ -62,7 +66,7 @@ fun TimetableScreen(
                 key = { timetableItem ->
                     when (timetableItem) {
                         is TimetableListItem.Divider -> timetableItem.day
-                        is TimetableListItem.Class -> timetableItem.id
+                        is TimetableListItem.Event -> timetableItem.id
                     }
                 }
             ) { timetableItem ->
@@ -74,7 +78,7 @@ fun TimetableScreen(
                         )
                     }
 
-                    is TimetableListItem.Class -> {
+                    is TimetableListItem.Event -> {
                         Row(
                             modifier = Modifier.animateItem(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -98,13 +102,13 @@ fun TimetableScreen(
                                     Res.string.lbl_hour,
                                     timetableItem.endHour
                                 ),
-                                subject = timetableItem.subject,
-                                classType = timetableItem.classType,
-                                participant = timetableItem.participant,
-                                teacher = timetableItem.teacher,
-                                room = timetableItem.room,
                                 enabled = timetableItem.isVisible,
-                                expanded = !uiState.isEditModeOn
+                                expanded = !uiState.isEditModeOn,
+                                location = timetableItem.location,
+                                title = timetableItem.title,
+                                type = timetableItem.type,
+                                participantName = timetableItem.participantName,
+                                hostName = timetableItem.hostName,
                             )
                         }
                     }
@@ -131,22 +135,32 @@ private fun PreviewTimetableScreen() {
                 isEditModeOn = false,
                 isLoading = false,
                 errorStatus = null,
-                classes = List(10) {
-                    TimetableClass(
+                events = List(10) {
+                    Event(
                         id = "$it",
-                        day = Day.entries.random().id,
-                        startHour = "12",
-                        endHour = "14",
-                        frequencyId = Frequency.entries.random().id,
-                        room = "Room $it",
-                        field = "Field $it",
-                        participant = "Participant $it",
-                        classType = ClassType.entries.random().id,
+                        day = Day.entries.random(),
+                        startHour = 12,
+                        endHour = 14,
+                        frequency = Frequency.entries.random(),
+                        location = Location(
+                            id = "$it",
+                            name = "Room $it",
+                            address = "Str. Street nr. $it"
+                        ),
+                        participant = Participant(
+                            id = "$it",
+                            name = "Participant $it",
+                        ),
+                        type = EventType.entries.random(),
                         ownerId = "$it",
-                        groupId = "$it",
-                        ownerTypeId = "$it",
-                        subject = "Subject $it",
-                        teacher = "Teacher $it",
+                        activity = Activity(
+                            id = "$it",
+                            name = "Activity $it"
+                        ),
+                        host = Host(
+                            id = "$it",
+                            name = "Host $it"
+                        ),
                         isVisible = true,
                         configurationId = "20241"
                     )
@@ -173,22 +187,32 @@ private fun PreviewTimetableScreenEditMode() {
                 isEditModeOn = true,
                 isLoading = false,
                 errorStatus = null,
-                classes = List(10) {
-                    TimetableClass(
+                events = List(10) {
+                    Event(
                         id = "$it",
-                        day = Day.entries.random().id,
-                        startHour = "12",
-                        endHour = "14",
-                        frequencyId = Frequency.entries.random().id,
-                        room = "Room $it",
-                        field = "Field $it",
-                        participant = "Participant $it",
-                        classType = ClassType.entries.random().id,
+                        day = Day.entries.random(),
+                        startHour = 12,
+                        endHour = 14,
+                        frequency = Frequency.entries.random(),
+                        location = Location(
+                            id = "$it",
+                            name = "Room $it",
+                            address = "Str. Street nr. $it"
+                        ),
+                        participant = Participant(
+                            id = "$it",
+                            name = "Participant $it",
+                        ),
+                        type = EventType.entries.random(),
                         ownerId = "$it",
-                        groupId = "$it",
-                        ownerTypeId = "$it",
-                        subject = "Subject $it",
-                        teacher = "Teacher $it",
+                        activity = Activity(
+                            id = "$it",
+                            name = "Activity $it"
+                        ),
+                        host = Host(
+                            id = "$it",
+                            name = "Host $it"
+                        ),
                         isVisible = true,
                         configurationId = "20241"
                     )

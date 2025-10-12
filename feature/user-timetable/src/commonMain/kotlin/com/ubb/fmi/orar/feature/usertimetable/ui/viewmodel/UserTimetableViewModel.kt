@@ -3,12 +3,12 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.domain.timetable.usecase.ChangeTimetableClassVisibilityUseCase
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
@@ -26,11 +26,11 @@ import kotlinx.coroutines.launch
  * and providing functionality to change the visibility of timetable classes.
  * It also supports toggling edit mode and selecting frequency.
  * @property getUserTimetableUseCase Use case for fetching the user's timetable.
- * @property changeTimetableClassVisibilityUseCase Use case for changing the visibility of a timetable
+ * @property changeEventVisibilityUseCase Use case for changing the visibility of a timetable
  */
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
-    private val changeTimetableClassVisibilityUseCase: ChangeTimetableClassVisibilityUseCase,
+    private val changeEventVisibilityUseCase: ChangeEventVisibilityUseCase,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
@@ -70,7 +70,7 @@ class UserTimetableViewModel(
                 it.copy(
                     isLoading = false,
                     errorStatus = resource.status.toErrorStatus(),
-                    classes = resource.payload?.classes?.toImmutableList() ?: persistentListOf()
+                    events = resource.payload?.events?.toImmutableList() ?: persistentListOf()
                 )
             }
         }
@@ -115,26 +115,23 @@ class UserTimetableViewModel(
     /**
      * Changes the visibility of a specific timetable class.
      * This updates the visibility status of the class in the UI state and calls the use case to persist the change.
-     * @param timetableClass The timetable class whose visibility is to be changed.
+     * @param event The timetable class whose visibility is to be changed.
      */
-    fun changeTimetableClassVisibility(timetableClass: TimetableListItem.Class) {
+    fun changeTimetableClassVisibility(event: TimetableListItem.Event) {
         viewModelScope.launch {
-            logger.d(TAG, "changeTimetableClassVisibility class: $timetableClass")
-            changeTimetableClassVisibilityUseCase(
-                timetableClassId = timetableClass.id,
-                timetableOwnerType = timetableClass.timetableOwnerType,
-            )
+            logger.d(TAG, "changeTimetableClassVisibility event: $event")
+            changeEventVisibilityUseCase(event.id)
         }
 
         _uiState.update { state ->
-            val newClasses = state.classes.map {
+            val newEvents = state.events.map {
                 when {
-                    it.id != timetableClass.id -> it
+                    it.id != event.id -> it
                     else -> it.copy(isVisible = !it.isVisible)
                 }
             }.toImmutableList()
 
-            state.copy(classes = newClasses)
+            state.copy(events = newEvents)
         }
     }
 

@@ -39,7 +39,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
 
             // MODULES
-            implementation(projects.data.studyLines)
+            implementation(projects.data.students)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
             implementation(projects.data.network)

@@ -52,11 +52,12 @@ kotlin {
 
             // MODULES
             implementation(projects.data.network)
-            implementation(projects.data.studyLines)
+            implementation(projects.data.students)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
             implementation(projects.domain.logging)
             implementation(projects.domain.timetable)
+            implementation(projects.domain.userTimetable)
             implementation(projects.ui.catalog)
             implementation(projects.ui.navigation)
             implementation(projects.ui.theme)

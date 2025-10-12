@@ -4,12 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.components.TeachersFormScreen
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.TeachersFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
-import com.ubb.fmi.orar.ui.catalog.model.Semester
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.jetbrains.compose.resources.stringResource
@@ -47,7 +48,7 @@ fun TeachersFormRoute(
 
     EventHandler(viewModel.events) { event ->
         when (event) {
-            TeachersFormUiState.TeachersFormEvent.CONFIGURATION_DONE -> {
+            TeachersFormUiState.TeachersFormUiEvent.CONFIGURATION_DONE -> {
                 navController.navigate(TimetableNavDestination.UserTimetable) {
                     popUpTo(
                         ConfigurationFormNavDestination.OnboardingForm(

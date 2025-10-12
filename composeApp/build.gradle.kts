@@ -71,7 +71,7 @@ kotlin {
             implementation(projects.data.preferences)
             implementation(projects.data.rooms)
             implementation(projects.data.settings)
-            implementation(projects.data.studyLines)
+            implementation(projects.data.students)
             implementation(projects.data.subjects)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)

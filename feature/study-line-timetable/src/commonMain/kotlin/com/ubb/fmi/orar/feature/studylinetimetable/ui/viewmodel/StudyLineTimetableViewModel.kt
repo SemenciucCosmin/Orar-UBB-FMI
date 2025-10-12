@@ -3,15 +3,15 @@ package com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -35,14 +35,14 @@ import kotlin.time.Duration.Companion.seconds
  * @property fieldId The ID of the field of study.
  * @property studyLevelId The ID of the study level.
  * @property groupId The ID of the group.
- * @property studyLinesDataSource The data source for fetching study lines data.
+ * @property groupsDataSource The data source for fetching groups data.
  * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class StudyLineTimetableViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
     private val groupId: String,
-    private val studyLinesDataSource: StudyLinesDataSource,
+    private val groupsDataSource: GroupsDataSource,
     private val timetablePreferences: TimetablePreferences,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
@@ -88,15 +88,15 @@ class StudyLineTimetableViewModel(
                 return@launch
             }
 
-            val timetableResource = studyLinesDataSource.getTimetable(
+            val timetableResource = groupsDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
-                ownerId = lineId,
+                studyLineId = lineId,
                 groupId = groupId
             )
 
             logger.d(TAG, "loadTimetable resource: $timetableResource")
-            val classes = timetableResource.payload?.classes?.map {
+            val events = timetableResource.payload?.events?.map {
                 it.copy(isVisible = true)
             }?.toImmutableList() ?: persistentListOf()
 
@@ -104,7 +104,7 @@ class StudyLineTimetableViewModel(
                 it.copy(
                     isLoading = false,
                     errorStatus = timetableResource.status.toErrorStatus(),
-                    classes = classes,
+                    events = events,
                     title = timetableResource.payload?.owner?.name ?: String.BLANK,
                     studyLevel = studyLevel,
                     group = groupId,

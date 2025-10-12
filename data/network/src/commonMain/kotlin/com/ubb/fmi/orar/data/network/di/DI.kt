@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.data.network.di
 
 import com.ubb.fmi.orar.data.network.service.RoomsApi
-import com.ubb.fmi.orar.data.network.service.StudyLinesApi
+import com.ubb.fmi.orar.data.network.service.StudentsApi
 import com.ubb.fmi.orar.data.network.service.SubjectsApi
 import com.ubb.fmi.orar.data.network.service.TeachersApi
 import io.ktor.client.HttpClient
@@ -59,7 +59,7 @@ fun networkDataModule() = module {
     }
 
     factory<RoomsApi> { RoomsApi(get()) }
-    factory<StudyLinesApi> { StudyLinesApi(get()) }
+    factory<StudentsApi> { StudentsApi(get()) }
     factory<SubjectsApi> { SubjectsApi(get()) }
     factory<TeachersApi> { TeachersApi(get()) }
 }

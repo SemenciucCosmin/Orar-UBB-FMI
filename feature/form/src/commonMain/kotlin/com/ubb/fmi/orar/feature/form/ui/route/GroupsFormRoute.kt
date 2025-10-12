@@ -51,7 +51,7 @@ fun GroupsFormRoute(
 
     EventHandler(viewModel.events) { event ->
         when (event) {
-            GroupsFromUiState.GroupsFromEvent.CONFIGURATION_DONE -> {
+            GroupsFromUiState.GroupsFromUiEvent.CONFIGURATION_DONE -> {
                 navController.navigate(TimetableNavDestination.UserTimetable) {
                     popUpTo(
                         ConfigurationFormNavDestination.OnboardingForm(

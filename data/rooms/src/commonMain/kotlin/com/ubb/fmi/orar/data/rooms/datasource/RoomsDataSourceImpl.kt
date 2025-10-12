@@ -2,16 +2,21 @@ package com.ubb.fmi.orar.data.rooms.datasource
 
 import Logger
 import com.ubb.fmi.orar.data.database.dao.RoomDao
-import com.ubb.fmi.orar.data.database.dao.TimetableClassDao
 import com.ubb.fmi.orar.data.database.model.RoomEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.RoomsApi
-import com.ubb.fmi.orar.data.timetable.datasource.TimetableDataSource
+import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.timetable.model.Activity
+import com.ubb.fmi.orar.data.timetable.model.Day
+import com.ubb.fmi.orar.data.timetable.model.Event
+import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Host
+import com.ubb.fmi.orar.data.timetable.model.Location
+import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.Participant
 import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.timetable.model.TimetableClass
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
-import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
@@ -21,126 +26,173 @@ import okio.ByteString.Companion.encodeUtf8
  * Data source for managing room related information
  */
 class RoomsDataSourceImpl(
+    private val eventsDataSource: EventsDataSource,
     private val roomsApi: RoomsApi,
     private val roomDao: RoomDao,
     private val logger: Logger,
-    timetableClassDao: TimetableClassDao,
-) : RoomsDataSource, TimetableDataSource<TimetableOwner.Room>(
-    timetableClassDao = timetableClassDao,
-    logger = logger,
-    tag = TAG,
-) {
+) : RoomsDataSource {
 
     /**
-     * Retrieve list of [TimetableOwner.Room] objects from cache or API
+     * Retrieve list of [Owner.Room] objects from cache or API
      * by [year] and [semesterId]
      */
-    override suspend fun getOwners(
+    override suspend fun getRooms(
         year: Int,
         semesterId: String,
-    ): Resource<List<TimetableOwner.Room>> {
-        return super.getOwners(year, semesterId)
+    ): Resource<List<Owner.Room>> {
+        logger.d(TAG, "get rooms for year: $year, semester: $semesterId")
+
+        val configurationId = year.toString() + semesterId
+        val cachedRooms = getRoomsFromCache(configurationId)
+
+        return when {
+            cachedRooms.isNotEmpty() -> {
+                val sortedRooms = sortRooms(cachedRooms)
+                logger.d(TAG, "get rooms from cache: $sortedRooms")
+                Resource(sortedRooms, Status.Success)
+            }
+
+            else -> {
+                val roomsResource = getRoomsFromApi(year, semesterId)
+                roomsResource.payload?.forEach { saveRoomInCache(it) }
+
+                val sortedRooms = roomsResource.payload?.let(::sortRooms)
+                logger.d(TAG, "get rooms from API: $sortedRooms, ${roomsResource.status}")
+
+                Resource(sortedRooms, roomsResource.status)
+            }
+        }
     }
 
     /**
-     * Retrieve timetable of [TimetableOwner.Room] for specific room from cache or
-     * API by [year], [semesterId] and [ownerId]
+     * Retrieve timetable of [Owner.Room] for specific room from cache or
+     * API by [year], [semesterId] and [roomId]
      */
     override suspend fun getTimetable(
         year: Int,
         semesterId: String,
-        ownerId: String,
-    ): Resource<Timetable<TimetableOwner.Room>> {
-        return super.getTimetable(year, semesterId, ownerId)
+        roomId: String,
+    ): Resource<Timetable<Owner.Room>> {
+        logger.d(TAG, "get room timetable for year: $year, semester: $semesterId, room: $roomId")
+
+        val configurationId = year.toString() + semesterId
+        val resource = getRooms(year, semesterId)
+        val room = resource.payload?.firstOrNull { it.id == roomId }
+
+        logger.d(TAG, "get room timetable for: $room")
+        val cachedEvents = room?.let {
+            eventsDataSource.getEventsFromCache(configurationId, it.id)
+        }
+
+        return when {
+            cachedEvents?.isNotEmpty() == true -> {
+                val sortedEvents = eventsDataSource.sortEvents(cachedEvents)
+                val timetable = Timetable(owner = room, events = sortedEvents)
+                logger.d(TAG, "get room timetable from cache: $timetable")
+
+                Resource(timetable, Status.Success)
+            }
+
+            else -> {
+                if (room == null) return Resource(null, resource.status)
+                val timetableResource = getTimetableFromApi(year, semesterId, room)
+                timetableResource.payload?.let {
+                    saveRoomInCache(it.owner)
+                    eventsDataSource.saveEventsInCache(it.events)
+                }
+
+                val timetable = timetableResource.payload?.let { timetable ->
+                    val sortedEvents = eventsDataSource.sortEvents(timetable.events)
+                    timetable.copy(events = sortedEvents)
+                }
+
+                logger.d(TAG, "get room timetable from API: $timetable ${timetableResource.status}")
+                Resource(timetable, timetableResource.status)
+            }
+        }
     }
 
     /**
-     * Change visibility of specific room timetable class by [timetableClassId]
-     */
-    override suspend fun changeTimetableClassVisibility(
-        timetableClassId: String,
-    ) {
-        super.changeTimetableClassVisibility(timetableClassId)
-    }
-
-    /**
-     * Invalidates all cached data for by [year] and [semesterId]
+     * Invalidates all cached rooms by [year] and [semesterId]
      */
     override suspend fun invalidate(year: Int, semesterId: String) {
-        super.invalidate(year, semesterId)
+        logger.d(TAG, "invalidate rooms for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        roomDao.deleteAll(configurationId)
     }
 
     /**
-     * Retrieve list of [TimetableOwner.Room] objects from cache by [configurationId]
+     * Retrieve list of [Owner.Room] objects from cache by [configurationId]
      */
-    override suspend fun getOwnersFromCache(
+    private suspend fun getRoomsFromCache(
         configurationId: String,
-    ): List<TimetableOwner.Room> {
+    ): List<Owner.Room> {
         val entities = roomDao.getAll(configurationId)
-        return entities.map(::mapEntityToOwner)
+        return entities.map(::mapEntityToRoom)
     }
 
     /**
-     * Saves new room [owner] to cache
+     * Saves new room [Owner.Room] to cache
      */
-    override suspend fun saveOwnerInCache(owner: TimetableOwner.Room) {
-        val entity = mapOwnerToEntity(owner)
+    private suspend fun saveRoomInCache(room: Owner.Room) {
+        val entity = mapRoomToEntity(room)
         roomDao.insert(entity)
     }
 
     /**
-     * Retrieve list of [TimetableOwner.Room] objects from API by [year] and [semesterId]
+     * Retrieve list of [Owner.Room] objects from API by [year] and [semesterId]
      */
-    override suspend fun getOwnersFromApi(
+    private suspend fun getRoomsFromApi(
         year: Int,
         semesterId: String,
-    ): Resource<List<TimetableOwner.Room>> {
-        logger.d(TAG, "getOwnersFromApi for year: $year, semester: $semesterId")
+    ): Resource<List<Owner.Room>> {
+        logger.d(TAG, "getRoomsFromApi for year: $year, semester: $semesterId")
 
         val configurationId = year.toString() + semesterId
-        val resource = roomsApi.getOwnersHtml(year, semesterId)
+        val resource = roomsApi.getRoomsHtml(year, semesterId)
 
-        logger.d(TAG, "getOwnersFromApi resource: $resource")
+        logger.d(TAG, "getRoomsFromApi resource: $resource")
 
-        val ownersHtml = resource.payload
-        val table = ownersHtml?.let(HtmlParser::extractTables)?.firstOrNull()
+        val roomsHtml = resource.payload
+        val table = roomsHtml?.let(HtmlParser::extractTables)?.firstOrNull()
 
-        logger.d(TAG, "getOwnersFromApi table: $table")
+        logger.d(TAG, "getRoomsFromApi table: $table")
 
-        val owners = table?.rows?.mapNotNull { row ->
-            logger.d(TAG, "getOwnersFromApi row: $row")
+        val rooms = table?.rows?.mapNotNull { row ->
+            logger.d(TAG, "getRoomsFromApi row: $row")
             val nameCell = row.cells.getOrNull(NAME_INDEX) ?: return@mapNotNull null
             val locationCell = row.cells.getOrNull(LOCATION_INDEX) ?: return@mapNotNull null
 
-            TimetableOwner.Room(
+            Owner.Room(
                 id = nameCell.id,
                 name = nameCell.value,
-                location = locationCell.value,
+                address = locationCell.value,
                 configurationId = configurationId,
             )
         }
 
-        logger.d(TAG, "getOwnersFromApi owners: $owners")
+        logger.d(TAG, "getRoomsFromApi rooms: $rooms")
 
         return when {
-            owners.isNullOrEmpty() -> Resource(null, resource.status)
-            else -> Resource(owners, Status.Success)
+            rooms.isNullOrEmpty() -> Resource(null, resource.status)
+            else -> Resource(rooms, Status.Success)
         }
     }
 
     /**
-     * Retrieve timetable of [TimetableOwner.Room] for specific room from API
-     * by [year], [semesterId] and [owner]
+     * Retrieve timetable of [Owner.Room] for specific room from API
+     * by [year], [semesterId] and [room]
      */
-    override suspend fun getTimetableFromApi(
+    @Suppress("CyclomaticComplexMethod")
+    private suspend fun getTimetableFromApi(
         year: Int,
         semesterId: String,
-        owner: TimetableOwner.Room,
-    ): Resource<Timetable<TimetableOwner.Room>> {
-        logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId, owner: $owner")
+        room: Owner.Room,
+    ): Resource<Timetable<Owner.Room>> {
+        logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId, room: $room")
 
         val configurationId = year.toString() + semesterId
-        val resource = roomsApi.getTimetableHtml(year, semesterId, owner.id)
+        val resource = roomsApi.getTimetableHtml(year, semesterId, room.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -149,14 +201,14 @@ class RoomsDataSourceImpl(
 
         logger.d(TAG, "getTimetableFromApi table: $table")
 
-        val classes = table?.rows?.mapNotNull { row ->
+        val events = table?.rows?.mapNotNull { row ->
             logger.d(TAG, "getTimetableFromApi row: $row")
             val dayCell = row.cells.getOrNull(DAY_INDEX) ?: return@mapNotNull null
             val intervalCell = row.cells.getOrNull(INTERVAL_INDEX) ?: return@mapNotNull null
             val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
             val studyLineCell = row.cells.getOrNull(STUDY_LINE_INDEX) ?: return@mapNotNull null
             val participantCell = row.cells.getOrNull(PARTICIPANT_INDEX) ?: return@mapNotNull null
-            val classTypeCell = row.cells.getOrNull(CLASS_TYPE_INDEX) ?: return@mapNotNull null
+            val eventTypeCell = row.cells.getOrNull(EVENT_TYPE_INDEX) ?: return@mapNotNull null
             val subjectCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
             val teacherCell = row.cells.getOrNull(TEACHER_INDEX) ?: return@mapNotNull null
             val intervals = intervalCell.value.split(String.DASH)
@@ -169,68 +221,86 @@ class RoomsDataSourceImpl(
                 frequencyCell.value,
                 studyLineCell.value,
                 participantCell.value,
-                classTypeCell.value,
+                eventTypeCell.value,
                 subjectCell.value,
                 teacherCell.value,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
-            TimetableClass(
+            val location = Location(
+                id = room.id,
+                name = room.name,
+                address = room.address
+            )
+
+            val activity = Activity(
+                id = subjectCell.id,
+                name = subjectCell.value
+            )
+
+            val participant = Participant(
+                id = participantCell.id,
+                name = participantCell.value
+            )
+
+            val host = Host(
+                id = teacherCell.id,
+                name = teacherCell.value
+            )
+
+            Event(
                 id = id,
-                day = dayCell.value,
-                startHour = startHour,
-                endHour = endHour,
-                frequencyId = frequencyCell.value,
-                room = owner.name,
-                field = studyLineCell.value,
-                participant = participantCell.value,
-                classType = classTypeCell.value,
-                ownerId = owner.id,
-                groupId = String.BLANK,
-                ownerTypeId = owner.type.id,
-                subject = subjectCell.value,
-                teacher = teacherCell.value,
-                isVisible = true,
-                configurationId = configurationId
+                configurationId = configurationId,
+                ownerId = room.id,
+                day = Day.getById(dayCell.value),
+                frequency = Frequency.getById(frequencyCell.value),
+                startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
+                endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
+                location = location,
+                activity = activity,
+                type = EventType.getById(eventTypeCell.value),
+                participant = participant,
+                host = host,
+                isVisible = true
             )
         }
 
-        logger.d(TAG, "getTimetableFromApi classes: $classes")
+        logger.d(TAG, "getTimetableFromApi events: $events")
 
         return when {
-            classes == null -> Resource(null, resource.status)
-            else -> Resource(Timetable(owner, classes), Status.Success)
+            events == null -> Resource(null, resource.status)
+            else -> Resource(Timetable(room, events), Status.Success)
         }
     }
 
     /**
      * Sorts rooms by name
      */
-    override fun sortOwners(
-        owners: List<TimetableOwner.Room>,
-    ): List<TimetableOwner.Room> {
-        return owners.sortedBy { it.name }
+    private fun sortRooms(
+        rooms: List<Owner.Room>,
+    ): List<Owner.Room> {
+        return rooms.sortedBy { it.name }
     }
 
     /**
-     * Maps a [TimetableOwner.Room] to a [RoomEntity]
+     * Maps a [Owner.Room] to a [RoomEntity]
      */
-    private fun mapOwnerToEntity(owner: TimetableOwner.Room): RoomEntity {
+    private fun mapRoomToEntity(owner: Owner.Room): RoomEntity {
         return RoomEntity(
             id = owner.id,
             name = owner.name,
-            location = owner.location,
+            location = owner.address,
             configurationId = owner.configurationId
         )
     }
 
     /**
-     * Maps a [RoomEntity] to a [TimetableOwner.Room]
+     * Maps a [RoomEntity] to a [Owner.Room]
      */
-    private fun mapEntityToOwner(entity: RoomEntity): TimetableOwner.Room {
-        return TimetableOwner.Room(
+    private fun mapEntityToRoom(entity: RoomEntity): Owner.Room {
+        return Owner.Room(
             id = entity.id,
             name = entity.name,
-            location = entity.location,
+            address = entity.location,
             configurationId = entity.configurationId
         )
     }
@@ -248,7 +318,7 @@ class RoomsDataSourceImpl(
         private const val FREQUENCY_INDEX = 2
         private const val STUDY_LINE_INDEX = 3
         private const val PARTICIPANT_INDEX = 4
-        private const val CLASS_TYPE_INDEX = 5
+        private const val EVENT_TYPE_INDEX = 5
         private const val SUBJECT_INDEX = 6
         private const val TEACHER_INDEX = 7
 

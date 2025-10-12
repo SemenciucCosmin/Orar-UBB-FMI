@@ -6,7 +6,7 @@ import com.ubb.fmi.orar.domain.extensions.getAppVersion
 import com.ubb.fmi.orar.domain.extensions.openUrl
 import com.ubb.fmi.orar.feature.settings.ui.components.SettingsScreen
 import com.ubb.fmi.orar.feature.settings.viewmodel.SettingsViewModel
-import com.ubb.fmi.orar.feature.settings.viewmodel.model.SettingsEvent
+import com.ubb.fmi.orar.feature.settings.viewmodel.model.SettingsUiEvent
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.extensions.showToast
@@ -50,7 +50,7 @@ fun SettingsRoute(navController: NavController) {
 
     EventHandler(viewModel.events) { event ->
         when (event) {
-            SettingsEvent.SUCCESSFUL_REFRESH -> {
+            SettingsUiEvent.SUCCESSFUL_REFRESH -> {
                 viewModel.unregisterEvent(event)
                 showToast(
                     context = context,

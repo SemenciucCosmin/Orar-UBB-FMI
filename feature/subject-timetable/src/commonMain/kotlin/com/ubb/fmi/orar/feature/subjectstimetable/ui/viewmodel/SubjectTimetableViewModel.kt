@@ -4,13 +4,13 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
+import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -68,17 +68,17 @@ class SubjectTimetableViewModel(
             val timetableResource = subjectsDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
-                ownerId = subjectId,
+                subjectId = subjectId,
             )
 
-            val subjectsResource = subjectsDataSource.getOwners(
+            val subjectsResource = subjectsDataSource.getSubjects(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
             )
 
             logger.d(TAG, "loadTimetable resource: $timetableResource")
             val subject = subjectsResource.payload?.firstOrNull { it.id == subjectId }
-            val classes = timetableResource.payload?.classes?.map {
+            val events = timetableResource.payload?.events?.map {
                 it.copy(isVisible = true)
             }?.toImmutableList() ?: persistentListOf()
 
@@ -86,7 +86,7 @@ class SubjectTimetableViewModel(
                 it.copy(
                     isLoading = false,
                     errorStatus = timetableResource.status.toErrorStatus(),
-                    classes = classes,
+                    events = events,
                     title = subject?.name ?: String.BLANK
                 )
             }

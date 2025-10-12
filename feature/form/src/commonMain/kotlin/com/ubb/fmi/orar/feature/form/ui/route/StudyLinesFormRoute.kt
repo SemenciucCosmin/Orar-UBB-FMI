@@ -4,10 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.components.StudyLinesFormScreen
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
-import com.ubb.fmi.orar.ui.catalog.model.Semester
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -44,7 +45,7 @@ fun StudyLinesFormRoute(
             val fieldId = uiState.selectedFieldId ?: return@StudyLinesFormScreen
             val studyLevelId = uiState.selectedStudyLevelId ?: return@StudyLinesFormScreen
             val studyLine = uiState.filteredGroupedStudyLines.flatten().firstOrNull {
-                it.fieldId == fieldId && it.levelId == studyLevelId
+                it.fieldId == fieldId && it.level.id == studyLevelId
             } ?: return@StudyLinesFormScreen
 
             navController.navigate(
@@ -53,7 +54,7 @@ fun StudyLinesFormRoute(
                     semesterId = semesterId,
                     fieldId = fieldId,
                     studyLevelId = studyLevelId,
-                    studyLineDegreeId = studyLine.degreeId,
+                    studyLineDegreeId = studyLine.degree.id,
                 )
             )
         }
