@@ -9,7 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.stringResource

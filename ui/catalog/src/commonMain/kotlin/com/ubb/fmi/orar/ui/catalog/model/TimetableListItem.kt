@@ -1,6 +1,8 @@
 package com.ubb.fmi.orar.ui.catalog.model
 
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwnerType
+import com.ubb.fmi.orar.data.timetable.model.Day
+import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.data.timetable.model.Location
 
 /**
  * Represents an item in the timetable list, which can either be a class or a divider for a specific day.
@@ -23,24 +25,22 @@ sealed interface TimetableListItem {
      * @property id The unique identifier for the class.
      * @property startHour The starting hour of the class.
      * @property endHour The ending hour of the class.
-     * @property subject The subject of the class.
+     * @property title The subject of the class.
      * @property classType The type of the class (e.g., lecture, lab).
-     * @property timetableOwnerType The type of owner for the timetable (e.g., student, teacher).
      * @property participant The participant in the class (e.g., student name).
      * @property teacher The teacher conducting the class.
      * @property room The room where the class is held.
      * @property isVisible Indicates whether the class is visible in the timetable.
      */
-    data class Class(
+    data class Event(
         val id: String,
-        val startHour: String,
-        val endHour: String,
-        val subject: String,
-        val classType: ClassType,
-        val timetableOwnerType: TimetableOwnerType,
-        val participant: String,
-        val teacher: String,
-        val room: String,
+        val startHour: Int,
+        val endHour: Int,
+        val location: Location?,
+        val title: String,
+        val type: EventType,
+        val participantName: String,
+        val hostName: String,
         val isVisible: Boolean
     ) : TimetableListItem
 }

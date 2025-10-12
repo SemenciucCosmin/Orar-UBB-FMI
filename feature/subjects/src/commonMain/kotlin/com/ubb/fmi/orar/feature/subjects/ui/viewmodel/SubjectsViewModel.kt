@@ -3,7 +3,6 @@ package com.ubb.fmi.orar.feature.subjects.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
@@ -79,7 +78,7 @@ class SubjectsViewModel(
                 return@collectLatest
             }
 
-            val resource = subjectsDataSource.getOwners(
+            val resource = subjectsDataSource.getSubjects(
                 year = configuration.year,
                 semesterId = configuration.semesterId
             )

@@ -3,8 +3,7 @@ package com.ubb.fmi.orar.feature.studylines.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.network.model.isError
-import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -69,7 +68,7 @@ class StudyLinesViewModel(
                 return@collectLatest
             }
 
-            val studyLinesResource = studyLinesDataSource.getOwners(
+            val studyLinesResource = studyLinesDataSource.getStudyLines(
                 year = configuration.year,
                 semesterId = configuration.semesterId
             )
@@ -79,7 +78,7 @@ class StudyLinesViewModel(
             val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
                 studyLine.fieldId
             }?.values?.toList()?.map { studyLines ->
-                studyLines.sortedBy { it.levelId }.toImmutableList()
+                studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
             }?.toImmutableList() ?: persistentListOf()
 
             logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")

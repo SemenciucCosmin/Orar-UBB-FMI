@@ -13,7 +13,7 @@ class SubjectsApi(private val httpClient: HttpClient) {
     /**
      * Fetch study lines table in html format by [year] and [semesterId]
      */
-    suspend fun getOwnersHtml(
+    suspend fun getSubjectsHtml(
         year: Int,
         semesterId: String,
     ): Resource<String> {

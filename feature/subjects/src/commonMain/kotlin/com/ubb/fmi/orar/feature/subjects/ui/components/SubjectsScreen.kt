@@ -9,7 +9,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
@@ -98,7 +98,7 @@ private fun PreviewSubjectsScreen() {
                 isLoading = false,
                 errorStatus = null,
                 subjects = List(5) {
-                    TimetableOwner.Subject(
+                    Owner.Subject(
                         id = it.toString(),
                         name = "Subject $it",
                         configurationId = "20241",

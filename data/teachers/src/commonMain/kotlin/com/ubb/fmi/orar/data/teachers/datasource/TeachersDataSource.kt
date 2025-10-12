@@ -1,8 +1,8 @@
 package com.ubb.fmi.orar.data.teachers.datasource
 
 import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 
 /**
  * Data source for managing teacher related information
@@ -10,33 +10,26 @@ import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 interface TeachersDataSource {
 
     /**
-     * Retrieve list of [TimetableOwner.Teacher] objects from cache or API
+     * Retrieve list of [Owner.Teacher] objects from cache or API
      * by [year] and [semesterId]
      */
-    suspend fun getOwners(
+    suspend fun getTeachers(
         year: Int,
         semesterId: String
-    ): Resource<List<TimetableOwner.Teacher>>
+    ): Resource<List<Owner.Teacher>>
 
     /**
-     * Retrieve timetable of [TimetableOwner.Teacher] for specific teacher from cache or
-     * API by [year], [semesterId] and [ownerId]
+     * Retrieve timetable of [Owner.Teacher] for specific teacher from cache or
+     * API by [year], [semesterId] and [teacherId]
      */
     suspend fun getTimetable(
         year: Int,
         semesterId: String,
-        ownerId: String,
-    ): Resource<Timetable<TimetableOwner.Teacher>>
+        teacherId: String,
+    ): Resource<Timetable<Owner.Teacher>>
 
     /**
-     * Change visibility of specific teacher timetable class by [timetableClassId]
-     */
-    suspend fun changeTimetableClassVisibility(
-        timetableClassId: String
-    )
-
-    /**
-     * Invalidates all cached data for by [year] and [semesterId]
+     * Invalidates all cached teachers by [year] and [semesterId]
      */
     suspend fun invalidate(
         year: Int,

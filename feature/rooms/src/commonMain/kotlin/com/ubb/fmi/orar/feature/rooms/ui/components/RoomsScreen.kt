@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
@@ -48,7 +48,7 @@ fun RoomsScreen(
             items(uiState.rooms) { room ->
                 ListItemClickable(
                     headline = room.name,
-                    underLine = room.location,
+                    underLine = room.address,
                     onClick = { onRoomClick(room.id) },
                     leadingIcon = painterResource(Res.drawable.ic_location),
                     textAlign = TextAlign.Center
@@ -70,11 +70,11 @@ private fun PreviewRoomsScreen() {
                 isLoading = false,
                 errorStatus = null,
                 rooms = List(5) {
-                    TimetableOwner.Room(
+                    Owner.Room(
                         id = it.toString(),
                         name = "Room $it",
                         configurationId = "20241",
-                        location = "Locations $it"
+                        address = "Locations $it"
                     )
                 }.toImmutableList()
             )

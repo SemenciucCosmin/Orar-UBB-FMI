@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.feature.startup.ui.route
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.startup.ui.viewmodel.StartupViewModel
-import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupEvent
+import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupUiEvent
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
@@ -24,7 +24,7 @@ fun StartupRoute(navController: NavController) {
 
     EventHandler(viewModel.events) { event ->
         when (event) {
-            StartupEvent.CONFIGURATION_COMPLETE -> {
+            StartupUiEvent.CONFIGURATION_COMPLETE -> {
                 navController.navigate(TimetableNavDestination.UserTimetable) {
                     popUpTo(TimetableNavDestination.Startup) {
                         inclusive = true
@@ -33,7 +33,7 @@ fun StartupRoute(navController: NavController) {
                 }
             }
 
-            StartupEvent.CONFIGURATION_INCOMPLETE -> {
+            StartupUiEvent.CONFIGURATION_INCOMPLETE -> {
                 navController.navigate(
                     ConfigurationFormNavDestination.OnboardingForm(
                         configurationFormTypeId = ConfigurationFormType.STARTUP.id

@@ -4,13 +4,13 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -80,17 +80,17 @@ class TeacherTimetableViewModel(
             val timetableResource = teachersDataSource.getTimetable(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
-                ownerId = teacherId,
+                teacherId = teacherId,
             )
 
-            val teachersResource = teachersDataSource.getOwners(
+            val teachersResource = teachersDataSource.getTeachers(
                 year = configuration.year,
                 semesterId = configuration.semesterId,
             )
 
             logger.d(TAG, "loadTimetable resource: $timetableResource")
             val teacher = teachersResource.payload?.firstOrNull { it.id == teacherId }
-            val classes = timetableResource.payload?.classes?.map {
+            val events = timetableResource.payload?.events?.map {
                 it.copy(isVisible = true)
             }?.toImmutableList() ?: persistentListOf()
 
@@ -98,7 +98,7 @@ class TeacherTimetableViewModel(
                 it.copy(
                     isLoading = false,
                     errorStatus = timetableResource.status.toErrorStatus(),
-                    classes = classes,
+                    events = events,
                     title = teacher?.name ?: String.BLANK
                 )
             }

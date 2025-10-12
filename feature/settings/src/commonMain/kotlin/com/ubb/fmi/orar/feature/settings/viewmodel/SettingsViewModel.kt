@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.feature.settings.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.domain.timetable.usecase.InvalidateCachedDataUseCase
-import com.ubb.fmi.orar.feature.settings.viewmodel.model.SettingsEvent
+import com.ubb.fmi.orar.feature.settings.viewmodel.model.SettingsUiEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.launch
 
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
  */
 class SettingsViewModel(
     private val invalidateCachedDataUseCase: InvalidateCachedDataUseCase,
-) : EventViewModel<SettingsEvent>() {
+) : EventViewModel<SettingsUiEvent>() {
 
     /**
      * Forces data refresh by invalidating the cached data
@@ -19,7 +19,7 @@ class SettingsViewModel(
     fun refreshData() {
         viewModelScope.launch {
             invalidateCachedDataUseCase()
-            registerEvent(SettingsEvent.SUCCESSFUL_REFRESH)
+            registerEvent(SettingsUiEvent.SUCCESSFUL_REFRESH)
         }
     }
 }

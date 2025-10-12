@@ -13,7 +13,7 @@ class RoomsApi(private val httpClient: HttpClient) {
     /**
      * Fetch rooms table in html format by [year] and [semesterId]
      */
-    suspend fun getOwnersHtml(
+    suspend fun getRoomsHtml(
         year: Int,
         semesterId: String,
     ): Resource<String> {

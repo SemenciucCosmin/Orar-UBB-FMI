@@ -1,7 +1,8 @@
 package com.ubb.fmi.orar.feature.groups.ui.viewmodel.model
 
+import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.StudyLevel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -17,7 +18,7 @@ import kotlinx.collections.immutable.persistentListOf
  * @property errorStatus Indicates whether there was an error loading the data.
  */
 data class GroupsUiState(
-    val groups: ImmutableList<String> = persistentListOf(),
+    val groups: ImmutableList<Owner.Group> = persistentListOf(),
     val title: String? = null,
     val studyLevel: StudyLevel? = null,
     val isLoading: Boolean = false,

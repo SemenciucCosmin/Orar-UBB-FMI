@@ -4,8 +4,8 @@ import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedDataValidityUseCase
-import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupEvent
-import com.ubb.fmi.orar.ui.catalog.model.UserType
+import com.ubb.fmi.orar.domain.usertimetable.model.UserType
+import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupUiEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class StartupViewModel(
     private val timetablePreferences: TimetablePreferences,
     private val checkCachedDataValidityUseCase: CheckCachedDataValidityUseCase,
     private val logger: Logger,
-) : EventViewModel<StartupEvent>() {
+) : EventViewModel<StartupUiEvent>() {
 
     /**
      * Initializes the ViewModel and checks the configuration validity.
@@ -70,8 +70,8 @@ class StartupViewModel(
             logger.d(TAG, "checkConfiguration hasUserInfo: $hasUserInfo")
 
             when {
-                hasUserInfo -> registerEvent(StartupEvent.CONFIGURATION_COMPLETE)
-                else -> registerEvent(StartupEvent.CONFIGURATION_INCOMPLETE)
+                hasUserInfo -> registerEvent(StartupUiEvent.CONFIGURATION_COMPLETE)
+                else -> registerEvent(StartupUiEvent.CONFIGURATION_INCOMPLETE)
             }
         }
     }

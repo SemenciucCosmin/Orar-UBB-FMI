@@ -8,6 +8,7 @@ import com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel.StudyLineTimetab
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableFrequencyTab
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
+import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf

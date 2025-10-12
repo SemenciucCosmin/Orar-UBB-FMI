@@ -1,8 +1,8 @@
 package com.ubb.fmi.orar.data.subjects.datasource
 
 import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 
 /**
  * Data source for managing subject related information
@@ -10,33 +10,26 @@ import com.ubb.fmi.orar.data.timetable.model.TimetableOwner
 interface SubjectsDataSource {
 
     /**
-     * Retrieve list of [TimetableOwner.Subject] objects from cache or API
+     * Retrieve list of [Owner.Subject] objects from cache or API
      * by [year] and [semesterId]
      */
-    suspend fun getOwners(
+    suspend fun getSubjects(
         year: Int,
         semesterId: String
-    ): Resource<List<TimetableOwner.Subject>>
+    ): Resource<List<Owner.Subject>>
 
     /**
-     * Retrieve timetable of [TimetableOwner.Subject] for specific subject from cache or
-     * API by [year], [semesterId] and [ownerId]
+     * Retrieve timetable of [Owner.Subject] for specific subject from cache or
+     * API by [year], [semesterId] and [subjectId]
      */
     suspend fun getTimetable(
         year: Int,
         semesterId: String,
-        ownerId: String,
-    ): Resource<Timetable<TimetableOwner.Subject>>
+        subjectId: String,
+    ): Resource<Timetable<Owner.Subject>>
 
     /**
-     * Change visibility of specific subject timetable class by [timetableClassId]
-     */
-    suspend fun changeTimetableClassVisibility(
-        timetableClassId: String
-    )
-
-    /**
-     * Invalidates all cached data for by [year] and [semesterId]
+     * Invalidates all cached subjects by [year] and [semesterId]
      */
     suspend fun invalidate(
         year: Int,

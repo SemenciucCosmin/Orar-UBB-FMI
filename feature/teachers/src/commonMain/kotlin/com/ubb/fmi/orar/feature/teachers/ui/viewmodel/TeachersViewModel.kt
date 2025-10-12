@@ -65,7 +65,7 @@ class TeachersViewModel(
                 return@collectLatest
             }
 
-            val resource = teachersDataSource.getOwners(
+            val resource = teachersDataSource.getTeachers(
                 year = configuration.year,
                 semesterId = configuration.semesterId
             )
