@@ -6,6 +6,7 @@ import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
 import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import kotlinx.coroutines.flow.firstOrNull
 import kotlin.time.ExperimentalTime
@@ -23,6 +24,7 @@ import kotlin.time.ExperimentalTime
  */
 class InvalidateCachedDataUseCase(
     private val timetablePreferences: TimetablePreferences,
+    private val eventsDataSource: EventsDataSource,
     private val groupsDataSource: GroupsDataSource,
     private val roomsDataSource: RoomsDataSource,
     private val studyLineDataSource: StudyLinesDataSource,
@@ -38,6 +40,7 @@ class InvalidateCachedDataUseCase(
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
         configuration?.let {
             logger.d(TAG, "Invalidate data for config: $configuration")
+            eventsDataSource.invalidate(configuration.year, configuration.semesterId)
             groupsDataSource.invalidate(configuration.year, configuration.semesterId)
             roomsDataSource.invalidate(configuration.year, configuration.semesterId)
             studyLineDataSource.invalidate(configuration.year, configuration.semesterId)
