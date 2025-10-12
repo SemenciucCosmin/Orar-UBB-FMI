@@ -3,53 +3,38 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Location
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.ui.catalog.extensions.colorLight
-import com.ubb.fmi.orar.ui.catalog.extensions.imageRes
-import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
-import orar_ubb_fmi.ui.catalog.generated.resources.Res
-import orar_ubb_fmi.ui.catalog.generated.resources.ic_down_arrow
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
- * A composable that displays a timetable list item with details about a class.
- *
- * @param startHour The starting hour of the class.
- * @param endHour The ending hour of the class.
- * @param subject The name of the subject.
- * @param classType The type of class (e.g., lecture, laboratory).
- * @param participant The participant or group associated with the class.
- * @param teacher The name of the teacher.
- * @param room The room where the class takes place
- * @param enabled Indicates whether the item is enabled (clickable).
- * @param expanded Indicates whether the item is expanded (showing additional details).
- * @param modifier Modifier to be applied to the card.
+ * A composable that displays a timetable list item with details about an event.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetableListItem(
     startHour: String,
@@ -63,110 +48,74 @@ fun TimetableListItem(
     expanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    ElevatedCard(
-        onClick = {},
+    val coroutineScope = rememberCoroutineScope()
+    val tooltipState = rememberTooltipState()
+
+    TooltipBox(
         modifier = modifier,
-        enabled = enabled,
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = { location?.address?.let { PlainTooltip { Text(it) } } },
+        state = tooltipState,
     ) {
-        Row(
-            modifier = Modifier.padding(Pds.spacing.SMedium),
-            verticalAlignment = Alignment.CenterVertically
+        ElevatedCard(
+            modifier = modifier,
+            enabled = enabled,
+            onClick = {
+                coroutineScope.launch {
+                    when {
+                        tooltipState.isVisible -> tooltipState.dismiss()
+                        else -> tooltipState.show()
+                    }
+                }
+            }
         ) {
-            Column(
-                Modifier.weight(0.15f),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                modifier = Modifier.padding(Pds.spacing.SMedium),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = startHour,
-                    style = MaterialTheme.typography.bodyMedium
+                EventHourInterval(
+                    modifier = Modifier.weight(0.15f),
+                    startHour = startHour,
+                    endHour = endHour
                 )
 
-                Icon(
-                    modifier = Modifier.size(Pds.icon.SMedium),
-                    painter = painterResource(Res.drawable.ic_down_arrow),
-                    contentDescription = null
-                )
+                AnimatedVisibility(expanded) {
+                    Spacer(modifier = Modifier.width(Pds.spacing.SMedium))
+                }
 
-                Text(
-                    text = endHour,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            AnimatedVisibility(expanded) {
-                Spacer(modifier = Modifier.width(Pds.spacing.SMedium))
-            }
-
-            Column(
-                modifier = Modifier.weight(0.70f),
-                verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                )
-
-                Surface(
-                    shape = MaterialTheme.shapes.extraLarge,
-                    color = when {
-                        isSystemInDarkTheme() -> type.colorLight
-                        else -> type.colorLight
-                    }.copy(
-                        alpha = when {
-                            enabled -> 1f
-                            else -> 0.5f
-                        }
-                    )
+                Column(
+                    modifier = Modifier.weight(0.70f),
+                    verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
+                        text = title,
                         style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        color = Color.White,
-                        text = when {
-                            participantName.isEmpty() -> {
-                                stringResource(type.labelRes)
-                            }
+                    )
 
-                            else -> {
-                                "${stringResource(type.labelRes)} - $participantName"
-                            }
-                        },
-                        modifier = Modifier.padding(
-                            vertical = Pds.spacing.XSmall,
-                            horizontal = Pds.spacing.SMedium
-                        )
+                    EventTypeChip(
+                        text = participantName,
+                        type = type,
+                        enabled = enabled
+                    )
+
+                    Text(
+                        text = hostName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
                     )
                 }
 
-                Text(
-                    text = hostName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-            }
+                AnimatedVisibility(expanded) {
+                    Spacer(modifier = Modifier.width(Pds.spacing.SMedium))
+                }
 
-            AnimatedVisibility(expanded) {
-                Spacer(modifier = Modifier.width(Pds.spacing.SMedium))
-            }
-
-            Column(
-                modifier = Modifier.weight(0.15f),
-                verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    modifier = Modifier.size(Pds.icon.Medium),
-                    painter = painterResource(type.imageRes),
-                    contentDescription = null
-                )
-
-                Text(
+                EventLocation(
                     text = location?.name ?: String.BLANK,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodySmall
+                    type = type,
+                    modifier = Modifier.weight(0.15f),
                 )
             }
         }
