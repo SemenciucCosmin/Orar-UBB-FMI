@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
+import com.ubb.fmi.orar.ui.catalog.components.SearchBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
@@ -22,6 +26,7 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -36,11 +41,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * @param onRetryClick Callback function to handle retry actions when an error occurs.
  * @param bottomBar A composable function for the bottom bar, which can be used to
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeachersScreen(
     uiState: TeachersUiState,
     onTeacherClick: (String) -> Unit,
     onSelectFilter: (String) -> Unit,
+    onChangeSearchQuery: (String) -> Unit,
     onRetryClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
 ) {
@@ -48,7 +55,22 @@ fun TeachersScreen(
         isLoading = uiState.isLoading,
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
-        bottomBar = bottomBar
+        bottomBar = bottomBar,
+        topBar = {
+            if (uiState.errorStatus == null && !uiState.isLoading) {
+                TopAppBar(
+                    title = {
+                        SearchBar(
+                            value = uiState.searchQuery,
+                            onValueChange = onChangeSearchQuery,
+                            placeholder = stringResource(Res.string.lbl_teacher),
+                            onClearClick = { onChangeSearchQuery(String.BLANK) },
+                            modifier = Modifier.padding(end = Pds.spacing.Medium)
+                        )
+                    }
+                )
+            }
+        }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             ChipSelectionRow(
@@ -87,6 +109,7 @@ private fun PreviewTeachersScreen() {
         TeachersScreen(
             onTeacherClick = {},
             onSelectFilter = {},
+            onChangeSearchQuery = {},
             onRetryClick = {},
             bottomBar = {},
             uiState = TeachersUiState(

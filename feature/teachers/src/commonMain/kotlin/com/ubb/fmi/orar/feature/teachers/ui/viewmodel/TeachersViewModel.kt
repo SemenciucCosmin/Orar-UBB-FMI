@@ -94,6 +94,19 @@ class TeachersViewModel(
     }
 
     /**
+     * Sets the search query for filtering teachers.
+     * This updates the UI state with the new search query, which will be used to
+     * filter the teachers list.
+     * @param searchQuery The new search query to set.
+     */
+    fun setSearchQuery(searchQuery: String) {
+        logger.d(TAG, "setSearchQuery: $searchQuery")
+        _uiState.update {
+            it.copy(searchQuery = searchQuery)
+        }
+    }
+
+    /**
      * Retries the data fetch operation for teachers by cancelling the current job
      * and starting a new one. This is useful in case of an error or when the user
      * wants to refresh the teacher list.

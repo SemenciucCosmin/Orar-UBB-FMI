@@ -52,6 +52,19 @@ class RoomsViewModel(
     }
 
     /**
+     * Sets the search query for filtering rooms.
+     * This updates the UI state with the new search query, which will be used to
+     * filter the rooms list.
+     * @param searchQuery The new search query to set.
+     */
+    fun setSearchQuery(searchQuery: String) {
+        logger.d(TAG, "setSearchQuery: $searchQuery")
+        _uiState.update {
+            it.copy(searchQuery = searchQuery)
+        }
+    }
+
+    /**
      * Fetches the list of rooms from the data source and updates the UI state.
      * It collects the timetable configuration and uses it to fetch the rooms.
      * The UI state is updated with loading, error, and room data accordingly.

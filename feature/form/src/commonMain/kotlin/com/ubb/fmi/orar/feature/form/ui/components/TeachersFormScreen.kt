@@ -8,13 +8,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState.Companion.filteredTeachers
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
+import com.ubb.fmi.orar.ui.catalog.components.SearchBar
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
@@ -26,6 +29,7 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_next
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -46,6 +50,7 @@ fun TeachersFormScreen(
     uiState: TeachersFormUiState,
     onTeacherClick: (String) -> Unit,
     onSelectFilter: (String) -> Unit,
+    onChangeSearchQuery: (String) -> Unit,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
     onBack: () -> Unit,
@@ -64,6 +69,18 @@ fun TeachersFormScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
+            if (uiState.errorStatus == null && !uiState.isLoading) {
+                Surface {
+                    SearchBar(
+                        value = uiState.searchQuery,
+                        onValueChange = onChangeSearchQuery,
+                        placeholder = stringResource(Res.string.lbl_teacher),
+                        onClearClick = { onChangeSearchQuery(String.BLANK) },
+                        modifier = Modifier.padding(Pds.spacing.Medium)
+                    )
+                }
+            }
+
             ChipSelectionRow(
                 selectedChipId = uiState.selectedFilterId,
                 onClick = onSelectFilter,
@@ -114,6 +131,7 @@ private fun PreviewTeachersFormScreen() {
             title = "2024-2025, Semester 1",
             onTeacherClick = {},
             onSelectFilter = {},
+            onChangeSearchQuery = {},
             onNextClick = {},
             onRetryClick = {},
             onBack = {},
