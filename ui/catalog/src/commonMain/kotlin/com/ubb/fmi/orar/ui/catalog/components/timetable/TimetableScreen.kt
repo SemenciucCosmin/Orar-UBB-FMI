@@ -11,14 +11,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.ubb.fmi.orar.data.timetable.model.Activity
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.model.Host
-import com.ubb.fmi.orar.data.timetable.model.Location
-import com.ubb.fmi.orar.data.timetable.model.Participant
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
@@ -93,7 +89,7 @@ fun TimetableScreen(
                                 )
                             }
 
-                            TimetableListItem(
+                            EventCard(
                                 startHour = stringResource(
                                     Res.string.lbl_hour,
                                     timetableItem.startHour
@@ -107,8 +103,9 @@ fun TimetableScreen(
                                 location = timetableItem.location,
                                 title = timetableItem.title,
                                 type = timetableItem.type,
-                                participantName = timetableItem.participantName,
-                                hostName = timetableItem.hostName,
+                                participant = timetableItem.participant,
+                                caption = timetableItem.caption,
+                                details = timetableItem.details
                             )
                         }
                     }
@@ -142,25 +139,12 @@ private fun PreviewTimetableScreen() {
                         startHour = 12,
                         endHour = 14,
                         frequency = Frequency.entries.random(),
-                        location = Location(
-                            id = "$it",
-                            name = "Room $it",
-                            address = "Str. Street nr. $it"
-                        ),
-                        participant = Participant(
-                            id = "$it",
-                            name = "Participant $it",
-                        ),
+                        location = "A304",
+                        participant = "Participant $it",
                         type = EventType.entries.random(),
-                        ownerId = "$it",
-                        activity = Activity(
-                            id = "$it",
-                            name = "Activity $it"
-                        ),
-                        host = Host(
-                            id = "$it",
-                            name = "Host $it"
-                        ),
+                        activity = "Activity $it",
+                        caption = "Caption $it",
+                        details = "Details $it",
                         isVisible = true,
                         configurationId = "20241"
                     )
@@ -194,25 +178,12 @@ private fun PreviewTimetableScreenEditMode() {
                         startHour = 12,
                         endHour = 14,
                         frequency = Frequency.entries.random(),
-                        location = Location(
-                            id = "$it",
-                            name = "Room $it",
-                            address = "Str. Street nr. $it"
-                        ),
-                        participant = Participant(
-                            id = "$it",
-                            name = "Participant $it",
-                        ),
+                        location = "A304",
+                        participant = "Participant $it",
                         type = EventType.entries.random(),
-                        ownerId = "$it",
-                        activity = Activity(
-                            id = "$it",
-                            name = "Activity $it"
-                        ),
-                        host = Host(
-                            id = "$it",
-                            name = "Host $it"
-                        ),
+                        activity = "Activity $it",
+                        caption = "Caption $it",
+                        details = "Details $it",
                         isVisible = true,
                         configurationId = "20241"
                     )

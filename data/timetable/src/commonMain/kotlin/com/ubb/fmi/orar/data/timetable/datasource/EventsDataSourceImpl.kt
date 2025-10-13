@@ -3,14 +3,10 @@ package com.ubb.fmi.orar.data.timetable.datasource
 import Logger
 import com.ubb.fmi.orar.data.database.dao.EventDao
 import com.ubb.fmi.orar.data.database.model.EventEntity
-import com.ubb.fmi.orar.data.timetable.model.Activity
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.model.Host
-import com.ubb.fmi.orar.data.timetable.model.Location
-import com.ubb.fmi.orar.data.timetable.model.Participant
 
 /**
  * Data source for managing all timetable events
@@ -39,8 +35,11 @@ class EventsDataSourceImpl(
     /**
      * Saves new list of [Event] to cache
      */
-    override suspend fun saveEventsInCache(events: List<Event>) {
-        val eventEntities = events.map(::mapEventToEntity)
+    override suspend fun saveEventsInCache(
+        ownerId: String,
+        events: List<Event>
+    ) {
+        val eventEntities = events.map { mapEventToEntity(ownerId, it) }
         eventEntities.forEach { eventDao.insert(it) }
     }
 
@@ -77,25 +76,24 @@ class EventsDataSourceImpl(
     /**
      * Maps a [Event] to a [EventEntity]
      */
-    private fun mapEventToEntity(event: Event): EventEntity {
+    private fun mapEventToEntity(
+        ownerId: String,
+        event: Event
+    ): EventEntity {
         return EventEntity(
             id = event.id,
             configurationId = event.configurationId,
-            ownerId = event.ownerId,
+            ownerId = ownerId,
             dayId = event.day.id,
             frequencyId = event.frequency.id,
             startHour = event.startHour,
             endHour = event.endHour,
-            locationId = event.location?.id,
-            locationName = event.location?.name,
-            locationAddress = event.location?.address,
-            activityId = event.activity.id,
-            activityName = event.activity.name,
+            location = event.location,
+            activity = event.activity,
             typeId = event.type.id,
-            participantId = event.participant?.id,
-            participantName = event.participant?.name,
-            hostId = event.host?.id,
-            hostName = event.host?.name,
+            participant = event.participant,
+            caption = event.caption,
+            details = event.details,
             isVisible = event.isVisible
         )
     }
@@ -104,46 +102,19 @@ class EventsDataSourceImpl(
      * Maps a [EventEntity] to a [Event]
      */
     private fun mapEntityToEvent(entity: EventEntity): Event {
-        val location = entity.let {
-            Location(
-                id = entity.locationId ?: return@let null,
-                name = entity.locationName ?: return@let null,
-                address = entity.locationAddress ?: return@let null,
-            )
-        }
-
-        val activity = Activity(
-            id = entity.activityId,
-            name = entity.activityName
-        )
-
-        val participant = entity.let {
-            Participant(
-                id = it.participantId ?: return@let null,
-                name = it.participantName ?: return@let null,
-            )
-        }
-
-        val host = entity.let {
-            Host(
-                id = it.hostId ?: return@let null,
-                name = it.hostName ?: return@let null,
-            )
-        }
-
         return Event(
             id = entity.id,
             configurationId = entity.configurationId,
-            ownerId = entity.ownerId,
             day = Day.getById(entity.dayId),
             frequency = Frequency.getById(entity.frequencyId),
             startHour = entity.startHour,
             endHour = entity.endHour,
-            location = location,
-            activity = activity,
+            location = entity.location,
+            activity = entity.activity,
             type = EventType.getById(entity.typeId),
-            participant = participant,
-            host = host,
+            participant = entity.participant,
+            caption = entity.caption,
+            details = entity.details,
             isVisible = entity.isVisible,
         )
     }

@@ -12,15 +12,11 @@ import androidx.room.Entity
  * @param [frequencyId]: frequency at which the event takes place (Week1, Week2 or both)
  * @param [startHour]: hour at which the event starts
  * @param [endHour]: hour at which the event ends
- * @param [locationId]: id of location in which the events takes place
- * @param [locationName]: name of location in which the events takes place
- * @param [locationAddress]: address of location in which the events takes place
- * @param [activityId]: id of activity during event
- * @param [activityName]: name of activity during event
- * @param [participantId]: id of participant at event
- * @param [participantName]: name of participant at event
- * @param [hostId]: id of host at event
- * @param [hostName]: name of host at event
+ * @param [location]: location in which the events takes place
+ * @param [activity]: activity during event
+ * @param [participant]: participant at event
+ * @param [caption]: short details of event
+ * @param [details]: details of an event
  * @param [isVisible]: determines the visibility of this event on the users timetable
  */
 @Entity(
@@ -35,15 +31,11 @@ data class EventEntity(
     @ColumnInfo(name = "frequencyId") val frequencyId: String,
     @ColumnInfo(name = "startHour") val startHour: Int,
     @ColumnInfo(name = "endHour") val endHour: Int,
-    @ColumnInfo(name = "locationId") val locationId: String?,
-    @ColumnInfo(name = "locationName") val locationName: String?,
-    @ColumnInfo(name = "locationAddress") val locationAddress: String?,
-    @ColumnInfo(name = "activityId") val activityId: String,
-    @ColumnInfo(name = "activityName") val activityName: String,
+    @ColumnInfo(name = "location") val location: String,
+    @ColumnInfo(name = "activity") val activity: String,
     @ColumnInfo(name = "typeId") val typeId: String,
-    @ColumnInfo(name = "participantId") val participantId: String?,
-    @ColumnInfo(name = "participantName") val participantName: String?,
-    @ColumnInfo(name = "hostId") val hostId: String?,
-    @ColumnInfo(name = "hostName") val hostName: String?,
+    @ColumnInfo(name = "participant") val participant: String,
+    @ColumnInfo(name = "caption") val caption: String,
+    @ColumnInfo(name = "details") val details: String,
     @ColumnInfo(name = "isVisible") val isVisible: Boolean,
 )
