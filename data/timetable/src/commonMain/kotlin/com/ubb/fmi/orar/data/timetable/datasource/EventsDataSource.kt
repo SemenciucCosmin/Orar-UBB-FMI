@@ -19,7 +19,10 @@ interface EventsDataSource {
     /**
      * Saves new list of [Event] to cache
      */
-    suspend fun saveEventsInCache(events: List<Event>)
+    suspend fun saveEventsInCache(
+        ownerId: String,
+        events: List<Event>
+    )
 
     /**
      * Sorts [Event] objects by day order index, start hour and end hour

@@ -17,7 +17,7 @@ import kotlin.String
  * Represents the UI state of the timetable, including the list of classes, title, study level,
  * group, selected frequency, edit mode status, loading status, and error status.
  * This state is used to manage the display and interaction of the timetable in the UI.
- * @property classes The list of classes in the timetable.
+ * @property events The list of events in the timetable.
  * @property title The title of the timetable, typically representing the academic program or semester.
  * @property studyLevel The study level associated with the timetable, such as first year, second year, etc.
  * @property group The group identifier for the classes in the timetable.
@@ -60,10 +60,11 @@ data class TimetableUiState(
                                     startHour = event.startHour,
                                     endHour = event.endHour,
                                     location = event.location,
-                                    title = event.activity.name,
+                                    title = event.activity,
                                     type = event.type,
-                                    participantName = event.participant?.name ?: String.BLANK,
-                                    hostName = event.host?.name ?: String.BLANK,
+                                    participant = event.participant,
+                                    caption = event.caption,
+                                    details = event.details,
                                     isVisible = event.isVisible
                                 )
                             }
@@ -73,21 +74,20 @@ data class TimetableUiState(
                             val visibleEvents = events.filter { it.isVisible }
                             val groupedEvents = visibleEvents.groupBy { event ->
                                 listOf(
-                                    event.ownerId,
                                     event.day,
                                     event.startHour,
                                     event.endHour,
                                     event.location,
                                     event.activity,
                                     event.type,
-                                    event.host,
+                                    event.caption,
                                 )
                             }
 
                             groupedEvents.values.mapNotNull { events ->
                                 val joinedParticipantName = events.joinToString(
                                     String.COMMA + String.SPACE
-                                ) { it.participant?.name ?: String.BLANK }
+                                ) { it.participant }
 
                                 val event = events.firstOrNull() ?: return@mapNotNull null
 
@@ -96,10 +96,11 @@ data class TimetableUiState(
                                     startHour = event.startHour,
                                     endHour = event.endHour,
                                     location = event.location,
-                                    title = event.activity.name,
+                                    title = event.activity,
                                     type = event.type,
-                                    participantName = joinedParticipantName,
-                                    hostName = event.host?.name ?: String.BLANK,
+                                    participant = joinedParticipantName,
+                                    caption = event.caption,
+                                    details = event.details,
                                     isVisible = event.isVisible
                                 )
                             }

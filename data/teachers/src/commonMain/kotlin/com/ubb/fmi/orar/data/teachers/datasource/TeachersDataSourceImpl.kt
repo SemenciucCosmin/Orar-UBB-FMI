@@ -8,15 +8,11 @@ import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.TeachersApi
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
-import com.ubb.fmi.orar.data.timetable.model.Activity
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.model.Host
-import com.ubb.fmi.orar.data.timetable.model.Location
 import com.ubb.fmi.orar.data.timetable.model.Owner
-import com.ubb.fmi.orar.data.timetable.model.Participant
 import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.domain.extensions.BLANK
@@ -105,7 +101,7 @@ class TeachersDataSourceImpl(
                 val timetableResource = getTimetableFromApi(year, semesterId, teacher)
                 timetableResource.payload?.let {
                     saveTeacherInCache(it.owner)
-                    eventsDataSource.saveEventsInCache(it.events)
+                    eventsDataSource.saveEventsInCache(teacher.id, it.events)
                 }
 
                 val timetable = timetableResource.payload?.let { timetable ->
@@ -228,12 +224,12 @@ class TeachersDataSourceImpl(
             val startHour = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
             val endHour = intervals.getOrNull(END_HOUR_INDEX) ?: return@mapNotNull null
 
-            val participantName = when {
+            val participant = when {
                 participantCell.value == NULL -> String.BLANK
                 else -> participantCell.value
             }
 
-            val (eventTypeId, subjectName) = when {
+            val (eventTypeId, subject) = when {
                 subjectCell.value.contains(EventType.STAFF.id) -> {
                     val subject = subjectCell.value.split(
                         String.COLON
@@ -262,42 +258,19 @@ class TeachersDataSourceImpl(
                 it.id == roomCell.id
             }
 
-            val location = room?.let {
-                Location(
-                    id = room.id,
-                    name = room.name,
-                    address = room.address
-                )
-            }
-
-            val activity = Activity(
-                id = subjectCell.id,
-                name = subjectName
-            )
-
-            val participant = Participant(
-                id = participantCell.id,
-                name = participantName
-            )
-
-            val host = Host(
-                id = teacher.id,
-                name = "${teacher.title.label} ${teacher.name}"
-            )
-
             Event(
                 id = id,
                 configurationId = configurationId,
-                ownerId = teacher.id,
                 day = Day.getById(dayCell.value),
                 frequency = Frequency.getById(frequencyCell.value),
                 startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
                 endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
-                location = location,
-                activity = activity,
+                location = room?.name ?: String.BLANK,
+                activity = subject,
                 type = EventType.getById(eventTypeId),
                 participant = participant,
-                host = host,
+                caption = "${teacher.title.label} ${teacher.name}",
+                details = room?.address ?: String.BLANK,
                 isVisible = true
             )
         }

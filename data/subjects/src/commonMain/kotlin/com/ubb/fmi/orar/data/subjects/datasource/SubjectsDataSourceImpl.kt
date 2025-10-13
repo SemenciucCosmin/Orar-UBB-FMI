@@ -8,16 +8,13 @@ import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.SubjectsApi
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
-import com.ubb.fmi.orar.data.timetable.model.Activity
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.model.Host
-import com.ubb.fmi.orar.data.timetable.model.Location
 import com.ubb.fmi.orar.data.timetable.model.Owner
-import com.ubb.fmi.orar.data.timetable.model.Participant
 import com.ubb.fmi.orar.data.timetable.model.Timetable
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
@@ -100,7 +97,7 @@ class SubjectsDataSourceImpl(
                 val timetableResource = getTimetableFromApi(year, semesterId, subject)
                 timetableResource.payload?.let {
                     saveSubjectInCache(it.owner)
-                    eventsDataSource.saveEventsInCache(it.events)
+                    eventsDataSource.saveEventsInCache(subject.id, it.events)
                 }
 
                 val timetable = timetableResource.payload?.let { timetable ->
@@ -231,42 +228,19 @@ class SubjectsDataSourceImpl(
                 it.id == roomCell.id
             }
 
-            val location = room?.let {
-                Location(
-                    id = room.id,
-                    name = room.name,
-                    address = room.address
-                )
-            }
-
-            val activity = Activity(
-                id = subject.id,
-                name = subject.name
-            )
-
-            val participant = Participant(
-                id = participantCell.id,
-                name = participantCell.value
-            )
-
-            val host = Host(
-                id = teacherCell.id,
-                name = teacherCell.value
-            )
-
             Event(
                 id = id,
                 configurationId = configurationId,
-                ownerId = subject.id,
                 day = Day.getById(dayCell.value),
                 frequency = Frequency.getById(frequencyCell.value),
                 startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
                 endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
-                location = location,
-                activity = activity,
+                location = room?.name ?: String.BLANK,
+                activity = subject.name,
                 type = EventType.getById(eventTypeCell.value),
-                participant = participant,
-                host = host,
+                participant = participantCell.value,
+                caption = teacherCell.value,
+                details = room?.address ?: String.BLANK,
                 isVisible = true
             )
         }
