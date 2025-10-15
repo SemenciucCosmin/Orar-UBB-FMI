@@ -1,9 +1,10 @@
-package com.ubb.fmi.orar.data.preferences
+package com.ubb.fmi.orar.data.preferences.factory
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import com.ubb.fmi.orar.data.preferences.migration.PreferencesMigration
 import okio.Path.Companion.toPath
 
 /**
@@ -17,6 +18,7 @@ actual class DataStoreFactory(private val context: Context) {
      */
     actual fun create(name: String): DataStore<Preferences> {
         return PreferenceDataStoreFactory.createWithPath(
+            migrations = listOf(PreferencesMigration()),
             produceFile = {
                 context.filesDir.resolve(name + PREFERENCES_FILE_EXTENSION).absolutePath.toPath()
             }
