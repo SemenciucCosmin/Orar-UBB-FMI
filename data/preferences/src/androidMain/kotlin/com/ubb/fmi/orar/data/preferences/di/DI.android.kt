@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.data.preferences.di
 
-import com.ubb.fmi.orar.data.preferences.DataStoreFactory
+import com.ubb.fmi.orar.data.preferences.factory.DataStoreFactory
 import org.koin.dsl.module
 
 /**

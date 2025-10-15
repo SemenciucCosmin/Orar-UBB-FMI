@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.data.timetable.di
 
-import com.ubb.fmi.orar.data.preferences.DataStoreFactory
+import com.ubb.fmi.orar.data.preferences.factory.DataStoreFactory
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSourceImpl
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
