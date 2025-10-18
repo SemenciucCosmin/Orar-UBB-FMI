@@ -14,9 +14,7 @@ import org.koin.dsl.module
  * Provides the Koin module for study lines data operations.
  * This module includes the StudyLinesDataSource for managing study line-related data.
  */
-fun studentsDataModule() = module {
+fun studyLinesDataModule() = module {
     factory<StudyLinesDataSource> { StudyLinesDataSourceImpl(get(), get(), get()) }
     single<StudyLinesRepository> { StudyLinesRepositoryImpl(get(), get(), get()) }
-    factory<GroupsDataSource> { GroupsDataSourceImpl(get(), get(), get(), get()) }
-    factory<GroupsRepository> { GroupsRepositoryImpl(get(), get(), get(), get(), get()) }
 }

@@ -39,12 +39,6 @@ kotlin {
             implementation(libs.kotlinx.date.time)
 
             // MODULES
-            implementation(projects.data.rooms)
-            implementation(projects.data.settings)
-            implementation(projects.data.students)
-            implementation(projects.data.subjects)
-            implementation(projects.data.teachers)
-            implementation(projects.data.timetable)
             implementation(projects.domain.logging)
         }
 

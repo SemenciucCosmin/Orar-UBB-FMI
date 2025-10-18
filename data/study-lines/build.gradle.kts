@@ -62,7 +62,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.ubb.fmi.orar.data.students"
+    namespace = "com.ubb.fmi.orar.data.studylines"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

@@ -35,38 +35,34 @@ kotlin {
             implementation(libs.koin.core)
 
             // KOTLINX
-            implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.coroutines.core)
 
-            // MODULES
-            implementation(projects.data.groups)
-            implementation(projects.data.studyLines)
-            implementation(projects.data.teachers)
-            implementation(projects.data.timetable)
+            // OKIO
+            implementation(libs.okio)
+
+            // Modules
+            implementation(projects.data.database)
             implementation(projects.data.network)
-            implementation(projects.domain.timetable)
+            implementation(projects.data.rooms)
+            implementation(projects.data.timetable)
+            implementation(projects.domain.extensions)
+            implementation(projects.domain.htmlParser)
             implementation(projects.domain.logging)
         }
 
         iosMain.dependencies {
-
-
         }
 
         commonTest.dependencies {
-
-
         }
 
         dependencies {
-
-
         }
     }
 }
 
 android {
-    namespace = "com.ubb.fmi.orar.domain.usertimetable"
+    namespace = "com.ubb.fmi.orar.data.groups"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -90,4 +86,5 @@ android {
 }
 
 dependencies {
+
 }
