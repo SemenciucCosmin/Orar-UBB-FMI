@@ -3,7 +3,9 @@ package com.ubb.fmi.orar.feature.groups.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
+import com.ubb.fmi.orar.data.students.repository.GroupsRepository
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
@@ -14,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -28,14 +31,11 @@ import kotlin.time.Duration.Companion.seconds
  *
  * @param fieldId The ID of the field of study.
  * @param studyLevelId The ID of the study level (e.g., Bachelor, Master).
- * @param groupsDataSource The data source for fetching groups.
- * @param timetablePreferences Preferences for managing timetable configurations.
  */
 class GroupsViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
-    private val groupsDataSource: GroupsDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val groupsRepository: GroupsRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -61,26 +61,19 @@ class GroupsViewModel(
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         val studyLevel = StudyLevel.getById(studyLevelId)
-        val lineId = fieldId + studyLevel.notation
+        val studyLineId = fieldId + studyLevel.notation
 
-        val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        logger.d(TAG, "getGroups configuration: $configuration")
-
-        val groupsResource = groupsDataSource.getGroups(
-            year = configuration?.year ?: return@launch,
-            semesterId = configuration.semesterId,
-            studyLineId = lineId
-        )
-
-        logger.d(TAG, "getGroups groupsResource: $groupsResource")
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                errorStatus = groupsResource.status.toErrorStatus(),
-                groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
-                title = groupsResource.payload?.firstOrNull()?.studyLine?.name,
-                studyLevel = studyLevel
-            )
+        groupsRepository.getGroups(studyLineId).collectLatest { resource ->
+            logger.d(TAG, "getGroups groupsResource: $resource")
+            _uiState.update {
+                it.copy(
+                    isLoading = resource.status.isLoading(),
+                    errorStatus = resource.status.toErrorStatus(),
+                    groups = resource.payload?.toImmutableList() ?: persistentListOf(),
+                    title = resource.payload?.firstOrNull()?.studyLine?.name,
+                    studyLevel = studyLevel
+                )
+            }
         }
     }
 

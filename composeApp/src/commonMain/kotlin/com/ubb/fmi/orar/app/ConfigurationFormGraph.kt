@@ -26,32 +26,14 @@ fun NavGraphBuilder.configurationFormGraph(navController: NavController) {
     }
 
     composable<ConfigurationFormNavDestination.TeachersForm> { navBackStackEntry ->
-        val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.TeachersForm>()
-        TeachersFormRoute(
-            navController = navController,
-            year = args.year,
-            semesterId = args.semesterId
-        )
+        TeachersFormRoute(navController)
     }
 
     composable<ConfigurationFormNavDestination.StudyLinesForm> { navBackStackEntry ->
-        val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.StudyLinesForm>()
-        StudyLinesFormRoute(
-            navController = navController,
-            year = args.year,
-            semesterId = args.semesterId
-        )
+        StudyLinesFormRoute(navController)
     }
 
     composable<ConfigurationFormNavDestination.GroupsForm> { navBackStackEntry ->
-        val args = navBackStackEntry.toRoute<ConfigurationFormNavDestination.GroupsForm>()
-        GroupsFormRoute(
-            navController = navController,
-            year = args.year,
-            semesterId = args.semesterId,
-            fieldId = args.fieldId,
-            studyLevelId = args.studyLevelId,
-            studyLineDegreeId = args.studyLineDegreeId,
-        )
+        GroupsFormRoute(navController)
     }
 }

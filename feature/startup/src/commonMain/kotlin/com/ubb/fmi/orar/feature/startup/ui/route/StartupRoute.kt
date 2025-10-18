@@ -25,6 +25,7 @@ fun StartupRoute(navController: NavController) {
     EventHandler(viewModel.events) { event ->
         when (event) {
             StartupUiEvent.CONFIGURATION_COMPLETE -> {
+                viewModel.unregisterEvent(event)
                 navController.navigate(TimetableNavDestination.UserTimetable) {
                     popUpTo(TimetableNavDestination.Startup) {
                         inclusive = true
@@ -34,6 +35,7 @@ fun StartupRoute(navController: NavController) {
             }
 
             StartupUiEvent.CONFIGURATION_INCOMPLETE -> {
+                viewModel.unregisterEvent(event)
                 navController.navigate(
                     ConfigurationFormNavDestination.OnboardingForm(
                         configurationFormTypeId = ConfigurationFormType.STARTUP.id

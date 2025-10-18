@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.data.timetable.datasource
 
 import com.ubb.fmi.orar.data.timetable.model.Event
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data source for managing all timetable events
@@ -14,7 +15,7 @@ interface EventsDataSource {
     suspend fun getEventsFromCache(
         configurationId: String,
         ownerId: String,
-    ): List<Event>
+    ): Flow<List<Event>>
 
     /**
      * Saves new list of [Event] to cache

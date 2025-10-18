@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
@@ -68,7 +69,7 @@ class UserTimetableViewModel(
             logger.d(TAG, "loadTimetable: $resource")
             _uiState.update {
                 it.copy(
-                    isLoading = false,
+                    isLoading = resource.status.isLoading(),
                     errorStatus = resource.status.toErrorStatus(),
                     events = resource.payload?.events?.toImmutableList() ?: persistentListOf()
                 )

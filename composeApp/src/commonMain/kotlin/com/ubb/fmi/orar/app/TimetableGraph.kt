@@ -9,7 +9,7 @@ import com.ubb.fmi.orar.feature.rooms.ui.route.RoomsRoute
 import com.ubb.fmi.orar.feature.roomtimetable.ui.route.RoomTimetableRoute
 import com.ubb.fmi.orar.feature.startup.ui.route.StartupRoute
 import com.ubb.fmi.orar.feature.studylines.ui.route.StudyLinesRoute
-import com.ubb.fmi.orar.feature.studylinetimetable.ui.route.StudyLineTimetableRoute
+import com.ubb.fmi.orar.feature.grouptimetable.ui.route.GroupTimetableRoute
 import com.ubb.fmi.orar.feature.subjects.ui.route.SubjectsRoute
 import com.ubb.fmi.orar.feature.subjectstimetable.ui.route.SubjectTimetableRoute
 import com.ubb.fmi.orar.feature.teachers.ui.route.TeachersRoute
@@ -49,7 +49,7 @@ fun NavGraphBuilder.timetableGraph(navController: NavController) {
     composable<TimetableNavDestination.StudyLineTimetable> { navBackStackEntry ->
         val args = navBackStackEntry.toRoute<TimetableNavDestination.StudyLineTimetable>()
 
-        StudyLineTimetableRoute(
+        GroupTimetableRoute(
             navController = navController,
             fieldId = args.fieldId,
             studyLevelId = args.studyLevelId,

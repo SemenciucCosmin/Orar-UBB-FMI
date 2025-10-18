@@ -34,6 +34,9 @@ kotlin {
             // KOIN
             implementation(libs.koin.core)
 
+            // KOTLINX
+            implementation(libs.kotlinx.coroutines.core)
+
             // OKIO
             implementation(libs.okio)
 

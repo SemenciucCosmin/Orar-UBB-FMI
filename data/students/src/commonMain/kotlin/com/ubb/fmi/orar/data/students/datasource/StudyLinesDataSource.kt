@@ -4,19 +4,25 @@ import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data source for managing study line related information
  */
 interface StudyLinesDataSource {
 
-    /**
-     * Retrieve list of [StudyLine] objects from cache or API
-     * by [year] and [semesterId]
-     */
-    suspend fun getStudyLines(
+    fun getStudyLinesFromCache(
         year: Int,
-        semesterId: String
+        semesterId: String,
+    ): Flow<List<StudyLine>>
+
+    suspend fun saveStudyLinesInCache(
+        studyLines: List<StudyLine>,
+    )
+
+    suspend fun getStudyLinesFromApi(
+        year: Int,
+        semesterId: String,
     ): Resource<List<StudyLine>>
 
     /**

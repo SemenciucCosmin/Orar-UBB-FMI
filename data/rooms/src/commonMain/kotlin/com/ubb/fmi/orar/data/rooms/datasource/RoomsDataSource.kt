@@ -1,32 +1,35 @@
 package com.ubb.fmi.orar.data.rooms.datasource
 
 import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.Timetable
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data source for managing room related information
  */
 interface RoomsDataSource {
 
-    /**
-     * Retrieve list of [Owner.Room] objects from cache or API
-     * by [year] and [semesterId]
-     */
-    suspend fun getRooms(
-        year: Int,
-        semesterId: String
-    ): Resource<List<Owner.Room>>
-
-    /**
-     * Retrieve timetable of [Owner.Room] for specific room from cache or
-     * API by [year], [semesterId] and [roomId]
-     */
-    suspend fun getTimetable(
+    fun getRoomsFromCache(
         year: Int,
         semesterId: String,
-        roomId: String,
-    ): Resource<Timetable<Owner.Room>>
+    ): Flow<List<Owner.Room>>
+
+    suspend fun saveRoomsInCache(
+        rooms: List<Owner.Room>
+    )
+
+    suspend fun getRoomsFromApi(
+        year: Int,
+        semesterId: String,
+    ): Resource<List<Owner.Room>>
+
+    suspend fun getEventsFromApi(
+        year: Int,
+        semesterId: String,
+        room: Owner.Room,
+    ): Resource<List<Event>>
 
     /**
      * Invalidates all cached rooms by [year] and [semesterId]

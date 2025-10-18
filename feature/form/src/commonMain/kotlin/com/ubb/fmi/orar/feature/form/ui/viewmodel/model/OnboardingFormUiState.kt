@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -15,7 +16,12 @@ data class OnboardingFormUiState(
     val selectedStudyYear: Int? = null,
     val selectedSemesterId: String? = null,
     val selectedUserTypeId: String? = null,
-)
+) {
+    enum class OnboardingFormUiEvent: UiEvent {
+        STUDENT_FINISH,
+        TEACHER_FINISH
+    }
+}
 
 /**
  * Computed value for specific button on onboarding form screen

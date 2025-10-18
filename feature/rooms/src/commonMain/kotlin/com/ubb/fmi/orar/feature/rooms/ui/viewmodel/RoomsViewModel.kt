@@ -3,7 +3,10 @@ package com.ubb.fmi.orar.feature.rooms.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
+import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
+import com.ubb.fmi.orar.data.rooms.repository.RoomsRepositoryImpl
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -25,8 +28,7 @@ import kotlinx.coroutines.launch
  * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class RoomsViewModel(
-    private val roomsDataSource: RoomsDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val roomsRepository: RoomsRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -73,22 +75,13 @@ class RoomsViewModel(
         logger.d(TAG, "getRooms")
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
-        timetablePreferences.getConfiguration().collectLatest { configuration ->
-            logger.d(TAG, "getRooms configuration: $configuration")
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@collectLatest
-            }
-
-            val resource = roomsDataSource.getRooms(
-                year = configuration.year,
-                semesterId = configuration.semesterId
-            )
-
+        roomsRepository.getRooms().collectLatest { resource ->
+            println("TESTMESSAGE getRooms ${resource.status}, ${resource.payload}")
             logger.d(TAG, "getRooms resource: $resource")
+
             _uiState.update {
                 it.copy(
-                    isLoading = false,
+                    isLoading = resource.status.isLoading(),
                     errorStatus = resource.status.toErrorStatus(),
                     rooms = resource.payload?.toImmutableList() ?: persistentListOf()
                 )

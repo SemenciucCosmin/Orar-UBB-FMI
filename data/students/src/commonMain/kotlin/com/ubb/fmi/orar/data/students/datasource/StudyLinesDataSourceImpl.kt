@@ -7,10 +7,14 @@ import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.StudentsApi
 import com.ubb.fmi.orar.data.timetable.model.Degree
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlin.collections.map
 
 /**
  * Data source for managing study line related information
@@ -21,38 +25,20 @@ class StudyLinesDataSourceImpl(
     private val logger: Logger,
 ) : StudyLinesDataSource {
 
-    /**
-     * Retrieve list of [StudyLine] objects from cache or API
-     * by [year] and [semesterId]
-     */
-    override suspend fun getStudyLines(
+    override fun getStudyLinesFromCache(
         year: Int,
         semesterId: String,
-    ): Resource<List<StudyLine>> {
-        logger.d(TAG, "getStudyLines for year: $year, semester: $semesterId")
-
+    ): Flow<List<StudyLine>> {
         val configurationId = year.toString() + semesterId
-        val cachedStudyLines = getStudyLinesFromCache(configurationId)
-
-        return when {
-            cachedStudyLines.isNotEmpty() -> {
-                val sortedStudyLines = sortStudyLines(cachedStudyLines)
-                logger.d(TAG, "getStudyLines from cache: $sortedStudyLines")
-                Resource(sortedStudyLines, Status.Success)
-            }
-
-            else -> {
-                val studyLinesResource = getStudyLinesFromApi(year, semesterId)
-                studyLinesResource.payload?.forEach { saveStudyLineInCache(it) }
-
-                val sortedStudyLines = studyLinesResource.payload?.let(::sortStudyLines)
-                logger.d(TAG, "getStudyLines from API: $sortedStudyLines, ${studyLinesResource.status}")
-
-                Resource(sortedStudyLines, studyLinesResource.status)
-            }
+        return studyLineDao.getAllAsFlow(configurationId).map { entities ->
+            entities.map(::mapEntityToStudyLine)
         }
     }
 
+    override suspend fun saveStudyLinesInCache(studyLines: List<StudyLine>) {
+        val entities = studyLines.map(::mapStudyLineToEntity)
+        studyLineDao.insertAll(entities)
+    }
 
     /**
      * Invalidates all cached data for by [year] and [semesterId]
@@ -64,27 +50,9 @@ class StudyLinesDataSourceImpl(
     }
 
     /**
-     * Retrieve list of [StudyLine] objects from cache by [configurationId]
-     */
-    private suspend fun getStudyLinesFromCache(
-        configurationId: String,
-    ): List<StudyLine> {
-        val entities = studyLineDao.getAll(configurationId)
-        return entities.map(::mapEntityToStudyLine)
-    }
-
-    /**
-     * Saves new [StudyLine] to cache
-     */
-    private suspend fun saveStudyLineInCache(studyLine: StudyLine) {
-        val entity = mapStudyLineToEntity(studyLine)
-        studyLineDao.insert(entity)
-    }
-
-    /**
      * Retrieve list of [StudyLine] objects from API by [year] and [semesterId]
      */
-    private suspend fun getStudyLinesFromApi(
+    override suspend fun getStudyLinesFromApi(
         year: Int,
         semesterId: String,
     ): Resource<List<StudyLine>> {
@@ -140,15 +108,6 @@ class StudyLinesDataSourceImpl(
             studyLines.isEmpty() -> Resource(null, resource.status)
             else -> Resource(studyLines, Status.Success)
         }
-    }
-
-    /**
-     * Sorts study lines by name
-     */
-    private fun sortStudyLines(
-        studyLines: List<StudyLine>,
-    ): List<StudyLine> {
-        return studyLines.sortedBy { it.name }
     }
 
     /**

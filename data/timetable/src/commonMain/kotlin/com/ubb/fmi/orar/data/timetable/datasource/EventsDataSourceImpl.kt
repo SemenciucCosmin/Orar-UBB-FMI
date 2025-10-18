@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * Data source for managing all timetable events
@@ -23,13 +25,11 @@ class EventsDataSourceImpl(
     override suspend fun getEventsFromCache(
         configurationId: String,
         ownerId: String,
-    ): List<Event> {
-        val eventEntities = eventDao.getAllByConfigurationAndOwner(
+    ): Flow<List<Event>> {
+        return eventDao.getAllAsFlowByConfigurationAndOwner(
             configurationId = configurationId,
             ownerId = ownerId
-        )
-
-        return eventEntities.map(::mapEntityToEvent)
+        ).map { it.map(::mapEntityToEvent) }
     }
 
     /**
@@ -40,7 +40,7 @@ class EventsDataSourceImpl(
         events: List<Event>
     ) {
         val eventEntities = events.map { mapEventToEntity(ownerId, it) }
-        eventEntities.forEach { eventDao.insert(it) }
+        eventDao.insertAll(eventEntities)
     }
 
     /**

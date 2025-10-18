@@ -1,17 +1,16 @@
-package com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel
+package com.ubb.fmi.orar.feature.grouptimetable.ui.viewmodel
 
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.students.repository.GroupsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -36,14 +34,12 @@ import kotlin.time.Duration.Companion.seconds
  * @property studyLevelId The ID of the study level.
  * @property groupId The ID of the group.
  * @property groupsDataSource The data source for fetching groups data.
- * @property timetablePreferences Preferences related to the timetable configuration.
  */
-class StudyLineTimetableViewModel(
+class GroupTimetableViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
     private val groupId: String,
-    private val groupsDataSource: GroupsDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val groupsRepository: GroupsRepository,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
@@ -53,7 +49,7 @@ class StudyLineTimetableViewModel(
      * It holds information about loading status, error status, classes, title, study level, group,
      * and the selected frequency.
      */
-    private val _uiState = MutableStateFlow(TimetableUiState())
+    private val _uiState = MutableStateFlow(TimetableUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart {
             getWeek()
@@ -74,41 +70,28 @@ class StudyLineTimetableViewModel(
             _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
             val studyLevel = StudyLevel.getById(studyLevelId)
-            val lineId = fieldId + studyLevel.notation
+            val studyLineId = fieldId + studyLevel.notation
 
             logger.d(TAG, "loadTimetable studyLevel: $studyLevel")
             logger.d(TAG, "loadTimetable fieldId: $fieldId")
             logger.d(TAG, "loadTimetable groupId: $groupId")
 
-            val configuration = timetablePreferences.getConfiguration().firstOrNull()
-            logger.d(TAG, "loadTimetable configuration: $configuration")
+            groupsRepository.getTimetable(groupId, studyLineId).collectLatest { resource ->
+                logger.d(TAG, "loadTimetable resource: $resource")
+                val events = resource.payload?.events?.map {
+                    it.copy(isVisible = true)
+                }?.toImmutableList() ?: persistentListOf()
 
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@launch
-            }
-
-            val timetableResource = groupsDataSource.getTimetable(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-                studyLineId = lineId,
-                groupId = groupId
-            )
-
-            logger.d(TAG, "loadTimetable resource: $timetableResource")
-            val events = timetableResource.payload?.events?.map {
-                it.copy(isVisible = true)
-            }?.toImmutableList() ?: persistentListOf()
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    errorStatus = timetableResource.status.toErrorStatus(),
-                    events = events,
-                    title = timetableResource.payload?.owner?.name ?: String.BLANK,
-                    studyLevel = studyLevel,
-                    group = groupId,
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = resource.status.isLoading(),
+                        errorStatus = resource.status.toErrorStatus(),
+                        events = events,
+                        title = resource.payload?.owner?.name ?: String.BLANK,
+                        studyLevel = studyLevel,
+                        group = groupId,
+                    )
+                }
             }
         }
     }

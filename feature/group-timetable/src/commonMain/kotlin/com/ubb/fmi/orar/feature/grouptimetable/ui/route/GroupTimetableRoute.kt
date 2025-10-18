@@ -1,10 +1,10 @@
-package com.ubb.fmi.orar.feature.studylinetimetable.ui.route
+package com.ubb.fmi.orar.feature.grouptimetable.ui.route
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.ubb.fmi.orar.feature.studylinetimetable.ui.viewmodel.StudyLineTimetableViewModel
+import com.ubb.fmi.orar.feature.grouptimetable.ui.viewmodel.GroupTimetableViewModel
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableFrequencyTab
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
@@ -16,7 +16,7 @@ import org.koin.core.parameter.parametersOf
 /**
  * Composable function that represents the Study Line Timetable route.
  *
- * This function initializes the [StudyLineTimetableViewModel] and observes its UI state.
+ * This function initializes the [GroupTimetableViewModel] and observes its UI state.
  * It displays a timetable screen with a top bar that includes the title, back navigation,
  * and a frequency tab for selecting timetable frequencies.
  *
@@ -26,13 +26,13 @@ import org.koin.core.parameter.parametersOf
  * @param groupId The ID of the group.
  */
 @Composable
-fun StudyLineTimetableRoute(
+fun GroupTimetableRoute(
     navController: NavController,
     fieldId: String,
     studyLevelId: String,
     groupId: String
 ) {
-    val viewModel: StudyLineTimetableViewModel = koinViewModel(
+    val viewModel: GroupTimetableViewModel = koinViewModel(
         parameters = { parametersOf(fieldId, studyLevelId, groupId) }
     )
 
@@ -42,15 +42,17 @@ fun StudyLineTimetableRoute(
         uiState = uiState,
         onRetryClick = viewModel::retry,
         topBar = {
-            if (uiState.title.isNotBlank()) {
+            if (!uiState.isLoading) {
                 TopBar(
                     title = uiState.title,
                     onBack = navController::navigateUp,
                     trailingContent = {
-                        TimetableFrequencyTab(
-                            selectedFrequency = uiState.selectedFrequency,
-                            onFrequencyClick = viewModel::selectFrequency
-                        )
+                        if (uiState.errorStatus == null) {
+                            TimetableFrequencyTab(
+                                selectedFrequency = uiState.selectedFrequency,
+                                onFrequencyClick = viewModel::selectFrequency
+                            )
+                        }
                     },
                     subtitle = uiState.studyLevel?.let {
                         "${stringResource(it.labelRes)} - ${uiState.group}"

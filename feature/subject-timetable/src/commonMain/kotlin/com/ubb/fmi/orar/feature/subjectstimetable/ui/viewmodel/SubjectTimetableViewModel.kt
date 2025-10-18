@@ -3,7 +3,9 @@ package com.ubb.fmi.orar.feature.subjectstimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
+import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
@@ -29,18 +31,15 @@ import kotlin.time.Duration.Companion.seconds
  * ViewModel for managing the state of the Subject Timetable screen.
  *
  * @property subjectId The ID of the subject for which the timetable is displayed.
- * @property subjectsDataSource The data source for fetching subject-related data.
- * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class SubjectTimetableViewModel(
     private val subjectId: String,
-    private val subjectsDataSource: SubjectsDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val subjectsRepository: SubjectsRepository,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(TimetableUiState())
+    private val _uiState = MutableStateFlow(TimetableUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart {
             getWeek()
@@ -57,38 +56,19 @@ class SubjectTimetableViewModel(
             logger.d(TAG, "loadTimetable subjectId: $subjectId")
             _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
-            val configuration = timetablePreferences.getConfiguration().firstOrNull()
-            logger.d(TAG, "loadTimetable configuration: $configuration")
+            subjectsRepository.getTimetable(subjectId).collectLatest { resource ->
+                val events = resource.payload?.events?.map {
+                    it.copy(isVisible = true)
+                }?.toImmutableList() ?: persistentListOf()
 
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@launch
-            }
-
-            val timetableResource = subjectsDataSource.getTimetable(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-                subjectId = subjectId,
-            )
-
-            val subjectsResource = subjectsDataSource.getSubjects(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-            )
-
-            logger.d(TAG, "loadTimetable resource: $timetableResource")
-            val subject = subjectsResource.payload?.firstOrNull { it.id == subjectId }
-            val events = timetableResource.payload?.events?.map {
-                it.copy(isVisible = true)
-            }?.toImmutableList() ?: persistentListOf()
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    errorStatus = timetableResource.status.toErrorStatus(),
-                    events = events,
-                    title = subject?.name ?: String.BLANK
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = resource.status.isLoading(),
+                        errorStatus = resource.status.toErrorStatus(),
+                        events = events,
+                        title = resource.payload?.owner?.name ?: String.BLANK
+                    )
+                }
             }
         }
     }

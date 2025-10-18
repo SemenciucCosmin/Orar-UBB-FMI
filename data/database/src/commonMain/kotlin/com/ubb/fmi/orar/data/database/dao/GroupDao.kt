@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ubb.fmi.orar.data.database.model.GroupEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data Access Object (DAO) for managing group entities in the database.
@@ -20,11 +21,17 @@ interface GroupDao {
     @Query("SELECT * FROM `groups` WHERE studyLineId LIKE :studyLineId AND configurationId LIKE :configurationId")
     suspend fun getAll(configurationId: String, studyLineId: String): List<GroupEntity>
 
+    @Query("SELECT * FROM `groups` WHERE studyLineId LIKE :studyLineId AND configurationId LIKE :configurationId")
+    fun getAllAsFlow(configurationId: String, studyLineId: String): Flow<List<GroupEntity>>
+
     /**
      * Insert new group [entity]
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: GroupEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entities: List<GroupEntity>)
 
     /**
      * Delete all groups entities by [configurationId]

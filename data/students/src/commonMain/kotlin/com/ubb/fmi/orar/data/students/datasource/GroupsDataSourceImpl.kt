@@ -6,14 +6,12 @@ import com.ubb.fmi.orar.data.database.model.GroupEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.StudentsApi
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
-import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
-import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH
@@ -22,106 +20,35 @@ import com.ubb.fmi.orar.domain.extensions.SLASH
 import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
 import com.ubb.fmi.orar.domain.htmlparser.model.Table
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import okio.ByteString.Companion.encodeUtf8
 
 /**
  * Data source for managing study line related information
  */
 class GroupsDataSourceImpl(
-    private val eventsDataSource: EventsDataSource,
-    private val roomsDataSource: RoomsDataSource,
+    private val roomsRepository: RoomsRepository,
     private val studentsApi: StudentsApi,
-    private val studyLinesDataSource: StudyLinesDataSource,
     private val groupDao: GroupDao,
     private val logger: Logger,
 ) : GroupsDataSource {
 
-    /**
-     * Retrieve list of [Owner.Group] from cache or API
-     * by [year], [semesterId] and [studyLineId]
-     */
-    override suspend fun getGroups(
+    override fun getGroupsFromCache(
         year: Int,
         semesterId: String,
-        studyLineId: String,
-    ): Resource<List<Owner.Group>> {
-        logger.d(TAG, "get groups for year: $year, semester: $semesterId")
-
+        studyLine: StudyLine
+    ): Flow<List<Owner.Group>> {
         val configurationId = year.toString() + semesterId
-        val studyLinesResource = studyLinesDataSource.getStudyLines(year, semesterId)
-        val studyLine = studyLinesResource.payload?.firstOrNull { it.id == studyLineId }
-
-        logger.d(TAG, "get groups for studyLine: $studyLine")
-        if (studyLine == null) return Resource(null, studyLinesResource.status)
-
-        val cachedGroups = getGroupsFromCache(configurationId, studyLine)
-
-        return when {
-            cachedGroups.isNotEmpty() -> {
-                val sortedGroups = sortGroups(cachedGroups)
-                logger.d(TAG, "get groups from cache: $sortedGroups")
-                Resource(sortedGroups, Status.Success)
-            }
-
-            else -> {
-                val groupsResource = getGroupsFromApi(year, semesterId, studyLine)
-                groupsResource.payload?.forEach { saveGroupInCache(it) }
-
-                val sortedGroups = groupsResource.payload?.let(::sortGroups)
-                logger.d(TAG, "get groups from API: $sortedGroups, ${groupsResource.status}")
-
-                Resource(sortedGroups, groupsResource.status)
-            }
+        return groupDao.getAllAsFlow(configurationId, studyLine.id).map { entities ->
+            entities.map { mapEntityToGroup(it, studyLine) }
         }
     }
 
-    /**
-     * Retrieve timetable of [Owner.Group] for specific study line from cache or
-     * API by [year], [semesterId] and [groupId]
-     */
-    override suspend fun getTimetable(
-        year: Int,
-        semesterId: String,
-        groupId: String,
-        studyLineId: String,
-    ): Resource<Timetable<Owner.Group>> {
-        logger.d(TAG, "get group timetable for year: $year, semester: $semesterId, group: $groupId")
-
-        val configurationId = year.toString() + semesterId
-        val resource = getGroups(year, semesterId, studyLineId)
-        val group = resource.payload?.firstOrNull { it.id == groupId }
-
-        logger.d(TAG, "get group timetable for: $group")
-        val cachedEvents = group?.let {
-            eventsDataSource.getEventsFromCache(configurationId, it.id)
-        }
-
-        return when {
-            cachedEvents?.isNotEmpty() == true -> {
-                val sortedEvents = eventsDataSource.sortEvents(cachedEvents)
-                val timetable = Timetable(owner = group, events = sortedEvents)
-                logger.d(TAG, "get group timetable from cache: $timetable")
-
-                Resource(timetable, Status.Success)
-            }
-
-            else -> {
-                if (group == null) return Resource(null, resource.status)
-                val timetableResource = getTimetableFromApi(year, semesterId, group)
-                timetableResource.payload?.let {
-                    saveGroupInCache(it.owner)
-                    eventsDataSource.saveEventsInCache(group.id, it.events)
-                }
-
-                val timetable = timetableResource.payload?.let { timetable ->
-                    val sortedEvents = eventsDataSource.sortEvents(timetable.events)
-                    timetable.copy(events = sortedEvents)
-                }
-
-                logger.d(TAG, "get group timetable from API: $timetable ${timetableResource.status}")
-                Resource(timetable, timetableResource.status)
-            }
-        }
+    override suspend fun saveGroupsInCache(groups: List<Owner.Group>) {
+        val entities = groups.map(::mapGroupToEntity)
+        groupDao.insertAll(entities)
     }
 
     /**
@@ -134,36 +61,14 @@ class GroupsDataSourceImpl(
     }
 
     /**
-     * Retrieve list of [Owner.Group] objects from cache by [configurationId]
-     */
-    private suspend fun getGroupsFromCache(
-        configurationId: String,
-        studyLine: StudyLine,
-    ): List<Owner.Group> {
-        val entities = groupDao.getAll(configurationId, studyLine.id)
-        return entities.map { mapEntityToGroup(it, studyLine) }
-    }
-
-    /**
-     * Saves new [Owner.Group] to cache
-     */
-    private suspend fun saveGroupInCache(group: Owner.Group) {
-        val entity = mapGroupToEntity(group)
-        groupDao.insert(entity)
-    }
-
-    /**
      * Retrieve list of [Owner.Group] objects from API by [year] and [semesterId]
      */
-    private suspend fun getGroupsFromApi(
+    override suspend fun getGroupsFromApi(
         year: Int,
         semesterId: String,
         studyLine: StudyLine,
     ): Resource<List<Owner.Group>> {
-        logger.d(
-            TAG,
-            "getGroupsFromApi for year: $year, semester: $semesterId, studyLine: $studyLine"
-        )
+        logger.d(TAG, "getGroupsFromApi for year: $year, semester: $semesterId, studyLine: $studyLine")
 
         val configurationId = year.toString() + semesterId
         val resource = studentsApi.getTimetableHtml(year, semesterId, studyLine.id)
@@ -194,15 +99,11 @@ class GroupsDataSourceImpl(
         }
     }
 
-    /**
-     * Retrieve timetable of [Owner.Group] for specific room from API
-     * by [year], [semesterId] and [group]
-     */
-    private suspend fun getTimetableFromApi(
+    override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
         group: Owner.Group,
-    ): Resource<Timetable<Owner.Group>> {
+    ): Resource<List<Event>> {
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId, group: $group")
 
         val configurationId = year.toString() + semesterId
@@ -238,7 +139,7 @@ class GroupsDataSourceImpl(
             val frequencyCell = row.cells.getOrNull(FREQUENCY_INDEX) ?: return@mapNotNull null
             val roomCell = row.cells.getOrNull(ROOM_INDEX) ?: return@mapNotNull null
             val eventTypeCell = row.cells.getOrNull(EVENT_TYPE_INDEX) ?: return@mapNotNull null
-            val subjectCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
+            val groupCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
             val teacherCell = row.cells.getOrNull(TEACHER_INDEX) ?: return@mapNotNull null
             val intervals = intervalCell.value.split(String.DASH)
             val startHour = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
@@ -256,12 +157,12 @@ class GroupsDataSourceImpl(
                 participantCell.value,
                 eventTypeCell.value,
                 group.id,
-                subjectCell.id,
+                groupCell.id,
                 teacherCell.id,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
 
-            val room = roomsDataSource.getRooms(year, semesterId).payload?.firstOrNull {
+            val room = roomsRepository.getRooms().firstOrNull()?.payload?.firstOrNull {
                 it.id == roomCell.id
             }
 
@@ -273,7 +174,7 @@ class GroupsDataSourceImpl(
                 startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
                 endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
                 location = room?.name ?: String.BLANK,
-                activity = subjectCell.value,
+                activity = groupCell.value,
                 type = EventType.getById(eventTypeCell.value),
                 participant = participantCell.value,
                 caption = teacherCell.value,
@@ -284,19 +185,12 @@ class GroupsDataSourceImpl(
 
         logger.d(TAG, "getTimetableFromApi events: $events")
 
-        return when {
-            events == null -> Resource(null, resource.status)
-            else -> Resource(Timetable(group, events), Status.Success)
+        val status = when {
+            events?.isEmpty() == true -> Status.Empty
+            else -> resource.status
         }
-    }
 
-    /**
-     * Sorts groups by name
-     */
-    private fun sortGroups(
-        groups: List<Owner.Group>,
-    ): List<Owner.Group> {
-        return groups.sortedBy { it.name }
+        return Resource(events, status)
     }
 
     /**

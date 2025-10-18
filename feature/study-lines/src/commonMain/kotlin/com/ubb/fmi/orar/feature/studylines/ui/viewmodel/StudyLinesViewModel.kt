@@ -3,7 +3,9 @@ package com.ubb.fmi.orar.feature.studylines.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.students.repository.StudyLinesRepository
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -21,13 +23,9 @@ import kotlinx.coroutines.launch
  * ViewModel for the Study Lines feature.
  * It fetches study lines from the data source and manages the UI state.
  * The ViewModel handles loading, error states, and user interactions such as selecting filters and fields.
- *
- * @property studyLinesDataSource The data source for fetching study lines.
- * @property timetablePreferences Preferences for the timetable configuration.
  */
 class StudyLinesViewModel(
-    private val studyLinesDataSource: StudyLinesDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val studyLinesRepository: StudyLinesRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -61,21 +59,10 @@ class StudyLinesViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
-        timetablePreferences.getConfiguration().collectLatest { configuration ->
-            logger.d(TAG, "getStudyLines configuration: $configuration")
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = null) }
-                return@collectLatest
-            }
+        studyLinesRepository.getStudyLines().collectLatest { resource ->
+            logger.d(TAG, "getStudyLines studyLinesResource: $resource")
 
-            val studyLinesResource = studyLinesDataSource.getStudyLines(
-                year = configuration.year,
-                semesterId = configuration.semesterId
-            )
-
-            logger.d(TAG, "getStudyLines studyLinesResource: $studyLinesResource")
-
-            val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
+            val groupedStudyLines = resource.payload?.groupBy { studyLine ->
                 studyLine.fieldId
             }?.values?.toList()?.map { studyLines ->
                 studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
@@ -84,8 +71,8 @@ class StudyLinesViewModel(
             logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")
             _uiState.update {
                 it.copy(
-                    isLoading = false,
-                    errorStatus = studyLinesResource.status.toErrorStatus(),
+                    isLoading = resource.status.isLoading(),
+                    errorStatus = resource.status.toErrorStatus(),
                     groupedStudyLines = groupedStudyLines
                 )
             }

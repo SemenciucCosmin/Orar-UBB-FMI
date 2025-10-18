@@ -20,7 +20,7 @@ import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import com.ubb.fmi.orar.feature.settings.di.settingsFeatureModule
 import com.ubb.fmi.orar.feature.startup.di.startupFeatureModule
 import com.ubb.fmi.orar.feature.studylines.di.studyLinesFeatureModule
-import com.ubb.fmi.orar.feature.studylinetimetable.di.studyLineTimetableFeatureModule
+import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
 import com.ubb.fmi.orar.feature.subjects.di.subjectsFeatureModule
 import com.ubb.fmi.orar.feature.subjectstimetable.di.subjectTimetableFeatureModule
 import com.ubb.fmi.orar.feature.teachers.di.teachersFeatureModule
@@ -70,7 +70,7 @@ fun commonModule() = module {
     includes(studentsDataModule())
     includes(studyLinesFeatureModule())
     includes(groupsFeatureModule())
-    includes(studyLineTimetableFeatureModule())
+    includes(groupsTimetableFeatureModule())
 
     // SUBJECTS
     includes(subjectsDataModule())

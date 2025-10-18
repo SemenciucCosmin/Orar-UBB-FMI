@@ -1,10 +1,11 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,7 +31,7 @@ import kotlin.time.ExperimentalTime
 class OnboardingFormViewModel(
     private val timetablePreferences: TimetablePreferences,
     private val logger: Logger,
-) : ViewModel() {
+) : EventViewModel<OnboardingFormUiState.OnboardingFormUiEvent>() {
 
     /**
      * Mutable state flow that holds the UI state for the onboarding form.
@@ -91,6 +92,29 @@ class OnboardingFormViewModel(
     fun selectUserType(userTypeId: String) {
         logger.d(TAG, "selectUserType: $userTypeId")
         _uiState.update { it.copy(selectedUserTypeId = userTypeId) }
+    }
+
+    fun finishSelection() {
+        viewModelScope.launch {
+            val year = uiState.value.selectedStudyYear ?: return@launch
+            val semesterId = uiState.value.selectedSemesterId ?: return@launch
+            val userTypeId = uiState.value.selectedUserTypeId ?: return@launch
+            val userType = UserType.getById(userTypeId)
+
+            timetablePreferences.setYear(year)
+            timetablePreferences.setSemester(semesterId)
+            timetablePreferences.setUserType(userTypeId)
+
+            when (userType) {
+                UserType.STUDENT -> {
+                    registerEvent(OnboardingFormUiState.OnboardingFormUiEvent.STUDENT_FINISH)
+                }
+
+                UserType.TEACHER -> {
+                    registerEvent(OnboardingFormUiState.OnboardingFormUiEvent.TEACHER_FINISH)
+                }
+            }
+        }
     }
 
     /**
