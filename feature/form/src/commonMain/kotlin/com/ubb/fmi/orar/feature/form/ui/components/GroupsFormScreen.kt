@@ -50,6 +50,7 @@ fun GroupsFormScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
+        isEmpty = uiState.isEmpty,
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {

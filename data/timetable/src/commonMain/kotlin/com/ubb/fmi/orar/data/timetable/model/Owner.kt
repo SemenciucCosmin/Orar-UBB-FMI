@@ -1,5 +1,8 @@
 package com.ubb.fmi.orar.data.timetable.model
 
+import com.ubb.fmi.orar.data.timetable.model.Owner.User.configurationId
+import com.ubb.fmi.orar.data.timetable.model.Owner.User.id
+
 /**
  * Class for any [Owner]
  * @param [id]: unique identifier
@@ -65,4 +68,17 @@ sealed class Owner(
         override val configurationId: String,
         val title: TeacherTitle,
     ) : Owner(id, name, configurationId)
+
+    /**
+     * User [Owner]
+     */
+    data object User : Owner(
+        id = USER,
+        name = USER,
+        configurationId = USER
+    )
+
+    companion object {
+        private const val USER = "USER"
+    }
 }

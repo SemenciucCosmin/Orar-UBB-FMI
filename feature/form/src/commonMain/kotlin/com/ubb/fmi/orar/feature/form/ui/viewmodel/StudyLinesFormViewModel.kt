@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.studylines.repository.StudyLinesRepository
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
@@ -81,6 +82,7 @@ class StudyLinesFormViewModel(
                     year = configuration?.year,
                     semester = configuration?.semesterId?.let(Semester::getById),
                     isLoading = resource.status.isLoading(),
+                    isEmpty = resource.status.isEmpty(),
                     errorStatus = resource.status.toErrorStatus(),
                     groupedStudyLines = groupedStudyLines,
                     selectedFilterId = selectedStudyLine?.degree?.id ?: DegreeFilter.ALL.id,

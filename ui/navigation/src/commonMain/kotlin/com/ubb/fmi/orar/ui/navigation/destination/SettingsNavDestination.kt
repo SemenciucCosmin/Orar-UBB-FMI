@@ -20,4 +20,10 @@ sealed class SettingsNavDestination {
      */
     @Serializable
     data object Theme : SettingsNavDestination()
+
+    /**
+     * Represents a navigation destination for the personal event addition feature.
+     */
+    @Serializable
+    data object AddPersonalEvent : SettingsNavDestination()
 }

@@ -38,12 +38,16 @@ kotlin {
             implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.coroutines.core)
 
+            // OKIO
+            implementation(libs.okio)
+
             // MODULES
             implementation(projects.data.groups)
             implementation(projects.data.studyLines)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
             implementation(projects.data.network)
+            implementation(projects.domain.extensions)
             implementation(projects.domain.timetable)
             implementation(projects.domain.logging)
         }

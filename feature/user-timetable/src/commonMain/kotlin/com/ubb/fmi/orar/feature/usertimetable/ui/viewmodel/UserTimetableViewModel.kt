@@ -3,9 +3,11 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
+import com.ubb.fmi.orar.domain.timetable.usecase.DeletePersonalEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
     private val changeEventVisibilityUseCase: ChangeEventVisibilityUseCase,
+    private val deletePersonalEventUseCase: DeletePersonalEventUseCase,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
@@ -70,8 +73,9 @@ class UserTimetableViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = resource.status.isLoading(),
+                    isEmpty = resource.status.isEmpty(),
                     errorStatus = resource.status.toErrorStatus(),
-                    events = resource.payload?.events?.toImmutableList() ?: persistentListOf()
+                    events = resource.payload?.toImmutableList() ?: persistentListOf()
                 )
             }
         }
@@ -130,6 +134,21 @@ class UserTimetableViewModel(
                     it.id != event.id -> it
                     else -> it.copy(isVisible = !it.isVisible)
                 }
+            }.toImmutableList()
+
+            state.copy(events = newEvents)
+        }
+    }
+
+    fun removeItem(event: TimetableListItem.Event) {
+        viewModelScope.launch {
+            logger.d(TAG, "deletePersonalEventUseCase event: $event")
+            deletePersonalEventUseCase(event.id)
+        }
+
+        _uiState.update { state ->
+            val newEvents = state.events.toMutableList().apply {
+                removeAll { it.id == event.id }
             }.toImmutableList()
 
             state.copy(events = newEvents)

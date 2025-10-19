@@ -53,6 +53,7 @@ fun TeachersScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
+        isEmpty = uiState.filteredTeachers.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         bottomBar = bottomBar,

@@ -8,10 +8,9 @@ import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
  */
 fun Status.toErrorStatus(): ErrorStatus? {
     return when (this) {
-        Status.Loading, Status.Success -> null
+        Status.Loading, Status.Success, Status.Empty -> null
         Status.NetworkError -> ErrorStatus.NETWORK
         Status.NotFoundError -> ErrorStatus.NOT_FOUND
-        Status.Empty -> ErrorStatus.EMPTY
         else -> ErrorStatus.GENERIC
     }
 }

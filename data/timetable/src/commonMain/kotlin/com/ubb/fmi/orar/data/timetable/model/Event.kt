@@ -7,7 +7,9 @@ package com.ubb.fmi.orar.data.timetable.model
  * @property day: day in which the event takes place
  * @property frequency: frequency at which the event takes place
  * @property startHour: hour at which the event starts
+ * @property startMinute: minute at which the event starts
  * @property endHour: hour at which the event ends
+ * @property endMinute: minute at which the event ends
  * @property location: location at which the event takes place
  * @property activity: activity during event
  * @property type: type of event
@@ -22,7 +24,9 @@ data class Event(
     val day: Day,
     val frequency: Frequency,
     val startHour: Int,
+    val startMinute: Int,
     val endHour: Int,
+    val endMinute: Int,
     val location: String,
     val activity: String,
     val type: EventType,

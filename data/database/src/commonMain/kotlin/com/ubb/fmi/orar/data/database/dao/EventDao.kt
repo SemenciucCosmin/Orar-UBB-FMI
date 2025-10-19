@@ -41,6 +41,12 @@ interface EventDao {
     suspend fun insertAll(entities: List<EventEntity>)
 
     /**
+     * Delete timetable event entity with [entityId]
+     */
+    @Query("DELETE FROM events WHERE id LIKE :entityId")
+    suspend fun delete(entityId: String)
+
+    /**
      * Delete all timetable event entities by [configurationId]
      */
     @Query("DELETE FROM events WHERE configurationId LIKE :configurationId")

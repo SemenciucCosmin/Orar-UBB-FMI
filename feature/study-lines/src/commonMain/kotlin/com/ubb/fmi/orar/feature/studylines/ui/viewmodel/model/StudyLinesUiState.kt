@@ -23,6 +23,7 @@ data class StudyLinesUiState(
     val selectedFilterId: String = DegreeFilter.ALL.id,
     val selectedFieldId: String? = null,
     val isLoading: Boolean = false,
+    val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
     companion object {
