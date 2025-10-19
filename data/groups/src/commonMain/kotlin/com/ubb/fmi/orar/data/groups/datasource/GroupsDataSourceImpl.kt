@@ -91,7 +91,7 @@ class GroupsDataSourceImpl(
         logger.d(TAG, "getGroupsFromApi groupsIds: $groups")
 
         return when {
-            groups.isNullOrEmpty() -> Resource(null, resource.status)
+            groups.isNullOrEmpty() -> Resource(null, Status.Empty)
             else -> Resource(groups, Status.Success)
         }
     }

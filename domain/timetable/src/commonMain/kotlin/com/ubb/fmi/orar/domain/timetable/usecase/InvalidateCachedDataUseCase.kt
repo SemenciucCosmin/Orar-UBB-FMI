@@ -7,7 +7,6 @@ import com.ubb.fmi.orar.data.studylines.repository.StudyLinesRepository
 import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
-import kotlinx.serialization.json.Json.Default.configuration
 import kotlin.time.ExperimentalTime
 
 /**
@@ -29,7 +28,7 @@ class InvalidateCachedDataUseCase(
      */
     @OptIn(ExperimentalTime::class)
     suspend operator fun invoke(year: Int, semesterId: String) {
-        logger.d(TAG, "Invalidate data for config: $configuration")
+        logger.d(TAG, "Invalidate data for year: $year, semester: $semesterId")
         eventsDataSource.invalidate(year, semesterId)
         groupsRepository.invalidate(year, semesterId)
         roomRepository.invalidate(year, semesterId)

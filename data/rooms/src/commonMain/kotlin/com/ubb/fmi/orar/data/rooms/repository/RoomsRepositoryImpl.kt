@@ -85,11 +85,7 @@ class RoomsRepositoryImpl(
     private fun initializeRooms() {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
-                if (configuration == null) {
-                    roomsFlow.update { Resource(null, Status.NotFoundError) }
-                    return@collectLatest
-                }
-
+                if (configuration == null) return@collectLatest
                 getRoomsFromCache(configuration.year, configuration.semesterId)
             }
         }
@@ -125,7 +121,12 @@ class RoomsRepositoryImpl(
                 roomsDataSource.saveRoomsInCache(rooms)
             }
 
-            else -> roomsFlow.update { Resource(null, resource.status) }
+            else -> roomsFlow.update {
+                when {
+                    it.payload.isNullOrEmpty() -> Resource(null, resource.status)
+                    else -> it
+                }
+            }
         }
     }
 
@@ -154,10 +155,7 @@ class RoomsRepositoryImpl(
     private fun initializeEvents(roomId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
-                if (configuration == null) {
-                    timetableFlows[roomId]?.update { Resource(null, Status.NotFoundError) }
-                    return@collectLatest
-                }
+                if (configuration == null) return@collectLatest
 
                 val room = roomsDataSource.getRoomsFromCache(
                     configuration.year,
@@ -204,7 +202,12 @@ class RoomsRepositoryImpl(
                 eventsDataSource.saveEventsInCache(room.id, events)
             }
 
-            else -> timetableFlows[room.id]?.update { Resource(null, resource.status) }
+            else -> timetableFlows[room.id]?.update {
+                when {
+                    it.payload?.events.isNullOrEmpty() -> Resource(null, resource.status)
+                    else -> it
+                }
+            }
         }
     }
 }

@@ -88,11 +88,7 @@ class TeacherRepositoryImpl(
     private fun initializeTeachers() {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
-                if (configuration == null) {
-                    teachersFlow.update { Resource(null, Status.NotFoundError) }
-                    return@collectLatest
-                }
-
+                if (configuration == null) return@collectLatest
                 getTeachersFromCache(configuration.year, configuration.semesterId)
             }
         }
@@ -128,7 +124,12 @@ class TeacherRepositoryImpl(
                 teachersDataSource.saveTeachersInCache(teacher)
             }
 
-            else -> teachersFlow.update { Resource(null, resource.status) }
+            else -> teachersFlow.update {
+                when {
+                    it.payload.isNullOrEmpty() -> Resource(null, resource.status)
+                    else -> it
+                }
+            }
         }
     }
 
@@ -155,10 +156,7 @@ class TeacherRepositoryImpl(
     private fun initializeEvents(teacherId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
-                if (configuration == null) {
-                    timetableFlows[teacherId]?.update { Resource(null, Status.NotFoundError) }
-                    return@collectLatest
-                }
+                if (configuration == null) return@collectLatest
 
                 val teacher = teachersDataSource.getTeachersFromCache(
                     configuration.year,
@@ -205,7 +203,12 @@ class TeacherRepositoryImpl(
                 eventsDataSource.saveEventsInCache(teacher.id, events)
             }
 
-            else -> timetableFlows[teacher.id]?.update { Resource(null, resource.status) }
+            else -> timetableFlows[teacher.id]?.update {
+                when {
+                    it.payload?.events.isNullOrEmpty() -> Resource(null, resource.status)
+                    else -> it
+                }
+            }
         }
     }
 }

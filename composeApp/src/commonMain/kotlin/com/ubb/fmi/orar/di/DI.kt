@@ -1,11 +1,12 @@
 package com.ubb.fmi.orar.di
 
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
+import com.ubb.fmi.orar.data.groups.di.groupsDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.settings.di.settingsDataModule
-import com.ubb.fmi.orar.data.students.di.studentsDataModule
+import com.ubb.fmi.orar.data.studylines.di.studyLinesDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
@@ -48,6 +49,11 @@ fun commonModule() = module {
     // LOGGING
     includes(loggingDomainModule())
 
+    // GROUPS
+    includes(groupsDataModule())
+    includes(groupsFeatureModule())
+    includes(groupsTimetableFeatureModule())
+
     // NETWORK
     includes(networkDataModule())
 
@@ -67,10 +73,8 @@ fun commonModule() = module {
     includes(settingsFeatureModule())
 
     // STUDY LINES
-    includes(studentsDataModule())
+    includes(studyLinesDataModule())
     includes(studyLinesFeatureModule())
-    includes(groupsFeatureModule())
-    includes(groupsTimetableFeatureModule())
 
     // SUBJECTS
     includes(subjectsDataModule())

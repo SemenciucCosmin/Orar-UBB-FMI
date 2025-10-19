@@ -40,7 +40,8 @@ class GroupsRepositoryImpl(
      * Retrieves a [Flow] of groups
      */
     override fun getGroups(studyLineId: String): Flow<Resource<List<Owner.Group>>> {
-        if (groupsFlow[studyLineId]?.subscriptionCount?.value == 0) {
+        if (!groupsFlow.keys.contains(studyLineId)) {
+            groupsFlow[studyLineId] = MutableStateFlow(Resource(null, Status.Loading))
             prefetchGroups(studyLineId)
             initializeGroups(studyLineId)
         }
@@ -99,10 +100,7 @@ class GroupsRepositoryImpl(
     private fun initializeGroups(studyLineId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
-                if (configuration == null) {
-                    groupsFlow[studyLineId]?.update { Resource(null, Status.NotFoundError) }
-                    return@collectLatest
-                }
+                if (configuration == null) return@collectLatest
 
                 val studyLine = studyLinesDataSource.getStudyLinesFromCache(
                     configuration.year,
@@ -145,7 +143,12 @@ class GroupsRepositoryImpl(
                 groupsDataSource.saveGroupsInCache(group)
             }
 
-            else -> groupsFlow[studyLine.id]?.update { Resource(null, resource.status) }
+            else -> groupsFlow[studyLine.id]?.update {
+                when {
+                    it.payload.isNullOrEmpty() -> Resource(null, resource.status)
+                    else -> it
+                }
+            }
         }
     }
 
@@ -182,10 +185,7 @@ class GroupsRepositoryImpl(
     private fun initializeEvents(groupId: String, studyLineId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
-                if (configuration == null) {
-                    timetableFlows[groupId]?.update { Resource(null, Status.NotFoundError) }
-                    return@collectLatest
-                }
+                if (configuration == null) return@collectLatest
 
                 val studyLine = studyLinesDataSource.getStudyLinesFromCache(
                     configuration.year,
@@ -238,7 +238,12 @@ class GroupsRepositoryImpl(
                 eventsDataSource.saveEventsInCache(group.id, events)
             }
 
-            else -> timetableFlows[group.id]?.update { Resource(null, resource.status) }
+            else -> timetableFlows[group.id]?.update {
+                when {
+                    it.payload?.events.isNullOrEmpty() -> Resource(null, resource.status)
+                    else -> it
+                }
+            }
         }
     }
 }

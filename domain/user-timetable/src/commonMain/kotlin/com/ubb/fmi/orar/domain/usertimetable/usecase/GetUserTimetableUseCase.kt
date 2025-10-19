@@ -40,10 +40,7 @@ class GetUserTimetableUseCase(
         return timetablePreferences.getConfiguration().transformLatest { configuration ->
             logger.d(TAG, "configuration $configuration")
 
-            if (configuration == null) {
-                emit(Resource(null, Status.Error))
-                return@transformLatest
-            }
+            if (configuration == null) return@transformLatest
 
             when (UserType.getById(configuration.userTypeId)) {
                 UserType.STUDENT -> {

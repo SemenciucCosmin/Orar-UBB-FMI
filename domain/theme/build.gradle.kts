@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.kotlinx.date.time)
 
             // MODULES
+            implementation(projects.data.settings)
             implementation(projects.domain.logging)
         }
 

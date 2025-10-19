@@ -82,7 +82,7 @@ class GroupTimetableViewModel(
                         isLoading = resource.status.isLoading(),
                         errorStatus = resource.status.toErrorStatus(),
                         events = events,
-                        title = resource.payload?.owner?.name ?: String.BLANK,
+                        title = resource.payload?.owner?.studyLine?.name ?: String.BLANK,
                         studyLevel = studyLevel,
                         group = groupId,
                     )

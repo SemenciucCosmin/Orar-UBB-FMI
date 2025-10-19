@@ -12,6 +12,7 @@ import com.ubb.fmi.orar.data.timetable.model.Degree
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
@@ -50,11 +51,13 @@ fun GroupsScreen(
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
-            if (uiState.title != null && uiState.studyLevel != null) {
+            if (!uiState.isLoading) {
                 TopBar(
-                    title = uiState.title,
-                    subtitle = stringResource(uiState.studyLevel.labelRes),
-                    onBack = onBack
+                    title = uiState.title ?: String.BLANK,
+                    onBack = onBack,
+                    subtitle = uiState.studyLevel?.let {
+                        stringResource(it.labelRes)
+                    } ?: String.BLANK
                 )
             }
         }

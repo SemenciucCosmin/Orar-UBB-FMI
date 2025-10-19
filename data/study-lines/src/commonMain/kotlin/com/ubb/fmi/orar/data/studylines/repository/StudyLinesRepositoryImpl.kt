@@ -66,11 +66,7 @@ class StudyLinesRepositoryImpl(
     private fun initializeStudyLines() {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
-                if (configuration == null) {
-                    studyLinesFlow.update { Resource(null, Status.NotFoundError) }
-                    return@collectLatest
-                }
-
+                if (configuration == null) return@collectLatest
                 getStudyLinesFromCache(configuration.year, configuration.semesterId)
             }
         }
@@ -106,7 +102,12 @@ class StudyLinesRepositoryImpl(
                 studyLinesDataSource.saveStudyLinesInCache(studyLine)
             }
 
-            else -> studyLinesFlow.update { Resource(null, resource.status) }
+            else -> studyLinesFlow.update {
+                when {
+                    it.payload.isNullOrEmpty() -> Resource(null, resource.status)
+                    else -> it
+                }
+            }
         }
     }
 }
