@@ -39,8 +39,9 @@ kotlin {
             implementation(libs.kotlinx.date.time)
 
             // MODULES
+            implementation(projects.data.groups)
             implementation(projects.data.rooms)
-            implementation(projects.data.students)
+            implementation(projects.data.studyLines)
             implementation(projects.data.subjects)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)

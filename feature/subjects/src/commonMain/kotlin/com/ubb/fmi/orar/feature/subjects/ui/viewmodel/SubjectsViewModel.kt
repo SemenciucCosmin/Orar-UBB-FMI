@@ -3,11 +3,10 @@ package com.ubb.fmi.orar.feature.subjects.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -21,12 +20,9 @@ import kotlinx.coroutines.launch
  * ViewModel for managing the state of the Subjects screen.
  * It retrieves subjects from the data source and provides functionality to filter them based
  * on a search query. It also handles loading and error states.
- * @param subjectsDataSource The data source for retrieving subjects.
- * @param timetablePreferences The preferences for the timetable configuration.
  */
 class SubjectsViewModel(
-    private val subjectsDataSource: SubjectsDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val subjectsRepository: SubjectsRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -40,7 +36,7 @@ class SubjectsViewModel(
      * Mutable state flow that holds the current UI state of the Subjects screen.
      * It is updated with the latest subjects, search query, and loading/error states.
      */
-    private val _uiState = MutableStateFlow(SubjectsUiState())
+    private val _uiState = MutableStateFlow(SubjectsUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**
@@ -71,22 +67,11 @@ class SubjectsViewModel(
      */
     private fun getSubjects() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
-        timetablePreferences.getConfiguration().collectLatest { configuration ->
-            logger.d(TAG, "getSubjects configuration: $configuration")
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@collectLatest
-            }
-
-            val resource = subjectsDataSource.getSubjects(
-                year = configuration.year,
-                semesterId = configuration.semesterId
-            )
-
+        subjectsRepository.getSubjects().collectLatest { resource ->
             logger.d(TAG, "getSubjects resource: $resource")
             _uiState.update {
                 it.copy(
-                    isLoading = false,
+                    isLoading = resource.status.isLoading(),
                     errorStatus = resource.status.toErrorStatus(),
                     subjects = resource.payload?.toImmutableList() ?: persistentListOf()
                 )

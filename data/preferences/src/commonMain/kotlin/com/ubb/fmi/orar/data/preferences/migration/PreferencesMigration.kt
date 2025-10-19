@@ -10,7 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 class PreferencesMigration : DataMigration<Preferences> {
 
     override suspend fun cleanUp() {
-        /// Nothing to clean
+        // / Nothing to clean
     }
 
     override suspend fun migrate(currentData: Preferences): Preferences {

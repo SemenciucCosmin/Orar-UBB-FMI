@@ -1,8 +1,9 @@
 package com.ubb.fmi.orar.data.subjects.datasource
 
 import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Owner
-import com.ubb.fmi.orar.data.timetable.model.Timetable
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data source for managing subject related information
@@ -10,26 +11,39 @@ import com.ubb.fmi.orar.data.timetable.model.Timetable
 interface SubjectsDataSource {
 
     /**
-     * Retrieve list of [Owner.Subject] objects from cache or API
-     * by [year] and [semesterId]
+     * Retrieves [Flow] of subjects from database
      */
-    suspend fun getSubjects(
+    fun getSubjectsFromCache(
         year: Int,
-        semesterId: String
+        semesterId: String,
+    ): Flow<List<Owner.Subject>>
+
+    /**
+     * Saves [subjects] in database
+     */
+    suspend fun saveSubjectsInCache(
+        subjects: List<Owner.Subject>
+    )
+
+    /**
+     * Retrieves subjects from API
+     */
+    suspend fun getSubjectsFromApi(
+        year: Int,
+        semesterId: String,
     ): Resource<List<Owner.Subject>>
 
     /**
-     * Retrieve timetable of [Owner.Subject] for specific subject from cache or
-     * API by [year], [semesterId] and [subjectId]
+     * Retrieves subjects events from API
      */
-    suspend fun getTimetable(
+    suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
-        subjectId: String,
-    ): Resource<Timetable<Owner.Subject>>
+        subject: Owner.Subject,
+    ): Resource<List<Event>>
 
     /**
-     * Invalidates all cached subjects by [year] and [semesterId]
+     * Invalidates all cached subjects
      */
     suspend fun invalidate(
         year: Int,

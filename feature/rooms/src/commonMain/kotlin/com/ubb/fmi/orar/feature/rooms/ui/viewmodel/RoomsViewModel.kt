@@ -3,11 +3,10 @@ package com.ubb.fmi.orar.feature.rooms.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -20,13 +19,9 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for managing the state of the Rooms feature.
  * It fetches room data from the RoomsDataSource and updates the UI state accordingly.
- *
- * @property roomsDataSource The data source for fetching room information.
- * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class RoomsViewModel(
-    private val roomsDataSource: RoomsDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val roomsRepository: RoomsRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -40,7 +35,7 @@ class RoomsViewModel(
      * Mutable state flow representing the UI state of the Rooms feature.
      * It holds the list of rooms, loading state, and error state.
      */
-    private val _uiState = MutableStateFlow(RoomsUiState())
+    private val _uiState = MutableStateFlow(RoomsUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**
@@ -73,22 +68,12 @@ class RoomsViewModel(
         logger.d(TAG, "getRooms")
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
-        timetablePreferences.getConfiguration().collectLatest { configuration ->
-            logger.d(TAG, "getRooms configuration: $configuration")
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@collectLatest
-            }
-
-            val resource = roomsDataSource.getRooms(
-                year = configuration.year,
-                semesterId = configuration.semesterId
-            )
-
+        roomsRepository.getRooms().collectLatest { resource ->
             logger.d(TAG, "getRooms resource: $resource")
+
             _uiState.update {
                 it.copy(
-                    isLoading = false,
+                    isLoading = resource.status.isLoading(),
                     errorStatus = resource.status.toErrorStatus(),
                     rooms = resource.payload?.toImmutableList() ?: persistentListOf()
                 )

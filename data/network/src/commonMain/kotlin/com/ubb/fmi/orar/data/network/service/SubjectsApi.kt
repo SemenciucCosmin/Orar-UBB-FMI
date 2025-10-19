@@ -23,15 +23,15 @@ class SubjectsApi(private val httpClient: HttpClient) {
     }
 
     /**
-     * Fetch subject timetable in html format by [year], [semesterId] and [ownerId]
+     * Fetch subject events in html format by [year], [semesterId] and [subjectId]
      */
-    suspend fun getTimetableHtml(
+    suspend fun getEventsHtml(
         year: Int,
         semesterId: String,
-        ownerId: String
+        subjectId: String
     ): Resource<String> {
         return processApiResource {
-            httpClient.get("$BASE_URL/$year-$semesterId/disc/$ownerId.html")
+            httpClient.get("$BASE_URL/$year-$semesterId/disc/$subjectId.html")
         }
     }
 

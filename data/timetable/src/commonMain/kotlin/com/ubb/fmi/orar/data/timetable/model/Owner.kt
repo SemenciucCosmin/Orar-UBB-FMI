@@ -13,7 +13,7 @@ sealed class Owner(
 ) {
 
     /**
-     * StudyLine [Owner]
+     * Group [Owner]
      * @param [id]: unique identifier
      * @param [name]: name of the owner
      * @param [configurationId]: configuration id to which this owner belongs to

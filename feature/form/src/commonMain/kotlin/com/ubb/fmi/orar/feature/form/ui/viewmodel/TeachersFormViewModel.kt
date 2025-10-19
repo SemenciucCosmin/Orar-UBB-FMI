@@ -2,10 +2,10 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
+import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
@@ -15,6 +15,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -26,19 +27,10 @@ import kotlin.time.Duration.Companion.seconds
  * ViewModel for managing the selection of teachers in a timetable form.
  * This ViewModel fetches teachers based on the provided year and semester ID,
  * and allows the user to select a teacher and filter by title.
- *
- * @param year The academic year for which teachers are being fetched.
- * @param semesterId The ID of the semester for which teachers are being fetched.
- * @param teachersDataSource The data source for fetching teachers.
- * @param timetablePreferences Preferences for managing timetable configurations.
- * @param setTimetableConfigurationUseCase Use case for setting the timetable configuration.
  */
 class TeachersFormViewModel(
-    private val year: Int,
-    private val semesterId: String,
-    private val teachersDataSource: TeachersDataSource,
+    private val teacherRepository: TeacherRepository,
     private val timetablePreferences: TimetablePreferences,
-    private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
     private val logger: Logger,
 ) : EventViewModel<TeachersFormUiState.TeachersFormUiEvent>() {
 
@@ -46,7 +38,7 @@ class TeachersFormViewModel(
      * Mutable state flow that holds the UI state for the teachers selection.
      * It is initialized with a default state and will be updated as data is fetched.
      */
-    private val _uiState = MutableStateFlow(TeachersFormUiState())
+    private val _uiState = MutableStateFlow(TeachersFormUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart { getTeachers() }
         .stateIn(
@@ -75,28 +67,26 @@ class TeachersFormViewModel(
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val resource = teachersDataSource.getTeachers(
-            year = year,
-            semesterId = semesterId
-        )
+        teacherRepository.getTeachers().collectLatest { resource ->
+            logger.d(TAG, "resource $resource")
 
-        logger.d(TAG, "getTeachers for year: $year, semester: $semesterId")
-        logger.d(TAG, "resource $resource")
+            val teacher = resource.payload?.firstOrNull {
+                it.id == configuration?.teacherId
+            }
 
-        val teacher = resource.payload?.firstOrNull {
-            it.id == configuration?.teacherId
-        }
+            logger.d(TAG, "teacher $teacher")
 
-        logger.d(TAG, "teacher $teacher")
-
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                errorStatus = resource.status.toErrorStatus(),
-                teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
-                selectedTeacherId = teacher?.id,
-                selectedFilterId = teacher?.title?.id ?: TeacherTitleFilter.ALL.id,
-            )
+            _uiState.update {
+                it.copy(
+                    year = configuration?.year,
+                    semester = configuration?.semesterId?.let(Semester::getById),
+                    isLoading = resource.status.isLoading(),
+                    errorStatus = resource.status.toErrorStatus(),
+                    teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
+                    selectedTeacherId = teacher?.id,
+                    selectedFilterId = teacher?.title?.id ?: TeacherTitleFilter.ALL.id,
+                )
+            }
         }
     }
 
@@ -140,17 +130,7 @@ class TeachersFormViewModel(
         viewModelScope.launch {
             _uiState.value.selectedTeacherId?.let { teacherId ->
                 logger.d(TAG, "finishSelection teacher: $teacherId")
-                setTimetableConfigurationUseCase(
-                    year = year,
-                    semesterId = semesterId,
-                    userTypeId = UserType.TEACHER.id,
-                    teacherId = teacherId,
-                    fieldId = null,
-                    studyLevelId = null,
-                    studyLineDegreeId = null,
-                    groupId = null
-                )
-
+                timetablePreferences.setTeacherId(teacherId)
                 registerEvent(TeachersFormUiState.TeachersFormUiEvent.CONFIGURATION_DONE)
             }
         }

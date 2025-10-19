@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
@@ -45,7 +46,7 @@ class UserTimetableViewModel(
      * Mutable state flow to hold the UI state of the timetable.
      * This includes loading status, error status, classes, selected frequency, and edit mode.
      */
-    private val _uiState = MutableStateFlow(TimetableUiState())
+    private val _uiState = MutableStateFlow(TimetableUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**
@@ -68,7 +69,7 @@ class UserTimetableViewModel(
             logger.d(TAG, "loadTimetable: $resource")
             _uiState.update {
                 it.copy(
-                    isLoading = false,
+                    isLoading = resource.status.isLoading(),
                     errorStatus = resource.status.toErrorStatus(),
                     events = resource.payload?.events?.toImmutableList() ?: persistentListOf()
                 )

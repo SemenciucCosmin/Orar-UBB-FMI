@@ -25,43 +25,19 @@ sealed class ConfigurationFormNavDestination {
 
     /**
      * Represents a form for managing teachers.
-     *
-     * @property year The academic year for which the form is applicable.
-     * @property semesterId The identifier for the semester.
      */
     @Serializable
-    data class TeachersForm(
-        val year: Int,
-        val semesterId: String,
-    ) : ConfigurationFormNavDestination()
+    data object TeachersForm : ConfigurationFormNavDestination()
 
     /**
      * Represents a form for managing study lines.
-     *
-     * @property year The academic year for which the form is applicable.
-     * @property semesterId The identifier for the semester.
      */
     @Serializable
-    data class StudyLinesForm(
-        val year: Int,
-        val semesterId: String,
-    ) : ConfigurationFormNavDestination()
+    data object StudyLinesForm : ConfigurationFormNavDestination()
 
     /**
      * Represents a form for managing groups.
-     *
-     * @property year The academic year for which the form is applicable.
-     * @property semesterId The identifier for the semester.
-     * @property fieldId The identifier for the field of study.
-     * @property studyLevelId The identifier for the study level.
-     * @property studyLineDegreeId The identifier for the study line degree.
      */
     @Serializable
-    data class GroupsForm(
-        val year: Int,
-        val semesterId: String,
-        val fieldId: String,
-        val studyLevelId: String,
-        val studyLineDegreeId: String,
-    ) : ConfigurationFormNavDestination()
+    data object GroupsForm : ConfigurationFormNavDestination()
 }

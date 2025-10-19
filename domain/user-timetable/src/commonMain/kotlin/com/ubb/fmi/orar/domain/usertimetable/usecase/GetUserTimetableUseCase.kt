@@ -1,10 +1,10 @@
 package com.ubb.fmi.orar.domain.usertimetable.usecase
 
 import Logger
+import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
-import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.Timetable
@@ -12,20 +12,18 @@ import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.transformLatest
 
 /**
  * Use case for retrieving the user's timetable based on their configuration.
  * This use case interacts with the groups and teachers data sources to fetch the timetable.
  * It checks the user's type (student or teacher) and retrieves the appropriate timetable data accordingly.
- * @property groupsDataSource The data source for groups operations.
- * @property teachersDataSource The data source for teachers operations.
- * @property timetablePreferences The preferences manager for storing and retrieving timetable configurations.
  */
 @Suppress("UNCHECKED_CAST")
 class GetUserTimetableUseCase(
-    private val groupsDataSource: GroupsDataSource,
-    private val teachersDataSource: TeachersDataSource,
+    private val groupsRepository: GroupsRepository,
+    private val teacherRepository: TeacherRepository,
     private val timetablePreferences: TimetablePreferences,
     private val logger: Logger,
 ) {
@@ -39,12 +37,10 @@ class GetUserTimetableUseCase(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Resource<Timetable<Owner>>> {
-        return timetablePreferences.getConfiguration().mapLatest { configuration ->
+        return timetablePreferences.getConfiguration().transformLatest { configuration ->
             logger.d(TAG, "configuration $configuration")
 
-            if (configuration == null) {
-                return@mapLatest Resource(null, Status.Error)
-            }
+            if (configuration == null) return@transformLatest
 
             when (UserType.getById(configuration.userTypeId)) {
                 UserType.STUDENT -> {
@@ -53,27 +49,29 @@ class GetUserTimetableUseCase(
                     val groupId = configuration.groupId
 
                     if (studyLevel == null || fieldId == null || groupId == null) {
-                        return@mapLatest Resource(null, Status.Error)
+                        emit(Resource(null, Status.Error))
+                        return@transformLatest
                     }
 
-                    return@mapLatest groupsDataSource.getTimetable(
-                        year = configuration.year,
-                        semesterId = configuration.semesterId,
+                    groupsRepository.getTimetable(
                         studyLineId = fieldId + studyLevel.notation,
                         groupId = groupId,
-                    ) as Resource<Timetable<Owner>>
+                    ).collectLatest {
+                        emit(it as Resource<Timetable<Owner>>)
+                    }
                 }
 
                 UserType.TEACHER -> {
                     if (configuration.teacherId == null) {
-                        return@mapLatest Resource(null, Status.Error)
+                        emit(Resource(null, Status.Error))
+                        return@transformLatest
                     }
 
-                    return@mapLatest teachersDataSource.getTimetable(
-                        year = configuration.year,
-                        semesterId = configuration.semesterId,
+                    teacherRepository.getTimetable(
                         teacherId = configuration.teacherId!!,
-                    ) as Resource<Timetable<Owner>>
+                    ).collectLatest {
+                        emit(it as Resource<Timetable<Owner>>)
+                    }
                 }
             }
         }

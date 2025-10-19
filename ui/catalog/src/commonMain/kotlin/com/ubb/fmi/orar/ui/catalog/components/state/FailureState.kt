@@ -41,11 +41,13 @@ fun ErrorState(
             textAlign = TextAlign.Center
         )
 
-        Button(
-            onClick = onRetry,
-            shape = MaterialTheme.shapes.small,
-        ) {
-            Text(text = stringResource(Res.string.lbl_retry))
+        if (errorStatus != ErrorStatus.EMPTY) {
+            Button(
+                onClick = onRetry,
+                shape = MaterialTheme.shapes.small,
+            ) {
+                Text(text = stringResource(Res.string.lbl_retry))
+            }
         }
     }
 }

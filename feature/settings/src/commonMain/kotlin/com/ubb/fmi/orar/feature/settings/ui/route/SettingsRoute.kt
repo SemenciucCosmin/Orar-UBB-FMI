@@ -38,7 +38,6 @@ fun SettingsRoute(navController: NavController) {
         onGithubUrlClick = { openUrl(GITHUB_URL, context) {} },
         onBack = navController::navigateUp,
         onThemeClick = { navController.navigate(SettingsNavDestination.Theme) },
-        onRefreshDataClick = viewModel::refreshData,
         onChangeConfigurationClick = {
             navController.navigate(
                 ConfigurationFormNavDestination.OnboardingForm(

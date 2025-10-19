@@ -67,11 +67,12 @@ kotlin {
 
             // MODULES
             implementation(projects.data.database)
+            implementation(projects.data.groups)
             implementation(projects.data.network)
             implementation(projects.data.preferences)
             implementation(projects.data.rooms)
             implementation(projects.data.settings)
-            implementation(projects.data.students)
+            implementation(projects.data.studyLines)
             implementation(projects.data.subjects)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
@@ -82,12 +83,12 @@ kotlin {
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
             implementation(projects.feature.form)
+            implementation(projects.feature.groupTimetable)
             implementation(projects.feature.groups)
             implementation(projects.feature.roomTimetable)
             implementation(projects.feature.rooms)
             implementation(projects.feature.settings)
             implementation(projects.feature.startup)
-            implementation(projects.feature.studyLineTimetable)
             implementation(projects.feature.studyLines)
             implementation(projects.feature.subjectTimetable)
             implementation(projects.feature.subjects)
@@ -181,6 +182,10 @@ detekt {
         "${project.rootDir}/data/database/src/commonMain/kotlin",
         "${project.rootDir}/data/database/src/iosMain/kotlin",
 
+        "${project.rootDir}/data/groups/src/androidMain/kotlin",
+        "${project.rootDir}/data/groups/src/commonMain/kotlin",
+        "${project.rootDir}/data/groups/src/iosMain/kotlin",
+
         "${project.rootDir}/data/network/src/androidMain/kotlin",
         "${project.rootDir}/data/network/src/commonMain/kotlin",
         "${project.rootDir}/data/network/src/iosMain/kotlin",
@@ -193,13 +198,13 @@ detekt {
         "${project.rootDir}/data/rooms/src/commonMain/kotlin",
         "${project.rootDir}/data/rooms/src/iosMain/kotlin",
 
-        "${project.rootDir}/data/study-lines/src/androidMain/kotlin",
-        "${project.rootDir}/data/study-lines/src/commonMain/kotlin",
-        "${project.rootDir}/data/study-lines/src/iosMain/kotlin",
-
         "${project.rootDir}/data/settings/src/androidMain/kotlin",
         "${project.rootDir}/data/settings/src/commonMain/kotlin",
         "${project.rootDir}/data/settings/src/iosMain/kotlin",
+
+        "${project.rootDir}/data/study-lines/src/androidMain/kotlin",
+        "${project.rootDir}/data/study-lines/src/commonMain/kotlin",
+        "${project.rootDir}/data/study-lines/src/iosMain/kotlin",
 
         "${project.rootDir}/data/subjects/src/androidMain/kotlin",
         "${project.rootDir}/data/subjects/src/commonMain/kotlin",
@@ -243,6 +248,10 @@ detekt {
         "${project.rootDir}/feature/form/src/commonMain/kotlin",
         "${project.rootDir}/feature/form/src/iosMain/kotlin",
 
+        "${project.rootDir}/feature/group-timetable/src/androidMain/kotlin",
+        "${project.rootDir}/feature/group-timetable/src/commonMain/kotlin",
+        "${project.rootDir}/feature/group-timetable/src/iosMain/kotlin",
+
         "${project.rootDir}/feature/groups/src/androidMain/kotlin",
         "${project.rootDir}/feature/groups/src/commonMain/kotlin",
         "${project.rootDir}/feature/groups/src/iosMain/kotlin",
@@ -263,13 +272,13 @@ detekt {
         "${project.rootDir}/feature/startup/src/commonMain/kotlin",
         "${project.rootDir}/feature/startup/src/iosMain/kotlin",
 
-        "${project.rootDir}/feature/study-line-timetable/src/androidMain/kotlin",
-        "${project.rootDir}/feature/study-line-timetable/src/commonMain/kotlin",
-        "${project.rootDir}/feature/study-line-timetable/src/iosMain/kotlin",
-
         "${project.rootDir}/feature/study-line/src/androidMain/kotlin",
         "${project.rootDir}/feature/study-line/src/commonMain/kotlin",
         "${project.rootDir}/feature/study-line/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/study-lines/src/androidMain/kotlin",
+        "${project.rootDir}/feature/study-lines/src/commonMain/kotlin",
+        "${project.rootDir}/feature/study-lines/src/iosMain/kotlin",
 
         "${project.rootDir}/feature/subject-timetable/src/androidMain/kotlin",
         "${project.rootDir}/feature/subject-timetable/src/commonMain/kotlin",

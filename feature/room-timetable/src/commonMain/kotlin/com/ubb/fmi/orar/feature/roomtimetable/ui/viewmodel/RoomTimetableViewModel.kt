@@ -3,14 +3,13 @@ package com.ubb.fmi.orar.feature.roomtimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -18,26 +17,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.firstOrNull
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * ViewModel for the Room Timetable screen.
  * It fetches the timetable data for a specific room and manages the UI state.
- *
- * @param roomId The ID of the room for which the timetable is displayed.
- * @param roomsDataSource The data source to fetch room timetable data.
- * @param timetablePreferences Preferences related to the timetable configuration.
  */
 class RoomTimetableViewModel(
     private val roomId: String,
-    private val roomsDataSource: RoomsDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val roomsRepository: RoomsRepository,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
@@ -46,7 +38,7 @@ class RoomTimetableViewModel(
      * Mutable state flow that holds the UI state for the timetable.
      * It is updated with loading status, error status, and fetched classes.
      */
-    private val _uiState = MutableStateFlow(TimetableUiState())
+    private val _uiState = MutableStateFlow(TimetableUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart {
             getWeek()
@@ -67,38 +59,19 @@ class RoomTimetableViewModel(
             logger.d(TAG, "loadTimetable room: $roomId")
             _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
-            val configuration = timetablePreferences.getConfiguration().firstOrNull()
-            logger.d(TAG, "loadTimetable configuration: $configuration")
+            roomsRepository.getTimetable(roomId).collectLatest { resource ->
+                val events = resource.payload?.events?.map {
+                    it.copy(isVisible = true)
+                }?.toImmutableList() ?: persistentListOf()
 
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@launch
-            }
-
-            val timetableResource = roomsDataSource.getTimetable(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-                roomId = roomId,
-            )
-
-            val roomResource = roomsDataSource.getRooms(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-            )
-
-            logger.d(TAG, "loadTimetable resource: $timetableResource")
-            val subject = roomResource.payload?.firstOrNull { it.id == roomId }
-            val events = timetableResource.payload?.events?.map {
-                it.copy(isVisible = true)
-            }?.toImmutableList() ?: persistentListOf()
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    errorStatus = timetableResource.status.toErrorStatus(),
-                    events = events,
-                    title = subject?.name ?: String.BLANK
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = resource.status.isLoading(),
+                        errorStatus = resource.status.toErrorStatus(),
+                        events = events,
+                        title = resource.payload?.owner?.name ?: String.BLANK
+                    )
+                }
             }
         }
     }

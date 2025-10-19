@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.domain.extensions.BLANK
+import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
@@ -23,6 +24,8 @@ data class TeachersFormUiState(
     val selectedFilterId: String = TeacherTitleFilter.ALL.id,
     val selectedTeacherId: String? = null,
     val searchQuery: String = String.BLANK,
+    val year: Int? = null,
+    val semester: Semester? = null,
     val isLoading: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
@@ -32,7 +35,7 @@ data class TeachersFormUiState(
 
     companion object {
         /**
-         * Filtered teachers by selected teacehr title filter
+         * Filtered teachers by selected teacher title filter
          */
         val TeachersFormUiState.filteredTeachers: ImmutableList<Owner.Teacher>
             get() {

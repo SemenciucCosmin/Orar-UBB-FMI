@@ -16,8 +16,6 @@ import org.koin.compose.viewmodel.koinViewModel
  *
  * This function sets up the User Timetable screen with its ViewModel and UI state.
  * It includes a top bar for frequency selection and edit mode, and a bottom bar for navigation.
- *
- * @param navController The NavController used for navigation within the app.
  */
 @Composable
 fun UserTimetableRoute(navController: NavController) {

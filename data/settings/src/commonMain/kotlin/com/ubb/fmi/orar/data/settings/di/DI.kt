@@ -6,8 +6,7 @@ import com.ubb.fmi.orar.data.settings.preferences.SettingsPreferencesImpl
 import org.koin.dsl.module
 
 /**
- * Provides the Koin module for settings data operations.
- * This module includes the SettingsPreferences for managing settings-related preferences.
+ * Provides the Koin module for settings data layer.
  */
 fun settingsDataModule() = module {
     single<SettingsPreferences> {

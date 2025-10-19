@@ -36,12 +36,12 @@ fun TeacherTimetableRoute(
         uiState = uiState,
         onRetryClick = viewModel::retry,
         topBar = {
-            if (uiState.title.isNotBlank()) {
+            if (!uiState.isLoading) {
                 TopBar(
                     title = uiState.title,
                     onBack = navController::navigateUp,
                     trailingContent = {
-                        if (uiState.errorStatus == null && !uiState.isLoading) {
+                        if (uiState.errorStatus == null) {
                             TimetableFrequencyTab(
                                 selectedFrequency = uiState.selectedFrequency,
                                 onFrequencyClick = viewModel::selectFrequency

@@ -5,6 +5,7 @@
     <string name="lbl_generic_error_message">Something went wrong. Please try again.</string>
     <string name="lbl_network_error_message">Check your internet connection and try again.</string>
     <string name="lbl_not_found_error_message">No data available at this moment. Please try again later or change configuration.</string>
+    <string name="lbl_empty_error_message">No results.</string>
     <string name="lbl_no_results">No results found</string>
     <string name="lbl_all">All</string>
     <string name="lbl_hour">%1$s:00</string>

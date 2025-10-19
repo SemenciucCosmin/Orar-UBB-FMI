@@ -13,8 +13,6 @@ import org.koin.compose.viewmodel.koinViewModel
 /**
  * Composable function that represents the Teachers route in the application.
  * It initializes the TeachersViewModel and collects its UI state to display the TeachersScreen.
- *
- * @param navController The NavController used for navigation within the app.
  */
 @Composable
 fun TeachersRoute(navController: NavController) {
