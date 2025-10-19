@@ -2,14 +2,17 @@
     <!--  COMMON  -->
     <string name="lbl_next">Pasul următor</string>
     <string name="lbl_retry">Reîncercați</string>
+    <string name="lbl_cancel">Renunță</string>
+    <string name="lbl_ok">Ok</string>
     <string name="lbl_generic_error_message">Ceva nu a mers bine. Vă rugăm să încercați din nou.</string>
     <string name="lbl_network_error_message">Verificați conexiunea la internet și încercați din nou.</string>
     <string name="lbl_not_found_error_message">Nu există date disponibile în acest moment. Vă rugăm să încercați din nou mai târziu sau schimbați configurația.</string>
     <string name="lbl_no_results">Nu s-au găsit rezultate</string>
     <string name="lbl_all">Toate</string>
-    <string name="lbl_hour">%1$s:00</string>
     <string name="lbl_subject">Disciplina</string>
     <string name="lbl_room">Sala</string>
+    <string name="lbl_optional">Opțional</string>
+    <string name="lbl_remove_personal_event_message">Ștergeți acest eveniment personal?</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Bun venit!</string>
@@ -34,9 +37,9 @@
     <!--  FREQUENCY  -->
     <string name="lbl_week_1">săpt. 1</string>
     <string name="lbl_week_2">săpt. 2</string>
-    <string name="lbl_both_weeks" />
+    <string name="lbl_both_weeks">ambele</string>
 
-    <!--  Degree  -->
+    <!--  DEGREE  -->
     <string name="lbl_license">Licenţă</string>
     <string name="lbl_master">Master</string>
 
@@ -58,6 +61,7 @@
     <string name="lbl_seminary">Seminar</string>
     <string name="lbl_laboratory">Laborator</string>
     <string name="lbl_staff">Colectiv</string>
+    <string name="lbl_personal">Personal</string>
 
     <!--  SEMESTER  -->
     <string name="lbl_semester">Semestru</string>
@@ -73,16 +77,39 @@
     <string name="lbl_saturday">Sâmbătă</string>
     <string name="lbl_sunday">Duminică</string>
 
+    <string name="lbl_monday_short">L</string>
+    <string name="lbl_tuesday_short">M</string>
+    <string name="lbl_wednesday_short">M</string>
+    <string name="lbl_thursday_short">J</string>
+    <string name="lbl_friday_short">V</string>
+    <string name="lbl_saturday_short">S</string>
+    <string name="lbl_sunday_short">D</string>
+
     <!--  SETTINGS  -->
     <string name="lbl_settings">Setări</string>
     <string name="lbl_change_configuration">Schimbă configurația</string>
-    <string name="lbl_theme">Tema</string>
-    <string name="lbl_light">Light</string>
-    <string name="lbl_dark">Dark</string>
-    <string name="lbl_system">Sistem</string>
-    <string name="lbl_refresh_data">Reactualizati datele</string>
+    <string name="lbl_refresh_data">Reactualizaţi datele</string>
     <string name="lbl_refresh_data_success_message">Reactualizarea datelor reușită</string>
     <string name="lbl_version">Versiunea %1$s</string>
     <string name="lbl_open_source">Codul sursă este disponibil pe</string>
     <string name="lbl_github">GitHub</string>
+
+    <!--  THEME  -->
+    <string name="lbl_theme">Tema</string>
+    <string name="lbl_light">Light</string>
+    <string name="lbl_dark">Dark</string>
+    <string name="lbl_system">Sistem</string>
+
+    <!--  ADD PERSONAL EVENT  -->
+    <string name="lbl_add_personal_event">Adaugă Eveniment Personal</string>
+    <string name="lbl_activity">Activitate</string>
+    <string name="lbl_participant">Participant</string>
+    <string name="lbl_caption">Subtitlu</string>
+    <string name="lbl_location">Locaţie</string>
+    <string name="lbl_details">Detalii</string>
+    <string name="lbl_start_hour">Ora de începere</string>
+    <string name="lbl_end_hour">Ora de sfârșit</string>
+    <string name="lbl_text_field_error">Trebuie să completaţi secţiunea</string>
+    <string name="lbl_day_selection_error">Trebuie să selectaţi cel puţin o zi</string>
+    <string name="lbl_event_added">Evenimentul a fost adăugat orarului cu success!</string>
 </resources>

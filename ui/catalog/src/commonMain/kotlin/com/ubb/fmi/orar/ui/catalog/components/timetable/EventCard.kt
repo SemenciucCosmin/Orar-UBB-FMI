@@ -12,8 +12,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Composable
 fun EventCard(
-    startHour: String,
-    endHour: String,
+    startTime: String,
+    endTime: String,
     location: String,
     title: String,
     type: EventType,
@@ -30,8 +30,8 @@ fun EventCard(
         faceContent = { modifier ->
             EventFace(
                 modifier = modifier,
-                startHour = startHour,
-                endHour = endHour,
+                startHour = startTime,
+                endHour = endTime,
                 location = location,
                 title = title,
                 type = type,
@@ -55,8 +55,8 @@ fun EventCard(
 private fun PreviewEventCard() {
     OrarUbbFmiTheme {
         EventCard(
-            startHour = "14:00",
-            endHour = "16:00",
+            startTime = "14:00",
+            endTime = "16:00",
             title = "Analiza Matematica",
             type = EventType.LABORATORY,
             participant = "914",

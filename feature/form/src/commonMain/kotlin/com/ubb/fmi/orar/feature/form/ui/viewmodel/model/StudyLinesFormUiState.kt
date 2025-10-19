@@ -25,6 +25,7 @@ data class StudyLinesFormUiState(
     val year: Int? = null,
     val semester: Semester? = null,
     val isLoading: Boolean = false,
+    val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
     enum class StudyLinesFormUiEvent : UiEvent {

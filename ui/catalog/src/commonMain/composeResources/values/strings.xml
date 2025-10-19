@@ -2,15 +2,17 @@
     <!--  COMMON  -->
     <string name="lbl_next">Next</string>
     <string name="lbl_retry">Retry</string>
+    <string name="lbl_cancel">Cancel</string>
+    <string name="lbl_ok">Ok</string>
     <string name="lbl_generic_error_message">Something went wrong. Please try again.</string>
     <string name="lbl_network_error_message">Check your internet connection and try again.</string>
     <string name="lbl_not_found_error_message">No data available at this moment. Please try again later or change configuration.</string>
-    <string name="lbl_empty_error_message">No results.</string>
     <string name="lbl_no_results">No results found</string>
     <string name="lbl_all">All</string>
-    <string name="lbl_hour">%1$s:00</string>
     <string name="lbl_subject">Subject</string>
     <string name="lbl_room">Room</string>
+    <string name="lbl_optional">Optional</string>
+    <string name="lbl_remove_personal_event_message">Remove this personal event?</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Welcome!</string>
@@ -35,9 +37,9 @@
     <!--  FREQUENCY  -->
     <string name="lbl_week_1">week 1</string>
     <string name="lbl_week_2">week 2</string>
-    <string name="lbl_both_weeks" />
+    <string name="lbl_both_weeks">both</string>
 
-    <!--  Degree  -->
+    <!--  DEGREE  -->
     <string name="lbl_license">License</string>
     <string name="lbl_master">Master</string>
 
@@ -59,6 +61,7 @@
     <string name="lbl_seminary">Seminar</string>
     <string name="lbl_laboratory">Laborator</string>
     <string name="lbl_staff">Colectiv</string>
+    <string name="lbl_personal">Personal</string>
 
     <!--  SEMESTER  -->
     <string name="lbl_semester">Semester</string>
@@ -74,17 +77,40 @@
     <string name="lbl_saturday">Saturday</string>
     <string name="lbl_sunday">Sunday</string>
 
+    <string name="lbl_monday_short">M</string>
+    <string name="lbl_tuesday_short">T</string>
+    <string name="lbl_wednesday_short">W</string>
+    <string name="lbl_thursday_short">T</string>
+    <string name="lbl_friday_short">F</string>
+    <string name="lbl_saturday_short">S</string>
+    <string name="lbl_sunday_short">S</string>
+
     <!--  SETTINGS  -->
     <string name="lbl_settings">Settings</string>
     <string name="lbl_change_configuration">Change configuration</string>
-    <string name="lbl_theme">Theme</string>
-    <string name="lbl_light">Light</string>
-    <string name="lbl_dark">Dark</string>
-    <string name="lbl_system">System</string>
     <string name="lbl_refresh_data">Refresh data</string>
     <string name="lbl_refresh_data_success_message">Refresh data successful</string>
     <string name="lbl_version">Version %1$s</string>
     <string name="lbl_open_source">Open source code available on</string>
     <string name="lbl_github">GitHub</string>
+
+    <!--  THEME  -->
+    <string name="lbl_theme">Theme</string>
+    <string name="lbl_light">Light</string>
+    <string name="lbl_dark">Dark</string>
+    <string name="lbl_system">System</string>
+
+    <!--  ADD PERSONAL EVENT  -->
+    <string name="lbl_add_personal_event">Add Personal Event</string>
+    <string name="lbl_activity">Activity</string>
+    <string name="lbl_participant">Participant</string>
+    <string name="lbl_caption">Caption</string>
+    <string name="lbl_location">Location</string>
+    <string name="lbl_details">Details</string>
+    <string name="lbl_start_hour">Start hour</string>
+    <string name="lbl_end_hour">End hour</string>
+    <string name="lbl_text_field_error">You must complete this</string>
+    <string name="lbl_day_selection_error">You must choose at least one day</string>
+    <string name="lbl_event_added">Event was successfully added to your timetable!</string>
 
 </resources>

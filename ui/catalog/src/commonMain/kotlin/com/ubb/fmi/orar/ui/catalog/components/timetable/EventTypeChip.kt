@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.ui.catalog.extensions.colorDark
 import com.ubb.fmi.orar.ui.catalog.extensions.colorLight
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
@@ -34,7 +35,7 @@ fun EventTypeChip(
         modifier = modifier,
         shape = MaterialTheme.shapes.extraLarge,
         color = when {
-            isSystemInDarkTheme() -> type.colorLight
+            isSystemInDarkTheme() -> type.colorDark
             else -> type.colorLight
         }.copy(
             alpha = when {

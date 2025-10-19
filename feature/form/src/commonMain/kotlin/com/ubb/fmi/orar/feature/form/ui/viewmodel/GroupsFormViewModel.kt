@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
+import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
@@ -67,6 +68,7 @@ class GroupsFormViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = resource.status.isLoading(),
+                    isEmpty = resource.status.isEmpty(),
                     errorStatus = resource.status.toErrorStatus(),
                     groups = resource.payload?.toImmutableList() ?: persistentListOf(),
                     title = resource.payload?.firstOrNull()?.studyLine?.name,

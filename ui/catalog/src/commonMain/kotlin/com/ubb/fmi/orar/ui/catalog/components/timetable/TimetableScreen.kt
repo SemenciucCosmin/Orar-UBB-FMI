@@ -15,6 +15,7 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.domain.extensions.formatTime
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
@@ -23,8 +24,6 @@ import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.ti
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
-import orar_ubb_fmi.ui.catalog.generated.resources.Res
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_hour
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -44,9 +43,11 @@ fun TimetableScreen(
     topBar: @Composable () -> Unit,
     bottomBar: @Composable () -> Unit = {},
     onItemVisibilityChange: (TimetableListItem.Event) -> Unit = {},
+    onRemoveItem: (TimetableListItem.Event) -> Unit = {},
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
+        isEmpty = uiState.isEmpty,
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = topBar,
@@ -83,20 +84,30 @@ fun TimetableScreen(
                             )
                         ) {
                             AnimatedVisibility(uiState.isEditModeOn) {
-                                TimetableVisibilityButton(
-                                    isVisible = timetableItem.isVisible,
-                                    onClick = { onItemVisibilityChange(timetableItem) }
-                                )
+                                when {
+                                    timetableItem.type == EventType.PERSONAL -> {
+                                        EventRemoveButton(
+                                            onRemove = { onRemoveItem(timetableItem) }
+                                        )
+                                    }
+
+                                    else -> {
+                                        EventVisibilityButton(
+                                            isVisible = timetableItem.isVisible,
+                                            onClick = { onItemVisibilityChange(timetableItem) }
+                                        )
+                                    }
+                                }
                             }
 
                             EventCard(
-                                startHour = stringResource(
-                                    Res.string.lbl_hour,
-                                    timetableItem.startHour
+                                startTime = formatTime(
+                                    timetableItem.startHour,
+                                    timetableItem.startMinute
                                 ),
-                                endHour = stringResource(
-                                    Res.string.lbl_hour,
-                                    timetableItem.endHour
+                                endTime = formatTime(
+                                    timetableItem.endHour,
+                                    timetableItem.endMinute
                                 ),
                                 enabled = timetableItem.isVisible,
                                 expanded = !uiState.isEditModeOn,
@@ -137,7 +148,9 @@ private fun PreviewTimetableScreen() {
                         id = "$it",
                         day = Day.entries.random(),
                         startHour = 12,
+                        startMinute = 0,
                         endHour = 14,
+                        endMinute = 0,
                         frequency = Frequency.entries.random(),
                         location = "A304",
                         participant = "Participant $it",
@@ -176,7 +189,9 @@ private fun PreviewTimetableScreenEditMode() {
                         id = "$it",
                         day = Day.entries.random(),
                         startHour = 12,
+                        startMinute = 0,
                         endHour = 14,
+                        endMinute = 0,
                         frequency = Frequency.entries.random(),
                         location = "A304",
                         participant = "Participant $it",

@@ -22,6 +22,7 @@ data class GroupsFromUiState(
     val title: String? = null,
     val studyLevel: StudyLevel? = null,
     val isLoading: Boolean = false,
+    val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
     /**

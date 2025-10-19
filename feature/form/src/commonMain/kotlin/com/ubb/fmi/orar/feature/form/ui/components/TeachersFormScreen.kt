@@ -57,6 +57,7 @@ fun TeachersFormScreen(
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
+        isEmpty = uiState.filteredTeachers.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {

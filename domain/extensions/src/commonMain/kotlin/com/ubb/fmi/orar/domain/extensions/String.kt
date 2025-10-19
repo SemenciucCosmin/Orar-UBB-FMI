@@ -59,3 +59,9 @@ val String.Companion.COMMA: String
  */
 val String.Companion.DOT: String
     get() = "."
+
+/**
+ * String extension for asterisk sign
+ */
+val String.Companion.ASTERISK: String
+    get() = "*"

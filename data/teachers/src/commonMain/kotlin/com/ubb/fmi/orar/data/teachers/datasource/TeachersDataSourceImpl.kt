@@ -135,8 +135,15 @@ class TeachersDataSourceImpl(
             val eventTypeCell = row.cells.getOrNull(EVENT_TYPE_INDEX) ?: return@mapNotNull null
             val subjectCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
             val intervals = intervalCell.value.split(String.DASH)
-            val startHour = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
-            val endHour = intervals.getOrNull(END_HOUR_INDEX) ?: return@mapNotNull null
+            val startHourString = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
+            val endHourString = intervals.getOrNull(END_HOUR_INDEX) ?: return@mapNotNull null
+            val startHour = startHourString.toIntOrNull() ?: return@mapNotNull null
+            val endHour = endHourString.toIntOrNull() ?: return@mapNotNull null
+
+            val frequency = when {
+                frequencyCell.value == NULL -> Frequency.BOTH
+                else -> Frequency.getById(frequencyCell.value)
+            }
 
             val participant = when {
                 participantCell.value == NULL -> String.BLANK
@@ -176,9 +183,11 @@ class TeachersDataSourceImpl(
                 id = id,
                 configurationId = configurationId,
                 day = Day.getById(dayCell.value),
-                frequency = Frequency.getById(frequencyCell.value),
-                startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
-                endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
+                frequency = frequency,
+                startHour = startHour,
+                startMinute = DEFAULT_MINUTES,
+                endHour = endHour,
+                endMinute = DEFAULT_MINUTES,
                 location = room?.name ?: String.BLANK,
                 activity = subject,
                 type = EventType.getById(eventTypeId),
@@ -249,7 +258,7 @@ class TeachersDataSourceImpl(
         private const val START_HOUR_INDEX = 0
         private const val END_HOUR_INDEX = 1
 
-        // StaffId
         private const val NULL = "null"
+        private const val DEFAULT_MINUTES = 0
     }
 }

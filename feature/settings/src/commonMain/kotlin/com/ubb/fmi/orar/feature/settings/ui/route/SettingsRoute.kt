@@ -38,6 +38,9 @@ fun SettingsRoute(navController: NavController) {
         onGithubUrlClick = { openUrl(GITHUB_URL, context) {} },
         onBack = navController::navigateUp,
         onThemeClick = { navController.navigate(SettingsNavDestination.Theme) },
+        onAddPersonalEventClick = {
+            navController.navigate(SettingsNavDestination.AddPersonalEvent)
+        },
         onChangeConfigurationClick = {
             navController.navigate(
                 ConfigurationFormNavDestination.OnboardingForm(

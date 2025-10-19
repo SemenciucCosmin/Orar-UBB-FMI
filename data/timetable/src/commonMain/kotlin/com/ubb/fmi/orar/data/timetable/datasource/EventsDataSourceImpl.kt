@@ -64,6 +64,13 @@ class EventsDataSourceImpl(
     }
 
     /**
+     * Deletes event with [eventId] from database
+     */
+    override suspend fun deleteEvent(eventId: String) {
+        eventDao.delete(eventId)
+    }
+
+    /**
      * Invalidates all cached data for by [year] and [semesterId]
      */
     override suspend fun invalidate(year: Int, semesterId: String) {
@@ -86,7 +93,9 @@ class EventsDataSourceImpl(
             dayId = event.day.id,
             frequencyId = event.frequency.id,
             startHour = event.startHour,
+            startMinute = event.startMinute,
             endHour = event.endHour,
+            endMinute = event.endMinute,
             location = event.location,
             activity = event.activity,
             typeId = event.type.id,
@@ -107,7 +116,9 @@ class EventsDataSourceImpl(
             day = Day.getById(entity.dayId),
             frequency = Frequency.getById(entity.frequencyId),
             startHour = entity.startHour,
+            startMinute = entity.startMinute,
             endHour = entity.endHour,
+            endMinute = entity.endMinute,
             location = entity.location,
             activity = entity.activity,
             type = EventType.getById(entity.typeId),

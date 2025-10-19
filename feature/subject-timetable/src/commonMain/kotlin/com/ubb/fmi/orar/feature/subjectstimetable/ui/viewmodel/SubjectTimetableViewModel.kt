@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.feature.subjectstimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
@@ -60,6 +61,7 @@ class SubjectTimetableViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = resource.status.isLoading(),
+                        isEmpty = resource.status.isEmpty(),
                         errorStatus = resource.status.toErrorStatus(),
                         events = events,
                         title = resource.payload?.owner?.name ?: String.BLANK

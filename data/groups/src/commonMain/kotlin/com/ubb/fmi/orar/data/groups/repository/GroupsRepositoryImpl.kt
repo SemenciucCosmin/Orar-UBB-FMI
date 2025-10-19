@@ -158,6 +158,7 @@ class GroupsRepositoryImpl(
     private fun prefetchEvents(groupId: String, studyLineId: String) {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
+
             configuration?.let {
                 val studyLine = studyLinesDataSource.getStudyLinesFromCache(
                     configuration.year,
@@ -213,6 +214,7 @@ class GroupsRepositoryImpl(
     ) {
         val configurationId = year.toString() + semesterId
         eventsDataSource.getEventsFromCache(configurationId, group.id).collectLatest { events ->
+
             when {
                 events.isEmpty() -> getEventsFromApi(year, semesterId, group)
                 else -> timetableFlows[group.id]?.update {

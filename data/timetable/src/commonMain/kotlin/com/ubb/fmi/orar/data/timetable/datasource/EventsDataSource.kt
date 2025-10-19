@@ -35,6 +35,11 @@ interface EventsDataSource {
     suspend fun changeEventVisibility(eventId: String)
 
     /**
+     * Deletes event with [eventId] from database
+     */
+    suspend fun deleteEvent(eventId: String)
+
+    /**
      * Invalidates all cached data for by [year] and [semesterId]
      */
     suspend fun invalidate(year: Int, semesterId: String)

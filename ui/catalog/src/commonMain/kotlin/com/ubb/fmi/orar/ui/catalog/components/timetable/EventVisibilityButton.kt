@@ -14,17 +14,16 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
- * A composable that displays a button to toggle the visibility of a timetable.
- *
- * @param isVisible Indicates whether the timetable is currently visible.
- * @param onClick Callback invoked when the button is clicked to toggle visibility.
+ * A composable that displays a button to toggle the visibility of an event.
  */
 @Composable
-fun TimetableVisibilityButton(
+fun EventVisibilityButton(
     isVisible: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     IconToggleButton(
+        modifier = modifier,
         checked = isVisible,
         onCheckedChange = { onClick() },
     ) {
@@ -41,9 +40,9 @@ fun TimetableVisibilityButton(
 
 @Preview
 @Composable
-private fun PreviewTimetableVisibilityButtonVisible() {
+private fun PreviewEventVisibilityButtonVisible() {
     OrarUbbFmiTheme {
-        TimetableVisibilityButton(
+        EventVisibilityButton(
             isVisible = true,
             onClick = {}
         )
@@ -52,9 +51,9 @@ private fun PreviewTimetableVisibilityButtonVisible() {
 
 @Preview
 @Composable
-private fun PreviewTimetableVisibilityButtonNotVisible() {
+private fun PreviewEventVisibilityButtonNotVisible() {
     OrarUbbFmiTheme {
-        TimetableVisibilityButton(
+        EventVisibilityButton(
             isVisible = false,
             onClick = {}
         )

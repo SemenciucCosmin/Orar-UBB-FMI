@@ -27,6 +27,7 @@ fun UserTimetableRoute(navController: NavController) {
         onRetryClick = viewModel::retry,
         bottomBar = { TimetableBottomBar(navController) },
         onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
+        onRemoveItem = viewModel::removeItem,
         topBar = {
             UserTimetableTopBar(
                 isLoading = uiState.isLoading,

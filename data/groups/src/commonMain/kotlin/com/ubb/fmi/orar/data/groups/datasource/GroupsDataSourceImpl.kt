@@ -143,11 +143,19 @@ class GroupsDataSourceImpl(
             val groupCell = row.cells.getOrNull(SUBJECT_INDEX) ?: return@mapNotNull null
             val teacherCell = row.cells.getOrNull(TEACHER_INDEX) ?: return@mapNotNull null
             val intervals = intervalCell.value.split(String.DASH)
-            val startHour = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
-            val endHour = intervals.getOrNull(END_HOUR_INDEX) ?: return@mapNotNull null
+            val startHourString = intervals.getOrNull(START_HOUR_INDEX) ?: return@mapNotNull null
+            val endHourString = intervals.getOrNull(END_HOUR_INDEX) ?: return@mapNotNull null
+            val startHour = startHourString.toIntOrNull() ?: return@mapNotNull null
+            val endHour = endHourString.toIntOrNull() ?: return@mapNotNull null
+
             val participantCell = row.cells.getOrNull(
                 PARTICIPANT_INDEX
             ) ?: return@mapNotNull null
+
+            val frequency = when {
+                frequencyCell.value == NULL -> Frequency.BOTH
+                else -> Frequency.getById(frequencyCell.value)
+            }
 
             val id = listOf(
                 dayCell.value,
@@ -170,9 +178,11 @@ class GroupsDataSourceImpl(
                 id = id,
                 configurationId = configurationId,
                 day = Day.getById(dayCell.value),
-                frequency = Frequency.getById(frequencyCell.value),
-                startHour = startHour.toIntOrNull() ?: return@mapNotNull null,
-                endHour = endHour.toIntOrNull() ?: return@mapNotNull null,
+                frequency = frequency,
+                startHour = startHour,
+                startMinute = DEFAULT_MINUTES,
+                endHour = endHour,
+                endMinute = DEFAULT_MINUTES,
                 location = room?.name ?: String.BLANK,
                 activity = groupCell.value,
                 type = EventType.getById(eventTypeCell.value),
@@ -245,5 +255,8 @@ class GroupsDataSourceImpl(
         // Interval indexes
         private const val START_HOUR_INDEX = 0
         private const val END_HOUR_INDEX = 1
+
+        private const val NULL = "null"
+        private const val DEFAULT_MINUTES = 0
     }
 }
