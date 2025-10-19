@@ -4,12 +4,9 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -39,7 +36,7 @@ class SubjectsViewModel(
      * Mutable state flow that holds the current UI state of the Subjects screen.
      * It is updated with the latest subjects, search query, and loading/error states.
      */
-    private val _uiState = MutableStateFlow(SubjectsUiState())
+    private val _uiState = MutableStateFlow(SubjectsUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**

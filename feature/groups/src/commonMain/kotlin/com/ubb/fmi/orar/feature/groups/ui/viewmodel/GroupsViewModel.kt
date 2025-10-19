@@ -3,11 +3,9 @@ package com.ubb.fmi.orar.feature.groups.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
-import com.ubb.fmi.orar.data.students.repository.GroupsRepository
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
@@ -17,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -43,7 +40,7 @@ class GroupsViewModel(
      * Mutable state flow that holds the UI state for the groups selection.
      * It is initialized with a default state and will be updated as data is fetched.
      */
-    private val _uiState = MutableStateFlow(GroupsUiState())
+    private val _uiState = MutableStateFlow(GroupsUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart { getGroups() }
         .stateIn(

@@ -5,11 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.components.StudyLinesFormScreen
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
-import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
@@ -18,9 +16,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Composable route with study lines that are selectable for timetable configuration
- * @param navController: navigation controller for handling navigation actions
- * @param year: selected study year from onboarding form
- * @param semesterId: selected semester id from onboarding form
  */
 @Composable
 fun StudyLinesFormRoute(navController: NavController) {
@@ -32,6 +27,7 @@ fun StudyLinesFormRoute(navController: NavController) {
         yearTitle != null && semesterTitle != null -> "$yearTitle, $semesterTitle"
         else -> String.BLANK
     }
+
     StudyLinesFormScreen(
         title = title,
         uiState = uiState,

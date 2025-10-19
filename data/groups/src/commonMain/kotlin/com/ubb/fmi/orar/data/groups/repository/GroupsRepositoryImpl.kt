@@ -1,10 +1,10 @@
-package com.ubb.fmi.orar.data.students.repository
+package com.ubb.fmi.orar.data.groups.repository
 
+import com.ubb.fmi.orar.data.groups.datasource.GroupsDataSource
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.model.isSuccess
-import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
-import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Repository for managing data flow and data source for groups
+ */
 class GroupsRepositoryImpl(
     private val coroutineScope: CoroutineScope,
     private val studyLinesDataSource: StudyLinesDataSource,
@@ -34,6 +37,9 @@ class GroupsRepositoryImpl(
     private val timetableFlows: MutableMap<String, MutableStateFlow<Resource<Timetable<Owner.Group>>>> =
         mutableMapOf()
 
+    /**
+     * Retrieves a [Flow] of groups
+     */
     override fun getGroups(studyLineId: String): Flow<Resource<List<Owner.Group>>> {
         if (groupsFlow.subscriptionCount.value == 0) {
             prefetchGroups(studyLineId)
@@ -46,6 +52,9 @@ class GroupsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves a [Flow] of timetable for certain group
+     */
     override fun getTimetable(
         groupId: String,
         studyLineId: String,
@@ -59,10 +68,16 @@ class GroupsRepositoryImpl(
         return timetableFlows[groupId] ?: MutableStateFlow(Resource(null, Status.NotFoundError))
     }
 
+    /**
+     * Invalidates groups cache
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         groupsDataSource.invalidate(year, semesterId)
     }
 
+    /**
+     * Tries prefetching the groups from API for a safety update of local data
+     */
     private fun prefetchGroups(studyLineId: String) {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -70,13 +85,18 @@ class GroupsRepositoryImpl(
                 val studyLine = studyLinesDataSource.getStudyLinesFromCache(
                     configuration.year,
                     configuration.semesterId
-                ).firstOrNull()?.firstOrNull { it.id == studyLineId } ?: return@let
+                ).firstOrNull()?.firstOrNull { studyLine ->
+                    studyLine.id == studyLineId
+                } ?: return@let
 
                 getGroupsFromApi(it.year, it.semesterId, studyLine)
             }
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeGroups(studyLineId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -94,6 +114,9 @@ class GroupsRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getGroupsFromCache(
         year: Int,
         semesterId: String,
@@ -107,6 +130,9 @@ class GroupsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves groups from API and update the database of output flow
+     */
     private suspend fun getGroupsFromApi(
         year: Int,
         semesterId: String,
@@ -124,6 +150,9 @@ class GroupsRepositoryImpl(
         }
     }
 
+    /**
+     * Tries prefetching the group events from API for a safety update of local data
+     */
     private fun prefetchEvents(groupId: String, studyLineId: String) {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -131,19 +160,26 @@ class GroupsRepositoryImpl(
                 val studyLine = studyLinesDataSource.getStudyLinesFromCache(
                     configuration.year,
                     configuration.semesterId
-                ).firstOrNull()?.firstOrNull { it.id == studyLineId } ?: return@let
+                ).firstOrNull()?.firstOrNull { studyLine ->
+                    studyLine.id == studyLineId
+                } ?: return@let
 
                 val group = groupsDataSource.getGroupsFromCache(
                     configuration.year,
                     configuration.semesterId,
                     studyLine
-                ).firstOrNull()?.firstOrNull { it.id == groupId } ?: return@let
+                ).firstOrNull()?.firstOrNull { group ->
+                    group.id == groupId
+                } ?: return@let
 
                 getEventsFromApi(it.year, it.semesterId, group)
             }
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeEvents(groupId: String, studyLineId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -168,6 +204,9 @@ class GroupsRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getEventsFromCache(
         year: Int,
         semesterId: String,
@@ -184,6 +223,9 @@ class GroupsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves group events from API and update the database of output flow
+     */
     private suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,

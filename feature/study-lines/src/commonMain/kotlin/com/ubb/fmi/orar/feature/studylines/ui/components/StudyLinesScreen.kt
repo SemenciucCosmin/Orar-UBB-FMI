@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Degree
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
-import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
@@ -21,6 +20,7 @@ import com.ubb.fmi.orar.ui.catalog.components.list.ListItemExpandable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.Chip
+import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList

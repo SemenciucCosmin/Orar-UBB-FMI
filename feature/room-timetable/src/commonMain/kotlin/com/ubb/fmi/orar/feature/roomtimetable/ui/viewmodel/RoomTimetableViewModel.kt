@@ -4,15 +4,12 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -20,21 +17,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.firstOrNull
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * ViewModel for the Room Timetable screen.
  * It fetches the timetable data for a specific room and manages the UI state.
- *
- * @param roomId The ID of the room for which the timetable is displayed.
- * @param roomsDataSource The data source to fetch room timetable data.
- * @param timetablePreferences Preferences related to the timetable configuration.
  */
 class RoomTimetableViewModel(
     private val roomId: String,
@@ -69,7 +60,6 @@ class RoomTimetableViewModel(
             _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
             roomsRepository.getTimetable(roomId).collectLatest { resource ->
-                println("TESTMESSAGE getRoomTimetable ${resource.status}, ${resource.payload}")
                 val events = resource.payload?.events?.map {
                     it.copy(isVisible = true)
                 }?.toImmutableList() ?: persistentListOf()

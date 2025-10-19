@@ -1,11 +1,9 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.students.repository.StudyLinesRepository
-import com.ubb.fmi.orar.data.timetable.model.Event
+import com.ubb.fmi.orar.data.studylines.repository.StudyLinesRepository
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.model.Semester
@@ -33,10 +31,6 @@ import kotlin.time.Duration.Companion.seconds
  * ViewModel for managing the study lines form state in the application.
  * This ViewModel fetches study lines based on the provided year and semester ID,
  * and allows the user to select a field, study level, and degree filter.
- *
- * @param year The academic year for which study lines are being fetched.
- * @param semesterId The ID of the semester for which study lines are being fetched.
- * @param timetablePreferences Preferences for managing timetable configurations.
  */
 class StudyLinesFormViewModel(
     private val studyLinesRepository: StudyLinesRepository,
@@ -77,8 +71,6 @@ class StudyLinesFormViewModel(
             }?.values?.toList()?.map { studyLines ->
                 studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
             }?.toImmutableList() ?: persistentListOf()
-
-            println("TESTMESSAGE resource: ${resource.status}")
 
             logger.d(TAG, "getStudyLines resource: $resource")
             logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")
@@ -140,6 +132,9 @@ class StudyLinesFormViewModel(
         }
     }
 
+    /**
+     * Saves selection in preferences and triggers next configuration step
+     */
     fun finishSelection() {
         viewModelScope.launch {
             val fieldId = uiState.value.selectedFieldId ?: return@launch

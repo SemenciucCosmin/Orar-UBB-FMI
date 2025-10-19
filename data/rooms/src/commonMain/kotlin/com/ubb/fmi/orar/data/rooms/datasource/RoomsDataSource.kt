@@ -3,7 +3,6 @@ package com.ubb.fmi.orar.data.rooms.datasource
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Owner
-import com.ubb.fmi.orar.data.timetable.model.Timetable
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -11,20 +10,32 @@ import kotlinx.coroutines.flow.Flow
  */
 interface RoomsDataSource {
 
+    /**
+     * Retrieves [Flow] of rooms from database
+     */
     fun getRoomsFromCache(
         year: Int,
         semesterId: String,
     ): Flow<List<Owner.Room>>
 
+    /**
+     * Saves [rooms] in database
+     */
     suspend fun saveRoomsInCache(
         rooms: List<Owner.Room>
     )
 
+    /**
+     * Retrieves rooms from API
+     */
     suspend fun getRoomsFromApi(
         year: Int,
         semesterId: String,
     ): Resource<List<Owner.Room>>
 
+    /**
+     * Retrieves room events from API
+     */
     suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
@@ -32,7 +43,7 @@ interface RoomsDataSource {
     ): Resource<List<Event>>
 
     /**
-     * Invalidates all cached rooms by [year] and [semesterId]
+     * Invalidates all cached rooms
      */
     suspend fun invalidate(
         year: Int,

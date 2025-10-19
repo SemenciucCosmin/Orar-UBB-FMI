@@ -35,7 +35,7 @@ data class TeachersFormUiState(
 
     companion object {
         /**
-         * Filtered teachers by selected teacehr title filter
+         * Filtered teachers by selected teacher title filter
          */
         val TeachersFormUiState.filteredTeachers: ImmutableList<Owner.Teacher>
             get() {

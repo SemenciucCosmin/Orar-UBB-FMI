@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Repository for managing data flow and data source for teachers
+ */
 class TeacherRepositoryImpl(
     private val coroutineScope: CoroutineScope,
     private val teachersDataSource: TeachersDataSource,
@@ -36,6 +39,9 @@ class TeacherRepositoryImpl(
         initializeTeachers()
     }
 
+    /**
+     * Retrieves a [Flow] of teachers
+     */
     override fun getTeachers(): Flow<Resource<List<Owner.Teacher>>> {
         return teachersFlow.map { resource ->
             val sortedTeachers = resource.payload?.sortedWith(
@@ -46,6 +52,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves a [Flow] of timetable for certain teacher
+     */
     override fun getTimetable(teacherId: String): Flow<Resource<Timetable<Owner.Teacher>>> {
         if (!timetableFlows.keys.contains(teacherId)) {
             timetableFlows[teacherId] = MutableStateFlow(Resource(null, Status.Loading))
@@ -56,10 +65,16 @@ class TeacherRepositoryImpl(
         return timetableFlows[teacherId] ?: MutableStateFlow(Resource(null, Status.NotFoundError))
     }
 
+    /**
+     * Invalidates teachers cache
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         teachersDataSource.invalidate(year, semesterId)
     }
 
+    /**
+     * Tries prefetching the teacher events from API for a safety update of local data
+     */
     private fun prefetchTeachers() {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -67,6 +82,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeTeachers() {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -80,6 +98,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getTeachersFromCache(
         year: Int,
         semesterId: String,
@@ -92,6 +113,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves teachers from API and update the database of output flow
+     */
     private suspend fun getTeachersFromApi(
         year: Int,
         semesterId: String,
@@ -108,6 +132,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Tries prefetching the teacher events from API for a safety update of local data
+     */
     private fun prefetchEvents(teacherId: String) {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -122,6 +149,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeEvents(teacherId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -140,6 +170,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getEventsFromCache(
         year: Int,
         semesterId: String,
@@ -156,6 +189,9 @@ class TeacherRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves room events from API and update the database of output flow
+     */
     private suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,

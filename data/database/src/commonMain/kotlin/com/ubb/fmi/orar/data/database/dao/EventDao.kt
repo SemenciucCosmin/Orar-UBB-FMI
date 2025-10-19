@@ -9,20 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Data Access Object (DAO) for managing timetable event entities in the database.
- * This interface provides methods to interact with the 'events' table,
- * including retrieving, inserting, and deleting timetable event records.
  */
 @Dao
 interface EventDao {
-
-    /**
-     * Get all timetable event entities by [configurationId] and [ownerId]
-     */
-    @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
-    suspend fun getAllByConfigurationAndOwner(
-        configurationId: String,
-        ownerId: String,
-    ): List<EventEntity>
 
     /**
      * Get all timetable event entities by [configurationId] and [ownerId]
@@ -46,7 +35,7 @@ interface EventDao {
     suspend fun insert(entity: EventEntity)
 
     /**
-     * Insert new timetable event [entity]
+     * Insert new timetable event [entities]
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<EventEntity>)

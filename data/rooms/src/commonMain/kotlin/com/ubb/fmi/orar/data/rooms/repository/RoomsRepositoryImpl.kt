@@ -2,7 +2,6 @@ package com.ubb.fmi.orar.data.rooms.repository
 
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
-import com.ubb.fmi.orar.data.network.model.isError
 import com.ubb.fmi.orar.data.network.model.isSuccess
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
@@ -18,6 +17,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Repository for managing data flow and data source for rooms
+ */
 class RoomsRepositoryImpl(
     private val coroutineScope: CoroutineScope,
     private val roomsDataSource: RoomsDataSource,
@@ -37,6 +39,9 @@ class RoomsRepositoryImpl(
         initializeRooms()
     }
 
+    /**
+     * Retrieves a [Flow] of rooms
+     */
     override fun getRooms(): Flow<Resource<List<Owner.Room>>> {
         return roomsFlow.map { resource ->
             val sortedRooms = resource.payload?.sortedBy { it.name }
@@ -44,6 +49,9 @@ class RoomsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves a [Flow] of timetable for certain room
+     */
     override fun getTimetable(roomId: String): Flow<Resource<Timetable<Owner.Room>>> {
         if (!timetableFlows.keys.contains(roomId)) {
             timetableFlows[roomId] = MutableStateFlow(Resource(null, Status.Loading))
@@ -54,10 +62,16 @@ class RoomsRepositoryImpl(
         return timetableFlows[roomId] ?: MutableStateFlow(Resource(null, Status.NotFoundError))
     }
 
+    /**
+     * Invalidates rooms cache
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         roomsDataSource.invalidate(year, semesterId)
     }
 
+    /**
+     * Tries prefetching the rooms from API for a safety update of local data
+     */
     private fun prefetchRooms() {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -65,6 +79,9 @@ class RoomsRepositoryImpl(
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeRooms() {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -78,6 +95,9 @@ class RoomsRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getRoomsFromCache(
         year: Int,
         semesterId: String,
@@ -90,6 +110,9 @@ class RoomsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves rooms from API and update the database of output flow
+     */
     private suspend fun getRoomsFromApi(
         year: Int,
         semesterId: String,
@@ -106,6 +129,9 @@ class RoomsRepositoryImpl(
         }
     }
 
+    /**
+     * Tries prefetching the room events from API for a safety update of local data
+     */
     private fun prefetchEvents(roomId: String) {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -113,13 +139,18 @@ class RoomsRepositoryImpl(
                 val room = roomsDataSource.getRoomsFromCache(
                     configuration.year,
                     configuration.semesterId
-                ).firstOrNull()?.firstOrNull { it.id == roomId } ?: return@let
+                ).firstOrNull()?.firstOrNull { room ->
+                    room.id == roomId
+                } ?: return@let
 
                 getEventsFromApi(it.year, it.semesterId, room)
             }
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeEvents(roomId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -138,6 +169,9 @@ class RoomsRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getEventsFromCache(
         year: Int,
         semesterId: String,
@@ -154,6 +188,9 @@ class RoomsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves room events from API and update the database of output flow
+     */
     private suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,

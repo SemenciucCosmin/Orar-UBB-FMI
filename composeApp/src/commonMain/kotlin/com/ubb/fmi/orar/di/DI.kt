@@ -15,12 +15,12 @@ import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
 import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
+import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import com.ubb.fmi.orar.feature.settings.di.settingsFeatureModule
 import com.ubb.fmi.orar.feature.startup.di.startupFeatureModule
 import com.ubb.fmi.orar.feature.studylines.di.studyLinesFeatureModule
-import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
 import com.ubb.fmi.orar.feature.subjects.di.subjectsFeatureModule
 import com.ubb.fmi.orar.feature.subjectstimetable.di.subjectTimetableFeatureModule
 import com.ubb.fmi.orar.feature.teachers.di.teachersFeatureModule

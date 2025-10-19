@@ -7,8 +7,7 @@ import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepositoryImpl
 import org.koin.dsl.module
 
 /**
- * Provides the Koin module for subjects data operations.
- * This module includes the SubjectsDataSource for managing subject-related data.
+ * Provides the Koin module for subjects data layer.
  */
 fun subjectsDataModule() = module {
     factory<SubjectsDataSource> { SubjectsDataSourceImpl(get(), get(), get(), get()) }

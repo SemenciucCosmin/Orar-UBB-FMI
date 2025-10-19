@@ -25,8 +25,6 @@ import kotlin.time.ExperimentalTime
  * ViewModel for managing the onboarding form state in the application.
  * This ViewModel handles the selection of study years, semesters, and user types,
  * and initializes the UI state with the current configuration from preferences.
- *
- * @param timetablePreferences Preferences for managing timetable configurations.
  */
 class OnboardingFormViewModel(
     private val timetablePreferences: TimetablePreferences,
@@ -94,6 +92,9 @@ class OnboardingFormViewModel(
         _uiState.update { it.copy(selectedUserTypeId = userTypeId) }
     }
 
+    /**
+     * Saves selection in preferences and triggers next configuration step
+     */
     fun finishSelection() {
         viewModelScope.launch {
             val year = uiState.value.selectedStudyYear ?: return@launch

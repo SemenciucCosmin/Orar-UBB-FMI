@@ -1,9 +1,9 @@
-package com.ubb.fmi.orar.data.students.repository
+package com.ubb.fmi.orar.data.studylines.repository
 
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.model.isSuccess
-import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.studylines.datasource.StudyLinesDataSource
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +14,10 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.KoinApplication.Companion.init
 
+/**
+ * Repository for managing data flow and data source for study lines
+ */
 class StudyLinesRepositoryImpl(
     private val coroutineScope: CoroutineScope,
     private val studyLinesDataSource: StudyLinesDataSource,
@@ -31,6 +33,9 @@ class StudyLinesRepositoryImpl(
         initializeStudyLines()
     }
 
+    /**
+     * Retrieves a [Flow] of study lines
+     */
     override fun getStudyLines(): Flow<Resource<List<StudyLine>>> {
         return studyLinesFlow.map { resource ->
             val sortedStudyLines = resource.payload?.sortedBy { it.name }
@@ -38,10 +43,16 @@ class StudyLinesRepositoryImpl(
         }
     }
 
+    /**
+     * Invalidates study lines cache
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         studyLinesDataSource.invalidate(year, semesterId)
     }
 
+    /**
+     * Tries prefetching the study lines from API for a safety update of local data
+     */
     private fun prefetchStudyLines() {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -49,6 +60,9 @@ class StudyLinesRepositoryImpl(
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeStudyLines() {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -62,6 +76,9 @@ class StudyLinesRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getStudyLinesFromCache(
         year: Int,
         semesterId: String,
@@ -74,6 +91,9 @@ class StudyLinesRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves study lines from API and update the database of output flow
+     */
     private suspend fun getStudyLinesFromApi(
         year: Int,
         semesterId: String,

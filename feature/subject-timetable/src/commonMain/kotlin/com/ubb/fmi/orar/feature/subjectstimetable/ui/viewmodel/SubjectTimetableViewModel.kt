@@ -4,15 +4,12 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -20,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update

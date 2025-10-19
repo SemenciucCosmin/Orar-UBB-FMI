@@ -27,7 +27,7 @@ data class StudyLinesFormUiState(
     val isLoading: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
-    enum class StudyLinesFormUiEvent: UiEvent {
+    enum class StudyLinesFormUiEvent : UiEvent {
         SELECTION_DONE
     }
 

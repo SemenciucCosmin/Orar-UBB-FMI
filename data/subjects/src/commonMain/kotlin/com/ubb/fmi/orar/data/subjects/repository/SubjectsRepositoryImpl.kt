@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Repository for managing data flow and data source for subjects
+ */
 class SubjectsRepositoryImpl(
     private val coroutineScope: CoroutineScope,
     private val subjectsDataSource: SubjectsDataSource,
@@ -36,6 +39,9 @@ class SubjectsRepositoryImpl(
         initializeSubjects()
     }
 
+    /**
+     * Retrieves a [Flow] of subjects
+     */
     override fun getSubjects(): Flow<Resource<List<Owner.Subject>>> {
         return subjectsFlow.map { resource ->
             val sortedSubjects = resource.payload?.sortedBy { it.name }
@@ -43,6 +49,9 @@ class SubjectsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves a [Flow] of timetable for certain subjects
+     */
     override fun getTimetable(subjectId: String): Flow<Resource<Timetable<Owner.Subject>>> {
         if (!timetableFlows.keys.contains(subjectId)) {
             timetableFlows[subjectId] = MutableStateFlow(Resource(null, Status.Loading))
@@ -53,10 +62,16 @@ class SubjectsRepositoryImpl(
         return timetableFlows[subjectId] ?: MutableStateFlow(Resource(null, Status.NotFoundError))
     }
 
+    /**
+     * Invalidates subjects cache
+     */
     override suspend fun invalidate(year: Int, semesterId: String) {
         subjectsDataSource.invalidate(year, semesterId)
     }
 
+    /**
+     * Tries prefetching the subject events from API for a safety update of local data
+     */
     private fun prefetchSubjects() {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -64,6 +79,9 @@ class SubjectsRepositoryImpl(
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeSubjects() {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -77,6 +95,9 @@ class SubjectsRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getSubjectsFromCache(
         year: Int,
         semesterId: String,
@@ -89,6 +110,9 @@ class SubjectsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves subjects from API and update the database of output flow
+     */
     private suspend fun getSubjectsFromApi(
         year: Int,
         semesterId: String,
@@ -105,6 +129,9 @@ class SubjectsRepositoryImpl(
         }
     }
 
+    /**
+     * Tries prefetching the subject events from API for a safety update of local data
+     */
     private fun prefetchEvents(subjectId: String) {
         coroutineScope.launch {
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
@@ -112,13 +139,18 @@ class SubjectsRepositoryImpl(
                 val subject = subjectsDataSource.getSubjectsFromCache(
                     configuration.year,
                     configuration.semesterId
-                ).firstOrNull()?.firstOrNull { it.id == subjectId } ?: return@let
+                ).firstOrNull()?.firstOrNull { subject ->
+                    subject.id == subjectId
+                } ?: return@let
 
                 getEventsFromApi(it.year, it.semesterId, subject)
             }
         }
     }
 
+    /**
+     * Initializes collection of database entries and possible API updates
+     */
     private fun initializeEvents(subjectId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
@@ -137,6 +169,9 @@ class SubjectsRepositoryImpl(
         }
     }
 
+    /**
+     * Provides the collection of database data flow
+     */
     private suspend fun getEventsFromCache(
         year: Int,
         semesterId: String,
@@ -153,6 +188,9 @@ class SubjectsRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves room events from API and update the database of output flow
+     */
     private suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,

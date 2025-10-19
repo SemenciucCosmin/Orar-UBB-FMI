@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.components.TeachersFormScreen
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.TeachersFormViewModel
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
@@ -16,11 +15,9 @@ import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestinatio
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 /**
  * Composable route with teachers that are selectable for timetable configuration
- * @param navController: navigation controller for handling navigation actions
  */
 @Composable
 fun TeachersFormRoute(navController: NavController) {

@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.students.datasource
+package com.ubb.fmi.orar.data.studylines.datasource
 
 import Logger
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
@@ -7,7 +7,6 @@ import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.StudentsApi
 import com.ubb.fmi.orar.data.timetable.model.Degree
-import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.domain.extensions.BLANK
@@ -25,6 +24,9 @@ class StudyLinesDataSourceImpl(
     private val logger: Logger,
 ) : StudyLinesDataSource {
 
+    /**
+     * Retrieves [Flow] of study lines from database
+     */
     override fun getStudyLinesFromCache(
         year: Int,
         semesterId: String,
@@ -35,22 +37,16 @@ class StudyLinesDataSourceImpl(
         }
     }
 
+    /**
+     * Saves [studyLines] in database
+     */
     override suspend fun saveStudyLinesInCache(studyLines: List<StudyLine>) {
         val entities = studyLines.map(::mapStudyLineToEntity)
         studyLineDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached data for by [year] and [semesterId]
-     */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate studyLines for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        studyLineDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [StudyLine] objects from API by [year] and [semesterId]
+     * Retrieves study lines from API
      */
     override suspend fun getStudyLinesFromApi(
         year: Int,
@@ -108,6 +104,15 @@ class StudyLinesDataSourceImpl(
             studyLines.isEmpty() -> Resource(null, resource.status)
             else -> Resource(studyLines, Status.Success)
         }
+    }
+
+    /**
+     * Invalidates all cached study lines
+     */
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate studyLines for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        studyLineDao.deleteAll(configurationId)
     }
 
     /**

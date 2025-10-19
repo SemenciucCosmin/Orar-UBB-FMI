@@ -1,8 +1,6 @@
-package com.ubb.fmi.orar.data.students.datasource
+package com.ubb.fmi.orar.data.studylines.datasource
 
 import com.ubb.fmi.orar.data.network.model.Resource
-import com.ubb.fmi.orar.data.timetable.model.Timetable
-import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import kotlinx.coroutines.flow.Flow
 
@@ -11,22 +9,31 @@ import kotlinx.coroutines.flow.Flow
  */
 interface StudyLinesDataSource {
 
+    /**
+     * Retrieves [Flow] of study lines from database
+     */
     fun getStudyLinesFromCache(
         year: Int,
         semesterId: String,
     ): Flow<List<StudyLine>>
 
+    /**
+     * Saves [studyLines] in database
+     */
     suspend fun saveStudyLinesInCache(
         studyLines: List<StudyLine>,
     )
 
+    /**
+     * Retrieves study lines from API
+     */
     suspend fun getStudyLinesFromApi(
         year: Int,
         semesterId: String,
     ): Resource<List<StudyLine>>
 
     /**
-     * Invalidates all cached study lines by [year] and [semesterId]
+     * Invalidates all cached study lines
      */
     suspend fun invalidate(
         year: Int,

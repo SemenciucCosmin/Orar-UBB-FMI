@@ -4,15 +4,12 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -20,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -32,15 +28,10 @@ import kotlin.time.Duration.Companion.seconds
  *
  * This ViewModel fetches the timetable data for a specific teacher and manages the UI state
  * related to the timetable, including loading states, error handling, and frequency selection.
- *
- * @property teacherId The ID of the teacher whose timetable is being managed.
- * @property teachersDataSource The data source for fetching teacher-related data.
- * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class TeacherTimetableViewModel(
     private val teacherId: String,
     private val teacherRepository: TeacherRepository,
-    private val timetablePreferences: TimetablePreferences,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {

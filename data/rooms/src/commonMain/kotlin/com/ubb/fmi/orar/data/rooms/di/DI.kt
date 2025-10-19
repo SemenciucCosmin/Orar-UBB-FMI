@@ -7,8 +7,7 @@ import com.ubb.fmi.orar.data.rooms.repository.RoomsRepositoryImpl
 import org.koin.dsl.module
 
 /**
- * Provides the Koin module for rooms data operations.
- * This module includes the RoomsDataSource for managing room-related data.
+ * Provides the Koin module for rooms data layer.
  */
 fun roomsDataModule() = module {
     factory<RoomsDataSource> { RoomsDataSourceImpl(get(), get(), get()) }

@@ -19,8 +19,7 @@ class EventsDataSourceImpl(
 ) : EventsDataSource {
 
     /**
-     * Retrieve list of [Event] for specific [ownerId] from cache
-     * by [configurationId]
+     * Retrieve list of [Event] as [Flow] from cache
      */
     override suspend fun getEventsFromCache(
         configurationId: String,

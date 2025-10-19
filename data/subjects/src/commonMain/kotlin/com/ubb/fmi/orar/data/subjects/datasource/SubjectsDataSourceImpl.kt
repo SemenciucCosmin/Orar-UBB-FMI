@@ -32,6 +32,9 @@ class SubjectsDataSourceImpl(
     private val logger: Logger,
 ) : SubjectsDataSource {
 
+    /**
+     * Retrieves [Flow] of subjects from database
+     */
     override fun getSubjectsFromCache(
         year: Int,
         semesterId: String,
@@ -42,22 +45,16 @@ class SubjectsDataSourceImpl(
         }
     }
 
+    /**
+     * Saves [subjects] in database
+     */
     override suspend fun saveSubjectsInCache(subjects: List<Owner.Subject>) {
         val entities = subjects.map(::mapSubjectToEntity)
         subjectDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached subjects by [year] and [semesterId]
-     */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate subjects for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        subjectDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [Owner.Subject] objects from API by [year] and [semesterId]
+     * Retrieves subjects from API
      */
     override suspend fun getSubjectsFromApi(
         year: Int,
@@ -95,6 +92,10 @@ class SubjectsDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieves subjects events from API
+     */
+    @Suppress("CyclomaticComplexMethod")
     override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
@@ -103,7 +104,7 @@ class SubjectsDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId")
 
         val configurationId = year.toString() + semesterId
-        val resource = subjectsApi.getTimetableHtml(year, semesterId, subject.id)
+        val resource = subjectsApi.getEventsHtml(year, semesterId, subject.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -165,6 +166,15 @@ class SubjectsDataSourceImpl(
         }
 
         return Resource(events, status)
+    }
+
+    /**
+     * Invalidates all cached subjects
+     */
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate subjects for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        subjectDao.deleteAll(configurationId)
     }
 
     /**

@@ -10,20 +10,32 @@ import kotlinx.coroutines.flow.Flow
  */
 interface SubjectsDataSource {
 
+    /**
+     * Retrieves [Flow] of subjects from database
+     */
     fun getSubjectsFromCache(
         year: Int,
         semesterId: String,
     ): Flow<List<Owner.Subject>>
 
+    /**
+     * Saves [subjects] in database
+     */
     suspend fun saveSubjectsInCache(
         subjects: List<Owner.Subject>
     )
 
+    /**
+     * Retrieves subjects from API
+     */
     suspend fun getSubjectsFromApi(
         year: Int,
         semesterId: String,
     ): Resource<List<Owner.Subject>>
 
+    /**
+     * Retrieves subjects events from API
+     */
     suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
@@ -31,7 +43,7 @@ interface SubjectsDataSource {
     ): Resource<List<Event>>
 
     /**
-     * Invalidates all cached subjects by [year] and [semesterId]
+     * Invalidates all cached subjects
      */
     suspend fun invalidate(
         year: Int,

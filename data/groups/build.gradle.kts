@@ -44,6 +44,7 @@ kotlin {
             implementation(projects.data.database)
             implementation(projects.data.network)
             implementation(projects.data.rooms)
+            implementation(projects.data.studyLines)
             implementation(projects.data.timetable)
             implementation(projects.domain.extensions)
             implementation(projects.domain.htmlParser)

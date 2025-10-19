@@ -4,12 +4,9 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -39,7 +36,7 @@ class TeachersViewModel(
      * A MutableStateFlow that holds the current UI state of the teachers screen.
      * It is updated with loading, error, and teacher data as it becomes available.
      */
-    private val _uiState = MutableStateFlow(TeachersUiState())
+    private val _uiState = MutableStateFlow(TeachersUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**

@@ -4,13 +4,9 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
-import com.ubb.fmi.orar.data.rooms.repository.RoomsRepositoryImpl
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -23,9 +19,6 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for managing the state of the Rooms feature.
  * It fetches room data from the RoomsDataSource and updates the UI state accordingly.
- *
- * @property roomsDataSource The data source for fetching room information.
- * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class RoomsViewModel(
     private val roomsRepository: RoomsRepository,
@@ -42,7 +35,7 @@ class RoomsViewModel(
      * Mutable state flow representing the UI state of the Rooms feature.
      * It holds the list of rooms, loading state, and error state.
      */
-    private val _uiState = MutableStateFlow(RoomsUiState())
+    private val _uiState = MutableStateFlow(RoomsUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**
@@ -76,7 +69,6 @@ class RoomsViewModel(
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
         roomsRepository.getRooms().collectLatest { resource ->
-            println("TESTMESSAGE getRooms ${resource.status}, ${resource.payload}")
             logger.d(TAG, "getRooms resource: $resource")
 
             _uiState.update {

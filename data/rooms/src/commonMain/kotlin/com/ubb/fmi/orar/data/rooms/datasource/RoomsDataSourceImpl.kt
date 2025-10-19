@@ -27,6 +27,9 @@ class RoomsDataSourceImpl(
     private val logger: Logger,
 ) : RoomsDataSource {
 
+    /**
+     * Retrieves [Flow] of rooms from database
+     */
     override fun getRoomsFromCache(
         year: Int,
         semesterId: String,
@@ -37,22 +40,16 @@ class RoomsDataSourceImpl(
         }
     }
 
+    /**
+     * Saves [rooms] in database
+     */
     override suspend fun saveRoomsInCache(rooms: List<Owner.Room>) {
         val entities = rooms.map(::mapRoomToEntity)
         roomDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached rooms by [year] and [semesterId]
-     */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate rooms for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        roomDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [Owner.Room] objects from API by [year] and [semesterId]
+     * Retrieves rooms from API
      */
     override suspend fun getRoomsFromApi(
         year: Int,
@@ -91,6 +88,10 @@ class RoomsDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieves room events from API
+     */
+    @Suppress("CyclomaticComplexMethod")
     override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
@@ -99,7 +100,7 @@ class RoomsDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId, room: $room")
 
         val configurationId = year.toString() + semesterId
-        val resource = roomsApi.getTimetableHtml(year, semesterId, room.id)
+        val resource = roomsApi.getEventsHtml(year, semesterId, room.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -157,6 +158,15 @@ class RoomsDataSourceImpl(
         }
 
         return Resource(events, status)
+    }
+
+    /**
+     * Invalidates all cached rooms
+     */
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate rooms for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        roomDao.deleteAll(configurationId)
     }
 
     /**

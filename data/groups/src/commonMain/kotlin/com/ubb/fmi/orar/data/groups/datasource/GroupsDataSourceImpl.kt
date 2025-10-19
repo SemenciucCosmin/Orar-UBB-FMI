@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.data.students.datasource
+package com.ubb.fmi.orar.data.groups.datasource
 
 import Logger
 import com.ubb.fmi.orar.data.database.dao.GroupDao
@@ -11,8 +11,8 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.map
 import okio.ByteString.Companion.encodeUtf8
 
 /**
- * Data source for managing study line related information
+ * Data source for providing groups related information from database and API
  */
 class GroupsDataSourceImpl(
     private val roomsRepository: RoomsRepository,
@@ -35,6 +35,9 @@ class GroupsDataSourceImpl(
     private val logger: Logger,
 ) : GroupsDataSource {
 
+    /**
+     * Retrieve groups from database as [Flow]
+     */
     override fun getGroupsFromCache(
         year: Int,
         semesterId: String,
@@ -46,22 +49,16 @@ class GroupsDataSourceImpl(
         }
     }
 
+    /**
+     * Saves groups in database
+     */
     override suspend fun saveGroupsInCache(groups: List<Owner.Group>) {
         val entities = groups.map(::mapGroupToEntity)
         groupDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached groups by [year] and [semesterId]
-     */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate groups for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        groupDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [Owner.Group] objects from API by [year] and [semesterId]
+     * Retrieve groups from API
      */
     override suspend fun getGroupsFromApi(
         year: Int,
@@ -71,7 +68,7 @@ class GroupsDataSourceImpl(
         logger.d(TAG, "getGroupsFromApi for year: $year, semester: $semesterId, studyLine: $studyLine")
 
         val configurationId = year.toString() + semesterId
-        val resource = studentsApi.getTimetableHtml(year, semesterId, studyLine.id)
+        val resource = studentsApi.getEventsHtml(year, semesterId, studyLine.id)
 
         logger.d(TAG, "getGroupsFromApi resource: $resource")
 
@@ -99,6 +96,10 @@ class GroupsDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieve group events from API
+     */
+    @Suppress("CyclomaticComplexMethod")
     override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
@@ -107,7 +108,7 @@ class GroupsDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId, group: $group")
 
         val configurationId = year.toString() + semesterId
-        val resource = studentsApi.getTimetableHtml(year, semesterId, group.studyLine.id)
+        val resource = studentsApi.getEventsHtml(year, semesterId, group.studyLine.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -161,7 +162,6 @@ class GroupsDataSourceImpl(
                 teacherCell.id,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
-
             val room = roomsRepository.getRooms().firstOrNull()?.payload?.firstOrNull {
                 it.id == roomCell.id
             }
@@ -194,6 +194,15 @@ class GroupsDataSourceImpl(
     }
 
     /**
+     * Invalidates all cached groups
+     */
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate groups for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        groupDao.deleteAll(configurationId)
+    }
+
+    /**
      * Maps a [Owner.Group] to a [GroupEntity]
      */
     private fun mapGroupToEntity(group: Owner.Group): GroupEntity {
@@ -204,7 +213,6 @@ class GroupsDataSourceImpl(
             studyLineId = group.studyLine.id
         )
     }
-
 
     /**
      * Maps a [GroupEntity] to a [Owner.Group]

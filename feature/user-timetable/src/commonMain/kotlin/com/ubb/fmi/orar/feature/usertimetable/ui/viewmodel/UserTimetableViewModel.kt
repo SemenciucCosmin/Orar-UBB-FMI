@@ -46,7 +46,7 @@ class UserTimetableViewModel(
      * Mutable state flow to hold the UI state of the timetable.
      * This includes loading status, error status, classes, selected frequency, and edit mode.
      */
-    private val _uiState = MutableStateFlow(TimetableUiState())
+    private val _uiState = MutableStateFlow(TimetableUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**

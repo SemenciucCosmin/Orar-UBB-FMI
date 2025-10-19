@@ -4,9 +4,7 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
-import com.ubb.fmi.orar.data.students.repository.StudyLinesRepository
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.studylines.repository.StudyLinesRepository
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
@@ -40,7 +38,7 @@ class StudyLinesViewModel(
      * It contains information about loading status, error status, grouped study lines,
      * and selected filters and fields.
      */
-    private val _uiState = MutableStateFlow(StudyLinesUiState())
+    private val _uiState = MutableStateFlow(StudyLinesUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**

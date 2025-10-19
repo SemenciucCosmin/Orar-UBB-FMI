@@ -2,8 +2,8 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.students.repository.GroupsRepository
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
@@ -29,8 +29,6 @@ import kotlin.time.Duration.Companion.seconds
  * This ViewModel fetches groups based on the provided parameters and allows the user to
  * select a group. It also handles the saving of the selected group configuration
  * and provides a way to retry fetching groups in case of an error.
- * @param timetablePreferences: Preferences for the timetable configuration.
- * @param setTimetableConfigurationUseCase: Use case for setting the timetable configuration
  */
 class GroupsFormViewModel(
     private val groupsRepository: GroupsRepository,

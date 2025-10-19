@@ -6,16 +6,13 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.TeachersApi
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
-import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
-import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COLON
 import com.ubb.fmi.orar.domain.extensions.DASH
@@ -39,6 +36,9 @@ class TeachersDataSourceImpl(
     private val logger: Logger,
 ) : TeachersDataSource {
 
+    /**
+     * Retrieves [Flow] of teachers from database
+     */
     override fun getTeachersFromCache(
         year: Int,
         semesterId: String,
@@ -49,22 +49,16 @@ class TeachersDataSourceImpl(
         }
     }
 
+    /**
+     * Saves [teachers] in database
+     */
     override suspend fun saveTeachersInCache(teachers: List<Owner.Teacher>) {
         val entities = teachers.map(::mapTeacherToEntity)
         teacherDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached teachers by [year] and [semesterId]
-     */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate teachers for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        teacherDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [Owner.Teacher] objects from API by [year] and [semesterId]
+     * Retrieves teacher from API
      */
     override suspend fun getTeachersFromApi(
         year: Int,
@@ -110,6 +104,9 @@ class TeachersDataSourceImpl(
         }
     }
 
+    /**
+     * Retrieves teacher events from API
+     */
     override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
@@ -118,7 +115,7 @@ class TeachersDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId")
 
         val configurationId = year.toString() + semesterId
-        val resource = teachersApi.getTimetableHtml(year, semesterId, teacher.id)
+        val resource = teachersApi.getEventsHtml(year, semesterId, teacher.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -200,6 +197,15 @@ class TeachersDataSourceImpl(
         }
 
         return Resource(events, status)
+    }
+
+    /**
+     * Invalidates all cached teachers
+     */
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate teachers for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        teacherDao.deleteAll(configurationId)
     }
 
     /**

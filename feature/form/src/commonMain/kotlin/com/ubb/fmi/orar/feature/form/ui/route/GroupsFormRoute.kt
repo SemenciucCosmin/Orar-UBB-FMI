@@ -12,7 +12,6 @@ import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 /**
  * Composable route that displays the list of groups for a certain study line that can

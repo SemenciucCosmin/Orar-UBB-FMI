@@ -9,8 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface EventsDataSource {
 
     /**
-     * Retrieve list of [Event] for specific [ownerId] from cache
-     * by [configurationId]
+     * Retrieve list of [Event] as [Flow] from cache
      */
     suspend fun getEventsFromCache(
         configurationId: String,

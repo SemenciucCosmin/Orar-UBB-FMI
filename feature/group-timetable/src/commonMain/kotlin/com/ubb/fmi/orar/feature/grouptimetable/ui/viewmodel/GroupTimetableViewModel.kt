@@ -3,8 +3,8 @@ package com.ubb.fmi.orar.feature.grouptimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.students.repository.GroupsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.domain.extensions.BLANK
@@ -29,11 +29,6 @@ import kotlin.time.Duration.Companion.seconds
  *
  * This ViewModel is responsible for loading and managing the timetable data for a specific study line,
  * including handling loading states, errors, and user interactions such as frequency selection.
- *
- * @property fieldId The ID of the field of study.
- * @property studyLevelId The ID of the study level.
- * @property groupId The ID of the group.
- * @property groupsDataSource The data source for fetching groups data.
  */
 class GroupTimetableViewModel(
     private val fieldId: String,

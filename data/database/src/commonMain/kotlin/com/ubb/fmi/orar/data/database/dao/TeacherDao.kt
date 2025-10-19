@@ -9,27 +9,19 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Data Access Object (DAO) for managing teacher entities in the database.
- * This interface provides methods to interact with the 'teachers' table,
- * including retrieving, inserting, and deleting teacher records.
  */
 @Dao
 interface TeacherDao {
 
     /**
-     * Get all teacher entities by [configurationId]
+     * Get all teacher entities as [Flow] by [configurationId]
      */
-    @Query("SELECT * FROM teachers WHERE configurationId LIKE :configurationId")
-    suspend fun getAll(configurationId: String): List<TeacherEntity>
-
     @Query("SELECT * FROM teachers WHERE configurationId LIKE :configurationId")
     fun getAllAsFlow(configurationId: String): Flow<List<TeacherEntity>>
 
     /**
-     * Insert new teacher [entity]
+     * Insert new teacher [entities]
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: TeacherEntity)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<TeacherEntity>)
 
