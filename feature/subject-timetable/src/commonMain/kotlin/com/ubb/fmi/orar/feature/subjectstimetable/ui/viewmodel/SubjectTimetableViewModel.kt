@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.feature.subjectstimetable.ui.viewmodel
 
 import Logger
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
@@ -9,8 +8,11 @@ import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
+import com.ubb.fmi.orar.domain.usertimetable.usecase.AdoptEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
+import com.ubb.fmi.orar.ui.catalog.model.TimetableUiEvent
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -33,8 +35,9 @@ class SubjectTimetableViewModel(
     private val subjectId: String,
     private val subjectsRepository: SubjectsRepository,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
+    private val adoptEventUseCase: AdoptEventUseCase,
     private val logger: Logger,
-) : ViewModel() {
+) : EventViewModel<TimetableUiEvent>() {
 
     private val _uiState = MutableStateFlow(TimetableUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
@@ -94,6 +97,16 @@ class SubjectTimetableViewModel(
     fun retry() {
         logger.d(TAG, "retry")
         loadTimetable()
+    }
+
+    /**
+     * Add new event to user timetable
+     */
+    fun addEvent(eventId: String) {
+        viewModelScope.launch {
+            adoptEventUseCase(eventId)
+            registerEvent(TimetableUiEvent.EVENT_ADOPTION_SUCCESSFUL)
+        }
     }
 
     companion object {

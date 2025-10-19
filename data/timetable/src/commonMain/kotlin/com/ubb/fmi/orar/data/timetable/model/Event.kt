@@ -4,6 +4,7 @@ package com.ubb.fmi.orar.data.timetable.model
  * Data class for a single entry in a [Timetable]
  * @property id: unique id for identification
  * @property configurationId: id for configuration affinity
+ * @property ownerId: id of owner
  * @property day: day in which the event takes place
  * @property frequency: frequency at which the event takes place
  * @property startHour: hour at which the event starts
@@ -21,6 +22,7 @@ package com.ubb.fmi.orar.data.timetable.model
 data class Event(
     val id: String,
     val configurationId: String,
+    val ownerId: String,
     val day: Day,
     val frequency: Frequency,
     val startHour: Int,

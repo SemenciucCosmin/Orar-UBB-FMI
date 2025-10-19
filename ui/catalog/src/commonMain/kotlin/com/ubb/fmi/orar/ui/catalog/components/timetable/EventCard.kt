@@ -23,6 +23,7 @@ fun EventCard(
     enabled: Boolean,
     expanded: Boolean,
     modifier: Modifier = Modifier,
+    onAddClick: (() -> Unit)? = null,
 ) {
     FlippingCard(
         modifier = modifier,
@@ -44,7 +45,8 @@ fun EventCard(
         backContent = { modifier ->
             EventBack(
                 modifier = modifier,
-                text = details
+                text = details,
+                onAddClick = onAddClick
             )
         }
     )
@@ -64,7 +66,8 @@ private fun PreviewEventCard() {
             details = "Str. Teodor Mihali nr. 38-40",
             location = "A304",
             enabled = true,
-            expanded = true
+            expanded = true,
+            onAddClick = {}
         )
     }
 }

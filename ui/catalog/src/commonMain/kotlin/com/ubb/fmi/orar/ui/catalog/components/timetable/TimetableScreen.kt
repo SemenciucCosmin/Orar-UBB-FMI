@@ -44,6 +44,7 @@ fun TimetableScreen(
     bottomBar: @Composable () -> Unit = {},
     onItemVisibilityChange: (TimetableListItem.Event) -> Unit = {},
     onRemoveItem: (TimetableListItem.Event) -> Unit = {},
+    onAddItem: ((String) -> Unit)? = null,
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
@@ -85,7 +86,7 @@ fun TimetableScreen(
                         ) {
                             AnimatedVisibility(uiState.isEditModeOn) {
                                 when {
-                                    timetableItem.type == EventType.PERSONAL -> {
+                                    timetableItem.isPersonal -> {
                                         EventRemoveButton(
                                             onRemove = { onRemoveItem(timetableItem) }
                                         )
@@ -116,7 +117,12 @@ fun TimetableScreen(
                                 type = timetableItem.type,
                                 participant = timetableItem.participant,
                                 caption = timetableItem.caption,
-                                details = timetableItem.details
+                                details = timetableItem.details,
+                                onAddClick = onAddItem?.let {
+                                    {
+                                        onAddItem(timetableItem.id)
+                                    }
+                                }
                             )
                         }
                     }
@@ -159,7 +165,8 @@ private fun PreviewTimetableScreen() {
                         caption = "Caption $it",
                         details = "Details $it",
                         isVisible = true,
-                        configurationId = "20241"
+                        configurationId = "20241",
+                        ownerId = "$it"
                     )
                 }.toImmutableList()
             )
@@ -200,7 +207,8 @@ private fun PreviewTimetableScreenEditMode() {
                         caption = "Caption $it",
                         details = "Details $it",
                         isVisible = true,
-                        configurationId = "20241"
+                        configurationId = "20241",
+                        ownerId = "$it",
                     )
                 }.toImmutableList()
             )

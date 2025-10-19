@@ -12,7 +12,6 @@
     <string name="lbl_subject">Subject</string>
     <string name="lbl_room">Room</string>
     <string name="lbl_optional">Optional</string>
-    <string name="lbl_remove_personal_event_message">Remove this personal event?</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Welcome!</string>
@@ -112,5 +111,7 @@
     <string name="lbl_text_field_error">You must complete this</string>
     <string name="lbl_day_selection_error">You must choose at least one day</string>
     <string name="lbl_event_added">Event was successfully added to your timetable!</string>
+    <string name="lbl_remove_personal_event_message">Remove this personal event?</string>
+    <string name="lbl_add_event_message">Add this event to your timetable?</string>
 
 </resources>

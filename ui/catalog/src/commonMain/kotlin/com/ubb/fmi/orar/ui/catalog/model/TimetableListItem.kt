@@ -31,6 +31,7 @@ sealed interface TimetableListItem {
         val participant: String,
         val caption: String,
         val details: String,
-        val isVisible: Boolean
+        val isVisible: Boolean,
+        val isPersonal: Boolean
     ) : TimetableListItem
 }

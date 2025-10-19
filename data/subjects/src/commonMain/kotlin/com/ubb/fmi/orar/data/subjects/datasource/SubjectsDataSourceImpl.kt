@@ -152,6 +152,7 @@ class SubjectsDataSourceImpl(
             Event(
                 id = id,
                 configurationId = configurationId,
+                ownerId = subject.id,
                 day = Day.getById(dayCell.value),
                 frequency = frequency,
                 startHour = startHour,

@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.feature.settings.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.domain.usertimetable.usecase.AddPersonalEventUseCase
+import com.ubb.fmi.orar.domain.usertimetable.usecase.AddPersonalEventsUseCase
 import com.ubb.fmi.orar.feature.settings.viewmodel.model.AddPersonalEventUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
  */
 @Suppress("TooManyFunctions")
 class AddPersonalEventViewModel(
-    private val addPersonalEventUseCase: AddPersonalEventUseCase
+    private val addPersonalEventsUseCase: AddPersonalEventsUseCase
 ) : EventViewModel<AddPersonalEventUiState.AddPersonalEventUiEvent>() {
 
     private val _uiState = MutableStateFlow(AddPersonalEventUiState())
@@ -66,7 +66,7 @@ class AddPersonalEventViewModel(
 
     fun finish() {
         viewModelScope.launch {
-            addPersonalEventUseCase(
+            addPersonalEventsUseCase(
                 activity = uiState.value.activity,
                 location = uiState.value.location,
                 caption = uiState.value.caption,

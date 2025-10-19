@@ -26,7 +26,7 @@ interface EventDao {
      * Get timetable event entity [id]
      */
     @Query("SELECT * FROM events WHERE id LIKE :id ")
-    suspend fun getById(id: String): EventEntity
+    suspend fun getById(id: String): EventEntity?
 
     /**
      * Insert new timetable event [entity]

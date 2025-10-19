@@ -12,7 +12,7 @@ import com.ubb.fmi.orar.domain.extensions.PIPE
 import kotlinx.coroutines.flow.firstOrNull
 import okio.ByteString.Companion.encodeUtf8
 
-class AddPersonalEventUseCase(
+class AddPersonalEventsUseCase(
     private val timetablePreferences: TimetablePreferences,
     private val eventsDataSource: EventsDataSource,
 ) {
@@ -47,6 +47,7 @@ class AddPersonalEventUseCase(
             Event(
                 id = id,
                 configurationId = configurationId,
+                ownerId = Owner.User.id,
                 day = day,
                 frequency = frequency,
                 startHour = startHour,

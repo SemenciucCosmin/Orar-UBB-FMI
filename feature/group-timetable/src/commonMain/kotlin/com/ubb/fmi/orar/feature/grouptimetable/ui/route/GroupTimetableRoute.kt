@@ -5,10 +5,17 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.grouptimetable.ui.viewmodel.GroupTimetableViewModel
+import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableFrequencyTab
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
+import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
+import com.ubb.fmi.orar.ui.catalog.extensions.showToast
+import com.ubb.fmi.orar.ui.catalog.model.TimetableUiEvent
+import com.ubb.fmi.orar.ui.catalog.model.ToastLength
+import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_event_added
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -30,8 +37,9 @@ fun GroupTimetableRoute(
     navController: NavController,
     fieldId: String,
     studyLevelId: String,
-    groupId: String
+    groupId: String,
 ) {
+    val context = getContext()
     val viewModel: GroupTimetableViewModel = koinViewModel(
         parameters = { parametersOf(fieldId, studyLevelId, groupId) }
     )
@@ -41,6 +49,7 @@ fun GroupTimetableRoute(
     TimetableScreen(
         uiState = uiState,
         onRetryClick = viewModel::retry,
+        onAddItem = viewModel::addEvent,
         topBar = {
             if (!uiState.isLoading) {
                 TopBar(
@@ -61,4 +70,13 @@ fun GroupTimetableRoute(
             }
         }
     )
+
+    EventHandler(viewModel.events) { event ->
+        when (event) {
+            TimetableUiEvent.EVENT_ADOPTION_SUCCESSFUL -> {
+                viewModel.unregisterEvent(event)
+                showToast(context, stringResource(Res.string.lbl_event_added), ToastLength.SHORT)
+            }
+        }
+    }
 }
