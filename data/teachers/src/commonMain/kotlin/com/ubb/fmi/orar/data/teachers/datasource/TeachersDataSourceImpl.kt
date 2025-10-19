@@ -182,6 +182,7 @@ class TeachersDataSourceImpl(
             Event(
                 id = id,
                 configurationId = configurationId,
+                ownerId = teacher.id,
                 day = Day.getById(dayCell.value),
                 frequency = frequency,
                 startHour = startHour,

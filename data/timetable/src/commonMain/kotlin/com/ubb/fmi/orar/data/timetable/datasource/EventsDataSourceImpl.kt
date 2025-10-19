@@ -32,6 +32,17 @@ class EventsDataSourceImpl(
     }
 
     /**
+     * Retrieve [Event] from cache
+     */
+    override suspend fun getEventFromCache(
+        configurationId: String,
+        eventId: String,
+    ): Event? {
+        val eventEntity = eventDao.getById(eventId)
+        return eventEntity?.let(::mapEntityToEvent)
+    }
+
+    /**
      * Saves new list of [Event] to cache
      */
     override suspend fun saveEventsInCache(
@@ -40,6 +51,14 @@ class EventsDataSourceImpl(
     ) {
         val eventEntities = events.map { mapEventToEntity(ownerId, it) }
         eventDao.insertAll(eventEntities)
+    }
+
+    override suspend fun saveEventInCache(
+        ownerId: String,
+        event: Event,
+    ) {
+        val entity = mapEventToEntity(ownerId, event)
+        eventDao.insert(entity)
     }
 
     /**
@@ -58,7 +77,7 @@ class EventsDataSourceImpl(
      */
     override suspend fun changeEventVisibility(eventId: String) {
         logger.d(TAG, "changeTimetableClassVisibility for eventId: $eventId")
-        val eventEntity = eventDao.getById(eventId)
+        val eventEntity = eventDao.getById(eventId) ?: return
         val newEventEntity = eventEntity.copy(isVisible = !eventEntity.isVisible)
         eventDao.insert(newEventEntity)
     }
@@ -113,6 +132,7 @@ class EventsDataSourceImpl(
         return Event(
             id = entity.id,
             configurationId = entity.configurationId,
+            ownerId = entity.ownerId,
             day = Day.getById(entity.dayId),
             frequency = Frequency.getById(entity.frequencyId),
             startHour = entity.startHour,

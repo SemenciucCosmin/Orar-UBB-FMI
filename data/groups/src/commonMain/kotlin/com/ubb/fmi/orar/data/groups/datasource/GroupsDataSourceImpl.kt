@@ -177,6 +177,7 @@ class GroupsDataSourceImpl(
             Event(
                 id = id,
                 configurationId = configurationId,
+                ownerId = group.id,
                 day = Day.getById(dayCell.value),
                 frequency = frequency,
                 startHour = startHour,

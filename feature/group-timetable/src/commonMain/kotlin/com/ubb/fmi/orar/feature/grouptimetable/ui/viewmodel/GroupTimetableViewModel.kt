@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.feature.grouptimetable.ui.viewmodel
 
 import Logger
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
 import com.ubb.fmi.orar.data.network.model.isEmpty
@@ -10,8 +9,11 @@ import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
+import com.ubb.fmi.orar.domain.usertimetable.usecase.AdoptEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
+import com.ubb.fmi.orar.ui.catalog.model.TimetableUiEvent
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -37,8 +39,9 @@ class GroupTimetableViewModel(
     private val groupId: String,
     private val groupsRepository: GroupsRepository,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
+    private val adoptEventUseCase: AdoptEventUseCase,
     private val logger: Logger,
-) : ViewModel() {
+) : EventViewModel<TimetableUiEvent>() {
 
     /**
      * Mutable state flow representing the UI state of the timetable.
@@ -126,6 +129,16 @@ class GroupTimetableViewModel(
     fun retry() {
         logger.d(TAG, "retry")
         loadTimetable()
+    }
+
+    /**
+     * Add new event to user timetable
+     */
+    fun addEvent(eventId: String) {
+        viewModelScope.launch {
+            adoptEventUseCase(eventId)
+            registerEvent(TimetableUiEvent.EVENT_ADOPTION_SUCCESSFUL)
+        }
     }
 
     companion object {

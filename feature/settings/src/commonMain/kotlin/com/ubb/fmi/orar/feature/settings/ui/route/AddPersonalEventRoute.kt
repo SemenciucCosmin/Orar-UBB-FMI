@@ -52,6 +52,7 @@ fun AddPersonalEventRoute(navController: NavController) {
     EventHandler(viewModel.events) { event ->
         when (event) {
             AddPersonalEventUiState.AddPersonalEventUiEvent.SUCCESS -> {
+                viewModel.unregisterEvent(event)
                 showToast(context, stringResource(Res.string.lbl_event_added), ToastLength.SHORT)
                 navController.navigateUp()
             }

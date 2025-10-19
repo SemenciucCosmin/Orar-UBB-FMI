@@ -17,11 +17,27 @@ interface EventsDataSource {
     ): Flow<List<Event>>
 
     /**
+     * Retrieve [Event] from cache
+     */
+    suspend fun getEventFromCache(
+        configurationId: String,
+        eventId: String,
+    ): Event?
+
+    /**
      * Saves new list of [Event] to cache
      */
     suspend fun saveEventsInCache(
         ownerId: String,
         events: List<Event>
+    )
+
+    /**
+     * Saves new [Event] to cache
+     */
+    suspend fun saveEventInCache(
+        ownerId: String,
+        event: Event
     )
 
     /**

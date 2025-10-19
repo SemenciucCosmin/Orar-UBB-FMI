@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.ui.catalog.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COMMA
@@ -12,6 +13,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlin.String
+import kotlin.comparisons.compareBy
 import kotlin.time.ExperimentalTime
 
 /**
@@ -48,7 +50,11 @@ data class TimetableUiState(
             get() {
                 val filteredEvents = events.filter { event ->
                     event.frequency.id in listOf(Frequency.BOTH.id, selectedFrequency.id)
-                }
+                }.sortedWith(
+                    compareBy<Event> { it.day.orderIndex }
+                        .thenBy { it.startHour }
+                        .thenBy { it.endHour }
+                )
 
                 val groupedEvents = filteredEvents.groupBy { it.day }.mapKeys { (day, _) ->
                     TimetableListItem.Divider(day)
@@ -70,7 +76,8 @@ data class TimetableUiState(
                                     participant = event.participant,
                                     caption = event.caption,
                                     details = event.details,
-                                    isVisible = event.isVisible
+                                    isVisible = event.isVisible,
+                                    isPersonal = event.ownerId == Owner.User.id
                                 )
                             }
                         }
@@ -108,7 +115,8 @@ data class TimetableUiState(
                                     participant = joinedParticipantName,
                                     caption = event.caption,
                                     details = event.details,
-                                    isVisible = event.isVisible
+                                    isVisible = event.isVisible,
+                                    isPersonal = event.ownerId == Owner.User.id
                                 )
                             }
                         }
