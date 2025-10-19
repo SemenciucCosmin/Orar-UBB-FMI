@@ -2,7 +2,6 @@ package com.ubb.fmi.orar.domain.usertimetable.model
 
 /**
  * Represents the teaching week
- * @property id The unique identifier for the week.
  */
 enum class Week(val id: Int) {
     EVEN(id = 0),

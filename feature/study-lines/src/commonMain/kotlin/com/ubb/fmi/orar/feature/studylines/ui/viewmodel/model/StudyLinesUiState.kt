@@ -1,6 +1,5 @@
 package com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model
 
-import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus

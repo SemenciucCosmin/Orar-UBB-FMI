@@ -6,142 +6,57 @@ import com.ubb.fmi.orar.data.database.model.SubjectEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.SubjectsApi
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
-import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Owner
-import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.collections.map
 
 /**
  * Data source for managing subject related information
  */
 class SubjectsDataSourceImpl(
-    private val eventsDataSource: EventsDataSource,
-    private val roomsDataSource: RoomsDataSource,
+    private val roomsRepository: RoomsRepository,
     private val subjectsApi: SubjectsApi,
     private val subjectDao: SubjectDao,
     private val logger: Logger,
 ) : SubjectsDataSource {
 
     /**
-     * Retrieve list of [Owner.Subject] objects from cache or API
-     * by [year] and [semesterId]
+     * Retrieves [Flow] of subjects from database
      */
-    override suspend fun getSubjects(
+    override fun getSubjectsFromCache(
         year: Int,
         semesterId: String,
-    ): Resource<List<Owner.Subject>> {
-        logger.d(TAG, "getSubjects for year: $year, semester: $semesterId")
-
+    ): Flow<List<Owner.Subject>> {
         val configurationId = year.toString() + semesterId
-        val cachedSubjects = getSubjectsFromCache(configurationId)
-
-        return when {
-            cachedSubjects.isNotEmpty() -> {
-                val sortedSubjects = sortSubjects(cachedSubjects)
-                logger.d(TAG, "getSubjects from cache: $sortedSubjects")
-                Resource(sortedSubjects, Status.Success)
-            }
-
-            else -> {
-                val subjectsResource = getSubjectsFromApi(year, semesterId)
-                subjectsResource.payload?.forEach { saveSubjectInCache(it) }
-
-                val sortedSubjects = subjectsResource.payload?.let(::sortSubjects)
-                logger.d(TAG, "getSubjects from API: $sortedSubjects, ${subjectsResource.status}")
-
-                Resource(sortedSubjects, subjectsResource.status)
-            }
+        return subjectDao.getAllAsFlow(configurationId).map { entities ->
+            entities.map(::mapEntityToSubject)
         }
     }
 
     /**
-     * Retrieve timetable of [Owner.Subject] for specific subject from cache or
-     * API by [year], [semesterId] and [subjectId]
+     * Saves [subjects] in database
      */
-    override suspend fun getTimetable(
-        year: Int,
-        semesterId: String,
-        subjectId: String,
-    ): Resource<Timetable<Owner.Subject>> {
-        logger.d(TAG, "getTimetable for year: $year, semester: $semesterId, subject: $subjectId")
-
-        val configurationId = year.toString() + semesterId
-        val resource = getSubjects(year, semesterId)
-        val subject = resource.payload?.firstOrNull { it.id == subjectId }
-
-        logger.d(TAG, "getTimetable subject: $subject")
-        val cachedEvents = subject?.let {
-            eventsDataSource.getEventsFromCache(configurationId, it.id)
-        }
-
-        return when {
-            cachedEvents?.isNotEmpty() == true -> {
-                val sortedEvents = eventsDataSource.sortEvents(cachedEvents)
-                val timetable = Timetable(subject, sortedEvents)
-                logger.d(TAG, "getTimetable from cache: $timetable")
-
-                Resource(timetable, Status.Success)
-            }
-
-            else -> {
-                if (subject == null) return Resource(null, resource.status)
-                val timetableResource = getTimetableFromApi(year, semesterId, subject)
-                timetableResource.payload?.let {
-                    saveSubjectInCache(it.owner)
-                    eventsDataSource.saveEventsInCache(subject.id, it.events)
-                }
-
-                val timetable = timetableResource.payload?.let { timetable ->
-                    val sortedEvents = eventsDataSource.sortEvents(timetable.events)
-                    timetable.copy(events = sortedEvents)
-                }
-
-                logger.d(TAG, "getTimetable from API: $timetable ${timetableResource.status}")
-                Resource(timetable, timetableResource.status)
-            }
-        }
+    override suspend fun saveSubjectsInCache(subjects: List<Owner.Subject>) {
+        val entities = subjects.map(::mapSubjectToEntity)
+        subjectDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached subjects by [year] and [semesterId]
+     * Retrieves subjects from API
      */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate subjects for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        subjectDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [Owner.Subject] objects from cache by [configurationId]
-     */
-    private suspend fun getSubjectsFromCache(
-        configurationId: String,
-    ): List<Owner.Subject> {
-        val entities = subjectDao.getAll(configurationId)
-        return entities.map(::mapEntityToOwner)
-    }
-
-    /**
-     * Saves new subject [owner] to cache
-     */
-    private suspend fun saveSubjectInCache(owner: Owner.Subject) {
-        val entity = mapOwnerToEntity(owner)
-        subjectDao.insert(entity)
-    }
-
-    /**
-     * Retrieve list of [Owner.Subject] objects from API by [year] and [semesterId]
-     */
-    private suspend fun getSubjectsFromApi(
+    override suspend fun getSubjectsFromApi(
         year: Int,
         semesterId: String,
     ): Resource<List<Owner.Subject>> {
@@ -178,19 +93,18 @@ class SubjectsDataSourceImpl(
     }
 
     /**
-     * Retrieve timetable of [Owner.Subject] for specific subject from API
-     * by [year], [semesterId] and [subject]
+     * Retrieves subjects events from API
      */
     @Suppress("CyclomaticComplexMethod")
-    private suspend fun getTimetableFromApi(
+    override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
         subject: Owner.Subject,
-    ): Resource<Timetable<Owner.Subject>> {
+    ): Resource<List<Event>> {
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId")
 
         val configurationId = year.toString() + semesterId
-        val resource = subjectsApi.getTimetableHtml(year, semesterId, subject.id)
+        val resource = subjectsApi.getEventsHtml(year, semesterId, subject.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -224,7 +138,7 @@ class SubjectsDataSourceImpl(
                 teacherCell.value,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
-            val room = roomsDataSource.getRooms(year, semesterId).payload?.firstOrNull {
+            val room = roomsRepository.getRooms().firstOrNull()?.payload?.firstOrNull {
                 it.id == roomCell.id
             }
 
@@ -246,26 +160,27 @@ class SubjectsDataSourceImpl(
         }
 
         logger.d(TAG, "getTimetableFromApi events: $events")
-
-        return when {
-            events == null -> Resource(null, resource.status)
-            else -> Resource(Timetable(subject, events), Status.Success)
+        val status = when {
+            events?.isEmpty() == true -> Status.Empty
+            else -> resource.status
         }
+
+        return Resource(events, status)
     }
 
     /**
-     * Sorts subjects by name
+     * Invalidates all cached subjects
      */
-    private fun sortSubjects(
-        subjects: List<Owner.Subject>,
-    ): List<Owner.Subject> {
-        return subjects.sortedBy { it.name }
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate subjects for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        subjectDao.deleteAll(configurationId)
     }
 
     /**
      * Maps a [Owner.Subject] to a [SubjectEntity]
      */
-    private fun mapOwnerToEntity(owner: Owner.Subject): SubjectEntity {
+    private fun mapSubjectToEntity(owner: Owner.Subject): SubjectEntity {
         return SubjectEntity(
             id = owner.id,
             name = owner.name,
@@ -276,7 +191,7 @@ class SubjectsDataSourceImpl(
     /**
      * Maps a [SubjectEntity] to a [Owner.Subject]
      */
-    private fun mapEntityToOwner(entity: SubjectEntity): Owner.Subject {
+    private fun mapEntityToSubject(entity: SubjectEntity): Owner.Subject {
         return Owner.Subject(
             id = entity.id,
             name = entity.name,

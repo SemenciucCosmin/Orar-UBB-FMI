@@ -4,59 +4,47 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.ubb.fmi.orar.domain.timetable.model.Semester
+import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.form.ui.components.StudyLinesFormScreen
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.StudyLinesFormViewModel
-import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
+import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 /**
  * Composable route with study lines that are selectable for timetable configuration
- * @param navController: navigation controller for handling navigation actions
- * @param year: selected study year from onboarding form
- * @param semesterId: selected semester id from onboarding form
  */
 @Composable
-fun StudyLinesFormRoute(
-    navController: NavController,
-    year: Int,
-    semesterId: String,
-) {
-    val semester = Semester.getById(semesterId)
-    val viewModel = koinViewModel<StudyLinesFormViewModel>(
-        parameters = { parametersOf(year, semesterId) }
-    )
-
+fun StudyLinesFormRoute(navController: NavController) {
+    val viewModel = koinViewModel<StudyLinesFormViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val yearTitle = uiState.year?.let { "$it - ${it.inc()}" }
+    val semesterTitle = uiState.semester?.let { stringResource(it.labelRes) }
+    val title = when {
+        yearTitle != null && semesterTitle != null -> "$yearTitle, $semesterTitle"
+        else -> String.BLANK
+    }
 
     StudyLinesFormScreen(
-        title = "$year - ${year.inc()}, ${stringResource(semester.labelRes)}",
+        title = title,
         uiState = uiState,
         onStudyLineClick = viewModel::selectFieldId,
         onStudyLevelClick = viewModel::selectStudyLevel,
         onSelectFilter = viewModel::selectDegreeFilter,
         onRetryClick = viewModel::retry,
         onBack = navController::navigateUp,
-        onNextClick = {
-            val fieldId = uiState.selectedFieldId ?: return@StudyLinesFormScreen
-            val studyLevelId = uiState.selectedStudyLevelId ?: return@StudyLinesFormScreen
-            val studyLine = uiState.filteredGroupedStudyLines.flatten().firstOrNull {
-                it.fieldId == fieldId && it.level.id == studyLevelId
-            } ?: return@StudyLinesFormScreen
-
-            navController.navigate(
-                ConfigurationFormNavDestination.GroupsForm(
-                    year = year,
-                    semesterId = semesterId,
-                    fieldId = fieldId,
-                    studyLevelId = studyLevelId,
-                    studyLineDegreeId = studyLine.degree.id,
-                )
-            )
-        }
+        onNextClick = viewModel::finishSelection
     )
+
+    EventHandler(viewModel.events) { event ->
+        when (event) {
+            StudyLinesFormUiState.StudyLinesFormUiEvent.SELECTION_DONE -> {
+                viewModel.unregisterEvent(event)
+                navController.navigate(ConfigurationFormNavDestination.GroupsForm)
+            }
+        }
+    }
 }

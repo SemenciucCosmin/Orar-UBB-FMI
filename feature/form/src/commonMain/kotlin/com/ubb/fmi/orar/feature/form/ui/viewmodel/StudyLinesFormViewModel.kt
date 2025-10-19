@@ -1,50 +1,48 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.students.datasource.StudyLinesDataSource
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.studylines.repository.StudyLinesRepository
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
+import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.firstOrNull
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * ViewModel for managing the study lines form state in the application.
  * This ViewModel fetches study lines based on the provided year and semester ID,
  * and allows the user to select a field, study level, and degree filter.
- *
- * @param year The academic year for which study lines are being fetched.
- * @param semesterId The ID of the semester for which study lines are being fetched.
- * @param studyLinesDataSource The data source for fetching study lines.
- * @param timetablePreferences Preferences for managing timetable configurations.
  */
 class StudyLinesFormViewModel(
-    private val year: Int,
-    private val semesterId: String,
-    private val studyLinesDataSource: StudyLinesDataSource,
+    private val studyLinesRepository: StudyLinesRepository,
     private val timetablePreferences: TimetablePreferences,
     private val logger: Logger,
-) : ViewModel() {
+) : EventViewModel<StudyLinesFormUiState.StudyLinesFormUiEvent>() {
 
     /**
      * Mutable state flow that holds the UI state for the study lines form.
      * It is initialized with a default state and will be updated as data is fetched.
      */
-    private val _uiState = MutableStateFlow(StudyLinesFormUiState())
+    private val _uiState = MutableStateFlow(StudyLinesFormUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart { getStudyLines() }
         .stateIn(
@@ -62,37 +60,34 @@ class StudyLinesFormViewModel(
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
-        logger.d(TAG, "getStudyLines for year: $year, semester: $semesterId")
-
         val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val studyLinesResource = studyLinesDataSource.getStudyLines(
-            year = year,
-            semesterId = semesterId
-        )
 
-        logger.d(TAG, "getStudyLines studyLinesResource: $studyLinesResource")
+        studyLinesRepository.getStudyLines().collectLatest { resource ->
+            val studyLevel = configuration?.studyLevelId?.let(StudyLevel::getById)
+            val lineId = studyLevel?.let { configuration.fieldId + studyLevel.notation }
+            val selectedStudyLine = resource.payload?.firstOrNull { it.id == lineId }
+            val groupedStudyLines = resource.payload?.groupBy { studyLine ->
+                studyLine.fieldId
+            }?.values?.toList()?.map { studyLines ->
+                studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
+            }?.toImmutableList() ?: persistentListOf()
 
-        val studyLevel = configuration?.studyLevelId?.let(StudyLevel::getById)
-        val lineId = studyLevel?.let { configuration.fieldId + studyLevel.notation }
-        val selectedStudyLine = studyLinesResource.payload?.firstOrNull { it.id == lineId }
-        val groupedStudyLines = studyLinesResource.payload?.groupBy { studyLine ->
-            studyLine.fieldId
-        }?.values?.toList()?.map { studyLines ->
-            studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
-        }?.toImmutableList() ?: persistentListOf()
+            logger.d(TAG, "getStudyLines resource: $resource")
+            logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")
+            logger.d(TAG, "getStudyLines selectedStudyLine: $selectedStudyLine")
 
-        logger.d(TAG, "getStudyLines groupedStudyLines: $groupedStudyLines")
-        logger.d(TAG, "getStudyLines selectedStudyLine: $selectedStudyLine")
-
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                errorStatus = studyLinesResource.status.toErrorStatus(),
-                groupedStudyLines = groupedStudyLines,
-                selectedFilterId = selectedStudyLine?.degree?.id ?: DegreeFilter.ALL.id,
-                selectedFieldId = selectedStudyLine?.fieldId,
-                selectedStudyLevelId = selectedStudyLine?.level?.id,
-            )
+            _uiState.update {
+                it.copy(
+                    year = configuration?.year,
+                    semester = configuration?.semesterId?.let(Semester::getById),
+                    isLoading = resource.status.isLoading(),
+                    errorStatus = resource.status.toErrorStatus(),
+                    groupedStudyLines = groupedStudyLines,
+                    selectedFilterId = selectedStudyLine?.degree?.id ?: DegreeFilter.ALL.id,
+                    selectedFieldId = selectedStudyLine?.fieldId,
+                    selectedStudyLevelId = selectedStudyLine?.level?.id,
+                )
+            }
         }
     }
 
@@ -134,6 +129,25 @@ class StudyLinesFormViewModel(
                 selectedFieldId = null,
                 selectedStudyLevelId = null,
             )
+        }
+    }
+
+    /**
+     * Saves selection in preferences and triggers next configuration step
+     */
+    fun finishSelection() {
+        viewModelScope.launch {
+            val fieldId = uiState.value.selectedFieldId ?: return@launch
+            val studyLevelId = uiState.value.selectedStudyLevelId ?: return@launch
+            val studyLine = uiState.value.filteredGroupedStudyLines.flatten().firstOrNull {
+                it.fieldId == fieldId && it.level.id == studyLevelId
+            } ?: return@launch
+
+            timetablePreferences.setFieldId(fieldId)
+            timetablePreferences.setStudyLevelId(studyLevelId)
+            timetablePreferences.setDegreeId(studyLine.degree.id)
+
+            registerEvent(StudyLinesFormUiState.StudyLinesFormUiEvent.SELECTION_DONE)
         }
     }
 

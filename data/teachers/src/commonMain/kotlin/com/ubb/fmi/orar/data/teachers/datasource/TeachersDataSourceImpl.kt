@@ -6,146 +6,61 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.TeachersApi
-import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
-import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
-import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.COLON
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.collections.map
 
 /**
  * Data source for managing teacher related information
  */
 @Suppress("CyclomaticComplexMethod")
 class TeachersDataSourceImpl(
-    private val eventsDataSource: EventsDataSource,
-    private val roomsDataSource: RoomsDataSource,
+    private val roomsRepository: RoomsRepository,
     private val teachersApi: TeachersApi,
     private val teacherDao: TeacherDao,
     private val logger: Logger,
 ) : TeachersDataSource {
 
     /**
-     * Retrieve list of [Owner.Teacher] objects from cache or API
-     * by [year] and [semesterId]
+     * Retrieves [Flow] of teachers from database
      */
-    override suspend fun getTeachers(
+    override fun getTeachersFromCache(
         year: Int,
         semesterId: String,
-    ): Resource<List<Owner.Teacher>> {
-        logger.d(TAG, "getTeachers for year: $year, semester: $semesterId")
-
+    ): Flow<List<Owner.Teacher>> {
         val configurationId = year.toString() + semesterId
-        val cachedTeachers = getTeachersFromCache(configurationId)
-
-        return when {
-            cachedTeachers.isNotEmpty() -> {
-                val sortedTeachers = sortTeachers(cachedTeachers)
-                logger.d(TAG, "getTeachers from cache: $sortedTeachers")
-                Resource(sortedTeachers, Status.Success)
-            }
-
-            else -> {
-                val teacherResource = getTeachersFromApi(year, semesterId)
-                teacherResource.payload?.forEach { saveTeacherInCache(it) }
-
-                val sortedTeachers = teacherResource.payload?.let(::sortTeachers)
-                logger.d(TAG, "getTeachers from API: $sortedTeachers, ${teacherResource.status}")
-
-                Resource(sortedTeachers, teacherResource.status)
-            }
+        return teacherDao.getAllAsFlow(configurationId).map { entities ->
+            entities.map(::mapEntityToTeacher)
         }
     }
 
     /**
-     * Retrieve timetable of [Owner.Teacher] for specific teacher from cache or
-     * API by [year], [semesterId] and [teacherId]
+     * Saves [teachers] in database
      */
-    override suspend fun getTimetable(
-        year: Int,
-        semesterId: String,
-        teacherId: String,
-    ): Resource<Timetable<Owner.Teacher>> {
-        logger.d(TAG, "getTimetable for year: $year, semester: $semesterId, teacher: $teacherId")
-
-        val configurationId = year.toString() + semesterId
-        val resource = getTeachers(year, semesterId)
-        val teacher = resource.payload?.firstOrNull { it.id == teacherId }
-
-        logger.d(TAG, "getTimetable teacher: $teacher")
-        val cachedEvents = teacher?.let {
-            eventsDataSource.getEventsFromCache(configurationId, it.id)
-        }
-
-        return when {
-            cachedEvents?.isNotEmpty() == true -> {
-                val sortedEvents = eventsDataSource.sortEvents(cachedEvents)
-                val timetable = Timetable(teacher, sortedEvents)
-                logger.d(TAG, "getTimetable from cache: $timetable")
-
-                Resource(timetable, Status.Success)
-            }
-
-            else -> {
-                if (teacher == null) return Resource(null, resource.status)
-                val timetableResource = getTimetableFromApi(year, semesterId, teacher)
-                timetableResource.payload?.let {
-                    saveTeacherInCache(it.owner)
-                    eventsDataSource.saveEventsInCache(teacher.id, it.events)
-                }
-
-                val timetable = timetableResource.payload?.let { timetable ->
-                    val sortedEvents = eventsDataSource.sortEvents(timetable.events)
-                    timetable.copy(events = sortedEvents)
-                }
-
-                logger.d(TAG, "getTimetable from API: $timetable ${timetableResource.status}")
-                Resource(timetable, timetableResource.status)
-            }
-        }
+    override suspend fun saveTeachersInCache(teachers: List<Owner.Teacher>) {
+        val entities = teachers.map(::mapTeacherToEntity)
+        teacherDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached teachers by [year] and [semesterId]
+     * Retrieves teacher from API
      */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate teachers for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        teacherDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [Owner.Teacher] objects from cache by [configurationId]
-     */
-    private suspend fun getTeachersFromCache(
-        configurationId: String,
-    ): List<Owner.Teacher> {
-        val entities = teacherDao.getAll(configurationId)
-        return entities.map(::mapEntityToTeacher)
-    }
-
-    /**
-     * Saves new [teacher] to cache
-     */
-    private suspend fun saveTeacherInCache(teacher: Owner.Teacher) {
-        val entity = mapTeacherToEntity(teacher)
-        teacherDao.insert(entity)
-    }
-
-    /**
-     * Retrieve list of [Owner.Teacher] objects from API by [year] and [semesterId]
-     */
-    private suspend fun getTeachersFromApi(
+    override suspend fun getTeachersFromApi(
         year: Int,
         semesterId: String,
     ): Resource<List<Owner.Teacher>> {
@@ -190,18 +105,17 @@ class TeachersDataSourceImpl(
     }
 
     /**
-     * Retrieve timetable of [Owner.Teacher] for specific teacher from API
-     * by [year], [semesterId] and [teacher]
+     * Retrieves teacher events from API
      */
-    private suspend fun getTimetableFromApi(
+    override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
         teacher: Owner.Teacher,
-    ): Resource<Timetable<Owner.Teacher>> {
+    ): Resource<List<Event>> {
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId")
 
         val configurationId = year.toString() + semesterId
-        val resource = teachersApi.getTimetableHtml(year, semesterId, teacher.id)
+        val resource = teachersApi.getEventsHtml(year, semesterId, teacher.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -254,7 +168,7 @@ class TeachersDataSourceImpl(
                 subjectCell.value,
             ).joinToString(String.PIPE).encodeUtf8().sha256().hex()
 
-            val room = roomsDataSource.getRooms(year, semesterId).payload?.firstOrNull {
+            val room = roomsRepository.getRooms().firstOrNull()?.payload?.firstOrNull {
                 it.id == roomCell.id
             }
 
@@ -277,21 +191,21 @@ class TeachersDataSourceImpl(
 
         logger.d(TAG, "getTimetableFromApi events: $events")
 
-        return when {
-            events == null -> Resource(null, resource.status)
-            else -> Resource(Timetable(teacher, events), Status.Success)
+        val status = when {
+            events?.isEmpty() == true -> Status.Empty
+            else -> resource.status
         }
+
+        return Resource(events, status)
     }
 
     /**
-     * Sorts teachers by order index and name
+     * Invalidates all cached teachers
      */
-    private fun sortTeachers(
-        owners: List<Owner.Teacher>,
-    ): List<Owner.Teacher> {
-        return owners.sortedWith(
-            compareBy<Owner.Teacher> { it.title.orderIndex }.thenBy { it.name }
-        )
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate teachers for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        teacherDao.deleteAll(configurationId)
     }
 
     /**

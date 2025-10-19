@@ -5,11 +5,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ubb.fmi.orar.data.database.model.EventEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data Access Object (DAO) for managing timetable event entities in the database.
- * This interface provides methods to interact with the 'events' table,
- * including retrieving, inserting, and deleting timetable event records.
  */
 @Dao
 interface EventDao {
@@ -18,10 +17,10 @@ interface EventDao {
      * Get all timetable event entities by [configurationId] and [ownerId]
      */
     @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
-    suspend fun getAllByConfigurationAndOwner(
+    fun getAllAsFlowByConfigurationAndOwner(
         configurationId: String,
         ownerId: String,
-    ): List<EventEntity>
+    ): Flow<List<EventEntity>>
 
     /**
      * Get timetable event entity [id]
@@ -34,6 +33,12 @@ interface EventDao {
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: EventEntity)
+
+    /**
+     * Insert new timetable event [entities]
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entities: List<EventEntity>)
 
     /**
      * Delete all timetable event entities by [configurationId]

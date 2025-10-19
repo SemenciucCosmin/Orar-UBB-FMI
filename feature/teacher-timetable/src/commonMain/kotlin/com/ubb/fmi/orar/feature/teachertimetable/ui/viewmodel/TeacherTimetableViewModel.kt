@@ -3,14 +3,13 @@ package com.ubb.fmi.orar.feature.teachertimetable.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -30,15 +28,10 @@ import kotlin.time.Duration.Companion.seconds
  *
  * This ViewModel fetches the timetable data for a specific teacher and manages the UI state
  * related to the timetable, including loading states, error handling, and frequency selection.
- *
- * @property teacherId The ID of the teacher whose timetable is being managed.
- * @property teachersDataSource The data source for fetching teacher-related data.
- * @property timetablePreferences Preferences related to the timetable configuration.
  */
 class TeacherTimetableViewModel(
     private val teacherId: String,
-    private val teachersDataSource: TeachersDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val teacherRepository: TeacherRepository,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val logger: Logger,
 ) : ViewModel() {
@@ -47,7 +40,7 @@ class TeacherTimetableViewModel(
      * Mutable state flow representing the UI state of the timetable.
      * It is updated with loading states, error states, and fetched classes.
      */
-    private val _uiState = MutableStateFlow(TimetableUiState())
+    private val _uiState = MutableStateFlow(TimetableUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart {
             getWeek()
@@ -69,38 +62,20 @@ class TeacherTimetableViewModel(
             logger.d(TAG, "loadTimetable teacher: $teacherId")
             _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
-            val configuration = timetablePreferences.getConfiguration().firstOrNull()
-            logger.d(TAG, "loadTimetable configuration: $configuration")
+            teacherRepository.getTimetable(teacherId).collectLatest { resource ->
+                logger.d(TAG, "loadTimetable resource: $resource")
+                val events = resource.payload?.events?.map {
+                    it.copy(isVisible = true)
+                }?.toImmutableList() ?: persistentListOf()
 
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@launch
-            }
-
-            val timetableResource = teachersDataSource.getTimetable(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-                teacherId = teacherId,
-            )
-
-            val teachersResource = teachersDataSource.getTeachers(
-                year = configuration.year,
-                semesterId = configuration.semesterId,
-            )
-
-            logger.d(TAG, "loadTimetable resource: $timetableResource")
-            val teacher = teachersResource.payload?.firstOrNull { it.id == teacherId }
-            val events = timetableResource.payload?.events?.map {
-                it.copy(isVisible = true)
-            }?.toImmutableList() ?: persistentListOf()
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    errorStatus = timetableResource.status.toErrorStatus(),
-                    events = events,
-                    title = teacher?.name ?: String.BLANK
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = resource.status.isLoading(),
+                        errorStatus = resource.status.toErrorStatus(),
+                        events = events,
+                        title = resource.payload?.owner?.name ?: String.BLANK
+                    )
+                }
             }
         }
     }

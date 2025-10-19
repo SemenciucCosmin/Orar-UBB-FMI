@@ -6,139 +6,52 @@ import com.ubb.fmi.orar.data.database.model.RoomEntity
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.service.RoomsApi
-import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Owner
-import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import okio.ByteString.Companion.encodeUtf8
 
 /**
  * Data source for managing room related information
  */
 class RoomsDataSourceImpl(
-    private val eventsDataSource: EventsDataSource,
     private val roomsApi: RoomsApi,
     private val roomDao: RoomDao,
     private val logger: Logger,
 ) : RoomsDataSource {
 
     /**
-     * Retrieve list of [Owner.Room] objects from cache or API
-     * by [year] and [semesterId]
+     * Retrieves [Flow] of rooms from database
      */
-    override suspend fun getRooms(
+    override fun getRoomsFromCache(
         year: Int,
         semesterId: String,
-    ): Resource<List<Owner.Room>> {
-        logger.d(TAG, "get rooms for year: $year, semester: $semesterId")
-
+    ): Flow<List<Owner.Room>> {
         val configurationId = year.toString() + semesterId
-        val cachedRooms = getRoomsFromCache(configurationId)
-
-        return when {
-            cachedRooms.isNotEmpty() -> {
-                val sortedRooms = sortRooms(cachedRooms)
-                logger.d(TAG, "get rooms from cache: $sortedRooms")
-                Resource(sortedRooms, Status.Success)
-            }
-
-            else -> {
-                val roomsResource = getRoomsFromApi(year, semesterId)
-                roomsResource.payload?.forEach { saveRoomInCache(it) }
-
-                val sortedRooms = roomsResource.payload?.let(::sortRooms)
-                logger.d(TAG, "get rooms from API: $sortedRooms, ${roomsResource.status}")
-
-                Resource(sortedRooms, roomsResource.status)
-            }
+        return roomDao.getAllAsFlow(configurationId).map { entities ->
+            entities.map(::mapEntityToRoom)
         }
     }
 
     /**
-     * Retrieve timetable of [Owner.Room] for specific room from cache or
-     * API by [year], [semesterId] and [roomId]
+     * Saves [rooms] in database
      */
-    override suspend fun getTimetable(
-        year: Int,
-        semesterId: String,
-        roomId: String,
-    ): Resource<Timetable<Owner.Room>> {
-        logger.d(TAG, "get room timetable for year: $year, semester: $semesterId, room: $roomId")
-
-        val configurationId = year.toString() + semesterId
-        val resource = getRooms(year, semesterId)
-        val room = resource.payload?.firstOrNull { it.id == roomId }
-
-        logger.d(TAG, "get room timetable for: $room")
-        val cachedEvents = room?.let {
-            eventsDataSource.getEventsFromCache(configurationId, it.id)
-        }
-
-        return when {
-            cachedEvents?.isNotEmpty() == true -> {
-                val sortedEvents = eventsDataSource.sortEvents(cachedEvents)
-                val timetable = Timetable(owner = room, events = sortedEvents)
-                logger.d(TAG, "get room timetable from cache: $timetable")
-
-                Resource(timetable, Status.Success)
-            }
-
-            else -> {
-                if (room == null) return Resource(null, resource.status)
-                val timetableResource = getTimetableFromApi(year, semesterId, room)
-                timetableResource.payload?.let {
-                    saveRoomInCache(it.owner)
-                    eventsDataSource.saveEventsInCache(room.id, it.events)
-                }
-
-                val timetable = timetableResource.payload?.let { timetable ->
-                    val sortedEvents = eventsDataSource.sortEvents(timetable.events)
-                    timetable.copy(events = sortedEvents)
-                }
-
-                logger.d(TAG, "get room timetable from API: $timetable ${timetableResource.status}")
-                Resource(timetable, timetableResource.status)
-            }
-        }
+    override suspend fun saveRoomsInCache(rooms: List<Owner.Room>) {
+        val entities = rooms.map(::mapRoomToEntity)
+        roomDao.insertAll(entities)
     }
 
     /**
-     * Invalidates all cached rooms by [year] and [semesterId]
+     * Retrieves rooms from API
      */
-    override suspend fun invalidate(year: Int, semesterId: String) {
-        logger.d(TAG, "invalidate rooms for year: $year, semester: $semesterId")
-        val configurationId = year.toString() + semesterId
-        roomDao.deleteAll(configurationId)
-    }
-
-    /**
-     * Retrieve list of [Owner.Room] objects from cache by [configurationId]
-     */
-    private suspend fun getRoomsFromCache(
-        configurationId: String,
-    ): List<Owner.Room> {
-        val entities = roomDao.getAll(configurationId)
-        return entities.map(::mapEntityToRoom)
-    }
-
-    /**
-     * Saves new room [Owner.Room] to cache
-     */
-    private suspend fun saveRoomInCache(room: Owner.Room) {
-        val entity = mapRoomToEntity(room)
-        roomDao.insert(entity)
-    }
-
-    /**
-     * Retrieve list of [Owner.Room] objects from API by [year] and [semesterId]
-     */
-    private suspend fun getRoomsFromApi(
+    override suspend fun getRoomsFromApi(
         year: Int,
         semesterId: String,
     ): Resource<List<Owner.Room>> {
@@ -176,19 +89,18 @@ class RoomsDataSourceImpl(
     }
 
     /**
-     * Retrieve timetable of [Owner.Room] for specific room from API
-     * by [year], [semesterId] and [room]
+     * Retrieves room events from API
      */
     @Suppress("CyclomaticComplexMethod")
-    private suspend fun getTimetableFromApi(
+    override suspend fun getEventsFromApi(
         year: Int,
         semesterId: String,
         room: Owner.Room,
-    ): Resource<Timetable<Owner.Room>> {
+    ): Resource<List<Event>> {
         logger.d(TAG, "getTimetableFromApi for year: $year, semester: $semesterId, room: $room")
 
         val configurationId = year.toString() + semesterId
-        val resource = roomsApi.getTimetableHtml(year, semesterId, room.id)
+        val resource = roomsApi.getEventsHtml(year, semesterId, room.id)
 
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
@@ -240,20 +152,21 @@ class RoomsDataSourceImpl(
         }
 
         logger.d(TAG, "getTimetableFromApi events: $events")
-
-        return when {
-            events == null -> Resource(null, resource.status)
-            else -> Resource(Timetable(room, events), Status.Success)
+        val status = when {
+            events?.isEmpty() == true -> Status.Empty
+            else -> resource.status
         }
+
+        return Resource(events, status)
     }
 
     /**
-     * Sorts rooms by name
+     * Invalidates all cached rooms
      */
-    private fun sortRooms(
-        rooms: List<Owner.Room>,
-    ): List<Owner.Room> {
-        return rooms.sortedBy { it.name }
+    override suspend fun invalidate(year: Int, semesterId: String) {
+        logger.d(TAG, "invalidate rooms for year: $year, semester: $semesterId")
+        val configurationId = year.toString() + semesterId
+        roomDao.deleteAll(configurationId)
     }
 
     /**

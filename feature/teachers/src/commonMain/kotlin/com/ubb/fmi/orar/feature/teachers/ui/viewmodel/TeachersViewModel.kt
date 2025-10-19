@@ -3,11 +3,10 @@ package com.ubb.fmi.orar.feature.teachers.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.teachers.datasource.TeachersDataSource
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -21,12 +20,9 @@ import kotlinx.coroutines.launch
  * ViewModel for managing the state of the teachers screen.
  * It interacts with the TeachersDataSource to fetch teacher data and updates the UI state accordingly.
  * It also handles user interactions such as selecting a teacher title filter and retrying data fetches.
- * @property teachersDataSource The data source for fetching teacher information.
- * @property timetablePreferences The preferences for the timetable configuration.
  */
 class TeachersViewModel(
-    private val teachersDataSource: TeachersDataSource,
-    private val timetablePreferences: TimetablePreferences,
+    private val teacherRepository: TeacherRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -40,7 +36,7 @@ class TeachersViewModel(
      * A MutableStateFlow that holds the current UI state of the teachers screen.
      * It is updated with loading, error, and teacher data as it becomes available.
      */
-    private val _uiState = MutableStateFlow(TeachersUiState())
+    private val _uiState = MutableStateFlow(TeachersUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
 
     /**
@@ -58,22 +54,11 @@ class TeachersViewModel(
      */
     private fun getTeachers() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
-        timetablePreferences.getConfiguration().collectLatest { configuration ->
-            logger.d(TAG, "getTeachers configuration: $configuration")
-            if (configuration == null) {
-                _uiState.update { it.copy(isLoading = false, errorStatus = ErrorStatus.NOT_FOUND) }
-                return@collectLatest
-            }
-
-            val resource = teachersDataSource.getTeachers(
-                year = configuration.year,
-                semesterId = configuration.semesterId
-            )
-
+        teacherRepository.getTeachers().collectLatest { resource ->
             logger.d(TAG, "getTeachers resource: $resource")
             _uiState.update {
                 it.copy(
-                    isLoading = false,
+                    isLoading = resource.status.isLoading(),
                     errorStatus = resource.status.toErrorStatus(),
                     teachers = resource.payload?.toImmutableList() ?: persistentListOf(),
                 )

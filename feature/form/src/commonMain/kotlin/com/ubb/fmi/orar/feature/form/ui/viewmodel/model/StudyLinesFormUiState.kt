@@ -1,8 +1,10 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
+import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -20,9 +22,15 @@ data class StudyLinesFormUiState(
     val selectedFilterId: String = DegreeFilter.ALL.id,
     val selectedFieldId: String? = null,
     val selectedStudyLevelId: String? = null,
+    val year: Int? = null,
+    val semester: Semester? = null,
     val isLoading: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
+    enum class StudyLinesFormUiEvent : UiEvent {
+        SELECTION_DONE
+    }
+
     companion object {
         /**
          * Filtered grouped study lines by selected degree filter

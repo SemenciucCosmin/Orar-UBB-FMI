@@ -2,11 +2,10 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 
 import Logger
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.students.datasource.GroupsDataSource
+import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
+import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.timetable.usecase.SetTimetableConfigurationUseCase
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
@@ -16,6 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -29,24 +29,10 @@ import kotlin.time.Duration.Companion.seconds
  * This ViewModel fetches groups based on the provided parameters and allows the user to
  * select a group. It also handles the saving of the selected group configuration
  * and provides a way to retry fetching groups in case of an error.
- * @param year: The academic year for which groups are being fetched.
- * @param semesterId: The ID of the semester for which groups are being fetched.
- * @param fieldId: The ID of the field of study.
- * @param studyLevelId: The ID of the study level (e.g., Bachelor, Master).
- * @param degreeId: The ID of the degree.
- * @param groupsDataSource: The data source for fetching groups.
- * @param timetablePreferences: Preferences for the timetable configuration.
- * @param setTimetableConfigurationUseCase: Use case for setting the timetable configuration
  */
 class GroupsFormViewModel(
-    private val year: Int,
-    private val semesterId: String,
-    private val fieldId: String,
-    private val studyLevelId: String,
-    private val degreeId: String,
-    private val groupsDataSource: GroupsDataSource,
+    private val groupsRepository: GroupsRepository,
     private val timetablePreferences: TimetablePreferences,
-    private val setTimetableConfigurationUseCase: SetTimetableConfigurationUseCase,
     private val logger: Logger,
 ) : EventViewModel<GroupsFromUiState.GroupsFromUiEvent>() {
 
@@ -54,7 +40,7 @@ class GroupsFormViewModel(
      * Mutable state flow that holds the UI state for the groups selection.
      * It is initialized with a default state and will be updated as data is fetched.
      */
-    private val _uiState = MutableStateFlow(GroupsFromUiState())
+    private val _uiState = MutableStateFlow(GroupsFromUiState(isLoading = true))
     val uiState = _uiState.asStateFlow()
         .onStart { getGroups() }
         .stateIn(
@@ -71,30 +57,25 @@ class GroupsFormViewModel(
     private fun getGroups() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 
-        val studyLevel = StudyLevel.getById(studyLevelId)
-        val lineId = fieldId + studyLevel.notation
+        val configuration = timetablePreferences.getConfiguration().firstOrNull() ?: return@launch
+        val studyLevel = configuration.studyLevelId?.let(StudyLevel::getById) ?: return@launch
+        val fieldId = configuration.fieldId ?: return@launch
+        val studyLineId = fieldId + studyLevel.notation
 
-        logger.d(TAG, "getGroups for year: $year, semester: $semesterId")
-
-        val configuration = timetablePreferences.getConfiguration().firstOrNull()
-        val groupsResource = groupsDataSource.getGroups(
-            year = year,
-            semesterId = semesterId,
-            studyLineId = lineId
-        )
-
-        logger.d(TAG, "getGroups groups resource: $groupsResource")
-        _uiState.update {
-            it.copy(
-                isLoading = false,
-                errorStatus = groupsResource.status.toErrorStatus(),
-                groups = groupsResource.payload?.toImmutableList() ?: persistentListOf(),
-                title = groupsResource.payload?.firstOrNull()?.studyLine?.name,
-                studyLevel = studyLevel,
-                selectedGroupId = groupsResource.payload?.firstOrNull { group ->
-                    group.id == configuration?.groupId
-                }?.id
-            )
+        groupsRepository.getGroups(studyLineId).collectLatest { resource ->
+            logger.d(TAG, "getGroups groups resource: $resource")
+            _uiState.update {
+                it.copy(
+                    isLoading = resource.status.isLoading(),
+                    errorStatus = resource.status.toErrorStatus(),
+                    groups = resource.payload?.toImmutableList() ?: persistentListOf(),
+                    title = resource.payload?.firstOrNull()?.studyLine?.name,
+                    studyLevel = studyLevel,
+                    selectedGroupId = resource.payload?.firstOrNull { group ->
+                        group.id == configuration.groupId
+                    }?.id
+                )
+            }
         }
     }
 
@@ -126,17 +107,7 @@ class GroupsFormViewModel(
         viewModelScope.launch {
             _uiState.value.selectedGroupId?.let { groupId ->
                 logger.d(TAG, "finishSelection group: $groupId")
-                setTimetableConfigurationUseCase(
-                    year = year,
-                    semesterId = semesterId,
-                    userTypeId = UserType.STUDENT.id,
-                    fieldId = fieldId,
-                    studyLevelId = studyLevelId,
-                    studyLineDegreeId = degreeId,
-                    groupId = groupId,
-                    teacherId = null
-                )
-
+                timetablePreferences.setGroupId(groupId)
                 registerEvent(GroupsFromUiState.GroupsFromUiEvent.CONFIGURATION_DONE)
             }
         }
