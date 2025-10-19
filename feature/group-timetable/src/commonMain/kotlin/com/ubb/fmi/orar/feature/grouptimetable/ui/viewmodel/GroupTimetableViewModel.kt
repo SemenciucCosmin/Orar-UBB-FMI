@@ -4,6 +4,7 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
+import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
@@ -80,6 +81,7 @@ class GroupTimetableViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = resource.status.isLoading(),
+                        isEmpty = resource.status.isEmpty(),
                         errorStatus = resource.status.toErrorStatus(),
                         events = events,
                         title = resource.payload?.owner?.studyLine?.name ?: String.BLANK,

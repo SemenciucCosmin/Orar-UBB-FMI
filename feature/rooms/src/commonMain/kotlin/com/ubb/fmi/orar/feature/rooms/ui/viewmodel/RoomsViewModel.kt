@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.feature.rooms.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
@@ -74,6 +75,7 @@ class RoomsViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = resource.status.isLoading(),
+                    isEmpty = resource.status.isEmpty(),
                     errorStatus = resource.status.toErrorStatus(),
                     rooms = resource.payload?.toImmutableList() ?: persistentListOf()
                 )

@@ -2,7 +2,6 @@ package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,7 +35,7 @@ fun TimetableFrequencyTab(
         FilterChip(
             selected = selectedFrequency == Frequency.WEEK_1,
             onClick = { onFrequencyClick(Frequency.WEEK_1) },
-            shape = CircleShape,
+            shape = MaterialTheme.shapes.medium,
             label = {
                 Text(
                     text = stringResource(Frequency.WEEK_1.labelRes),
@@ -48,7 +47,7 @@ fun TimetableFrequencyTab(
         FilterChip(
             selected = selectedFrequency == Frequency.WEEK_2,
             onClick = { onFrequencyClick(Frequency.WEEK_2) },
-            shape = CircleShape,
+            shape = MaterialTheme.shapes.medium,
             label = {
                 Text(
                     text = stringResource(Frequency.WEEK_2.labelRes),

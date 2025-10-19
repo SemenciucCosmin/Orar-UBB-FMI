@@ -11,7 +11,9 @@ import androidx.room.Entity
  * @param [dayId]: day on which the event takes place
  * @param [frequencyId]: frequency at which the event takes place (Week1, Week2 or both)
  * @param [startHour]: hour at which the event starts
+ * @param [startMinute]: minute at which the event starts
  * @param [endHour]: hour at which the event ends
+ * @param [endMinute]: hour at which the event ends
  * @param [location]: location in which the events takes place
  * @param [activity]: activity during event
  * @param [participant]: participant at event
@@ -30,7 +32,9 @@ data class EventEntity(
     @ColumnInfo(name = "dayId") val dayId: String,
     @ColumnInfo(name = "frequencyId") val frequencyId: String,
     @ColumnInfo(name = "startHour") val startHour: Int,
+    @ColumnInfo(name = "startMinute", defaultValue = "0") val startMinute: Int = 0,
     @ColumnInfo(name = "endHour") val endHour: Int,
+    @ColumnInfo(name = "endMinute", defaultValue = "0") val endMinute: Int = 0,
     @ColumnInfo(name = "location") val location: String,
     @ColumnInfo(name = "activity") val activity: String,
     @ColumnInfo(name = "typeId") val typeId: String,

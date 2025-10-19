@@ -20,6 +20,7 @@ data class RoomsUiState(
     private val rooms: ImmutableList<Owner.Room> = persistentListOf(),
     val searchQuery: String = String.BLANK,
     val isLoading: Boolean = true,
+    val isEmpty: Boolean = true,
     val errorStatus: ErrorStatus? = null,
 ) {
     companion object {

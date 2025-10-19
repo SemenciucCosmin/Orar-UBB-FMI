@@ -23,7 +23,8 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
  * It includes entities for rooms, study lines, subjects, teachers, and timetable classes.
  */
 @Database(
-    version = 2,
+    version = 3,
+    exportSchema = true,
     entities = [
         EventEntity::class,
         GroupEntity::class,
@@ -34,6 +35,7 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
     ],
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigrations.AutoMigrationSpec1To2::class),
+        AutoMigration(from = 2, to = 3),
     ]
 )
 @ConstructedBy(OrarUbbFmiDatabaseConstructor::class)

@@ -12,6 +12,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlin.String
+import kotlin.time.ExperimentalTime
 
 /**
  * Represents the UI state of the timetable, including the list of classes, title, study level,
@@ -34,6 +35,7 @@ data class TimetableUiState(
     val selectedFrequency: Frequency = Frequency.WEEK_1,
     val isEditModeOn: Boolean = false,
     val isLoading: Boolean = false,
+    val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
     companion object {
@@ -41,6 +43,7 @@ data class TimetableUiState(
          * Creates an initial state for the timetable UI.
          * This state is used when the timetable is first loaded or reset.
          */
+        @OptIn(ExperimentalTime::class)
         val TimetableUiState.timetableListItems: ImmutableList<TimetableListItem>
             get() {
                 val filteredEvents = events.filter { event ->
@@ -58,7 +61,9 @@ data class TimetableUiState(
                                 TimetableListItem.Event(
                                     id = event.id,
                                     startHour = event.startHour,
+                                    startMinute = event.startMinute,
                                     endHour = event.endHour,
+                                    endMinute = event.endMinute,
                                     location = event.location,
                                     title = event.activity,
                                     type = event.type,
@@ -94,7 +99,9 @@ data class TimetableUiState(
                                 TimetableListItem.Event(
                                     id = event.id,
                                     startHour = event.startHour,
+                                    startMinute = event.startMinute,
                                     endHour = event.endHour,
+                                    endMinute = event.endMinute,
                                     location = event.location,
                                     title = event.activity,
                                     type = event.type,

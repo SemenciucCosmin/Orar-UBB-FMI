@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.feature.studylines.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.studylines.repository.StudyLinesRepository
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
@@ -70,6 +71,7 @@ class StudyLinesViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = resource.status.isLoading(),
+                    isEmpty = resource.status.isEmpty(),
                     errorStatus = resource.status.toErrorStatus(),
                     groupedStudyLines = groupedStudyLines
                 )
