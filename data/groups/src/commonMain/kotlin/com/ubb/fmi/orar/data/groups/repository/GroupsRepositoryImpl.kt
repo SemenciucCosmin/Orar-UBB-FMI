@@ -30,9 +30,8 @@ class GroupsRepositoryImpl(
     private val timetablePreferences: TimetablePreferences,
 ) : GroupsRepository {
 
-    private val groupsFlow: MutableStateFlow<Resource<List<Owner.Group>>> = MutableStateFlow(
-        Resource(null, Status.Loading)
-    )
+    private val groupsFlow: MutableMap<String, MutableStateFlow<Resource<List<Owner.Group>>>> =
+        mutableMapOf()
 
     private val timetableFlows: MutableMap<String, MutableStateFlow<Resource<Timetable<Owner.Group>>>> =
         mutableMapOf()
@@ -41,15 +40,15 @@ class GroupsRepositoryImpl(
      * Retrieves a [Flow] of groups
      */
     override fun getGroups(studyLineId: String): Flow<Resource<List<Owner.Group>>> {
-        if (groupsFlow.subscriptionCount.value == 0) {
+        if (groupsFlow[studyLineId]?.subscriptionCount?.value == 0) {
             prefetchGroups(studyLineId)
             initializeGroups(studyLineId)
         }
 
-        return groupsFlow.map { resource ->
+        return groupsFlow[studyLineId]?.map { resource ->
             val sortedGroups = resource.payload?.sortedBy { it.name }
             resource.copy(payload = sortedGroups)
-        }
+        } ?: MutableStateFlow(Resource(null, Status.NotFoundError))
     }
 
     /**
@@ -101,7 +100,7 @@ class GroupsRepositoryImpl(
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
                 if (configuration == null) {
-                    groupsFlow.update { Resource(null, Status.NotFoundError) }
+                    groupsFlow[studyLineId]?.update { Resource(null, Status.NotFoundError) }
                     return@collectLatest
                 }
 
@@ -125,7 +124,7 @@ class GroupsRepositoryImpl(
         groupsDataSource.getGroupsFromCache(year, semesterId, studyLine).collectLatest { groups ->
             when {
                 groups.isEmpty() -> getGroupsFromApi(year, semesterId, studyLine)
-                else -> groupsFlow.update { Resource(groups, Status.Success) }
+                else -> groupsFlow[studyLine.id]?.update { Resource(groups, Status.Success) }
             }
         }
     }
@@ -146,7 +145,7 @@ class GroupsRepositoryImpl(
                 groupsDataSource.saveGroupsInCache(group)
             }
 
-            else -> groupsFlow.update { Resource(null, resource.status) }
+            else -> groupsFlow[studyLine.id]?.update { Resource(null, resource.status) }
         }
     }
 
