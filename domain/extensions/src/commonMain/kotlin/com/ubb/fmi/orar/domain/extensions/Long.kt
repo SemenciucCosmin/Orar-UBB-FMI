@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.domain.extensions
 
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -11,7 +12,7 @@ fun Long.formatToDate(): String {
     val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     val day = localDate.day.toString().padStart(2, '0')
-    val month = localDate.month.toString().padStart(2, '0')
+    val month = localDate.month.number.toString().padStart(2, '0')
     val year = localDate.year.toString()
 
     return "$day${String.DOT}$month${String.DOT}$year"
