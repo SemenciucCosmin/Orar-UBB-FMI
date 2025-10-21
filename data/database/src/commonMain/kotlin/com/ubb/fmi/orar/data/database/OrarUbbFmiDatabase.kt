@@ -6,10 +6,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.ubb.fmi.orar.data.database.dao.EventDao
 import com.ubb.fmi.orar.data.database.dao.GroupDao
+import com.ubb.fmi.orar.data.database.dao.NewsDao
 import com.ubb.fmi.orar.data.database.dao.RoomDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.SubjectDao
 import com.ubb.fmi.orar.data.database.dao.TeacherDao
+import com.ubb.fmi.orar.data.database.model.ArticleEntity
 import com.ubb.fmi.orar.data.database.model.EventEntity
 import com.ubb.fmi.orar.data.database.model.GroupEntity
 import com.ubb.fmi.orar.data.database.model.RoomEntity
@@ -23,9 +25,10 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
  * It includes entities for rooms, study lines, subjects, teachers, and timetable classes.
  */
 @Database(
-    version = 3,
+    version = 4,
     exportSchema = true,
     entities = [
+        ArticleEntity::class,
         EventEntity::class,
         GroupEntity::class,
         RoomEntity::class,
@@ -36,6 +39,7 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigrations.AutoMigrationSpec1To2::class),
         AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
     ]
 )
 @ConstructedBy(OrarUbbFmiDatabaseConstructor::class)
@@ -44,6 +48,8 @@ abstract class OrarUbbFmiDatabase : RoomDatabase() {
     abstract val eventDao: EventDao
 
     abstract val groupDao: GroupDao
+
+    abstract val newsDao: NewsDao
 
     abstract val roomDao: RoomDao
 

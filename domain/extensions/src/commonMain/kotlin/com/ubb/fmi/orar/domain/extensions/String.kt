@@ -65,3 +65,23 @@ val String.Companion.DOT: String
  */
 val String.Companion.ASTERISK: String
     get() = "*"
+
+/**
+ * String extension for single quote sign
+ */
+val String.Companion.SINGLE_QUOTE: String
+    get() = "'"
+
+/**
+ * String extension for ellipsis sign
+ */
+val String.Companion.ELLIPSIS: String
+    get() = "..."
+
+/**
+ * Returns substring between [afterDelimiter] and [beforeDelimiter]
+ */
+fun String.substringBetween(
+    afterDelimiter: String,
+    beforeDelimiter: String,
+) = this.substringAfter(afterDelimiter).substringBefore(beforeDelimiter)

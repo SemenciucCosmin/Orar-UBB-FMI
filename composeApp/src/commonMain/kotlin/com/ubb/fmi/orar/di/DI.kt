@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.di
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
 import com.ubb.fmi.orar.data.groups.di.groupsDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
+import com.ubb.fmi.orar.data.news.di.newsDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.settings.di.settingsDataModule
@@ -17,6 +18,7 @@ import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
 import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
 import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
+import com.ubb.fmi.orar.feature.news.di.newsFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import com.ubb.fmi.orar.feature.settings.di.settingsFeatureModule
@@ -56,6 +58,10 @@ fun commonModule() = module {
 
     // NETWORK
     includes(networkDataModule())
+
+    // NEWS
+    includes(newsDataModule())
+    includes(newsFeatureModule())
 
     // PREFERENCES
     includes(preferencesDataModule())

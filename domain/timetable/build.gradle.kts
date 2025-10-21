@@ -40,6 +40,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.groups)
+            implementation(projects.data.news)
             implementation(projects.data.rooms)
             implementation(projects.data.studyLines)
             implementation(projects.data.subjects)

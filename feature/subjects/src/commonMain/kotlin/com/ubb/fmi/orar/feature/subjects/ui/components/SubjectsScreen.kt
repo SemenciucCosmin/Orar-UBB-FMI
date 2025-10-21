@@ -1,11 +1,13 @@
 package com.ubb.fmi.orar.feature.subjects.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +16,8 @@ import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
 import com.ubb.fmi.orar.ui.catalog.components.SearchBar
+import com.ubb.fmi.orar.ui.catalog.components.SearchTopBar
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
@@ -21,7 +25,9 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_subject
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_rooms
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_subject
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_subjects
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -34,7 +40,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * @param onSubjectClick Callback invoked when a subject is clicked, passing the subject ID.
  * @param onChangeSearchQuery Callback invoked when the search query changes.
  * @param onRetryClick Callback invoked when the user wants to retry loading subjects.
- * @param bottomBar Composable function for the bottom bar, if any.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,34 +48,29 @@ fun SubjectsScreen(
     onSubjectClick: (String) -> Unit,
     onChangeSearchQuery: (String) -> Unit,
     onRetryClick: () -> Unit,
-    bottomBar: @Composable () -> Unit,
+    onBack: () -> Unit,
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
         isEmpty = uiState.filteredSubjects.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
-        bottomBar = bottomBar,
         topBar = {
-            if (uiState.errorStatus == null && !uiState.isLoading) {
-                TopAppBar(
-                    title = {
-                        SearchBar(
-                            value = uiState.searchQuery,
-                            onValueChange = onChangeSearchQuery,
-                            placeholder = stringResource(Res.string.lbl_subject),
-                            onClearClick = { onChangeSearchQuery(String.BLANK) },
-                            modifier = Modifier.padding(end = Pds.spacing.Medium)
-                        )
-                    }
-                )
-            }
+            SearchTopBar(
+                title = stringResource(Res.string.lbl_subjects),
+                value = uiState.searchQuery,
+                placeholder = stringResource(Res.string.lbl_subject),
+                onClearClick = { onChangeSearchQuery(String.BLANK) },
+                isSearchEnabled = uiState.errorStatus == null && !uiState.isLoading,
+                onValueChange = onChangeSearchQuery,
+                onBack = onBack,
+            )
         }
     ) { paddingValues ->
         LazyColumn(
+            modifier = Modifier.padding(paddingValues),
             contentPadding = PaddingValues(Pds.spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-            modifier = Modifier.padding(paddingValues)
         ) {
             items(uiState.filteredSubjects) { subject ->
                 ListItemClickable(
@@ -92,7 +92,7 @@ private fun PreviewSubjectsScreen() {
             onSubjectClick = {},
             onChangeSearchQuery = {},
             onRetryClick = {},
-            bottomBar = {},
+            onBack = {},
             uiState = SubjectsUiState(
                 searchQuery = "",
                 isLoading = false,

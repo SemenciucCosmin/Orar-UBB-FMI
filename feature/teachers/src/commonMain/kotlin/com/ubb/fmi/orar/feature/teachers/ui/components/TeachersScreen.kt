@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Owner
@@ -15,7 +14,7 @@ import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
-import com.ubb.fmi.orar.ui.catalog.components.SearchBar
+import com.ubb.fmi.orar.ui.catalog.components.SearchTopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
@@ -27,6 +26,7 @@ import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teachers
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -39,7 +39,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * @param onTeacherClick Callback function to handle teacher item clicks, providing the teacher's ID.
  * @param onSelectFilter Callback function to handle filter selection, providing the selected filter ID.
  * @param onRetryClick Callback function to handle retry actions when an error occurs.
- * @param bottomBar A composable function for the bottom bar, which can be used to
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,42 +48,39 @@ fun TeachersScreen(
     onSelectFilter: (String) -> Unit,
     onChangeSearchQuery: (String) -> Unit,
     onRetryClick: () -> Unit,
-    bottomBar: @Composable () -> Unit,
+    onBack: () -> Unit,
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
         isEmpty = uiState.filteredTeachers.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
-        bottomBar = bottomBar,
         topBar = {
+            SearchTopBar(
+                title = stringResource(Res.string.lbl_teachers),
+                value = uiState.searchQuery,
+                placeholder = stringResource(Res.string.lbl_teacher),
+                onClearClick = { onChangeSearchQuery(String.BLANK) },
+                isSearchEnabled = uiState.errorStatus == null && !uiState.isLoading,
+                onValueChange = onChangeSearchQuery,
+                onBack = onBack,
+            )
+        }
+    ) { paddingValues ->
+        Column(modifier = Modifier.padding(paddingValues)) {
             if (uiState.errorStatus == null && !uiState.isLoading) {
-                TopAppBar(
-                    title = {
-                        SearchBar(
-                            value = uiState.searchQuery,
-                            onValueChange = onChangeSearchQuery,
-                            placeholder = stringResource(Res.string.lbl_teacher),
-                            onClearClick = { onChangeSearchQuery(String.BLANK) },
-                            modifier = Modifier.padding(end = Pds.spacing.Medium)
+                ChipSelectionRow(
+                    selectedChipId = uiState.selectedFilterId,
+                    onClick = onSelectFilter,
+                    contentPadding = PaddingValues(horizontal = Pds.spacing.Medium),
+                    chips = TeacherTitleFilter.entries.sortedBy { it.orderIndex }.map {
+                        Chip(
+                            id = it.id,
+                            label = stringResource(it.labelRes)
                         )
                     }
                 )
             }
-        }
-    ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            ChipSelectionRow(
-                selectedChipId = uiState.selectedFilterId,
-                onClick = onSelectFilter,
-                contentPadding = PaddingValues(horizontal = Pds.spacing.Medium),
-                chips = TeacherTitleFilter.entries.sortedBy { it.orderIndex }.map {
-                    Chip(
-                        id = it.id,
-                        label = stringResource(it.labelRes)
-                    )
-                }
-            )
 
             LazyColumn(
                 contentPadding = PaddingValues(Pds.spacing.Medium),
@@ -112,7 +108,7 @@ private fun PreviewTeachersScreen() {
             onSelectFilter = {},
             onChangeSearchQuery = {},
             onRetryClick = {},
-            bottomBar = {},
+            onBack = {},
             uiState = TeachersUiState(
                 selectedFilterId = "Licenta",
                 isLoading = false,
