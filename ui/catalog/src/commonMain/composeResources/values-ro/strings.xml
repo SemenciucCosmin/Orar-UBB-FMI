@@ -22,13 +22,20 @@
     <string name="lbl_timetable_configuration_title">Configurare orar</string>
     <string name="lbl_timetable_configuration_message">Alegeți configurația pentru orar</string>
 
-    <!--  NAVIGATION DESTINATIONS  -->
+    <!--  NAVIGATION  -->
     <string name="lbl_home">Acasă</string>
     <string name="lbl_students">Studenți</string>
     <string name="lbl_teachers">Profesori</string>
     <string name="lbl_subjects">Discipline</string>
     <string name="lbl_rooms">Săli</string>
+    <string name="lbl_free_rooms">Săli libere</string>
     <string name="lbl_explore">Explorează</string>
+
+    <string name="lbl_students_details">Caută Linii de Studiu, Grupe și orarele lor</string>
+    <string name="lbl_teachers_details">Caută Profesori și orarele lor</string>
+    <string name="lbl_subjects_details">Caută Materii și orarele lor</string>
+    <string name="lbl_rooms_details">Caută Săli și orarele lor</string>
+    <string name="lbl_free_rooms_details">Caută Săli libere</string>
 
     <!--  USER  -->
     <string name="lbl_student">Student</string>

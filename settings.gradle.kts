@@ -49,6 +49,7 @@ include(
     ":domain:user-timetable",
     ":feature:explore",
     ":feature:form",
+    ":feature:free-rooms",
     ":feature:group-timetable",
     ":feature:groups",
     ":feature:news",
