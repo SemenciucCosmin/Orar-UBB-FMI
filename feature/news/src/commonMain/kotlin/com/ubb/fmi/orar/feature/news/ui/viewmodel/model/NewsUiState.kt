@@ -20,11 +20,11 @@ data class NewsUiState(
         val NewsUiState.studentArticles: ImmutableList<Article>
             get() = articles.filter { article ->
                 article.type == ArticleType.STUDENT
-            }.sortedByDescending { it.date }.toImmutableList()
+            }.sortedByDescending { it.millis }.toImmutableList()
 
         val NewsUiState.teacherArticles: ImmutableList<Article>
             get() = articles.filter { article ->
                 article.type == ArticleType.TEACHER
-            }.sortedByDescending { it.date }.toImmutableList()
+            }.sortedByDescending { it.millis }.toImmutableList()
     }
 }

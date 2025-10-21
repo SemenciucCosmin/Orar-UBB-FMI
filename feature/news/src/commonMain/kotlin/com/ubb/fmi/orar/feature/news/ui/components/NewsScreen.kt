@@ -107,7 +107,7 @@ private fun PreviewNewsScreen() {
                         id = it.toString(),
                         title = "Title $it",
                         text = "Article very long long long long text $it",
-                        date = "08.10.2025",
+                        millis = 1761051666154,
                         url = "",
                         type = ArticleType.STUDENT,
                         imageUrl =

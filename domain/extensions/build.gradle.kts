@@ -31,7 +31,8 @@ kotlin {
         }
 
         commonMain.dependencies {
-
+            // KOTLINX
+            implementation(libs.kotlinx.date.time)
         }
 
         iosMain.dependencies {

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ubb.fmi.orar.data.news.model.Article
 import com.ubb.fmi.orar.data.news.model.ArticleType
+import com.ubb.fmi.orar.domain.extensions.formatToDate
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
@@ -56,7 +57,7 @@ fun ArticleListItem(
 
             Column {
                 Text(
-                    text = article.date,
+                    text = article.millis.formatToDate(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -86,7 +87,7 @@ private fun PreviewArticleListItem() {
                     id = "",
                     title = "Article Title",
                     text = "This is a very large long long long long text of a news article.",
-                    date = "05.11.2000",
+                    millis = 1761051666154,
                     url = "",
                     type = ArticleType.STUDENT,
                     imageUrl =
