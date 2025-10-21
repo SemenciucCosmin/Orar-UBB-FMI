@@ -15,6 +15,7 @@ import com.ubb.fmi.orar.ui.catalog.model.ToastLength
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
 import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_generic_error_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_refresh_data_success_message
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -31,11 +32,14 @@ fun SettingsRoute(navController: NavController) {
     val viewModel: SettingsViewModel = koinViewModel()
     val context = getContext()
     val appVersion = getAppVersion(context)
+    val toastMessage = stringResource(Res.string.lbl_generic_error_message)
 
     SettingsScreen(
         appVersion = appVersion,
         developerName = DEVELOPER_NAME,
-        onGithubUrlClick = { openUrl(GITHUB_URL, context) {} },
+        onGithubUrlClick = {
+            openUrl(GITHUB_URL, context) { showToast(context, toastMessage, ToastLength.SHORT) }
+        },
         onBack = navController::navigateUp,
         onThemeClick = { navController.navigate(SettingsNavDestination.Theme) },
         onAddPersonalEventClick = {

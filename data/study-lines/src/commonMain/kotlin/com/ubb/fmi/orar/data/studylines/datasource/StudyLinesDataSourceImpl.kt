@@ -10,7 +10,7 @@ import com.ubb.fmi.orar.data.timetable.model.Degree
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import com.ubb.fmi.orar.domain.htmlparser.HtmlTableParser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.collections.map
@@ -60,7 +60,7 @@ class StudyLinesDataSourceImpl(
         logger.d(TAG, "getStudyLinesFromApi resource: $resource")
 
         val studyLinesHtml = resource.payload
-        val tables = studyLinesHtml?.let(HtmlParser::extractTables)
+        val tables = studyLinesHtml?.let(HtmlTableParser::extractTables)
 
         logger.d(TAG, "getStudyLinesFromApi tables: $tables")
 

@@ -3,37 +3,18 @@ package com.ubb.fmi.orar.ui.navigation.destination
 import kotlinx.serialization.Serializable
 
 /**
- * Represents the navigation destinations for the timetable feature in the application.
- *
- * This sealed class defines various destinations related to timetables, such as user timetables,
- * study lines, groups, teachers, subjects, and rooms. Each destination is represented by a data
- * class with relevant parameters.
+ * Represents the navigation destinations for the exploring feature in the application.
+ * Encapsulates other destinations meant for searching
  */
 @Serializable
-sealed class TimetableNavDestination {
-
-    /**
-     * Represents a navigation destination for the timetable feature.
-     *
-     * This sealed class is used to define different types of destinations that can be navigated to
-     * within the timetable feature. Each subclass represents a specific destination with its own parameters.
-     */
-    @Serializable
-    data object Startup : TimetableNavDestination()
-
-    /**
-     * Represents a user-specific timetable destination.
-     * This destination is used to navigate to the timetable for a specific user.
-     */
-    @Serializable
-    data object UserTimetable : TimetableNavDestination()
+sealed class ExploreNavDestination {
 
     /**
      * Represents a study lines destination.
      * This destination is used to navigate to the list of study lines.
      */
     @Serializable
-    data object StudyLines : TimetableNavDestination()
+    data object StudyLines : ExploreNavDestination()
 
     /**
      * Represents a study line timetable destination.
@@ -46,7 +27,7 @@ sealed class TimetableNavDestination {
     data class Groups(
         val fieldId: String,
         val studyLevelId: String
-    ) : TimetableNavDestination()
+    ) : ExploreNavDestination()
 
     /**
      * Represents a group timetable destination.
@@ -61,14 +42,14 @@ sealed class TimetableNavDestination {
         val fieldId: String,
         val studyLevelId: String,
         val groupId: String
-    ) : TimetableNavDestination()
+    ) : ExploreNavDestination()
 
     /**
      * Represents a teachers destination.
      * This destination is used to navigate to the list of teachers.
      */
     @Serializable
-    data object Teachers : TimetableNavDestination()
+    data object Teachers : ExploreNavDestination()
 
     /**
      * Represents a teacher timetable destination.
@@ -77,14 +58,14 @@ sealed class TimetableNavDestination {
      * @property teacherId The identifier for the teacher.
      */
     @Serializable
-    data class TeacherTimetable(val teacherId: String) : TimetableNavDestination()
+    data class TeacherTimetable(val teacherId: String) : ExploreNavDestination()
 
     /**
      * Represents a subjects destination.
      * This destination is used to navigate to the list of subjects.
      */
     @Serializable
-    data object Subjects : TimetableNavDestination()
+    data object Subjects : ExploreNavDestination()
 
     /**
      * Represents a subject timetable destination.
@@ -93,14 +74,14 @@ sealed class TimetableNavDestination {
      * @property subjectId The identifier for the subject.
      */
     @Serializable
-    data class SubjectTimetable(val subjectId: String) : TimetableNavDestination()
+    data class SubjectTimetable(val subjectId: String) : ExploreNavDestination()
 
     /**
      * Represents a rooms destination.
      * This destination is used to navigate to the list of rooms.
      */
     @Serializable
-    data object Rooms : TimetableNavDestination()
+    data object Rooms : ExploreNavDestination()
 
     /**
      * Represents a room timetable destination.
@@ -109,5 +90,5 @@ sealed class TimetableNavDestination {
      * @property roomId The identifier for the room.
      */
     @Serializable
-    data class RoomTimetable(val roomId: String) : TimetableNavDestination()
+    data class RoomTimetable(val roomId: String) : ExploreNavDestination()
 }

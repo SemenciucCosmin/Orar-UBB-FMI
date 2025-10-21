@@ -6,7 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.groups.ui.components.GroupsScreen
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.GroupsViewModel
-import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.ExploreNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -37,7 +37,7 @@ fun GroupsRoute(
         onBack = navController::navigateUp,
         onGroupClick = { group ->
             navController.navigate(
-                TimetableNavDestination.StudyLineTimetable(
+                ExploreNavDestination.StudyLineTimetable(
                     fieldId = fieldId,
                     studyLevelId = studyLevelId,
                     groupId = group

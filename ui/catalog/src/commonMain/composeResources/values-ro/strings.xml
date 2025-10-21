@@ -28,6 +28,7 @@
     <string name="lbl_teachers">Profesori</string>
     <string name="lbl_subjects">Discipline</string>
     <string name="lbl_rooms">Săli</string>
+    <string name="lbl_explore">Explorează</string>
 
     <!--  USER  -->
     <string name="lbl_student">Student</string>
@@ -113,4 +114,8 @@
     <string name="lbl_event_added">Evenimentul a fost adăugat orarului cu success!</string>
     <string name="lbl_remove_personal_event_message">Ștergeți acest eveniment personal?</string>
     <string name="lbl_add_event_message">Adăugați acest eveniment in orar?</string>
+
+    <!--  NEWS  -->
+    <string name="lbl_news">Anunțuri</string>
+
 </resources>

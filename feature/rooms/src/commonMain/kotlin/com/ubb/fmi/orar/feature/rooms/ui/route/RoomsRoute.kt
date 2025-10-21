@@ -6,8 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.rooms.ui.components.RoomsScreen
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.RoomsViewModel
-import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
-import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.ExploreNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -23,11 +22,11 @@ fun RoomsRoute(navController: NavController) {
 
     RoomsScreen(
         uiState = uiState,
-        onRetryClick = viewModel::retry,
         onChangeSearchQuery = viewModel::setSearchQuery,
-        bottomBar = { TimetableBottomBar(navController) },
+        onRetryClick = viewModel::retry,
+        onBack = navController::navigateUp,
         onRoomClick = { roomId ->
-            navController.navigate(TimetableNavDestination.RoomTimetable(roomId))
+            navController.navigate(ExploreNavDestination.RoomTimetable(roomId))
         }
     )
 }

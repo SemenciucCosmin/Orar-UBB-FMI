@@ -3,10 +3,12 @@ package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedDataValidityUseCase
+import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedNewsDataValidityUseCase
+import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedTimetableDataValidityUseCase
 import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupUiEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -15,11 +17,13 @@ import kotlinx.coroutines.launch
  * It checks the configuration and cached data validity to determine the next steps.
  *
  * @property timetablePreferences Preferences for managing timetable configurations.
- * @property checkCachedDataValidityUseCase Use case to check if cached data is still valid.
+ * @property checkCachedTimetableDataValidityUseCase Use case to check if cached data is still valid.
  */
 class StartupViewModel(
     private val timetablePreferences: TimetablePreferences,
-    private val checkCachedDataValidityUseCase: CheckCachedDataValidityUseCase,
+    private val checkCachedTimetableDataValidityUseCase: CheckCachedTimetableDataValidityUseCase,
+    private val checkCachedNewsDataValidityUseCase: CheckCachedNewsDataValidityUseCase,
+    private val coroutineScope: CoroutineScope,
     private val logger: Logger,
 ) : EventViewModel<StartupUiEvent>() {
 
@@ -28,7 +32,16 @@ class StartupViewModel(
      * This is called when the ViewModel is created.
      */
     init {
+        checkDataValidity()
         checkConfiguration()
+    }
+
+    /**
+     * Starts coroutines independent from ViewModel for checking cached data validity
+     */
+    private fun checkDataValidity() {
+        coroutineScope.launch { checkCachedTimetableDataValidityUseCase() }
+        coroutineScope.launch { checkCachedNewsDataValidityUseCase() }
     }
 
     /**
@@ -37,11 +50,7 @@ class StartupViewModel(
      * whether the configuration is complete or incomplete.
      */
     private fun checkConfiguration() {
-        logger.d(TAG, "checkConfiguration")
-
         viewModelScope.launch {
-            checkCachedDataValidityUseCase()
-
             val configuration = timetablePreferences.getConfiguration().firstOrNull()
             logger.d(TAG, "checkConfiguration configuration: $configuration")
 

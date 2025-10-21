@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -35,6 +36,7 @@ private const val MAX_LINES = 1
 fun TopBar(
     title: String,
     modifier: Modifier = Modifier,
+    titleStyle: TextStyle = MaterialTheme.typography.titleMedium,
     subtitle: String? = null,
     onBack: (() -> Unit)? = null,
     trailingContent: @Composable () -> Unit = {},
@@ -57,7 +59,7 @@ fun TopBar(
             Column(verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = titleStyle,
                     overflow = when {
                         subtitle == null -> TextOverflow.Clip
                         else -> TextOverflow.Ellipsis

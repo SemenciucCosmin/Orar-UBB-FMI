@@ -12,8 +12,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
-import com.ubb.fmi.orar.ui.navigation.model.TimetableBottomBarItem
+import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
+import com.ubb.fmi.orar.ui.navigation.model.BottomBarItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.painterResource
@@ -26,12 +26,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * @param navController The NavController used for navigation.
  */
 @Composable
-fun TimetableBottomBar(navController: NavController) {
+fun BottomBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     BottomAppBar {
-        TimetableBottomBarItem.entries.forEach { timetableBottomBarItem ->
+        BottomBarItem.entries.forEach { timetableBottomBarItem ->
             val destination = timetableBottomBarItem.destination
             val isSelected = currentDestination?.hasRoute(destination::class) == true
 
@@ -39,7 +39,7 @@ fun TimetableBottomBar(navController: NavController) {
                 selected = isSelected,
                 onClick = {
                     navController.navigate(timetableBottomBarItem.destination) {
-                        popUpTo(TimetableNavDestination.UserTimetable) { saveState = true }
+                        popUpTo(MainNavDestination.UserMain) { saveState = true }
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -63,7 +63,7 @@ fun TimetableBottomBar(navController: NavController) {
 @Composable
 private fun PreviewTimetableBottomBar() {
     OrarUbbFmiTheme {
-        TimetableBottomBar(
+        BottomBar(
             navController = rememberNavController()
         )
     }

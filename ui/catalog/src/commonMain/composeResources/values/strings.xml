@@ -22,12 +22,18 @@
     <string name="lbl_timetable_configuration_title">Configure timetable</string>
     <string name="lbl_timetable_configuration_message">Choose configuration for your timetable</string>
 
-    <!--  NAVIGATION DESTINATIONS  -->
+    <!--  NAVIGATION  -->
     <string name="lbl_home">Home</string>
     <string name="lbl_students">Students</string>
     <string name="lbl_teachers">Teachers</string>
     <string name="lbl_subjects">Subjects</string>
     <string name="lbl_rooms">Rooms</string>
+    <string name="lbl_explore">Explore</string>
+
+    <string name="lbl_students_details">Search for Study Lines, Groups and their timetables</string>
+    <string name="lbl_teachers_details">Search for Teachers and their timetables</string>
+    <string name="lbl_subjects_details">Search for Subjects and their timetables</string>
+    <string name="lbl_rooms_details">Search for Rooms and their timetables</string>
 
     <!--  USER  -->
     <string name="lbl_student">Student</string>
@@ -113,5 +119,8 @@
     <string name="lbl_event_added">Event was successfully added to your timetable!</string>
     <string name="lbl_remove_personal_event_message">Remove this personal event?</string>
     <string name="lbl_add_event_message">Add this event to your timetable?</string>
+
+    <!--  NEWS  -->
+    <string name="lbl_news">News</string>
 
 </resources>

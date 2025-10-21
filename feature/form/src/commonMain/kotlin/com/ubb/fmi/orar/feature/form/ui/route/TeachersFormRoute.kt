@@ -12,7 +12,7 @@ import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
-import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -45,7 +45,7 @@ fun TeachersFormRoute(navController: NavController) {
         when (event) {
             TeachersFormUiState.TeachersFormUiEvent.CONFIGURATION_DONE -> {
                 viewModel.unregisterEvent(event)
-                navController.navigate(TimetableNavDestination.UserTimetable) {
+                navController.navigate(MainNavDestination.UserMain) {
                     popUpTo(
                         ConfigurationFormNavDestination.OnboardingForm(
                             configurationFormTypeId = ConfigurationFormType.STARTUP.id

@@ -14,6 +14,7 @@ import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState.Companion.filteredGroupedStudyLines
+import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemExpandable
@@ -26,6 +27,7 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_study_line
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_students
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -38,7 +40,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * @param onStudyLevelClick Callback invoked when a study level is clicked, passing the level ID.
  * @param onSelectFilter Callback invoked when a filter is selected, passing the filter ID.
  * @param onRetryClick Callback invoked when the user wants to retry loading data after an error.
- * @param bottomBar Composable function for the bottom bar of the screen.
  */
 @Composable
 fun StudyLinesScreen(
@@ -47,14 +48,19 @@ fun StudyLinesScreen(
     onStudyLevelClick: (String) -> Unit,
     onSelectFilter: (String) -> Unit,
     onRetryClick: () -> Unit,
-    bottomBar: @Composable () -> Unit,
+    onBack: () -> Unit,
 ) {
     StateScaffold(
         isLoading = uiState.isLoading,
         isEmpty = uiState.isEmpty,
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
-        bottomBar = bottomBar
+        topBar = {
+            TopBar(
+                title = stringResource(Res.string.lbl_students),
+                onBack = onBack
+            )
+        }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             ChipSelectionRow(
@@ -109,7 +115,7 @@ private fun PreviewStudyLinesScreen() {
             onStudyLevelClick = {},
             onSelectFilter = {},
             onRetryClick = {},
-            bottomBar = {},
+            onBack = {},
             uiState = StudyLinesUiState(
                 isLoading = false,
                 errorStatus = null,

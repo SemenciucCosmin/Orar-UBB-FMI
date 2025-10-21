@@ -12,7 +12,7 @@ import kotlin.time.ExperimentalTime
  * This use case invalidates cached data for rooms, study lines, subjects, and teachers
  * that are older than two years from the current year.
  */
-class CheckCachedDataValidityUseCase(
+class CheckCachedTimetableDataValidityUseCase(
     private val invalidateCachedDataUseCase: InvalidateCachedDataUseCase,
     private val logger: Logger,
 ) {

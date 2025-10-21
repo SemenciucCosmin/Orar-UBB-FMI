@@ -69,6 +69,7 @@ kotlin {
             implementation(projects.data.database)
             implementation(projects.data.groups)
             implementation(projects.data.network)
+            implementation(projects.data.news)
             implementation(projects.data.preferences)
             implementation(projects.data.rooms)
             implementation(projects.data.settings)
@@ -82,9 +83,11 @@ kotlin {
             implementation(projects.domain.theme)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
+            implementation(projects.feature.explore)
             implementation(projects.feature.form)
             implementation(projects.feature.groupTimetable)
             implementation(projects.feature.groups)
+            implementation(projects.feature.news)
             implementation(projects.feature.roomTimetable)
             implementation(projects.feature.rooms)
             implementation(projects.feature.settings)
@@ -190,6 +193,10 @@ detekt {
         "${project.rootDir}/data/network/src/commonMain/kotlin",
         "${project.rootDir}/data/network/src/iosMain/kotlin",
 
+        "${project.rootDir}/data/news/src/androidMain/kotlin",
+        "${project.rootDir}/data/news/src/commonMain/kotlin",
+        "${project.rootDir}/data/news/src/iosMain/kotlin",
+
         "${project.rootDir}/data/preferences/src/androidMain/kotlin",
         "${project.rootDir}/data/preferences/src/commonMain/kotlin",
         "${project.rootDir}/data/preferences/src/iosMain/kotlin",
@@ -244,6 +251,10 @@ detekt {
         "${project.rootDir}/domain/user-timetable/src/iosMain/kotlin",
 
         // FEATURE
+        "${project.rootDir}/feature/explore/src/androidMain/kotlin",
+        "${project.rootDir}/feature/explore/src/commonMain/kotlin",
+        "${project.rootDir}/feature/explore/src/iosMain/kotlin",
+
         "${project.rootDir}/feature/form/src/androidMain/kotlin",
         "${project.rootDir}/feature/form/src/commonMain/kotlin",
         "${project.rootDir}/feature/form/src/iosMain/kotlin",
@@ -255,6 +266,10 @@ detekt {
         "${project.rootDir}/feature/groups/src/androidMain/kotlin",
         "${project.rootDir}/feature/groups/src/commonMain/kotlin",
         "${project.rootDir}/feature/groups/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/news/src/androidMain/kotlin",
+        "${project.rootDir}/feature/news/src/commonMain/kotlin",
+        "${project.rootDir}/feature/news/src/iosMain/kotlin",
 
         "${project.rootDir}/feature/room-timetable/src/androidMain/kotlin",
         "${project.rootDir}/feature/room-timetable/src/commonMain/kotlin",

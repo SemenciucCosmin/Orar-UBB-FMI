@@ -18,7 +18,7 @@ import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.extensions.SLASH
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import com.ubb.fmi.orar.domain.htmlparser.HtmlTableParser
 import com.ubb.fmi.orar.domain.htmlparser.model.Table
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -73,7 +73,7 @@ class GroupsDataSourceImpl(
         logger.d(TAG, "getGroupsFromApi resource: $resource")
 
         val timetableHtml = resource.payload
-        val tables = timetableHtml?.let(HtmlParser::extractTables)
+        val tables = timetableHtml?.let(HtmlTableParser::extractTables)
 
         logger.d(TAG, "getGroupsFromApi tables: $tables")
 
@@ -113,7 +113,7 @@ class GroupsDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
         val timetableHtml = resource.payload
-        val tables = timetableHtml?.let(HtmlParser::extractTables)
+        val tables = timetableHtml?.let(HtmlTableParser::extractTables)
 
         logger.d(TAG, "getTimetableFromApi tables: $tables")
 

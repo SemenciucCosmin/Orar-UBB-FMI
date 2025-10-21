@@ -18,7 +18,7 @@ import com.ubb.fmi.orar.domain.extensions.COLON
 import com.ubb.fmi.orar.domain.extensions.DASH
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.extensions.SPACE
-import com.ubb.fmi.orar.domain.htmlparser.HtmlParser
+import com.ubb.fmi.orar.domain.htmlparser.HtmlTableParser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -72,7 +72,7 @@ class TeachersDataSourceImpl(
         logger.d(TAG, "getTeachersFromApi resource: $resource")
 
         val teachersHtml = resource.payload
-        val table = teachersHtml?.let(HtmlParser::extractTables)?.firstOrNull()
+        val table = teachersHtml?.let(HtmlTableParser::extractTables)?.firstOrNull()
 
         logger.d(TAG, "getTeachersFromApi table: $table")
 
@@ -120,7 +120,7 @@ class TeachersDataSourceImpl(
         logger.d(TAG, "getTimetableFromApi resource: $resource")
 
         val timetableHtml = resource.payload
-        val table = timetableHtml?.let(HtmlParser::extractTables)?.firstOrNull()
+        val table = timetableHtml?.let(HtmlTableParser::extractTables)?.firstOrNull()
 
         logger.d(TAG, "getTimetableFromApi table: $table")
 

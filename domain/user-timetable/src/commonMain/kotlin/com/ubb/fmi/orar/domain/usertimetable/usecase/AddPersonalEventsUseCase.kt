@@ -11,11 +11,13 @@ import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import kotlinx.coroutines.flow.firstOrNull
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.time.ExperimentalTime
 
 class AddPersonalEventsUseCase(
     private val timetablePreferences: TimetablePreferences,
     private val eventsDataSource: EventsDataSource,
 ) {
+    @OptIn(ExperimentalTime::class)
     suspend operator fun invoke(
         activity: String,
         location: String,
