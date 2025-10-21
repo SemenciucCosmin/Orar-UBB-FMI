@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.domain.htmlparser
 
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.DASH
+import com.ubb.fmi.orar.domain.extensions.ELLIPSIS
 import com.ubb.fmi.orar.domain.extensions.SINGLE_QUOTE
 import com.ubb.fmi.orar.domain.extensions.SPACE
 import com.ubb.fmi.orar.domain.extensions.substringBetween
@@ -26,6 +27,8 @@ object HtmlNewsParser {
                 .replace(SINGLE_QUOTE_CODE, String.SINGLE_QUOTE)
                 .replace(EMPHASIS_START_TAG, String.SPACE)
                 .replace(EMPHASIS_END_TAG, String.BLANK)
+                .replace(SUPERIOR_START_TAG, String.BLANK)
+                .replace(SUPERIOR_END_TAG, String.BLANK)
                 .replace(Regex(EXCESS_SPACES_REGEX), String.SPACE)
                 .trim()
 
@@ -34,12 +37,14 @@ object HtmlNewsParser {
                 .replace(SINGLE_QUOTE_CODE, String.SINGLE_QUOTE)
                 .replace(EMPHASIS_START_TAG, String.SPACE)
                 .replace(EMPHASIS_END_TAG, String.BLANK)
+                .replace(SUPERIOR_START_TAG, String.BLANK)
+                .replace(SUPERIOR_END_TAG, String.BLANK)
                 .replace(Regex(EXCESS_SPACES_REGEX), String.SPACE)
                 .trim()
 
             HtmlArticle(
                 title = curatedTitle,
-                text = curatedText,
+                text = curatedText + String.ELLIPSIS,
                 url = url,
                 imageUrl = imageUrl.ifBlank { null },
                 date = date
@@ -76,6 +81,9 @@ object HtmlNewsParser {
 
     private const val EMPHASIS_START_TAG = "<em>"
     private const val EMPHASIS_END_TAG = "</em>"
+
+    private const val SUPERIOR_START_TAG = "<sup>"
+    private const val SUPERIOR_END_TAG = "</sup>"
 
     private const val DASH_CODE = "&#8211;"
     private const val SINGLE_QUOTE_CODE = "&#8217;"
