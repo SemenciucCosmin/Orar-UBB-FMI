@@ -10,36 +10,6 @@ import com.ubb.fmi.orar.domain.htmlparser.model.Cell
 import com.ubb.fmi.orar.domain.htmlparser.model.Row
 import com.ubb.fmi.orar.domain.htmlparser.model.Table
 
-private const val INVALID_INDEX = -1
-
-private const val NON_BREAKING_SPACE = "&nbsp;"
-
-private const val TAG_RIGHT = ">"
-private const val TAG_LEFT = "<"
-
-private const val HEADLINE_TAG_OPEN = "<h1"
-private const val HEADLINE_TAG_CLOSED = "</h1"
-
-private const val HYPERLINK_TAG_OPEN = "<a"
-private const val HYPERLINK_TAG_CLOSED = "</a"
-
-private const val NESTED_HYPERLINK_TAG_CLOSED = "</a></a>"
-
-private const val TABLE_TAG_OPEN = "<table"
-private const val TABLE_TAG_CLOSED = "</table"
-
-private const val TABLE_ROW_TAG_OPEN = "<tr"
-private const val TABLE_ROW_TAG_CLOSED = "</tr"
-
-private const val TABLE_COLUMN_TAG_OPEN = "<td"
-private const val TABLE_COLUMN_TAG_CLOSED = "</td"
-
-private const val HREF_TAG_OPEN = "f=\""
-private const val HREF_TAG_CLOSED = "\" >"
-
-private const val HTML_EXTENSION = ".html"
-private const val NULL = "null"
-
 /**
  * Utility object for parsing HTML strings and extracting structured data
  * such as tables, rows, and cells.
@@ -49,7 +19,7 @@ private const val NULL = "null"
  * The parsing logic handles various HTML tags and structures to ensure accurate extraction.
  * It also includes utility methods for formatting hyperlinks and selecting specific HTML elements.
  */
-object HtmlParser {
+object HtmlTableParser {
 
     /**
      * Extracts tables from a given HTML string.
@@ -167,4 +137,34 @@ object HtmlParser {
 
         return items
     }
+
+    private const val INVALID_INDEX = -1
+
+    private const val NON_BREAKING_SPACE = "&nbsp;"
+
+    private const val TAG_RIGHT = ">"
+    private const val TAG_LEFT = "<"
+
+    private const val HEADLINE_TAG_OPEN = "<h1"
+    private const val HEADLINE_TAG_CLOSED = "</h1"
+
+    private const val HYPERLINK_TAG_OPEN = "<a"
+    private const val HYPERLINK_TAG_CLOSED = "</a"
+
+    private const val NESTED_HYPERLINK_TAG_CLOSED = "</a></a>"
+
+    private const val TABLE_TAG_OPEN = "<table"
+    private const val TABLE_TAG_CLOSED = "</table"
+
+    private const val TABLE_ROW_TAG_OPEN = "<tr"
+    private const val TABLE_ROW_TAG_CLOSED = "</tr"
+
+    private const val TABLE_COLUMN_TAG_OPEN = "<td"
+    private const val TABLE_COLUMN_TAG_CLOSED = "</td"
+
+    private const val HREF_TAG_OPEN = "f=\""
+    private const val HREF_TAG_CLOSED = "\" >"
+
+    private const val HTML_EXTENSION = ".html"
+    private const val NULL = "null"
 }

@@ -21,6 +21,7 @@ fun databaseDataModule() = module {
     single { get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build() }
     single { get<OrarUbbFmiDatabase>().eventDao }
     single { get<OrarUbbFmiDatabase>().groupDao }
+    single { get<OrarUbbFmiDatabase>().newsDao }
     single { get<OrarUbbFmiDatabase>().roomDao }
     single { get<OrarUbbFmiDatabase>().studyLineDao }
     single { get<OrarUbbFmiDatabase>().subjectDao }

@@ -6,8 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.studylines.ui.components.StudyLinesScreen
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.StudyLinesViewModel
-import com.ubb.fmi.orar.ui.navigation.components.TimetableBottomBar
-import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.ExploreNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -26,10 +25,10 @@ fun StudyLinesRoute(navController: NavController) {
         onStudyLineClick = viewModel::selectFieldId,
         onSelectFilter = viewModel::selectDegreeFilter,
         onRetryClick = viewModel::retry,
-        bottomBar = { TimetableBottomBar(navController) },
+        onBack = navController::navigateUp,
         onStudyLevelClick = { studyLevelId ->
             val fieldId = uiState.selectedFieldId ?: return@StudyLinesScreen
-            navController.navigate(TimetableNavDestination.Groups(fieldId, studyLevelId))
+            navController.navigate(ExploreNavDestination.Groups(fieldId, studyLevelId))
         }
     )
 }

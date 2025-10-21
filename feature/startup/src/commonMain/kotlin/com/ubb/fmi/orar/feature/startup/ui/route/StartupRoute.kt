@@ -7,7 +7,7 @@ import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupUiEvent
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
 import com.ubb.fmi.orar.ui.navigation.destination.ConfigurationFormNavDestination
-import com.ubb.fmi.orar.ui.navigation.destination.TimetableNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -26,8 +26,8 @@ fun StartupRoute(navController: NavController) {
         when (event) {
             StartupUiEvent.CONFIGURATION_COMPLETE -> {
                 viewModel.unregisterEvent(event)
-                navController.navigate(TimetableNavDestination.UserTimetable) {
-                    popUpTo(TimetableNavDestination.Startup) {
+                navController.navigate(MainNavDestination.UserMain) {
+                    popUpTo(MainNavDestination.Startup) {
                         inclusive = true
                         saveState = true
                     }
@@ -41,7 +41,7 @@ fun StartupRoute(navController: NavController) {
                         configurationFormTypeId = ConfigurationFormType.STARTUP.id
                     )
                 ) {
-                    popUpTo(TimetableNavDestination.Startup) {
+                    popUpTo(MainNavDestination.Startup) {
                         inclusive = true
                         saveState = true
                     }

@@ -70,16 +70,14 @@ fun TeachersFormScreen(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            if (uiState.errorStatus == null && !uiState.isLoading) {
-                Surface {
-                    SearchBar(
-                        value = uiState.searchQuery,
-                        onValueChange = onChangeSearchQuery,
-                        placeholder = stringResource(Res.string.lbl_teacher),
-                        onClearClick = { onChangeSearchQuery(String.BLANK) },
-                        modifier = Modifier.padding(Pds.spacing.Medium)
-                    )
-                }
+            Surface {
+                SearchBar(
+                    value = uiState.searchQuery,
+                    onValueChange = onChangeSearchQuery,
+                    placeholder = stringResource(Res.string.lbl_teacher),
+                    onClearClick = { onChangeSearchQuery(String.BLANK) },
+                    modifier = Modifier.padding(Pds.spacing.Medium)
+                )
             }
 
             ChipSelectionRow(

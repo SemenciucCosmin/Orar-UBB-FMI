@@ -14,5 +14,5 @@ class DefaultIcon : Icon {
     override val Medium: Dp = 32.dp
     override val Large: Dp = 40.dp
     override val XLarge: Dp = 64.dp
-    override val XXLarge: Dp = 128.dp
+    override val XXLarge: Dp = 80.dp
 }
