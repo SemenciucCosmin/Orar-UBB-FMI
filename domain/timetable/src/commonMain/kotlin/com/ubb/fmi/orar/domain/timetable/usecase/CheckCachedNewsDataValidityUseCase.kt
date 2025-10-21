@@ -7,14 +7,14 @@ import kotlin.time.ExperimentalTime
 
 /**
  * Use case for checking the validity of cached news data
- * Deleted news data older than 3 months
+ * Deleted news data older than 6 months
  */
 class CheckCachedNewsDataValidityUseCase(
     private val newsRepository: NewsRepository,
     private val logger: Logger,
 ) {
     /**
-     * Checks the validity of cached news data and invalidates entries older than 3 months
+     * Checks the validity of cached news data and invalidates entries older than 6 months
      */
     @OptIn(ExperimentalTime::class)
     suspend operator fun invoke() {
@@ -26,6 +26,6 @@ class CheckCachedNewsDataValidityUseCase(
 
     companion object {
         private const val TAG = "CheckCachedNewsDataValidityUseCase"
-        private const val VALID_DATA_TIMEFRAME = 3L * 30 * 24 * 60 * 60 * 1000 // 3 months in millis
+        private const val VALID_DATA_TIMEFRAME = 6L * 30 * 24 * 60 * 60 * 1000 // 6 months in millis
     }
 }
