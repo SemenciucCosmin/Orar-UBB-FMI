@@ -11,7 +11,7 @@ fun Long.formatToDate(): String {
     val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     val day = localDate.day.toString().padStart(2, '0')
-    val month = localDate.day.toString().padStart(2, '0')
+    val month = localDate.month.toString().padStart(2, '0')
     val year = localDate.year.toString()
 
     return "$day${String.DOT}$month${String.DOT}$year"
