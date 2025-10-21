@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +16,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.news.model.Article
@@ -27,6 +29,7 @@ import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.launch
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_news
 import org.jetbrains.compose.resources.stringResource
@@ -43,6 +46,8 @@ fun NewsScreen(
     onRetryClick: () -> Unit,
     bottomBar: @Composable () -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
     var selectedArticleType by remember { mutableStateOf(uiState.selectedArticleType) }
     val articles by remember(uiState) {
         derivedStateOf {
@@ -66,7 +71,10 @@ fun NewsScreen(
                 trailingContent = {
                     NewsArticleTypeTab(
                         selectedArticleType = selectedArticleType,
-                        onArticleTypeClick = { selectedArticleType = it },
+                        onArticleTypeClick = {
+                            coroutineScope.launch { listState.scrollToItem(0) }
+                            selectedArticleType = it
+                        },
                     )
                 }
             )
@@ -74,6 +82,7 @@ fun NewsScreen(
     ) { paddingValues ->
         Surface(modifier = Modifier.padding(paddingValues)) {
             LazyColumn(
+                state = listState,
                 contentPadding = PaddingValues(Pds.spacing.Medium),
                 verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
             ) {
@@ -111,7 +120,7 @@ private fun PreviewNewsScreen() {
                         url = "",
                         type = ArticleType.STUDENT,
                         imageUrl =
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGoUqEBpSoZlRKjPIKNXSrCsAzeMEO4YXZmg&s"
+                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGoUqEBpSoZlRKjPIKNXSrCsAzeMEO4YXZmg&s"
                     )
                 }.toImmutableList(),
             )
