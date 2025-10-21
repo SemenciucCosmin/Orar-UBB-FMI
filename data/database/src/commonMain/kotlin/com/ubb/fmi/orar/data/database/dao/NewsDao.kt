@@ -26,8 +26,8 @@ interface NewsDao {
     suspend fun insertAll(entities: List<ArticleEntity>)
 
     /**
-     * Delete all article entities
+     * Delete article entities older than [timestampLimit]
      */
-    @Query("DELETE FROM articles")
-    suspend fun deleteAll()
+    @Query("DELETE FROM articles WHERE millis < :timestampLimit")
+    suspend fun delete(timestampLimit: Long)
 }

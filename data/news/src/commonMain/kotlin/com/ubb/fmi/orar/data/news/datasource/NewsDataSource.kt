@@ -22,10 +22,13 @@ interface NewsDataSource {
         articles: List<Article>
     )
 
+    /**
+     * Retrieves list of [Article] from API
+     */
     suspend fun getNewsFromApi(): Resource<List<Article>>
 
     /**
-     * Invalidates all cached articles
+     * Invalidates cached articles older than [timestampLimit]
      */
-    suspend fun invalidate()
+    suspend fun invalidate(timestampLimit: Long)
 }

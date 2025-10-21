@@ -37,10 +37,10 @@ class NewsRepositoryImpl(
     }
 
     /**
-     * Invalidates news cache
+     * Invalidates news cache older than [timestampLimit]
      */
-    override suspend fun invalidate() {
-        newsDataSource.invalidate()
+    override suspend fun invalidate(timestampLimit: Long) {
+        newsDataSource.invalidate(timestampLimit)
     }
 
     /**

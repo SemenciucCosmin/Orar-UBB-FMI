@@ -31,17 +31,26 @@ class NewsDataSourceImpl(
     private val logger: Logger,
 ) : NewsDataSource {
 
+    /**
+     * Retrieves [Flow] of articles from database
+     */
     override suspend fun getNewsFromCache(): Flow<List<Article>> {
         return newsDao.getAllAsFlow().map { entities ->
             entities.map(::mapEntityToArticle)
         }
     }
 
+    /**
+     * Saves [articles] in database
+     */
     override suspend fun saveNewsInCache(articles: List<Article>) {
         val entities = articles.map(::mapArticleToEntity)
         newsDao.insertAll(entities)
     }
 
+    /**
+     * Retrieves list of [Article] from API
+     */
     override suspend fun getNewsFromApi(): Resource<List<Article>> {
         return coroutineScope {
             val studentNewsAsync = async { newsApi.getStudentNewsHtml() }
@@ -119,10 +128,16 @@ class NewsDataSourceImpl(
         }
     }
 
-    override suspend fun invalidate() {
-        newsDao.deleteAll()
+    /**
+     * Invalidates cached articles older than [timestampLimit]
+     */
+    override suspend fun invalidate(timestampLimit: Long) {
+        newsDao.delete(timestampLimit)
     }
 
+    /**
+     * Converts a date string like "05.11.2000" to millis
+     */
     @OptIn(ExperimentalTime::class)
     private fun getMillisFromDate(date: String): Long? {
         val parts = date.split(String.DOT)
@@ -134,6 +149,9 @@ class NewsDataSourceImpl(
         return instant.toEpochMilliseconds()
     }
 
+    /**
+     * Maps [ArticleEntity] to [Article]
+     */
     private fun mapEntityToArticle(entity: ArticleEntity): Article {
         return Article(
             id = entity.id,
@@ -146,6 +164,9 @@ class NewsDataSourceImpl(
         )
     }
 
+    /**
+     * Maps [Article] to [ArticleEntity]
+     */
     private fun mapArticleToEntity(article: Article): ArticleEntity {
         return ArticleEntity(
             id = article.id,

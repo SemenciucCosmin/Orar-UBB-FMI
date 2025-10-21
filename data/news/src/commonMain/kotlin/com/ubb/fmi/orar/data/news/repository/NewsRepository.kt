@@ -15,7 +15,7 @@ interface NewsRepository {
     fun getNews(): Flow<Resource<List<Article>>>
 
     /**
-     * Invalidates news cache
+     * Invalidates news cache older than [timestampLimit]
      */
-    suspend fun invalidate()
+    suspend fun invalidate(timestampLimit: Long)
 }
