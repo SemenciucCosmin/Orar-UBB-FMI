@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Owner
@@ -15,8 +14,7 @@ import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState
 import com.ubb.fmi.orar.feature.teachers.ui.viewmodel.model.TeachersUiState.Companion.filteredTeachers
-import com.ubb.fmi.orar.ui.catalog.components.SearchBar
-import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.components.SearchTopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
@@ -58,34 +56,31 @@ fun TeachersScreen(
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
-            TopBar(
+            SearchTopBar(
                 title = stringResource(Res.string.lbl_teachers),
-                onBack = onBack
+                value = uiState.searchQuery,
+                placeholder = stringResource(Res.string.lbl_teacher),
+                onClearClick = { onChangeSearchQuery(String.BLANK) },
+                isSearchEnabled = uiState.errorStatus == null && !uiState.isLoading,
+                onValueChange = onChangeSearchQuery,
+                onBack = onBack,
             )
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            Surface {
-                SearchBar(
-                    value = uiState.searchQuery,
-                    onValueChange = onChangeSearchQuery,
-                    placeholder = stringResource(Res.string.lbl_teacher),
-                    onClearClick = { onChangeSearchQuery(String.BLANK) },
-                    modifier = Modifier.padding(Pds.spacing.Medium)
+            if (uiState.errorStatus == null && !uiState.isLoading) {
+                ChipSelectionRow(
+                    selectedChipId = uiState.selectedFilterId,
+                    onClick = onSelectFilter,
+                    contentPadding = PaddingValues(horizontal = Pds.spacing.Medium),
+                    chips = TeacherTitleFilter.entries.sortedBy { it.orderIndex }.map {
+                        Chip(
+                            id = it.id,
+                            label = stringResource(it.labelRes)
+                        )
+                    }
                 )
             }
-
-            ChipSelectionRow(
-                selectedChipId = uiState.selectedFilterId,
-                onClick = onSelectFilter,
-                contentPadding = PaddingValues(horizontal = Pds.spacing.Medium),
-                chips = TeacherTitleFilter.entries.sortedBy { it.orderIndex }.map {
-                    Chip(
-                        id = it.id,
-                        label = stringResource(it.labelRes)
-                    )
-                }
-            )
 
             LazyColumn(
                 contentPadding = PaddingValues(Pds.spacing.Medium),

@@ -16,6 +16,7 @@ import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
 import com.ubb.fmi.orar.ui.catalog.components.SearchBar
+import com.ubb.fmi.orar.ui.catalog.components.SearchTopBar
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
@@ -55,37 +56,29 @@ fun SubjectsScreen(
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
-            TopBar(
+            SearchTopBar(
                 title = stringResource(Res.string.lbl_subjects),
-                onBack = onBack
+                value = uiState.searchQuery,
+                placeholder = stringResource(Res.string.lbl_subject),
+                onClearClick = { onChangeSearchQuery(String.BLANK) },
+                isSearchEnabled = uiState.errorStatus == null && !uiState.isLoading,
+                onValueChange = onChangeSearchQuery,
+                onBack = onBack,
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            if (uiState.errorStatus == null && !uiState.isLoading) {
-                Surface {
-                    SearchBar(
-                        value = uiState.searchQuery,
-                        onValueChange = onChangeSearchQuery,
-                        placeholder = stringResource(Res.string.lbl_subject),
-                        onClearClick = { onChangeSearchQuery(String.BLANK) },
-                        modifier = Modifier.padding(Pds.spacing.Medium)
-                    )
-                }
-            }
-
-            LazyColumn(
-                contentPadding = PaddingValues(Pds.spacing.Medium),
-                verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-            ) {
-                items(uiState.filteredSubjects) { subject ->
-                    ListItemClickable(
-                        headline = subject.name,
-                        overline = subject.id,
-                        onClick = { onSubjectClick(subject.id) },
-                        leadingIcon = painterResource(Res.drawable.ic_subject),
-                    )
-                }
+        LazyColumn(
+            modifier = Modifier.padding(paddingValues),
+            contentPadding = PaddingValues(Pds.spacing.Medium),
+            verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
+        ) {
+            items(uiState.filteredSubjects) { subject ->
+                ListItemClickable(
+                    headline = subject.name,
+                    overline = subject.id,
+                    onClick = { onSubjectClick(subject.id) },
+                    leadingIcon = painterResource(Res.drawable.ic_subject),
+                )
             }
         }
     }
