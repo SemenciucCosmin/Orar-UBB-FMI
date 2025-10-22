@@ -85,6 +85,7 @@ kotlin {
             implementation(projects.domain.userTimetable)
             implementation(projects.feature.explore)
             implementation(projects.feature.form)
+            implementation(projects.feature.freeRooms)
             implementation(projects.feature.groupTimetable)
             implementation(projects.feature.groups)
             implementation(projects.feature.news)
@@ -258,6 +259,10 @@ detekt {
         "${project.rootDir}/feature/form/src/androidMain/kotlin",
         "${project.rootDir}/feature/form/src/commonMain/kotlin",
         "${project.rootDir}/feature/form/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/free-rooms/src/androidMain/kotlin",
+        "${project.rootDir}/feature/free-rooms/src/commonMain/kotlin",
+        "${project.rootDir}/feature/free-rooms/src/iosMain/kotlin",
 
         "${project.rootDir}/feature/group-timetable/src/androidMain/kotlin",
         "${project.rootDir}/feature/group-timetable/src/commonMain/kotlin",

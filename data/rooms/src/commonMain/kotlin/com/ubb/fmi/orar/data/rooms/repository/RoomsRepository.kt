@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.data.rooms.repository
 
 import com.ubb.fmi.orar.data.network.model.Resource
+import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,11 @@ interface RoomsRepository {
      * Retrieves a [Flow] of timetable for certain room
      */
     fun getTimetable(roomId: String): Flow<Resource<Timetable<Owner.Room>>>
+
+    /**
+     * Retrieves a [Flow] of all rooms and all their events
+     */
+    suspend fun getAllRoomsAndEvents(): Flow<Pair<List<Owner.Room>, List<Event>>>
 
     /**
      * Invalidates rooms cache

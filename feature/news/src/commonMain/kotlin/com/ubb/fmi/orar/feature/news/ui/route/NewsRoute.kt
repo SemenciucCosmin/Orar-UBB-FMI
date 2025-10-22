@@ -7,8 +7,6 @@ import androidx.navigation.NavController
 import com.ubb.fmi.orar.domain.extensions.openUrl
 import com.ubb.fmi.orar.feature.news.ui.components.NewsScreen
 import com.ubb.fmi.orar.feature.news.ui.viewmodel.NewsViewModel
-import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState.Companion.studentArticles
-import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState.Companion.teacherArticles
 import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.extensions.showToast
 import com.ubb.fmi.orar.ui.catalog.model.ToastLength
@@ -27,10 +25,6 @@ fun NewsRoute(navController: NavController) {
     val viewModel: NewsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val toastMessage = stringResource(Res.string.lbl_generic_error_message)
-
-    println("TESTMESSAGE selectedArticleType: ${uiState.selectedArticleType}")
-    println("TESTMESSAGE studentArticles: ${uiState.studentArticles}")
-    println("TESTMESSAGE teacherArticles: ${uiState.teacherArticles}")
 
     NewsScreen(
         uiState = uiState,

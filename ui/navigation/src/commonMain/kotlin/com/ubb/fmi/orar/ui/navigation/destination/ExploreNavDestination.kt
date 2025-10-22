@@ -91,4 +91,10 @@ sealed class ExploreNavDestination {
      */
     @Serializable
     data class RoomTimetable(val roomId: String) : ExploreNavDestination()
+
+    /**
+     * Destination for searching free room
+     */
+    @Serializable
+    data object FreeRooms : ExploreNavDestination()
 }

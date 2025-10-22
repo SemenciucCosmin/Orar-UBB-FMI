@@ -14,6 +14,14 @@ import kotlinx.coroutines.flow.Flow
 interface EventDao {
 
     /**
+     * Get all timetable event entities by [configurationId]
+     */
+    @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId")
+    fun getAllAsFlowByConfiguration(
+        configurationId: String,
+    ): Flow<List<EventEntity>>
+
+    /**
      * Get all timetable event entities by [configurationId] and [ownerId]
      */
     @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
