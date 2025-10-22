@@ -15,10 +15,13 @@ import com.ubb.fmi.orar.ui.navigation.destination.ExploreNavDestination
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_building
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_location
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_student
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_subject
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_explore
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_free_rooms
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_free_rooms_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_rooms
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_rooms_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_students
@@ -73,6 +76,13 @@ fun ExploreRoute(navController: NavController) {
                 text = stringResource(Res.string.lbl_rooms_details),
                 painter = painterResource(Res.drawable.ic_building),
                 onClick = { navController.navigate(ExploreNavDestination.Rooms) },
+            )
+
+            NavigationCard(
+                title = stringResource(Res.string.lbl_free_rooms),
+                text = stringResource(Res.string.lbl_free_rooms_details),
+                painter = painterResource(Res.drawable.ic_location),
+                onClick = { navController.navigate(ExploreNavDestination.FreeRooms) },
             )
         }
     }

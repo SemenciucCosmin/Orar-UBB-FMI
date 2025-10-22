@@ -19,6 +19,15 @@ class EventsDataSourceImpl(
 ) : EventsDataSource {
 
     /**
+     * Retrieve list of all [Event] as [Flow] from cache
+     */
+    override suspend fun getAllEventsFromCache(configurationId: String): Flow<List<Event>> {
+        return eventDao.getAllAsFlowByConfiguration(configurationId).map {
+            it.map(::mapEntityToEvent)
+        }
+    }
+
+    /**
      * Retrieve list of [Event] as [Flow] from cache
      */
     override suspend fun getEventsFromCache(

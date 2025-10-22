@@ -5,15 +5,21 @@ import com.ubb.fmi.orar.data.network.model.Status
 import com.ubb.fmi.orar.data.network.model.isSuccess
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.Timetable
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -60,6 +66,21 @@ class RoomsRepositoryImpl(
         }
 
         return timetableFlows[roomId] ?: MutableStateFlow(Resource(null, Status.NotFoundError))
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun getAllRoomsAndEvents(): Flow<Pair<List<Owner.Room>, List<Event>>> {
+        return roomsFlow.transformLatest { resource ->
+            val configurationFlow = timetablePreferences.getConfiguration()
+            val configuration = configurationFlow.firstOrNull() ?: return@transformLatest
+            val configurationId = configuration.year.toString() + configuration.semesterId
+            val rooms = resource.payload ?: emptyList()
+            prefetchAll(configuration.year, configuration.semesterId, rooms)
+
+            eventsDataSource.getAllEventsFromCache(configurationId).collectLatest { events ->
+                emit(rooms to events)
+            }
+        }.distinctUntilChanged()
     }
 
     /**
@@ -208,6 +229,18 @@ class RoomsRepositoryImpl(
                     else -> it
                 }
             }
+        }
+    }
+
+    private fun prefetchAll(
+        year: Int,
+        semesterId: String,
+        rooms: List<Owner.Room>
+    ) {
+        coroutineScope.launch {
+            rooms.map { room ->
+                async { getEventsFromApi(year, semesterId, room) }
+            }.awaitAll()
         }
     }
 }

@@ -16,6 +16,7 @@ import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
+import com.ubb.fmi.orar.feature.freerooms.di.freeRoomsFeatureModule
 import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
 import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
 import com.ubb.fmi.orar.feature.news.di.newsFeatureModule
@@ -47,6 +48,9 @@ fun commonModule() = module {
 
     // FORM
     includes(formFeatureModule())
+
+    // FREE ROOMS
+    includes(freeRoomsFeatureModule())
 
     // LOGGING
     includes(loggingDomainModule())

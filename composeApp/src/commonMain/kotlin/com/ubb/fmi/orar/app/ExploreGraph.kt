@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.ubb.fmi.orar.feature.freerooms.ui.route.FreeRoomsRoute
 import com.ubb.fmi.orar.feature.groups.ui.route.GroupsRoute
 import com.ubb.fmi.orar.feature.grouptimetable.ui.route.GroupTimetableRoute
 import com.ubb.fmi.orar.feature.rooms.ui.route.RoomsRoute
@@ -81,5 +82,9 @@ fun NavGraphBuilder.exploreGraph(navController: NavController) {
             navController = navController,
             roomId = args.roomId
         )
+    }
+
+    composable<ExploreNavDestination.FreeRooms> { navBackStackEntry ->
+        FreeRoomsRoute(navController)
     }
 }
