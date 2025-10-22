@@ -20,13 +20,11 @@ fun FreeRoomsRoute(navController: NavController) {
 
     FreeRoomsScreen(
         uiState = uiState,
-        onRetryClick = viewModel::retry,
         onBack = navController::navigateUp,
         onStartHourChange = viewModel::changeStartHour,
         onStartMinuteChange = viewModel::changeStartMinute,
         onEndHourChange = viewModel::changeEndHour,
         onEndMinuteChange = viewModel::changeEndMinute,
-        onSelectFrequency = viewModel::selectFrequency,
         onSelectDays = viewModel::selectDays,
         onRoomClick = { roomId ->
             navController.navigate(ExploreNavDestination.RoomTimetable(roomId))

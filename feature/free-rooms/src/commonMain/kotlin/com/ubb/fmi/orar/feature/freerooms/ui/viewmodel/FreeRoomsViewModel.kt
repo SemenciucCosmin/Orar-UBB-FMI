@@ -3,16 +3,9 @@ package com.ubb.fmi.orar.feature.freerooms.ui.viewmodel
 import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.network.model.isEmpty
-import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.data.timetable.model.Day
-import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.feature.freerooms.ui.viewmodel.model.FreeRoomsUiState
-import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -28,12 +21,6 @@ class FreeRoomsViewModel(
 ) : ViewModel() {
 
     /**
-     * Job to manage the coroutine for fetching rooms.
-     * This allows for cancellation and restarting of the job when needed.
-     */
-    private var job: Job
-
-    /**
      * Mutable state flow representing the UI state of the Free Rooms Search feature.
      * It holds the list of rooms, loading state, and error state.
      */
@@ -45,26 +32,26 @@ class FreeRoomsViewModel(
      * The initial state is set to loading.
      */
     init {
-        job = getRooms()
+        getItems()
     }
 
     /**
-     * Fetches the list of rooms from the data source and updates the UI state.
+     * Fetches the list of rooms and events from the data source and updates the UI state.
      */
-    private fun getRooms() = viewModelScope.launch {
-        logger.d(TAG, "getRooms")
-        _uiState.update { it.copy(isLoading = true, errorStatus = null) }
+    private fun getItems() {
+        viewModelScope.launch {
+            logger.d(TAG, "getItems")
+            roomsRepository.getAllRoomsAndEvents().collectLatest { (rooms, events) ->
+                logger.d(TAG, "getItems rooms: ${rooms.size}")
+                logger.d(TAG, "getItems events: ${events.size}")
 
-        roomsRepository.getRooms().collectLatest { resource ->
-            logger.d(TAG, "getRooms resource: $resource")
-
-            _uiState.update {
-                it.copy(
-                    isLoading = resource.status.isLoading(),
-                    isEmpty = resource.status.isEmpty(),
-                    errorStatus = resource.status.toErrorStatus(),
-                    rooms = resource.payload?.toImmutableList() ?: persistentListOf()
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        rooms = rooms,
+                        events = events
+                    )
+                }
             }
         }
     }
@@ -85,22 +72,8 @@ class FreeRoomsViewModel(
         _uiState.update { it.copy(endMinute = endMinute) }
     }
 
-    fun selectFrequency(frequency: Frequency) {
-        _uiState.update { it.copy(selectedFrequency = frequency) }
-    }
-
     fun selectDays(days: List<Day>) {
         _uiState.update { it.copy(selectedDays = days) }
-    }
-
-    /**
-     * Cancels the current job and restarts the fetching of rooms.
-     * This is useful for retrying the fetch operation in case of an error.
-     */
-    fun retry() {
-        logger.d(TAG, "retry")
-        job.cancel()
-        job = getRooms()
     }
 
     companion object {

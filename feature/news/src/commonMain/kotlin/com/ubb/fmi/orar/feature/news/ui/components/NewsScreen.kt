@@ -120,7 +120,7 @@ private fun PreviewNewsScreen() {
                         url = "",
                         type = ArticleType.STUDENT,
                         imageUrl =
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGoUqEBpSoZlRKjPIKNXSrCsAzeMEO4YXZmg&s"
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGoUqEBpSoZlRKjPIKNXSrCsAzeMEO4YXZmg&s"
                     )
                 }.toImmutableList(),
             )
