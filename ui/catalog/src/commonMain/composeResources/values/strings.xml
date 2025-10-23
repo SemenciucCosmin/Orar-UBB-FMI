@@ -98,8 +98,7 @@
     <string name="lbl_refresh_data">Refresh data</string>
     <string name="lbl_refresh_data_success_message">Refresh data successful</string>
     <string name="lbl_version">Version %1$s</string>
-    <string name="lbl_open_source">Open source code available on</string>
-    <string name="lbl_github">GitHub</string>
+    <string name="lbl_developed_by">Developed by %1$s</string>
 
     <!--  THEME  -->
     <string name="lbl_theme">Theme</string>
