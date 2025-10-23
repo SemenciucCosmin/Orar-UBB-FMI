@@ -16,6 +16,7 @@ class CheckCachedNewsDataValidityUseCase(
     /**
      * Checks the validity of cached news data and invalidates entries older than 6 months
      */
+    @Suppress("TooGenericExceptionCaught")
     @OptIn(ExperimentalTime::class)
     suspend operator fun invoke() {
         try {

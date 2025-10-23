@@ -98,8 +98,7 @@
     <string name="lbl_refresh_data">Reactualizaţi datele</string>
     <string name="lbl_refresh_data_success_message">Reactualizarea datelor reușită</string>
     <string name="lbl_version">Versiunea %1$s</string>
-    <string name="lbl_open_source">Codul sursă este disponibil pe</string>
-    <string name="lbl_github">GitHub</string>
+    <string name="lbl_developed_by">Creat de %1$s</string>
 
     <!--  THEME  -->
     <string name="lbl_theme">Tema</string>
