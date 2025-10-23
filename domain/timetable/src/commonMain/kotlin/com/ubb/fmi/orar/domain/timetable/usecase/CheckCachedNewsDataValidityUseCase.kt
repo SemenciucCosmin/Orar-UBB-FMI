@@ -18,10 +18,14 @@ class CheckCachedNewsDataValidityUseCase(
      */
     @OptIn(ExperimentalTime::class)
     suspend operator fun invoke() {
-        logger.d(TAG, "invalidate")
-        val currentMillis = Clock.System.now().toEpochMilliseconds()
-        val timestampLimit = currentMillis - VALID_DATA_TIMEFRAME
-        newsRepository.invalidate(timestampLimit)
+        try {
+            logger.d(TAG, "invalidate")
+            val currentMillis = Clock.System.now().toEpochMilliseconds()
+            val timestampLimit = currentMillis - VALID_DATA_TIMEFRAME
+            newsRepository.invalidate(timestampLimit)
+        } catch (exception: Exception) {
+            logger.d(TAG, "invalidate failure: ${exception.message}")
+        }
     }
 
     companion object {
