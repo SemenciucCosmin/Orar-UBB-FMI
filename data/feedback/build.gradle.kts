@@ -31,6 +31,10 @@ kotlin {
         }
 
         commonMain.dependencies {
+            // DATA STORE
+            implementation(libs.data.store)
+            implementation(libs.data.store.preferences)
+
             // KOIN
             implementation(libs.koin.core)
 
@@ -44,6 +48,7 @@ kotlin {
             // Modules
             implementation(projects.data.database)
             implementation(projects.data.network)
+            implementation(projects.data.preferences)
             implementation(projects.domain.extensions)
             implementation(projects.domain.htmlParser)
             implementation(projects.domain.logging)
