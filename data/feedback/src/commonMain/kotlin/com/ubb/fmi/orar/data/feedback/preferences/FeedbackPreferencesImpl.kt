@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.data.feedback.preferences
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -23,14 +24,20 @@ class FeedbackPreferencesImpl(
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getFeedbackMetrics(): Flow<FeedbackMetrics> {
         return dataStore.data.mapLatest { preferences ->
+            val isFeedbackLoopShown = preferences[IS_FEEDBACK_LOOP_SHOWN] == true
             val firstUsageTimestamp = preferences[FIRST_USAGE_TIMESTAMP]
             val appUsagePoints = preferences[APP_USAGE_POINTS] ?: DEFAULT_POINTS
 
             FeedbackMetrics(
+                isFeedbackLoopShown = isFeedbackLoopShown,
                 firstUsageTimestamp = firstUsageTimestamp,
                 appUsagePoints = appUsagePoints
             )
         }
+    }
+
+    override suspend fun setFeedbackLoopShown() {
+        dataStore.edit { it[IS_FEEDBACK_LOOP_SHOWN] = true }
     }
 
     /**
@@ -49,6 +56,7 @@ class FeedbackPreferencesImpl(
 
     companion object {
         private const val DEFAULT_POINTS = 0
+        private val IS_FEEDBACK_LOOP_SHOWN = booleanPreferencesKey("IS_FEEDBACK_LOOP_SHOWN")
         private val FIRST_USAGE_TIMESTAMP = longPreferencesKey("FIRST_USAGE_TIMESTAMP")
         private val APP_USAGE_POINTS = intPreferencesKey("APP_USAGE_POINTS")
     }

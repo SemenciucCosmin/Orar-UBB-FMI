@@ -39,19 +39,10 @@ kotlin {
             implementation(libs.koin.core)
 
             // KOTLINX
-            implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.coroutines.core)
 
-            // OKIO
-            implementation(libs.okio)
-
             // Modules
-            implementation(projects.data.database)
-            implementation(projects.data.network)
             implementation(projects.data.preferences)
-            implementation(projects.domain.extensions)
-            implementation(projects.domain.htmlParser)
-            implementation(projects.domain.logging)
         }
 
         iosMain.dependencies {

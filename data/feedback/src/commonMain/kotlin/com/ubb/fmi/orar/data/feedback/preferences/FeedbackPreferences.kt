@@ -14,6 +14,11 @@ interface FeedbackPreferences {
     suspend fun getFeedbackMetrics(): Flow<FeedbackMetrics>
 
     /**
+     * Marks feedback loop as shown
+     */
+    suspend fun setFeedbackLoopShown()
+
+    /**
      * Sets first app usage timestamp
      */
     suspend fun setFirstUsageTimestamp(value: Long)
