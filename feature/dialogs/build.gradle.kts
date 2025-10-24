@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -30,23 +29,10 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            // KTOR
-            implementation(libs.ktor.client.okhttp)
+
         }
 
         commonMain.dependencies {
-            // COIL
-            implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
-
-            // COMPOSE
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.runtime)
-            implementation(compose.ui)
-
             // KOIN
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
@@ -56,23 +42,13 @@ kotlin {
             implementation(libs.kotlinx.immutableCollections)
 
             // MODULES
-            implementation(projects.data.network)
-            implementation(projects.data.news)
-            implementation(projects.data.timetable)
-            implementation(projects.domain.extensions)
+            implementation(projects.domain.feedback)
             implementation(projects.domain.logging)
-            implementation(projects.domain.userTimetable)
             implementation(projects.ui.catalog)
-            implementation(projects.ui.navigation)
-            implementation(projects.ui.theme)
-
-            // NAVIGATION
-            implementation(libs.navigation.compose)
         }
 
         iosMain.dependencies {
-            // KTOR
-            implementation(libs.ktor.client.darwin)
+
         }
 
         commonTest.dependencies {
