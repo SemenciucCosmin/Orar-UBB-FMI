@@ -24,6 +24,11 @@ interface FeedbackPreferences {
     suspend fun setFirstUsageTimestamp(value: Long)
 
     /**
+     * Sets postponed feed back loop timestamp
+     */
+    suspend fun setPostponedTimestamp(value: Long)
+
+    /**
      * Sets points of app usage
      */
     suspend fun setAppUsagePoints(value: Int)

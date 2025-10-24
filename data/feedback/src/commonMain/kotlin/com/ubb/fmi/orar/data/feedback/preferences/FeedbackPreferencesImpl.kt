@@ -26,11 +26,13 @@ class FeedbackPreferencesImpl(
         return dataStore.data.mapLatest { preferences ->
             val isFeedbackLoopShown = preferences[IS_FEEDBACK_LOOP_SHOWN] == true
             val firstUsageTimestamp = preferences[FIRST_USAGE_TIMESTAMP]
+            val postponedTimestamp = preferences[POSTPONED_TIMESTAMP] ?: DEFAULT_TIMESTAMP
             val appUsagePoints = preferences[APP_USAGE_POINTS] ?: DEFAULT_POINTS
 
             FeedbackMetrics(
                 isFeedbackLoopShown = isFeedbackLoopShown,
                 firstUsageTimestamp = firstUsageTimestamp,
+                postponedTimestamp = postponedTimestamp,
                 appUsagePoints = appUsagePoints
             )
         }
@@ -48,6 +50,13 @@ class FeedbackPreferencesImpl(
     }
 
     /**
+     * Sets postponed feed back loop timestamp
+     */
+    override suspend fun setPostponedTimestamp(value: Long) {
+        dataStore.edit { it[POSTPONED_TIMESTAMP] = value }
+    }
+
+    /**
      * Sets points of app usage
      */
     override suspend fun setAppUsagePoints(value: Int) {
@@ -56,8 +65,10 @@ class FeedbackPreferencesImpl(
 
     companion object {
         private const val DEFAULT_POINTS = 0
+        private const val DEFAULT_TIMESTAMP = 0L
         private val IS_FEEDBACK_LOOP_SHOWN = booleanPreferencesKey("IS_FEEDBACK_LOOP_SHOWN")
         private val FIRST_USAGE_TIMESTAMP = longPreferencesKey("FIRST_USAGE_TIMESTAMP")
+        private val POSTPONED_TIMESTAMP = longPreferencesKey("POSTPONED_TIMESTAMP")
         private val APP_USAGE_POINTS = intPreferencesKey("APP_USAGE_POINTS")
     }
 }

@@ -6,5 +6,6 @@ package com.ubb.fmi.orar.data.feedback.model
 data class FeedbackMetrics(
     val isFeedbackLoopShown: Boolean,
     val firstUsageTimestamp: Long?,
+    val postponedTimestamp: Long,
     val appUsagePoints: Int,
 )

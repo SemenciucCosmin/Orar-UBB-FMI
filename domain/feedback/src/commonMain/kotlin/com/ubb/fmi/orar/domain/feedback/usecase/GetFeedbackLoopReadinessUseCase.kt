@@ -17,12 +17,20 @@ class GetFeedbackLoopReadinessUseCase(
     @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
     suspend operator fun invoke(): Flow<Boolean> {
         return feedbackPreferences.getFeedbackMetrics().mapLatest { feedbackMetrics ->
+            val currentMillis = Clock.System.now().toEpochMilliseconds()
             val firstUsageTimestamp = feedbackMetrics.firstUsageTimestamp ?: DEFAULT_MILLIS
-            val passedMillis = Clock.System.now().toEpochMilliseconds() - firstUsageTimestamp
+            val passedMillis = currentMillis - firstUsageTimestamp
+
+            val isPostponeExpired = feedbackMetrics.postponedTimestamp <= currentMillis
             val isEnoughAppUsageDays = passedMillis >= MIN_APP_USAGE_DAYS_MILLIS
             val isEnoughAppUsagePoints = feedbackMetrics.appUsagePoints >= MIN_APP_USAGE_POINTS
 
-            isEnoughAppUsageDays && isEnoughAppUsagePoints && feedbackMetrics.isFeedbackLoopShown
+            listOf(
+                isPostponeExpired,
+                isEnoughAppUsageDays,
+                isEnoughAppUsagePoints,
+                feedbackMetrics.isFeedbackLoopShown
+            ).all { it }
         }
     }
 
