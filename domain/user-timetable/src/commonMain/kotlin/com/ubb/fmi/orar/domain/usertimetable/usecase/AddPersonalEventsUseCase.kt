@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.PIPE
 import kotlinx.coroutines.flow.firstOrNull
@@ -16,6 +18,7 @@ import kotlin.time.ExperimentalTime
 class AddPersonalEventsUseCase(
     private val timetablePreferences: TimetablePreferences,
     private val eventsDataSource: EventsDataSource,
+    private val analyticsLogger: AnalyticsLogger,
 ) {
     @OptIn(ExperimentalTime::class)
     suspend operator fun invoke(
@@ -66,6 +69,7 @@ class AddPersonalEventsUseCase(
             )
         }
 
+        analyticsLogger.logEvent(AnalyticsEvent.ADD_PERSONAL_EVENT)
         eventsDataSource.saveEventsInCache(
             ownerId = Owner.User.id,
             events = personalEvents

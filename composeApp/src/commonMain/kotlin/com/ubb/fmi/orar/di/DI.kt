@@ -11,6 +11,7 @@ import com.ubb.fmi.orar.data.studylines.di.studyLinesDataModule
 import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
+import com.ubb.fmi.orar.domain.analytics.di.analyticsDomainModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
 import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
@@ -40,6 +41,9 @@ import org.koin.dsl.module
  * This module includes all necessary dependencies for the application to function correctly.
  */
 fun commonModule() = module {
+    // ANALYTICS
+    includes(analyticsDomainModule())
+
     // COMMON
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 

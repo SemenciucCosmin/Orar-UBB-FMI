@@ -4,9 +4,12 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
+import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOption
 import com.ubb.fmi.orar.ui.theme.color.DarkColorScheme
 import com.ubb.fmi.orar.ui.theme.color.LightColorScheme
+import org.koin.compose.getKoin
 
 /**
  * Represents the theme for the Orar UBB FMI application.
@@ -15,10 +18,9 @@ import com.ubb.fmi.orar.ui.theme.color.LightColorScheme
  */
 @Composable
 fun OrarUbbFmiTheme(content: @Composable () -> Unit) {
-//    val koin = getKoin()
-//    val getThemeOption: GetThemeOption = koin.get()
-//    val themeOption by getThemeOption().collectAsStateWithLifecycle(ThemeOption.SYSTEM)
-    val themeOption = ThemeOption.LIGHT
+    val koin = getKoin()
+    val getThemeOption: GetThemeOption = koin.get()
+    val themeOption by getThemeOption().collectAsStateWithLifecycle(ThemeOption.SYSTEM)
 
     val colorScheme = when {
         themeOption == ThemeOption.LIGHT -> LightColorScheme

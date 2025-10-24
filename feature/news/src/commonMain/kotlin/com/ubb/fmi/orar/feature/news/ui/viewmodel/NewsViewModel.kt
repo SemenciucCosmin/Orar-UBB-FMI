@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.news.model.ArticleType
 import com.ubb.fmi.orar.data.news.repository.NewsRepository
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -26,6 +28,7 @@ import kotlinx.coroutines.launch
 class NewsViewModel(
     private val newsRepository: NewsRepository,
     private val timetablePreferences: TimetablePreferences,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -89,6 +92,16 @@ class NewsViewModel(
         logger.d(TAG, "retry")
         job.cancel()
         job = getNews()
+    }
+
+    /**
+     * Registers analytics event for the item click action
+     */
+    fun handleClickAction() {
+        when (_uiState.value.selectedArticleType) {
+            ArticleType.STUDENT -> analyticsLogger.logEvent(AnalyticsEvent.NEWS_ACCESS_STUDENT)
+            ArticleType.TEACHER -> analyticsLogger.logEvent(AnalyticsEvent.NEWS_ACCESS_TEACHER)
+        }
     }
 
     companion object {

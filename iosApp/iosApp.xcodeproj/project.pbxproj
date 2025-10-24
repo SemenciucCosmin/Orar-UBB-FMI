@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		652696182EAA3B4A001CB2B5 /* FirebaseAnalyticsIdentitySupport in Frameworks */ = {isa = PBXBuildFile; productRef = 652696172EAA3B4A001CB2B5 /* FirebaseAnalyticsIdentitySupport */; };
 		65DABD2C2E7B3A150028CDF9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65DABD202E7B3A150028CDF9 /* GoogleService-Info.plist */; };
 		65DABD2F2E7B3A480028CDF9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 65DABD2E2E7B3A480028CDF9 /* FirebaseAnalytics */; };
 		65DABD312E7B3A480028CDF9 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 65DABD302E7B3A480028CDF9 /* FirebaseAnalyticsCore */; };
@@ -51,6 +52,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65DABD2F2E7B3A480028CDF9 /* FirebaseAnalytics in Frameworks */,
+				652696182EAA3B4A001CB2B5 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
 				65DABD352E7B3A480028CDF9 /* FirebaseCrashlytics in Frameworks */,
 				65DABD332E7B3A480028CDF9 /* FirebaseCore in Frameworks */,
 				65DABD312E7B3A480028CDF9 /* FirebaseAnalyticsCore in Frameworks */,
@@ -104,6 +106,7 @@
 				65DABD302E7B3A480028CDF9 /* FirebaseAnalyticsCore */,
 				65DABD322E7B3A480028CDF9 /* FirebaseCore */,
 				65DABD342E7B3A480028CDF9 /* FirebaseCrashlytics */,
+				652696172EAA3B4A001CB2B5 /* FirebaseAnalyticsIdentitySupport */,
 			);
 			productName = iosApp;
 			productReference = B9DA97B12DC1472C00A4DA20 /* Orar-UBB-FMI.app */;
@@ -440,6 +443,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		652696172EAA3B4A001CB2B5 /* FirebaseAnalyticsIdentitySupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65DABD2D2E7B3A480028CDF9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsIdentitySupport;
+		};
 		65DABD2E2E7B3A480028CDF9 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 65DABD2D2E7B3A480028CDF9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

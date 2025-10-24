@@ -41,6 +41,7 @@ include(
     ":data:subjects",
     ":data:teachers",
     ":data:timetable",
+    ":domain:analytics",
     ":domain:extensions",
     ":domain:html-parser",
     ":domain:logging",

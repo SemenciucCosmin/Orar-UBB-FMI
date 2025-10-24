@@ -54,6 +54,7 @@ kotlin {
             implementation(projects.data.network)
             implementation(projects.data.rooms)
             implementation(projects.data.timetable)
+            implementation(projects.domain.analytics)
             implementation(projects.domain.extensions)
             implementation(projects.domain.logging)
             implementation(projects.ui.catalog)

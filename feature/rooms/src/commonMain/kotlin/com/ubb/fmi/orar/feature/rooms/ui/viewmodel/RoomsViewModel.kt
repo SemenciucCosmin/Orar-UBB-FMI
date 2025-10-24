@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
  */
 class RoomsViewModel(
     private val roomsRepository: RoomsRepository,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -91,6 +94,13 @@ class RoomsViewModel(
         logger.d(TAG, "retry")
         job.cancel()
         job = getRooms()
+    }
+
+    /**
+     * Registers analytics event for the item click action
+     */
+    fun handleClickAction() {
+        analyticsLogger.logEvent(AnalyticsEvent.VIEW_TIMETABLE_ROOM)
     }
 
     companion object {

@@ -27,8 +27,9 @@ fun SubjectsRoute(navController: NavController) {
         onChangeSearchQuery = viewModel::setSearchQuery,
         onRetryClick = viewModel::retry,
         onBack = navController::navigateUp,
-        onSubjectClick = { roomId ->
-            navController.navigate(ExploreNavDestination.SubjectTimetable(roomId))
+        onSubjectClick = { subjectId ->
+            viewModel.handleClickAction()
+            navController.navigate(ExploreNavDestination.SubjectTimetable(subjectId))
         }
     )
 }
