@@ -35,12 +35,13 @@ fun GroupsRoute(
         uiState = uiState,
         onRetryClick = viewModel::retry,
         onBack = navController::navigateUp,
-        onGroupClick = { group ->
+        onGroupClick = { groupId ->
+            viewModel.handleClickAction()
             navController.navigate(
                 ExploreNavDestination.StudyLineTimetable(
                     fieldId = fieldId,
                     studyLevelId = studyLevelId,
-                    groupId = group
+                    groupId = groupId
                 )
             )
         },

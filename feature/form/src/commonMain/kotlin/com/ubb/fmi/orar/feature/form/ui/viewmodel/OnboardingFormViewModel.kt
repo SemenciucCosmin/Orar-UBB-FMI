@@ -3,6 +3,8 @@ package com.ubb.fmi.orar.feature.form.ui.viewmodel
 import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
@@ -28,6 +30,7 @@ import kotlin.time.ExperimentalTime
  */
 class OnboardingFormViewModel(
     private val timetablePreferences: TimetablePreferences,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : EventViewModel<OnboardingFormUiState.OnboardingFormUiEvent>() {
 
@@ -108,10 +111,12 @@ class OnboardingFormViewModel(
 
             when (userType) {
                 UserType.STUDENT -> {
+                    analyticsLogger.logEvent(AnalyticsEvent.CONFIG_STUDENT)
                     registerEvent(OnboardingFormUiState.OnboardingFormUiEvent.STUDENT_FINISH)
                 }
 
                 UserType.TEACHER -> {
+                    analyticsLogger.logEvent(AnalyticsEvent.CONFIG_TEACHER)
                     registerEvent(OnboardingFormUiState.OnboardingFormUiEvent.TEACHER_FINISH)
                 }
             }

@@ -15,7 +15,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
     
@@ -36,9 +36,7 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
 
             // FIREBASE
-            implementation(project.dependencies.platform(libs.firebase.bom))
-            implementation(libs.firebase.analytics)
-            implementation(libs.firebase.crashlytics)
+            implementation(libs.firebase.app.kmp)
 
             // KOTLINX
             implementation(libs.kotlinx.coroutines.play.services)
@@ -77,6 +75,7 @@ kotlin {
             implementation(projects.data.subjects)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
+            implementation(projects.domain.analytics)
             implementation(projects.domain.extensions)
             implementation(projects.domain.htmlParser)
             implementation(projects.domain.logging)
@@ -163,9 +162,14 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -227,6 +231,10 @@ detekt {
         "${project.rootDir}/data/timetable/src/iosMain/kotlin",
 
         // DOMAIN
+        "${project.rootDir}/domain/analytics/src/androidMain/kotlin",
+        "${project.rootDir}/domain/analytics/src/commonMain/kotlin",
+        "${project.rootDir}/domain/analytics/src/iosMain/kotlin",
+
         "${project.rootDir}/domain/extensions/src/androidMain/kotlin",
         "${project.rootDir}/domain/extensions/src/commonMain/kotlin",
         "${project.rootDir}/domain/extensions/src/iosMain/kotlin",

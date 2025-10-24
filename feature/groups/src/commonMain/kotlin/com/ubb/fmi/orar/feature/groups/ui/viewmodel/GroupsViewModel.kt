@@ -7,6 +7,8 @@ import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
 import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
@@ -34,6 +36,7 @@ class GroupsViewModel(
     private val fieldId: String,
     private val studyLevelId: String,
     private val groupsRepository: GroupsRepository,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -83,6 +86,13 @@ class GroupsViewModel(
     fun retry() {
         logger.d(TAG, "retry")
         getGroups()
+    }
+
+    /**
+     * Registers analytics event for the item click action
+     */
+    fun handleClickAction() {
+        analyticsLogger.logEvent(AnalyticsEvent.VIEW_TIMETABLE_GROUP)
     }
 
     companion object {

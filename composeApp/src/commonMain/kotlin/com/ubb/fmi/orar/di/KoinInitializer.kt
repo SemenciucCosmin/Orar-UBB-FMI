@@ -6,8 +6,6 @@ import org.koin.dsl.KoinAppDeclaration
 /**
  * Initializes Koin for dependency injection in the Orar UBB FMI application.
  * This function sets up the Koin context with the provided configuration and modules.
- *
- * @param config Optional KoinAppDeclaration to customize the Koin setup.
  */
 object KoinInitializer {
 
