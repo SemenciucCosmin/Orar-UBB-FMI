@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -29,39 +27,16 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-
         }
 
         commonMain.dependencies {
-            // COMPOSE
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.runtime)
-            implementation(compose.ui)
+
+            // FIREBASE
+            implementation(libs.firebase.app.kmp)
+            implementation(libs.firebase.analytics.kmp)
 
             // KOIN
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
-
-            // KOTLINX
-            implementation(libs.kotlinx.immutableCollections)
-
-            // MODULES
-            implementation(projects.data.network)
-            implementation(projects.data.subjects)
-            implementation(projects.data.timetable)
-            implementation(projects.domain.analytics)
-            implementation(projects.domain.extensions)
-            implementation(projects.domain.logging)
-            implementation(projects.ui.catalog)
-            implementation(projects.ui.navigation)
-            implementation(projects.ui.theme)
-
-            // NAVIGATION
-            implementation(libs.navigation.compose)
         }
 
         iosMain.dependencies {
@@ -82,7 +57,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.ubb.fmi.orar.feature.subjects"
+    namespace = "com.ubb.fmi.orar.domain.analytics"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -106,5 +81,4 @@ android {
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
 }

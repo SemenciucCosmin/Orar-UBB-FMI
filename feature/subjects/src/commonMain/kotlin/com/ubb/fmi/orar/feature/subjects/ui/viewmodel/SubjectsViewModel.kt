@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.subjects.repository.SubjectsRepository
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
  */
 class SubjectsViewModel(
     private val subjectsRepository: SubjectsRepository,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -88,6 +91,14 @@ class SubjectsViewModel(
         job.cancel()
         job = getSubjects()
     }
+
+    /**
+     * Registers analytics event for the item click action
+     */
+    fun handleClickAction() {
+        analyticsLogger.logEvent(AnalyticsEvent.VIEW_TIMETABLE_SUBJECT)
+    }
+
 
     companion object {
         private const val TAG = "SubjectsViewModel"

@@ -26,6 +26,7 @@ fun RoomsRoute(navController: NavController) {
         onRetryClick = viewModel::retry,
         onBack = navController::navigateUp,
         onRoomClick = { roomId ->
+            viewModel.handleClickAction()
             navController.navigate(ExploreNavDestination.RoomTimetable(roomId))
         }
     )

@@ -24,8 +24,9 @@ fun TeachersRoute(navController: NavController) {
         onChangeSearchQuery = viewModel::setSearchQuery,
         onRetryClick = viewModel::retry,
         onBack = navController::navigateUp,
-        onTeacherClick = { roomId ->
-            navController.navigate(ExploreNavDestination.TeacherTimetable(roomId))
+        onTeacherClick = { teacherId ->
+            viewModel.handleClickAction()
+            navController.navigate(ExploreNavDestination.TeacherTimetable(teacherId))
         }
     )
 }

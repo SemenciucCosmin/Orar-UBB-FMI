@@ -25,8 +25,8 @@ data-store = "1.1.7"
 detekt = "1.23.8"
 
 # FIREBASE
-firebase-bom = "34.4.0"
 firebase-crashlytics = "3.0.6"
+firebase-kmp = "2.3.0"
 
 # GOOGLE
 google-services = "4.4.4"
@@ -85,9 +85,8 @@ data-store-preferences = { module = "androidx.datastore:datastore-preferences", 
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 # FIREBASE
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics"}
-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ndk"}
+firebase-analytics-kmp = { module = "dev.gitlive:firebase-analytics", version.ref = "firebase-kmp"}
+firebase-app-kmp = { module = "dev.gitlive:firebase-app", version.ref = "firebase-kmp"}
 
 # KTOR
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }

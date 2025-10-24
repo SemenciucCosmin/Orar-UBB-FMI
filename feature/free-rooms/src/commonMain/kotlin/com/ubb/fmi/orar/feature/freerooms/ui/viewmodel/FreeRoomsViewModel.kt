@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.rooms.repository.RoomsRepository
 import com.ubb.fmi.orar.data.timetable.model.Day
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.feature.freerooms.ui.viewmodel.model.FreeRoomsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
  * ViewModel for managing the state of the Free Rooms Search feature.
  */
 class FreeRoomsViewModel(
+    analyticsLogger: AnalyticsLogger,
     private val roomsRepository: RoomsRepository,
     private val logger: Logger,
 ) : ViewModel() {
@@ -32,6 +35,7 @@ class FreeRoomsViewModel(
      * The initial state is set to loading.
      */
     init {
+        analyticsLogger.logEvent(AnalyticsEvent.FREE_ROOM_SEARCH)
         getItems()
     }
 
