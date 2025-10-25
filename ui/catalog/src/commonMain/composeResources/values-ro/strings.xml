@@ -1,4 +1,5 @@
 <resources>
+    <!-- Ă Â Î Ț Ș ă â î ț ș-->
     <!--  COMMON  -->
     <string name="lbl_next">Pasul următor</string>
     <string name="lbl_retry">Reîncercați</string>
@@ -24,6 +25,7 @@
 
     <!--  NAVIGATION  -->
     <string name="lbl_home">Acasă</string>
+    <string name="lbl_news">Anunțuri</string>
     <string name="lbl_students">Studenți</string>
     <string name="lbl_teachers">Profesori</string>
     <string name="lbl_subjects">Discipline</string>
@@ -121,7 +123,19 @@
     <string name="lbl_remove_personal_event_message">Ștergeți acest eveniment personal?</string>
     <string name="lbl_add_event_message">Adăugați acest eveniment in orar?</string>
 
-    <!--  NEWS  -->
-    <string name="lbl_news">Anunțuri</string>
+    <!--  FEEDBACK  -->
+    <string name="lbl_feedback_choice_message">Cât de satisfăcut ești de experiența ta?</string>
+    <string name="lbl_feedback_ask_me_later">Întreabă-mă mai târziu</string>
+    <string name="lbl_feedback_dont_ask_again">Nu mai întreba</string>
+    <string name="lbl_feedback_write_a_review">Scrie o recenzie</string>
+    <string name="lbl_feedback_complete_formular">Completează un formular de recenzie</string>
+    <string name="lbl_feedback_no_thanks">Nu, mulțumesc</string>
+    <string name="lbl_feedback_choice_great">Excelentă</string>
+    <string name="lbl_feedback_choice_ok">Neutră</string>
+    <string name="lbl_feedback_choice_poor">Nu prea bună</string>
+    <string name="lbl_feedback_choice_positive_title">Mulțumesc!</string>
+    <string name="lbl_feedback_choice_positive_message">Aș aprecia foarte mult recenzia ta!</string>
+    <string name="lbl_feedback_choice_negative_title">Ce a mers rău?</string>
+    <string name="lbl_feedback_choice_negative_message">Trimite-mi o recenzie despre problemele tale</string>
 
 </resources>

@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.ui.navigation.components
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +31,7 @@ fun BottomBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    BottomAppBar {
+    BottomAppBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
         BottomBarItem.entries.forEach { timetableBottomBarItem ->
             val destination = timetableBottomBarItem.destination
             val isSelected = currentDestination?.hasRoute(destination::class) == true

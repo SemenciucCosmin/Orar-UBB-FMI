@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.di
 
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
+import com.ubb.fmi.orar.data.feedback.di.feedbackDataModule
 import com.ubb.fmi.orar.data.groups.di.groupsDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.news.di.newsDataModule
@@ -12,10 +13,13 @@ import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
 import com.ubb.fmi.orar.domain.analytics.di.analyticsDomainModule
+import com.ubb.fmi.orar.domain.feedback.di.feedbackDomainModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
 import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
+import com.ubb.fmi.orar.feature.dialogs.ui.di.dialogsFeatureModule
+import com.ubb.fmi.orar.feature.feedback.ui.di.feedbackFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
 import com.ubb.fmi.orar.feature.freerooms.di.freeRoomsFeatureModule
 import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
@@ -49,6 +53,14 @@ fun commonModule() = module {
 
     // DATABASE
     includes(databaseDataModule())
+
+    // DIALOGS
+    includes(dialogsFeatureModule())
+
+    // FEEDBACK
+    includes(feedbackDataModule())
+    includes(feedbackDomainModule())
+    includes(feedbackFeatureModule())
 
     // FORM
     includes(formFeatureModule())
