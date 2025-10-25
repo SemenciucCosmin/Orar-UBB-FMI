@@ -13,6 +13,7 @@
     <string name="lbl_subject">Disciplina</string>
     <string name="lbl_room">Sala</string>
     <string name="lbl_optional">Opțional</string>
+    <string name="lbl_got_it">Am înțeles</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Bun venit!</string>
@@ -137,5 +138,15 @@
     <string name="lbl_feedback_choice_positive_message">Aș aprecia foarte mult recenzia ta!</string>
     <string name="lbl_feedback_choice_negative_title">Ce a mers rău?</string>
     <string name="lbl_feedback_choice_negative_message">Trimite-mi o recenzie despre problemele tale</string>
+
+    <!--  ANNOUNCEMENTS  -->
+    <string name="lbl_app_update_announcement_title">O nouă versiune!</string>
+    <string name="lbl_app_update_announcement_message">
+• Vezi ultimele știri ale Studenților sau Profesorilor
+• Adaugă evenimente personale în Orar din ecranul de Setări
+• Adoptă o oră dintr-un al Orar din spatele cardului de oră
+• Caută o sală liberă după zi și interval orar
+• Actualizare automată a datelor
+    </string>
 
 </resources>

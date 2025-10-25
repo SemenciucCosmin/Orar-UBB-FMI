@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.di
 
+import com.ubb.fmi.orar.data.announcements.di.announcementsDataModule
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
 import com.ubb.fmi.orar.data.feedback.di.feedbackDataModule
 import com.ubb.fmi.orar.data.groups.di.groupsDataModule
@@ -13,6 +14,7 @@ import com.ubb.fmi.orar.data.subjects.di.subjectsDataModule
 import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
 import com.ubb.fmi.orar.domain.analytics.di.analyticsDomainModule
+import com.ubb.fmi.orar.domain.announcements.di.announcementsDomainModule
 import com.ubb.fmi.orar.domain.feedback.di.feedbackDomainModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
 import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
@@ -45,6 +47,10 @@ import org.koin.dsl.module
  * This module includes all necessary dependencies for the application to function correctly.
  */
 fun commonModule() = module {
+    // ANNOUNCEMENTS
+    includes(announcementsDataModule())
+    includes(announcementsDomainModule())
+
     // ANALYTICS
     includes(analyticsDomainModule())
 

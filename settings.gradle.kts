@@ -30,6 +30,7 @@ dependencyResolutionManagement {
 
 include(
     ":composeApp",
+    ":data:announcements",
     ":data:database",
     ":data:feedback",
     ":data:groups",
@@ -43,6 +44,7 @@ include(
     ":data:teachers",
     ":data:timetable",
     ":domain:analytics",
+    ":domain:announcements",
     ":domain:extensions",
     ":domain:feedback",
     ":domain:html-parser",

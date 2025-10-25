@@ -64,6 +64,7 @@ kotlin {
             implementation(libs.navigation.compose)
 
             // MODULES
+            implementation(projects.data.announcements)
             implementation(projects.data.database)
             implementation(projects.data.feedback)
             implementation(projects.data.groups)
@@ -77,6 +78,7 @@ kotlin {
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
             implementation(projects.domain.analytics)
+            implementation(projects.domain.announcements)
             implementation(projects.domain.extensions)
             implementation(projects.domain.feedback)
             implementation(projects.domain.htmlParser)
@@ -190,6 +192,10 @@ detekt {
         "${project.rootDir}/composeApp/src/iosMain/kotlin",
 
         // DATA
+        "${project.rootDir}/data/announcements/src/androidMain/kotlin",
+        "${project.rootDir}/data/announcements/src/commonMain/kotlin",
+        "${project.rootDir}/data/announcements/src/iosMain/kotlin",
+
         "${project.rootDir}/data/database/src/androidMain/kotlin",
         "${project.rootDir}/data/database/src/commonMain/kotlin",
         "${project.rootDir}/data/database/src/iosMain/kotlin",
@@ -242,6 +248,10 @@ detekt {
         "${project.rootDir}/domain/analytics/src/androidMain/kotlin",
         "${project.rootDir}/domain/analytics/src/commonMain/kotlin",
         "${project.rootDir}/domain/analytics/src/iosMain/kotlin",
+
+        "${project.rootDir}/domain/announcements/src/androidMain/kotlin",
+        "${project.rootDir}/domain/announcements/src/commonMain/kotlin",
+        "${project.rootDir}/domain/announcements/src/iosMain/kotlin",
 
         "${project.rootDir}/domain/extensions/src/androidMain/kotlin",
         "${project.rootDir}/domain/extensions/src/commonMain/kotlin",
