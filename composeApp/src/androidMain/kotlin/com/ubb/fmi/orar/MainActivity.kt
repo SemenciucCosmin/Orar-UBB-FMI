@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ubb.fmi.orar.app.AppGraph
+import com.ubb.fmi.orar.feature.dialogs.ui.route.DialogsRoute
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 
 /**
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             OrarUbbFmiTheme {
                 AppGraph()
+                DialogsRoute()
             }
         }
     }

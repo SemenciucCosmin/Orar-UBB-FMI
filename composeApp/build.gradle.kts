@@ -65,6 +65,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.database)
+            implementation(projects.data.feedback)
             implementation(projects.data.groups)
             implementation(projects.data.network)
             implementation(projects.data.news)
@@ -77,12 +78,15 @@ kotlin {
             implementation(projects.data.timetable)
             implementation(projects.domain.analytics)
             implementation(projects.domain.extensions)
+            implementation(projects.domain.feedback)
             implementation(projects.domain.htmlParser)
             implementation(projects.domain.logging)
             implementation(projects.domain.theme)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
+            implementation(projects.feature.dialogs)
             implementation(projects.feature.explore)
+            implementation(projects.feature.feedback)
             implementation(projects.feature.form)
             implementation(projects.feature.freeRooms)
             implementation(projects.feature.groupTimetable)
@@ -190,6 +194,10 @@ detekt {
         "${project.rootDir}/data/database/src/commonMain/kotlin",
         "${project.rootDir}/data/database/src/iosMain/kotlin",
 
+        "${project.rootDir}/data/feedback/src/androidMain/kotlin",
+        "${project.rootDir}/data/feedback/src/commonMain/kotlin",
+        "${project.rootDir}/data/feedback/src/iosMain/kotlin",
+
         "${project.rootDir}/data/groups/src/androidMain/kotlin",
         "${project.rootDir}/data/groups/src/commonMain/kotlin",
         "${project.rootDir}/data/groups/src/iosMain/kotlin",
@@ -239,6 +247,10 @@ detekt {
         "${project.rootDir}/domain/extensions/src/commonMain/kotlin",
         "${project.rootDir}/domain/extensions/src/iosMain/kotlin",
 
+        "${project.rootDir}/domain/feedback/src/androidMain/kotlin",
+        "${project.rootDir}/domain/feedback/src/commonMain/kotlin",
+        "${project.rootDir}/domain/feedback/src/iosMain/kotlin",
+
         "${project.rootDir}/domain/html-parser/src/androidMain/kotlin",
         "${project.rootDir}/domain/html-parser/src/commonMain/kotlin",
         "${project.rootDir}/domain/html-parser/src/iosMain/kotlin",
@@ -260,9 +272,17 @@ detekt {
         "${project.rootDir}/domain/user-timetable/src/iosMain/kotlin",
 
         // FEATURE
+        "${project.rootDir}/feature/dialogs/src/androidMain/kotlin",
+        "${project.rootDir}/feature/dialogs/src/commonMain/kotlin",
+        "${project.rootDir}/feature/dialogs/src/iosMain/kotlin",
+
         "${project.rootDir}/feature/explore/src/androidMain/kotlin",
         "${project.rootDir}/feature/explore/src/commonMain/kotlin",
         "${project.rootDir}/feature/explore/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/feedback/src/androidMain/kotlin",
+        "${project.rootDir}/feature/feedback/src/commonMain/kotlin",
+        "${project.rootDir}/feature/feedback/src/iosMain/kotlin",
 
         "${project.rootDir}/feature/form/src/androidMain/kotlin",
         "${project.rootDir}/feature/form/src/commonMain/kotlin",

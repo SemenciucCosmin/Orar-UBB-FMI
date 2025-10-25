@@ -24,6 +24,7 @@
 
     <!--  NAVIGATION  -->
     <string name="lbl_home">Home</string>
+    <string name="lbl_news">News</string>
     <string name="lbl_students">Students</string>
     <string name="lbl_teachers">Teachers</string>
     <string name="lbl_subjects">Subjects</string>
@@ -121,7 +122,18 @@
     <string name="lbl_remove_personal_event_message">Remove this personal event?</string>
     <string name="lbl_add_event_message">Add this event to your timetable?</string>
 
-    <!--  NEWS  -->
-    <string name="lbl_news">News</string>
-
+    <!--  FEEDBACK  -->
+    <string name="lbl_feedback_choice_message">How satisfied are you with your experience?</string>
+    <string name="lbl_feedback_ask_me_later">Ask me later</string>
+    <string name="lbl_feedback_dont_ask_again">Don't ask again</string>
+    <string name="lbl_feedback_write_a_review">Write a review</string>
+    <string name="lbl_feedback_complete_formular">Complete feedback formular</string>
+    <string name="lbl_feedback_no_thanks">No,thanks</string>
+    <string name="lbl_feedback_choice_great">Great</string>
+    <string name="lbl_feedback_choice_ok">Ok</string>
+    <string name="lbl_feedback_choice_poor">Poor</string>
+    <string name="lbl_feedback_choice_positive_title">Thank you!</string>
+    <string name="lbl_feedback_choice_positive_message">I'd really appreciate your review and feedback!</string>
+    <string name="lbl_feedback_choice_negative_title">What went wrong?</string>
+    <string name="lbl_feedback_choice_negative_message">Send me a feedback about your issues</string>
 </resources>
