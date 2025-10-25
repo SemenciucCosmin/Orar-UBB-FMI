@@ -29,7 +29,7 @@ class GetFeedbackLoopReadinessUseCase(
                 isPostponeExpired,
                 isEnoughAppUsageDays,
                 isEnoughAppUsagePoints,
-                feedbackMetrics.isFeedbackLoopShown
+                !feedbackMetrics.isFeedbackLoopShown
             ).all { it }
         }
     }

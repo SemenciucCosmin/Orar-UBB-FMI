@@ -44,7 +44,11 @@ kotlin {
             // MODULES
             implementation(projects.domain.feedback)
             implementation(projects.domain.logging)
+            implementation(projects.feature.feedback)
             implementation(projects.ui.catalog)
+
+            // NAVIGATION
+            implementation(libs.navigation.compose)
         }
 
         iosMain.dependencies {

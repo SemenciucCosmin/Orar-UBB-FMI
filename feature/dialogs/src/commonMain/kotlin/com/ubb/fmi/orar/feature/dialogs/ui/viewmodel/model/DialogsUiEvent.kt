@@ -5,6 +5,6 @@ import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
 /**
  * Enum class for all possible one time events that trigger dialogs overlay on any screen
  */
-enum class DialogsUiEvent: UiEvent {
+enum class DialogsUiEvent : UiEvent {
     FEEDBACK_LOOP,
 }

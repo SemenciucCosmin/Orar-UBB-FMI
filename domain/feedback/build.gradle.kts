@@ -33,6 +33,10 @@ kotlin {
             // KOIN
             implementation(libs.koin.core)
 
+            // KOTLINX
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.date.time)
+
             // MODULES
             implementation(projects.data.feedback)
         }

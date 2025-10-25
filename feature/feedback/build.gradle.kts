@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
 kotlin {
@@ -56,12 +57,9 @@ kotlin {
             implementation(libs.kotlinx.immutableCollections)
 
             // MODULES
-            implementation(projects.data.network)
-            implementation(projects.data.news)
-            implementation(projects.data.timetable)
             implementation(projects.domain.extensions)
             implementation(projects.domain.logging)
-            implementation(projects.domain.userTimetable)
+            implementation(projects.domain.feedback)
             implementation(projects.ui.catalog)
             implementation(projects.ui.navigation)
             implementation(projects.ui.theme)
