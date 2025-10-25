@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -33,52 +31,33 @@ kotlin {
         }
 
         commonMain.dependencies {
-            // COMPOSE
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.runtime)
-            implementation(compose.ui)
+            // DATA STORE
+            implementation(libs.data.store)
+            implementation(libs.data.store.preferences)
 
             // KOIN
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
 
             // KOTLINX
-            implementation(libs.kotlinx.immutableCollections)
+            implementation(libs.kotlinx.coroutines.core)
 
-            // MODULES
-            implementation(projects.domain.announcements)
-            implementation(projects.domain.feedback)
-            implementation(projects.domain.logging)
-            implementation(projects.feature.feedback)
-            implementation(projects.ui.catalog)
-            implementation(projects.ui.theme)
-
-            // NAVIGATION
-            implementation(libs.navigation.compose)
+            // Modules
+            implementation(projects.data.preferences)
         }
 
         iosMain.dependencies {
-
         }
 
         commonTest.dependencies {
-
-
         }
 
         dependencies {
-
-
         }
     }
 }
 
 android {
-    namespace = "com.ubb.fmi.orar.feature.dialogs"
+    namespace = "com.ubb.fmi.orar.data.announcements"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -102,5 +81,5 @@ android {
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
+
 }

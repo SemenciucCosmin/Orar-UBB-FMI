@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -29,39 +27,22 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-
         }
 
         commonMain.dependencies {
-            // COMPOSE
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.runtime)
-            implementation(compose.ui)
-
             // KOIN
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
 
             // KOTLINX
-            implementation(libs.kotlinx.immutableCollections)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.date.time)
 
             // MODULES
-            implementation(projects.domain.announcements)
-            implementation(projects.domain.feedback)
-            implementation(projects.domain.logging)
-            implementation(projects.feature.feedback)
-            implementation(projects.ui.catalog)
-            implementation(projects.ui.theme)
-
-            // NAVIGATION
-            implementation(libs.navigation.compose)
+            implementation(projects.data.announcements)
         }
 
         iosMain.dependencies {
+
 
         }
 
@@ -78,7 +59,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.ubb.fmi.orar.feature.dialogs"
+    namespace = "com.ubb.fmi.orar.domain.announcements"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -102,5 +83,4 @@ android {
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
 }

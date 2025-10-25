@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.dialogs.ui.route
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
+import com.ubb.fmi.orar.feature.dialogs.ui.components.AppUpdateAnnouncement
 import com.ubb.fmi.orar.feature.dialogs.ui.viewmodel.DialogsViewModel
 import com.ubb.fmi.orar.feature.dialogs.ui.viewmodel.model.DialogsUiEvent
 import com.ubb.fmi.orar.feature.feedback.ui.navigation.FeedbackNavigationGraph
@@ -18,6 +19,15 @@ fun DialogsRoute() {
 
     EventHandler(viewModel.events) { event ->
         when (event) {
+            DialogsUiEvent.UPDATE_ANNOUNCEMENT -> {
+                AppUpdateAnnouncement(
+                    onDismiss = {
+                        viewModel.unregisterEvent(event)
+                        viewModel.setUpdateAnnouncementShown()
+                    }
+                )
+            }
+
             DialogsUiEvent.FEEDBACK_LOOP -> {
                 FeedbackNavigationGraph(
                     navController = navController,

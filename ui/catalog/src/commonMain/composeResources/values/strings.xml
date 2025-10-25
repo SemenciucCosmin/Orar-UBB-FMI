@@ -12,6 +12,7 @@
     <string name="lbl_subject">Subject</string>
     <string name="lbl_room">Room</string>
     <string name="lbl_optional">Optional</string>
+    <string name="lbl_got_it">Got it</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Welcome!</string>
@@ -136,4 +137,15 @@
     <string name="lbl_feedback_choice_positive_message">I'd really appreciate your review and feedback!</string>
     <string name="lbl_feedback_choice_negative_title">What went wrong?</string>
     <string name="lbl_feedback_choice_negative_message">Send me a feedback about your issues</string>
+
+    <!--  ANNOUNCEMENTS  -->
+    <string name="lbl_app_update_announcement_title">New app version!</string>
+    <string name="lbl_app_update_announcement_message">
+• See the latest Student or Teacher News
+• Add personal events into your Timetable from Settings screen
+• Adopt a class from another Timetable from the back of the class card
+• Find a free room by day an hour interval
+• Automatic data update
+    </string>
+
 </resources>
