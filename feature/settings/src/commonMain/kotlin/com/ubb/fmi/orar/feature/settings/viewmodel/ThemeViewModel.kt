@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.settings.preferences.SettingsPreferences
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
-import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOption
+import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOptionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,14 +22,14 @@ import kotlin.time.Duration.Companion.seconds
  */
 class ThemeViewModel(
     private val settingsPreferences: SettingsPreferences,
-    private val getThemeOption: GetThemeOption,
+    private val getThemeOptionUseCase: GetThemeOptionUseCase,
 ) : ViewModel() {
 
     private val _themeOption = MutableStateFlow(ThemeOption.SYSTEM)
     val themeOption = _themeOption.asStateFlow()
         .onStart {
             viewModelScope.launch {
-                getThemeOption().collectLatest { themeOption ->
+                getThemeOptionUseCase().collectLatest { themeOption ->
                     _themeOption.update { themeOption }
                 }
             }

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.domain.announcements.usecase.GetUpdateAnnouncementShownUseCase
 import com.ubb.fmi.orar.domain.announcements.usecase.SetUpdateAnnouncementShownUseCase
 import com.ubb.fmi.orar.domain.feedback.usecase.GetFeedbackLoopReadinessUseCase
+import com.ubb.fmi.orar.domain.usertimetable.usecase.IsConfigurationDoneUseCase
 import com.ubb.fmi.orar.feature.dialogs.ui.viewmodel.model.DialogsUiEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -16,11 +17,18 @@ class DialogsViewModel(
     private val getUpdateAnnouncementShownUseCase: GetUpdateAnnouncementShownUseCase,
     private val setUpdateAnnouncementShownUseCase: SetUpdateAnnouncementShownUseCase,
     private val getFeedbackLoopReadinessUseCase: GetFeedbackLoopReadinessUseCase,
+    private val isConfigurationDoneUseCase: IsConfigurationDoneUseCase,
 ) : EventViewModel<DialogsUiEvent>() {
 
     init {
-        getUpdateAnnouncementShown()
-        getFeedbackLoopReadiness()
+        viewModelScope.launch {
+            isConfigurationDoneUseCase().collectLatest { isConfigurationDone ->
+                if (isConfigurationDone) {
+                    getUpdateAnnouncementShown()
+                    getFeedbackLoopReadiness()
+                }
+            }
+        }
     }
 
     fun setUpdateAnnouncementShown() {
