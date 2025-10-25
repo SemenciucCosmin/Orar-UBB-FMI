@@ -1,11 +1,9 @@
 package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 
-import Logger
 import androidx.lifecycle.viewModelScope
-import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedNewsDataValidityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedTimetableDataValidityUseCase
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
+import com.ubb.fmi.orar.domain.usertimetable.usecase.IsConfigurationDoneUseCase
 import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupUiEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -15,16 +13,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel responsible for handling the startup logic of the application.
  * It checks the configuration and cached data validity to determine the next steps.
- *
- * @property timetablePreferences Preferences for managing timetable configurations.
- * @property checkCachedTimetableDataValidityUseCase Use case to check if cached data is still valid.
  */
 class StartupViewModel(
-    private val timetablePreferences: TimetablePreferences,
     private val checkCachedTimetableDataValidityUseCase: CheckCachedTimetableDataValidityUseCase,
     private val checkCachedNewsDataValidityUseCase: CheckCachedNewsDataValidityUseCase,
+    private val isConfigurationDoneUseCase: IsConfigurationDoneUseCase,
     private val coroutineScope: CoroutineScope,
-    private val logger: Logger,
 ) : EventViewModel<StartupUiEvent>() {
 
     /**
@@ -51,41 +45,11 @@ class StartupViewModel(
      */
     private fun checkConfiguration() {
         viewModelScope.launch {
-            val configuration = timetablePreferences.getConfiguration().firstOrNull()
-            logger.d(TAG, "checkConfiguration configuration: $configuration")
-
-            val hasDegree = configuration?.degreeId != null
-            val hasStudyLineBase = configuration?.fieldId != null
-            val hasStudyLineYear = configuration?.studyLevelId != null
-            val hasStudyLine = hasStudyLineBase && hasStudyLineYear
-
-            val hasGroup = configuration?.groupId != null
-            val hasStudyLineInfo = hasStudyLine && hasGroup
-
-            logger.d(TAG, "checkConfiguration hasGroup: $hasGroup")
-            logger.d(TAG, "checkConfiguration hasStudyLineInfo: $hasStudyLineInfo")
-
-            val isStudent = configuration?.userTypeId == UserType.STUDENT.id
-            val isTeacher = configuration?.userTypeId == UserType.TEACHER.id
-
-            val hasStudentInfo = isStudent && hasDegree && hasStudyLineInfo
-            val hasTeacherInfo = isTeacher && configuration.teacherId != null
-
-            logger.d(TAG, "checkConfiguration hasStudentInfo: $hasStudentInfo")
-            logger.d(TAG, "checkConfiguration hasTeacherInfo: $hasTeacherInfo")
-
-            val hasUserInfo = hasStudentInfo || hasTeacherInfo
-
-            logger.d(TAG, "checkConfiguration hasUserInfo: $hasUserInfo")
-
+            val isConfigurationDone = isConfigurationDoneUseCase().firstOrNull() == true
             when {
-                hasUserInfo -> registerEvent(StartupUiEvent.CONFIGURATION_COMPLETE)
+                isConfigurationDone -> registerEvent(StartupUiEvent.CONFIGURATION_COMPLETE)
                 else -> registerEvent(StartupUiEvent.CONFIGURATION_INCOMPLETE)
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "StartupViewModel"
     }
 }

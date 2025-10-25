@@ -51,23 +51,21 @@ fun GroupTimetableRoute(
         onRetryClick = viewModel::retry,
         onAddItem = viewModel::addEvent,
         topBar = {
-            if (!uiState.isLoading) {
-                TopBar(
-                    title = uiState.title,
-                    onBack = navController::navigateUp,
-                    trailingContent = {
-                        if (uiState.errorStatus == null) {
-                            TimetableFrequencyTab(
-                                selectedFrequency = uiState.selectedFrequency,
-                                onFrequencyClick = viewModel::selectFrequency
-                            )
-                        }
-                    },
-                    subtitle = uiState.studyLevel?.let {
-                        "${stringResource(it.labelRes)} - ${uiState.group}"
+            TopBar(
+                title = uiState.title,
+                onBack = navController::navigateUp,
+                trailingContent = {
+                    if (uiState.errorStatus == null) {
+                        TimetableFrequencyTab(
+                            selectedFrequency = uiState.selectedFrequency,
+                            onFrequencyClick = viewModel::selectFrequency
+                        )
                     }
-                )
-            }
+                },
+                subtitle = uiState.studyLevel?.let {
+                    "${stringResource(it.labelRes)} - ${uiState.group}"
+                }
+            )
         }
     )
 

@@ -53,6 +53,7 @@ kotlin {
             implementation(projects.domain.announcements)
             implementation(projects.domain.feedback)
             implementation(projects.domain.logging)
+            implementation(projects.domain.userTimetable)
             implementation(projects.feature.feedback)
             implementation(projects.ui.catalog)
             implementation(projects.ui.theme)

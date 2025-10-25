@@ -3,6 +3,7 @@ package com.ubb.fmi.orar.feature.subjectstimetable.ui.route
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.subjectstimetable.ui.viewmodel.SubjectTimetableViewModel
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
@@ -42,20 +43,18 @@ fun SubjectTimetableRoute(
         onRetryClick = viewModel::retry,
         onAddItem = viewModel::addEvent,
         topBar = {
-            if (!uiState.isLoading) {
-                TopBar(
-                    title = uiState.title,
-                    onBack = navController::navigateUp,
-                    trailingContent = {
-                        if (uiState.errorStatus == null) {
-                            TimetableFrequencyTab(
-                                selectedFrequency = uiState.selectedFrequency,
-                                onFrequencyClick = viewModel::selectFrequency
-                            )
-                        }
+            TopBar(
+                title = uiState.title,
+                onBack = navController::navigateUp,
+                trailingContent = {
+                    if (uiState.errorStatus == null) {
+                        TimetableFrequencyTab(
+                            selectedFrequency = uiState.selectedFrequency,
+                            onFrequencyClick = viewModel::selectFrequency
+                        )
                     }
-                )
-            }
+                }
+            )
         }
     )
 

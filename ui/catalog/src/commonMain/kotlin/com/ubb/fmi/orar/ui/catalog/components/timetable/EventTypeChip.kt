@@ -2,7 +2,6 @@
 
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +17,7 @@ import com.ubb.fmi.orar.ui.catalog.extensions.colorLight
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import com.ubb.fmi.orar.ui.theme.isAppInDarkTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -35,7 +35,7 @@ fun EventTypeChip(
         modifier = modifier,
         shape = MaterialTheme.shapes.extraLarge,
         color = when {
-            isSystemInDarkTheme() -> type.colorDark
+            isAppInDarkTheme() -> type.colorDark
             else -> type.colorLight
         }.copy(
             alpha = when {

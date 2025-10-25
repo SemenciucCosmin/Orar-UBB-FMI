@@ -62,12 +62,10 @@ fun StudyLinesFormScreen(
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
-            if (!uiState.isLoading) {
-                TopBar(
-                    title = title,
-                    onBack = onBack
-                )
-            }
+            TopBar(
+                title = title,
+                onBack = onBack
+            )
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.mapLatest
 /**
  * Use case for getting the user chosen theme option on the application.
  */
-class GetThemeOption(private val settingsPreferences: SettingsPreferences) {
+class GetThemeOptionUseCase(private val settingsPreferences: SettingsPreferences) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<ThemeOption> {

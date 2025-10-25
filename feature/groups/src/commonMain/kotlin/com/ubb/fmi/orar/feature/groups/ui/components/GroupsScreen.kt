@@ -52,15 +52,13 @@ fun GroupsScreen(
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = {
-            if (!uiState.isLoading) {
-                TopBar(
-                    title = uiState.title ?: String.BLANK,
-                    onBack = onBack,
-                    subtitle = uiState.studyLevel?.let {
-                        stringResource(it.labelRes)
-                    } ?: String.BLANK
-                )
-            }
+            TopBar(
+                title = uiState.title ?: String.BLANK,
+                onBack = onBack,
+                subtitle = uiState.studyLevel?.let {
+                    stringResource(it.labelRes)
+                } ?: String.BLANK
+            )
         }
     ) { paddingValues ->
         LazyColumn(
