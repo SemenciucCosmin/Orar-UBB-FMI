@@ -14,6 +14,7 @@
     <string name="lbl_room">Sala</string>
     <string name="lbl_optional">Opțional</string>
     <string name="lbl_got_it">Am înțeles</string>
+    <string name="lbl_add">Adaugă</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Bun venit!</string>

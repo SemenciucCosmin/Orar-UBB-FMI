@@ -13,6 +13,7 @@
     <string name="lbl_room">Room</string>
     <string name="lbl_optional">Optional</string>
     <string name="lbl_got_it">Got it</string>
+    <string name="lbl_add">Add</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Welcome!</string>

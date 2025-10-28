@@ -31,6 +31,7 @@ import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_activity
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_caption
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_details
@@ -183,7 +184,7 @@ fun AddPersonalEventScreen(
             PrimaryButton(
                 onClick = onNextClick,
                 enabled = isNextEnabled,
-                text = stringResource(Res.string.lbl_next),
+                text = stringResource(Res.string.lbl_add),
                 modifier = Modifier.fillMaxWidth()
             )
         }
