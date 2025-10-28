@@ -35,7 +35,7 @@ interface EventDao {
      * Get all timetable event entities by [configurationId] and [ownerId]
      */
     @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
-    fun getAllByConfigurationAndOwner(
+    suspend fun getAllByConfigurationAndOwner(
         configurationId: String,
         ownerId: String,
     ): List<EventEntity>
