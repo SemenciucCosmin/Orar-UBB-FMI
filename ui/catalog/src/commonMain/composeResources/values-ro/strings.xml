@@ -102,7 +102,12 @@
     <string name="lbl_refresh_data">Reactualizaţi datele</string>
     <string name="lbl_refresh_data_success_message">Reactualizarea datelor reușită</string>
     <string name="lbl_version">Versiunea %1$s</string>
-    <string name="lbl_developed_by">Creat de %1$s</string>
+    <string name="lbl_developed_by">Creat de Semenciuc Cosmin</string>
+    <string name="lbl_open_source">Codul sursă este disponibil pe</string>
+    <string name="lbl_github">GitHub</string>
+    <string name="lbl_report_issue">Raportează o problemă</string>
+    <string name="lbl_leave_feedback">Lasă un feedback</string>
+    <string name="lbl_contact_me_at">Contactează-mă la cosminsemenciuc@gmail.com</string>
 
     <!--  THEME  -->
     <string name="lbl_theme">Tema</string>
