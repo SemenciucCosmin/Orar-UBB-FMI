@@ -195,12 +195,13 @@ class TeacherRepositoryImpl(
         semesterId: String,
         teacher: Owner.Teacher,
     ) {
+        val configurationId = year.toString() + semesterId
         val resource = teachersDataSource.getEventsFromApi(year, semesterId, teacher)
         val events = resource.payload
 
         when {
             resource.status.isSuccess() && events != null -> {
-                eventsDataSource.saveEventsInCache(teacher.id, events)
+                eventsDataSource.updateEventsInCache(configurationId, teacher.id, events)
             }
 
             else -> timetableFlows[teacher.id]?.update {

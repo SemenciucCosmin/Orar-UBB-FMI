@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.ubb.fmi.orar.data.database.model.EventEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -31,6 +32,15 @@ interface EventDao {
     ): Flow<List<EventEntity>>
 
     /**
+     * Get all timetable event entities by [configurationId] and [ownerId]
+     */
+    @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
+    fun getAllByConfigurationAndOwner(
+        configurationId: String,
+        ownerId: String,
+    ): List<EventEntity>
+
+    /**
      * Get timetable event entity [id]
      */
     @Query("SELECT * FROM events WHERE id LIKE :id ")
@@ -43,10 +53,29 @@ interface EventDao {
     suspend fun insert(entity: EventEntity)
 
     /**
-     * Insert new timetable event [entities]
+     * Insert new timetable events [entities]
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<EventEntity>)
+
+    @Transaction
+    suspend fun insertAndUpdateAll(
+        configurationId: String,
+        ownerId: String,
+        entities: List<EventEntity>,
+    ) {
+        val cachedEvents = getAllByConfigurationAndOwner(configurationId, ownerId)
+        val mappedEvents = entities.map { event ->
+            val cachedEvent = cachedEvents.find { it.id == event.id }
+            when {
+                cachedEvent != null -> event.copy(isVisible = cachedEvent.isVisible)
+                else -> event
+            }
+        }
+
+        deleteAllByConfigurationAndOwner(configurationId, ownerId)
+        insertAll(mappedEvents)
+    }
 
     /**
      * Delete timetable event entity with [entityId]
@@ -58,5 +87,11 @@ interface EventDao {
      * Delete all timetable event entities by [configurationId]
      */
     @Query("DELETE FROM events WHERE configurationId LIKE :configurationId")
-    suspend fun deleteAll(configurationId: String)
+    suspend fun deleteAllByConfiguration(configurationId: String)
+
+    /**
+     * Delete all timetable event entities by [configurationId] and [ownerId]
+     */
+    @Query("DELETE FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
+    suspend fun deleteAllByConfigurationAndOwner(configurationId: String, ownerId: String)
 }

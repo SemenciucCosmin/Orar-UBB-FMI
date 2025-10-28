@@ -32,6 +32,15 @@ interface EventsDataSource {
     ): Event?
 
     /**
+     * Updates new list of [Event] to cache
+     */
+    suspend fun updateEventsInCache(
+        configurationId: String,
+        ownerId: String,
+        events: List<Event>
+    )
+
+    /**
      * Saves new list of [Event] to cache
      */
     suspend fun saveEventsInCache(

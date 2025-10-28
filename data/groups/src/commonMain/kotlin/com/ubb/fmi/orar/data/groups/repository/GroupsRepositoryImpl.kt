@@ -232,12 +232,13 @@ class GroupsRepositoryImpl(
         semesterId: String,
         group: Owner.Group,
     ) {
+        val configurationId = year.toString() + semesterId
         val resource = groupsDataSource.getEventsFromApi(year, semesterId, group)
         val events = resource.payload
 
         when {
             resource.status.isSuccess() && events != null -> {
-                eventsDataSource.saveEventsInCache(group.id, events)
+                eventsDataSource.updateEventsInCache(configurationId, group.id, events)
             }
 
             else -> timetableFlows[group.id]?.update {
