@@ -54,9 +54,18 @@ class EventsDataSourceImpl(
     /**
      * Saves new list of [Event] to cache
      */
+    override suspend fun updateEventsInCache(
+        configurationId: String,
+        ownerId: String,
+        events: List<Event>,
+    ) {
+        val eventEntities = events.map { mapEventToEntity(ownerId, it) }
+        eventDao.insertAndUpdateAll(configurationId, ownerId, eventEntities)
+    }
+
     override suspend fun saveEventsInCache(
         ownerId: String,
-        events: List<Event>
+        events: List<Event>,
     ) {
         val eventEntities = events.map { mapEventToEntity(ownerId, it) }
         eventDao.insertAll(eventEntities)
@@ -104,7 +113,7 @@ class EventsDataSourceImpl(
     override suspend fun invalidate(year: Int, semesterId: String) {
         logger.d(TAG, "invalidate events for year: $year, semester: $semesterId")
         val configurationId = year.toString() + semesterId
-        eventDao.deleteAll(configurationId)
+        eventDao.deleteAllByConfiguration(configurationId)
     }
 
     /**
@@ -112,7 +121,7 @@ class EventsDataSourceImpl(
      */
     private fun mapEventToEntity(
         ownerId: String,
-        event: Event
+        event: Event,
     ): EventEntity {
         return EventEntity(
             id = event.id,

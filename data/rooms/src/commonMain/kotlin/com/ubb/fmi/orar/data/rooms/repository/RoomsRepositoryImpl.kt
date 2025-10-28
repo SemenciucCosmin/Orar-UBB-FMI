@@ -215,12 +215,13 @@ class RoomsRepositoryImpl(
         semesterId: String,
         room: Owner.Room,
     ) {
+        val configurationId = year.toString() + semesterId
         val resource = roomsDataSource.getEventsFromApi(year, semesterId, room)
         val events = resource.payload
 
         when {
             resource.status.isSuccess() && events != null -> {
-                eventsDataSource.saveEventsInCache(room.id, events)
+                eventsDataSource.updateEventsInCache(configurationId, room.id, events)
             }
 
             else -> timetableFlows[room.id]?.update {

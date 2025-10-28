@@ -194,12 +194,13 @@ class SubjectsRepositoryImpl(
         semesterId: String,
         subject: Owner.Subject,
     ) {
+        val configurationId = year.toString() + semesterId
         val resource = subjectsDataSource.getEventsFromApi(year, semesterId, subject)
         val events = resource.payload
 
         when {
             resource.status.isSuccess() && events != null -> {
-                eventsDataSource.saveEventsInCache(subject.id, events)
+                eventsDataSource.updateEventsInCache(configurationId, subject.id, events)
             }
 
             else -> timetableFlows[subject.id]?.update {
