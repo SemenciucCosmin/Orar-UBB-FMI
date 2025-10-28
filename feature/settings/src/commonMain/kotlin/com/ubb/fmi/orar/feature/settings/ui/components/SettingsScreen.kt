@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.settings.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,7 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_change_configuration
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_contact_me_at
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_developed_by
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_settings
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_theme
@@ -32,7 +34,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun SettingsScreen(
     appVersion: String?,
-    developerName: String,
     onBack: () -> Unit,
     onChangeConfigurationClick: () -> Unit,
     onThemeClick: () -> Unit,
@@ -84,7 +85,22 @@ fun SettingsScreen(
                 }
 
                 Text(
-                    text = stringResource(Res.string.lbl_developed_by, developerName),
+                    text = stringResource(Res.string.lbl_developed_by),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelMedium
+                )
+
+                RepositoryHyperlinkText()
+
+                Row(horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Medium)) {
+                    ReportIssueHyperlinkText()
+
+                    LeaveFeedbackHyperlinkText()
+                }
+
+                Text(
+                    text = stringResource(Res.string.lbl_contact_me_at),
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelMedium
@@ -100,7 +116,6 @@ private fun PreviewSettingsScreen() {
     OrarUbbFmiTheme {
         SettingsScreen(
             appVersion = "1.0.0",
-            developerName = "Semenciuc Cosmin",
             onBack = {},
             onChangeConfigurationClick = {},
             onThemeClick = {},

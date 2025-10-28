@@ -18,8 +18,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_refresh_data_success_mess
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-private const val DEVELOPER_NAME = "Semenciuc Cosmin"
-
 /**
  * Route for all settings options.
  * Theme and configuration change
@@ -32,7 +30,6 @@ fun SettingsRoute(navController: NavController) {
 
     SettingsScreen(
         appVersion = appVersion,
-        developerName = DEVELOPER_NAME,
         onBack = navController::navigateUp,
         onThemeClick = { navController.navigate(SettingsNavDestination.Theme) },
         onAddPersonalEventClick = {

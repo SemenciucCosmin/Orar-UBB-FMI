@@ -36,7 +36,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_caption
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_location
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_next
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
