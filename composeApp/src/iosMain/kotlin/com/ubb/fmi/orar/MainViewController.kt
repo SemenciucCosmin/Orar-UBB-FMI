@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.window.ComposeUIViewController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ubb.fmi.orar.app.AppGraph
+import com.ubb.fmi.orar.app.AppInitializer
 import com.ubb.fmi.orar.di.KoinInitializer
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
 import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOptionUseCase
@@ -17,7 +18,10 @@ import kotlin.getValue
  */
 @Suppress("FunctionNaming")
 fun MainViewController() = ComposeUIViewController(
-    configure = { KoinInitializer.initKoin() }
+    configure = {
+        KoinInitializer.initKoin()
+        AppInitializer().initApp()
+    }
 ) {
     val getThemeOptionUseCase: GetThemeOptionUseCase = koinInject()
     val themeOption by getThemeOptionUseCase().collectAsStateWithLifecycle(
