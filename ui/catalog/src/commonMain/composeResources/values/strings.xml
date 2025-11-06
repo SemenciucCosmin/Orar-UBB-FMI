@@ -39,6 +39,7 @@
     <string name="lbl_subjects_details">Search for Subjects and their timetables</string>
     <string name="lbl_rooms_details">Search for Rooms and their timetables</string>
     <string name="lbl_free_rooms_details">Search for free Rooms</string>
+    <string name="lbl_add_personal_event_details">Add a personal event to your timetable</string>
 
     <!--  USER  -->
     <string name="lbl_student">Student</string>

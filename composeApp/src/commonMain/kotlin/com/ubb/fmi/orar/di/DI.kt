@@ -27,6 +27,7 @@ import com.ubb.fmi.orar.feature.freerooms.di.freeRoomsFeatureModule
 import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
 import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
 import com.ubb.fmi.orar.feature.news.di.newsFeatureModule
+import com.ubb.fmi.orar.feature.personalevent.di.personalEventFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import com.ubb.fmi.orar.feature.settings.di.settingsFeatureModule
@@ -88,6 +89,9 @@ fun commonModule() = module {
     // NEWS
     includes(newsDataModule())
     includes(newsFeatureModule())
+
+    // PERSONAL EVENT
+    includes(personalEventFeatureModule())
 
     // PREFERENCES
     includes(preferencesDataModule())

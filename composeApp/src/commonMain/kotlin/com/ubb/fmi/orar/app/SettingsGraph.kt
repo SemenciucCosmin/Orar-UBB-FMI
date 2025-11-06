@@ -3,7 +3,6 @@ package com.ubb.fmi.orar.app
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.ubb.fmi.orar.feature.settings.ui.route.AddPersonalEventRoute
 import com.ubb.fmi.orar.feature.settings.ui.route.SettingsRoute
 import com.ubb.fmi.orar.feature.settings.ui.route.ThemeRoute
 import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
@@ -21,9 +20,5 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 
     composable<SettingsNavDestination.Theme> { navBackStackEntry ->
         ThemeRoute(navController)
-    }
-
-    composable<SettingsNavDestination.AddPersonalEvent> { navBackStackEntry ->
-        AddPersonalEventRoute(navController)
     }
 }

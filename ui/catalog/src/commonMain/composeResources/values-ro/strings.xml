@@ -40,6 +40,7 @@
     <string name="lbl_subjects_details">Caută Materii și orarele lor</string>
     <string name="lbl_rooms_details">Caută Săli și orarele lor</string>
     <string name="lbl_free_rooms_details">Caută Săli libere</string>
+    <string name="lbl_add_personal_event_details">Adaugă un eveniment personal în orarul tău</string>
 
     <!--  USER  -->
     <string name="lbl_student">Student</string>
