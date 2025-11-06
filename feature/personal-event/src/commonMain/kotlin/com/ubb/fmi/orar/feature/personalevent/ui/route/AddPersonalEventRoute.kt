@@ -1,13 +1,13 @@
-package com.ubb.fmi.orar.feature.settings.ui.route
+package com.ubb.fmi.orar.feature.personalevent.ui.route
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.ubb.fmi.orar.feature.settings.ui.components.AddPersonalEventScreen
-import com.ubb.fmi.orar.feature.settings.viewmodel.AddPersonalEventViewModel
-import com.ubb.fmi.orar.feature.settings.viewmodel.model.AddPersonalEventUiState
-import com.ubb.fmi.orar.feature.settings.viewmodel.model.isNextEnabled
+import com.ubb.fmi.orar.feature.personalevent.ui.components.AddPersonalEventScreen
+import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.AddPersonalEventViewModel
+import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.AddPersonalEventUiState
+import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.extensions.showToast

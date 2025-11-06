@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.settings.ui.components
+package com.ubb.fmi.orar.feature.personalevent.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

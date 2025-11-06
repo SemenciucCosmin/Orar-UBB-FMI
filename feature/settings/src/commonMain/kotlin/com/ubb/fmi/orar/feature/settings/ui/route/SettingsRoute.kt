@@ -32,9 +32,6 @@ fun SettingsRoute(navController: NavController) {
         appVersion = appVersion,
         onBack = navController::navigateUp,
         onThemeClick = { navController.navigate(SettingsNavDestination.Theme) },
-        onAddPersonalEventClick = {
-            navController.navigate(SettingsNavDestination.AddPersonalEvent)
-        },
         onChangeConfigurationClick = {
             navController.navigate(
                 ConfigurationFormNavDestination.OnboardingForm(

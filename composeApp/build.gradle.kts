@@ -1,3 +1,4 @@
+import io.perfmark.PerfMark.event
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -94,6 +95,7 @@ kotlin {
             implementation(projects.feature.groupTimetable)
             implementation(projects.feature.groups)
             implementation(projects.feature.news)
+            implementation(projects.feature.personalEvent)
             implementation(projects.feature.roomTimetable)
             implementation(projects.feature.rooms)
             implementation(projects.feature.settings)
@@ -313,6 +315,10 @@ detekt {
         "${project.rootDir}/feature/news/src/androidMain/kotlin",
         "${project.rootDir}/feature/news/src/commonMain/kotlin",
         "${project.rootDir}/feature/news/src/iosMain/kotlin",
+
+        "${project.rootDir}/feature/personal-event/src/androidMain/kotlin",
+        "${project.rootDir}/feature/personal-event/src/commonMain/kotlin",
+        "${project.rootDir}/feature/personal-event/src/iosMain/kotlin",
 
         "${project.rootDir}/feature/room-timetable/src/androidMain/kotlin",
         "${project.rootDir}/feature/room-timetable/src/commonMain/kotlin",

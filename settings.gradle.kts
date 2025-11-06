@@ -60,6 +60,7 @@ include(
     ":feature:group-timetable",
     ":feature:groups",
     ":feature:news",
+    ":feature:personal-event",
     ":feature:room-timetable",
     ":feature:rooms",
     ":feature:settings",
