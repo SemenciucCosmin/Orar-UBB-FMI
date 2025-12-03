@@ -36,7 +36,7 @@ class GetFeedbackLoopReadinessUseCase(
 
     companion object {
         private const val DEFAULT_MILLIS = 0L
-        private const val MIN_APP_USAGE_POINTS = 15
+        private const val MIN_APP_USAGE_POINTS = 5
         private const val MIN_APP_USAGE_DAYS_MILLIS = 1000L * 60 * 60 * 24 * 5 // 5 days
     }
 }

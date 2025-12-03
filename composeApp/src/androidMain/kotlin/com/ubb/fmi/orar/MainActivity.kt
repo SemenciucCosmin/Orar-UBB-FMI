@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
 import com.ubb.fmi.orar.app.AppGraph
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
 import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOptionUseCase
@@ -29,13 +30,14 @@ class MainActivity : ComponentActivity(), KoinComponent {
         installSplashScreen()
 
         setContent {
+            val navController = rememberNavController()
             val themeOption by getThemeOptionUseCase().collectAsStateWithLifecycle(
                 initialValue = ThemeOption.SYSTEM
             )
 
             OrarUbbFmiTheme(themeOption) {
-                AppGraph()
-                DialogsRoute()
+                AppGraph(navController)
+                DialogsRoute(navController)
             }
         }
     }

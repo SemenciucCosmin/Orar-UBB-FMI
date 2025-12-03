@@ -1,10 +1,9 @@
 package com.ubb.fmi.orar.feature.feedback.ui.route
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import com.ubb.fmi.orar.feature.feedback.ui.navigation.FeedbackNavDestination
 import com.ubb.fmi.orar.feature.feedback.ui.screen.FeedbackChoiceScreen
 import com.ubb.fmi.orar.feature.feedback.ui.viewmodel.FeedbackViewModel
+import com.ubb.fmi.orar.ui.navigation.destination.FeedbackNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -12,15 +11,14 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun FeedbackChoiceRoute(
-    navController: NavController,
-    onFinish: () -> Unit,
+    onNavigate: (Any) -> Unit,
+    onFinish: () -> Unit
 ) {
     val viewModel: FeedbackViewModel = koinViewModel()
 
     FeedbackChoiceScreen(
         onFeedbackChoiceClick = { feedbackChoice ->
-            val destination = FeedbackNavDestination.Outcome(feedbackChoice)
-            navController.navigate(destination)
+            onNavigate(FeedbackNavDestination.Outcome(feedbackChoice.id))
         },
         onAskMeLaterClick = {
             onFinish()

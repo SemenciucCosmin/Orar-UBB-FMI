@@ -3,8 +3,9 @@ package com.ubb.fmi.orar.app
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
+import com.ubb.fmi.orar.feature.feedback.ui.navigation.feedbackGraph
 import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
 
 /**
@@ -13,9 +14,7 @@ import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
  * It includes the configuration form and timetable graphs.
  */
 @Composable
-fun AppGraph() {
-    val navController = rememberNavController()
-
+fun AppGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = MainNavDestination.Startup,
@@ -28,5 +27,6 @@ fun AppGraph() {
         mainGraph(navController)
         exploreGraph(navController)
         settingsGraph(navController)
+        feedbackGraph(navController)
     }
 }
