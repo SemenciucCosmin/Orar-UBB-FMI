@@ -1,6 +1,5 @@
-package com.ubb.fmi.orar.feature.feedback.ui.navigation
+package com.ubb.fmi.orar.ui.navigation.destination
 
-import com.ubb.fmi.orar.feature.feedback.ui.model.FeedbackChoice
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,5 +12,5 @@ sealed class FeedbackNavDestination {
     data object Choice : FeedbackNavDestination()
 
     @Serializable
-    data class Outcome(val feedbackChoice: FeedbackChoice) : FeedbackNavDestination()
+    data class Outcome(val feedbackChoiceId: String) : FeedbackNavDestination()
 }

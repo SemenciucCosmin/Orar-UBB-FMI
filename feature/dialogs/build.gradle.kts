@@ -56,6 +56,7 @@ kotlin {
             implementation(projects.domain.userTimetable)
             implementation(projects.feature.feedback)
             implementation(projects.ui.catalog)
+            implementation(projects.ui.navigation)
             implementation(projects.ui.theme)
 
             // NAVIGATION

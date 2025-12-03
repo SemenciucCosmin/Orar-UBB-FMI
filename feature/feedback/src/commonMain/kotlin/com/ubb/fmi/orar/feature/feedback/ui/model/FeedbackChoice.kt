@@ -22,6 +22,7 @@ import org.jetbrains.compose.resources.StringResource
  * Enum class for all types of feedback possible responses with string and drawable resources.
  */
 enum class FeedbackChoice(
+    val id: String,
     val labelRes: StringResource,
     val titleRes: StringResource,
     val subtitleRes: StringResource,
@@ -31,6 +32,7 @@ enum class FeedbackChoice(
     val iconRes: DrawableResource,
 ) {
     POOR(
+        id = "poor",
         labelRes = Res.string.lbl_feedback_choice_poor,
         titleRes = Res.string.lbl_feedback_choice_negative_title,
         subtitleRes = Res.string.lbl_feedback_choice_negative_message,
@@ -40,6 +42,7 @@ enum class FeedbackChoice(
         iconRes = Res.drawable.ic_face_negative,
     ),
     OK(
+        id = "ok",
         labelRes = Res.string.lbl_ok,
         titleRes = Res.string.lbl_feedback_choice_negative_title,
         subtitleRes = Res.string.lbl_feedback_choice_negative_message,
@@ -49,6 +52,7 @@ enum class FeedbackChoice(
         iconRes = Res.drawable.ic_face_neutral,
     ),
     GREAT(
+        id = "great",
         labelRes = Res.string.lbl_feedback_choice_great,
         titleRes = Res.string.lbl_feedback_choice_positive_title,
         subtitleRes = Res.string.lbl_feedback_choice_positive_message,
@@ -56,5 +60,11 @@ enum class FeedbackChoice(
         secondaryActionLabelRes = Res.string.lbl_feedback_complete_formular,
         dismissLabelRes = Res.string.lbl_feedback_dont_ask_again,
         iconRes = Res.drawable.ic_face_positive,
-    ),
+    );
+
+    companion object {
+        fun getById(id: String): FeedbackChoice {
+            return FeedbackChoice.entries.firstOrNull { it.id == id } ?: GREAT
+        }
+    }
 }
