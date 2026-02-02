@@ -57,6 +57,7 @@ kotlin {
             implementation(libs.kotlinx.immutableCollections)
 
             // MODULES
+            implementation(projects.domain.analytics)
             implementation(projects.domain.extensions)
             implementation(projects.domain.logging)
             implementation(projects.domain.feedback)

@@ -36,7 +36,7 @@ fun FeedbackOutcomeRoute(
         },
         onDismissClick = {
             onFinish()
-            viewModel.markFeedbackShown()
+            viewModel.dismissFeedback()
         },
         onSecondaryActionClick = {
             openUrl(FEEDBACK_FORM_URL, context) {
