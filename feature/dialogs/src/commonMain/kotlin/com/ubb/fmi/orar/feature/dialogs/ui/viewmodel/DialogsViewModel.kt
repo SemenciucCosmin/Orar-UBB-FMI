@@ -24,7 +24,8 @@ class DialogsViewModel(
         viewModelScope.launch {
             isConfigurationDoneUseCase().collectLatest { isConfigurationDone ->
                 if (isConfigurationDone) {
-                    getUpdateAnnouncementShown()
+                    // No notable update in this version
+                    //  getUpdateAnnouncementShown()
                     getFeedbackLoopReadiness()
                 }
             }
