@@ -18,6 +18,7 @@ fun FeedbackChoiceRoute(
 
     FeedbackChoiceScreen(
         onFeedbackChoiceClick = { feedbackChoice ->
+            viewModel.onFeedbackChoiceSelected(feedbackChoice)
             onNavigate(FeedbackNavDestination.Outcome(feedbackChoice.id))
         },
         onAskMeLaterClick = {
@@ -26,7 +27,7 @@ fun FeedbackChoiceRoute(
         },
         onDontAskAgainClick = {
             onFinish()
-            viewModel.markFeedbackShown()
+            viewModel.dismissFeedback()
         }
     )
 }
