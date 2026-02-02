@@ -8,9 +8,9 @@ targetSdk = "36"
 # ANDROIDX
 androidx-appcompat = "1.7.1"
 androidx-core = "1.17.0"
-androidx-lifecycle = "2.9.5"
+androidx-lifecycle = "2.9.6"
 androidx-material = "1.13.0"
-androidx-splashscreen = "1.0.1"
+androidx-splashscreen = "1.2.0"
 
 # COIL
 coil = "3.3.0"
@@ -19,14 +19,14 @@ coil = "3.3.0"
 compose-multiplatform = "1.9.1"
 
 # DATA STORE
-data-store = "1.1.7"
+data-store = "1.2.0"
 
 # DETEKT
 detekt = "1.23.8"
 
 # FIREBASE
 firebase-crashlytics = "3.0.6"
-firebase-kmp = "2.3.0"
+firebase-kmp = "2.4.0"
 
 # GOOGLE
 google-services = "4.4.4"
@@ -46,19 +46,19 @@ kotlinx-immutableCollections = "0.4.0"
 ksp = "2.2.10-2.0.2"
 
 # KTOR
-ktor = "3.3.1"
+ktor = "3.4.0"
 
 # NAVIGATION
 navigation-compose = "2.9.1"
 
 # OKIO
-okio = "3.16.2"
+okio = "3.16.4"
 
 # SQLITE
-sqlite = "2.6.1"
+sqlite = "2.6.2"
 
 # ROOM
-room = "2.8.3"
+room = "2.8.4"
 
 # TEST
 androidx-espresso = "3.7.0"
