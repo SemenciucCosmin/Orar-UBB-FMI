@@ -1,6 +1,11 @@
-import io.perfmark.PerfMark.event
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+val localProperties = Properties().apply {
+    val properties = rootProject.file("local.properties")
+    if (properties.exists()) load(properties.inputStream())
+}
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -141,17 +146,17 @@ android {
     }
     signingConfigs {
         getByName("debug") {
-            storeFile = file("/Users/semenciuccosm/Documents/PersonalProjects/KeyStore/Keystore.jks")
-            keyAlias = "orar_ubb_fmi"
-            storePassword = "***REMOVED***"
-            keyPassword = "***REMOVED***"
+            storeFile = file(localProperties["KEYSTORE_PATH"] as String)
+            keyAlias = localProperties["KEY_ALIAS"] as String
+            storePassword = localProperties["STORE_PASSWORD"] as String
+            keyPassword = localProperties["KEY_PASSWORD"] as String
         }
 
         create("release") {
-            storeFile = file("/Users/semenciuccosm/Documents/PersonalProjects/KeyStore/Keystore.jks")
-            keyAlias = "orar_ubb_fmi"
-            storePassword = "***REMOVED***"
-            keyPassword = "***REMOVED***"
+            storeFile = file(localProperties["KEYSTORE_PATH"] as String)
+            keyAlias = localProperties["KEY_ALIAS"] as String
+            storePassword = localProperties["STORE_PASSWORD"] as String
+            keyPassword = localProperties["KEY_PASSWORD"] as String
         }
     }
 
