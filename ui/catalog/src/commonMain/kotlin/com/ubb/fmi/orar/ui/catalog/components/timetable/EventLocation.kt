@@ -17,7 +17,7 @@ import com.ubb.fmi.orar.ui.catalog.extensions.imageRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a an icon and text in a

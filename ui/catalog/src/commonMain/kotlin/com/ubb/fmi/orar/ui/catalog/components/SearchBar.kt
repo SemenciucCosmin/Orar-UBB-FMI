@@ -35,7 +35,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_close
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_search
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a search bar with a text field, search icon, and clear button.

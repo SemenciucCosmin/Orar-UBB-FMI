@@ -29,7 +29,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_next
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Composable screen with teachers that are selectable for timetable configuration

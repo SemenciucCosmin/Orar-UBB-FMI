@@ -30,7 +30,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_study_line
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_students
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Composable function that displays the Study Lines screen.

@@ -28,6 +28,8 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            // FIREBASE
+            implementation(project.dependencies.platform(libs.firebase.bom))
         }
 
         commonMain.dependencies {

@@ -22,7 +22,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_m
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_title
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_got_it
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

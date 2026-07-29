@@ -28,7 +28,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_feedback_choice_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_feedback_dont_ask_again
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Screen with feedback response choices and dismiss and postpone actions.

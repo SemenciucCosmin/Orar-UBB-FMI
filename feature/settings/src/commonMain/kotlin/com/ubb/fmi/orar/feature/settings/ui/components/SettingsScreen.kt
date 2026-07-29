@@ -24,7 +24,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_settings
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_theme
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_version
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Screen for all settings options.

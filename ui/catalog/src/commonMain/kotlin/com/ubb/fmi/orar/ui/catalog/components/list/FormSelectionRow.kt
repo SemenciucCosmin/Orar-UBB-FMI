@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.catalog.model.FormSelectionItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a row of selectable chips with a headline.

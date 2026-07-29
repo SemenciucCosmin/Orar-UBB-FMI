@@ -27,6 +27,7 @@ data-store = "1.2.1"
 detekt = "1.23.8"
 
 # FIREBASE
+firebase-bom = "33.15.0"
 firebase-crashlytics = "3.0.7"
 firebase-kmp = "2.5.0"
 
@@ -99,6 +100,7 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 # FIREBASE
 firebase-analytics-kmp = { module = "dev.gitlive:firebase-analytics", version.ref = "firebase-kmp"}
 firebase-app-kmp = { module = "dev.gitlive:firebase-app", version.ref = "firebase-kmp"}
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 
 # KTOR
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }

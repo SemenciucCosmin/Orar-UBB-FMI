@@ -29,7 +29,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teachers
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * TeachersScreen is a composable function that displays a list of teachers with filtering options.

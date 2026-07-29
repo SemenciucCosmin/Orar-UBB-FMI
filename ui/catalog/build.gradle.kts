@@ -26,10 +26,6 @@ kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_21
         }
-
-//        compose.resources {
-//            publicResClass = true
-//        }
     }
 
     sourceSets {
@@ -45,6 +41,7 @@ kotlin {
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.runtime)
+            implementation(libs.compose.ui)
             implementation(libs.compose.ui)
 
             // KOTLINX
@@ -78,4 +75,10 @@ kotlin {
 
 dependencies {
 
+}
+
+compose {
+    resources {
+        publicResClass = true
+    }
 }

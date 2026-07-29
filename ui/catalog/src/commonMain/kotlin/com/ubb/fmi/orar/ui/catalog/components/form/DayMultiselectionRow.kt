@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DayMultiselectionRow(

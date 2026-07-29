@@ -20,7 +20,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_check
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_study_line
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays an expandable list item with a headline, optional overline,

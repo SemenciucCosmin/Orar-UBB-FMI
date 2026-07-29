@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -34,12 +35,22 @@ dependencies {
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)
 
+    // FIREBASE
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.app.kmp)
+
     // KOIN
     implementation(libs.koin.core)
     implementation(libs.koin.android)
 
     // MODULES
     implementation(projects.composeApp)
+    implementation(projects.domain.theme)
+    implementation(projects.feature.dialogs)
+    implementation(projects.ui.theme)
+
+    // NAVIGATION
+    implementation(libs.navigation.compose)
 
     // ROOM
     implementation(libs.room.runtime)

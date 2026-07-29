@@ -17,7 +17,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_location
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_right_arrow
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * A clickable list item that displays a headline, optional overline and underline text,

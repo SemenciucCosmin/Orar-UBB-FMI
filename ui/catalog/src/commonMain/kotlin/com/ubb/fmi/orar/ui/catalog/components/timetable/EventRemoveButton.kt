@@ -20,7 +20,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_ok
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_remove_personal_event_message
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a button to remove an event
