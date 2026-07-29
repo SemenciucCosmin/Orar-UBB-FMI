@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
@@ -34,7 +35,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_user
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_welcome
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_year
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable screen with multiple available choices for timetable configuration.

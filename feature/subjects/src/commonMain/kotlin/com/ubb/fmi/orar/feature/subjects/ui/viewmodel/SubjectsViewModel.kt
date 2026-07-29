@@ -99,7 +99,6 @@ class SubjectsViewModel(
         analyticsLogger.logEvent(AnalyticsEvent.VIEW_TIMETABLE_SUBJECT)
     }
 
-
     companion object {
         private const val TAG = "SubjectsViewModel"
     }

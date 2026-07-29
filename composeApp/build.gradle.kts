@@ -1,32 +1,15 @@
-import java.util.Properties
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
-val localProperties = Properties().apply {
-    val properties = rootProject.file("local.properties")
-    if (properties.exists()) load(properties.inputStream())
-}
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.firebaseCrashlitycs)
-    alias(libs.plugins.googleServices)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-    
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -36,12 +19,29 @@ kotlin {
         }
     }
 
+    androidLibrary {
+        namespace = "com.ubb.fmi.orar.shared"
+        compileSdk = libs.versions.compileSdk.get().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+        }
+        androidResources {
+            enable = true
+        }
+        withHostTest {
+            isIncludeAndroidResources = true
+        }
+    }
+
     sourceSets {
         androidMain.dependencies {
             // ANDROIDX
             implementation(libs.androidx.core.splashscreen)
 
             // FIREBASE
+            implementation(project.dependencies.platform(libs.firebase.bom))
             implementation(libs.firebase.app.kmp)
 
             // KOTLINX
@@ -53,12 +53,12 @@ kotlin {
 
         commonMain.dependencies {
             // COMPOSE
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.runtime)
-            implementation(compose.ui)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.uiToolingPreview)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.ui)
 
             // KOIN
             implementation(libs.koin.core)
@@ -128,262 +128,28 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.ubb.fmi.orar"
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "com.ubb.fmi.orar"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 8
-        versionName = "1.2.5"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file(localProperties["KEYSTORE_PATH"] as String)
-            keyAlias = localProperties["KEY_ALIAS"] as String
-            storePassword = localProperties["STORE_PASSWORD"] as String
-            keyPassword = localProperties["KEY_PASSWORD"] as String
-        }
-
-        create("release") {
-            storeFile = file(localProperties["KEYSTORE_PATH"] as String)
-            keyAlias = localProperties["KEY_ALIAS"] as String
-            storePassword = localProperties["STORE_PASSWORD"] as String
-            keyPassword = localProperties["KEY_PASSWORD"] as String
-        }
-    }
-
-    buildTypes {
-        debug {
-            signingConfig = signingConfigs.getByName("debug")
-        }
-
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    buildFeatures {
-        buildConfig = true
-    }
-}
-
 dependencies {
     detektPlugins(libs.detekt.formatting)
-    debugImplementation(compose.uiTooling)
 }
 
 detekt {
-    source.setFrom(
-        // APP
-        "${project.rootDir}/composeApp/src/androidMain/kotlin",
-        "${project.rootDir}/composeApp/src/commonMain/kotlin",
-        "${project.rootDir}/composeApp/src/iosMain/kotlin",
+    val detektSources = rootProject.subprojects
+        .asSequence()
+        .flatMap { it.project.allprojects }
+        .map { it.projectDir }
+        .flatMap { moduleDir ->
+            sequenceOf(
+                moduleDir.resolve("src/androidMain/kotlin"),
+                moduleDir.resolve("src/commonMain/kotlin"),
+                moduleDir.resolve("src/iosMain/kotlin"),
+            )
+        }
+        .filter { it.exists() }
+        .map { it.absolutePath }
+        .sorted()
+        .toList()
 
-        // DATA
-        "${project.rootDir}/data/announcements/src/androidMain/kotlin",
-        "${project.rootDir}/data/announcements/src/commonMain/kotlin",
-        "${project.rootDir}/data/announcements/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/database/src/androidMain/kotlin",
-        "${project.rootDir}/data/database/src/commonMain/kotlin",
-        "${project.rootDir}/data/database/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/feedback/src/androidMain/kotlin",
-        "${project.rootDir}/data/feedback/src/commonMain/kotlin",
-        "${project.rootDir}/data/feedback/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/groups/src/androidMain/kotlin",
-        "${project.rootDir}/data/groups/src/commonMain/kotlin",
-        "${project.rootDir}/data/groups/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/network/src/androidMain/kotlin",
-        "${project.rootDir}/data/network/src/commonMain/kotlin",
-        "${project.rootDir}/data/network/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/news/src/androidMain/kotlin",
-        "${project.rootDir}/data/news/src/commonMain/kotlin",
-        "${project.rootDir}/data/news/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/preferences/src/androidMain/kotlin",
-        "${project.rootDir}/data/preferences/src/commonMain/kotlin",
-        "${project.rootDir}/data/preferences/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/rooms/src/androidMain/kotlin",
-        "${project.rootDir}/data/rooms/src/commonMain/kotlin",
-        "${project.rootDir}/data/rooms/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/settings/src/androidMain/kotlin",
-        "${project.rootDir}/data/settings/src/commonMain/kotlin",
-        "${project.rootDir}/data/settings/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/study-lines/src/androidMain/kotlin",
-        "${project.rootDir}/data/study-lines/src/commonMain/kotlin",
-        "${project.rootDir}/data/study-lines/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/subjects/src/androidMain/kotlin",
-        "${project.rootDir}/data/subjects/src/commonMain/kotlin",
-        "${project.rootDir}/data/subjects/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/teachers/src/androidMain/kotlin",
-        "${project.rootDir}/data/teachers/src/commonMain/kotlin",
-        "${project.rootDir}/data/teachers/src/iosMain/kotlin",
-
-        "${project.rootDir}/data/timetable/src/androidMain/kotlin",
-        "${project.rootDir}/data/timetable/src/commonMain/kotlin",
-        "${project.rootDir}/data/timetable/src/iosMain/kotlin",
-
-        // DOMAIN
-        "${project.rootDir}/domain/analytics/src/androidMain/kotlin",
-        "${project.rootDir}/domain/analytics/src/commonMain/kotlin",
-        "${project.rootDir}/domain/analytics/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/announcements/src/androidMain/kotlin",
-        "${project.rootDir}/domain/announcements/src/commonMain/kotlin",
-        "${project.rootDir}/domain/announcements/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/extensions/src/androidMain/kotlin",
-        "${project.rootDir}/domain/extensions/src/commonMain/kotlin",
-        "${project.rootDir}/domain/extensions/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/feedback/src/androidMain/kotlin",
-        "${project.rootDir}/domain/feedback/src/commonMain/kotlin",
-        "${project.rootDir}/domain/feedback/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/html-parser/src/androidMain/kotlin",
-        "${project.rootDir}/domain/html-parser/src/commonMain/kotlin",
-        "${project.rootDir}/domain/html-parser/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/logging/src/androidMain/kotlin",
-        "${project.rootDir}/domain/logging/src/commonMain/kotlin",
-        "${project.rootDir}/domain/logging/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/theme/src/androidMain/kotlin",
-        "${project.rootDir}/domain/theme/src/commonMain/kotlin",
-        "${project.rootDir}/domain/theme/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/timetable/src/androidMain/kotlin",
-        "${project.rootDir}/domain/timetable/src/commonMain/kotlin",
-        "${project.rootDir}/domain/timetable/src/iosMain/kotlin",
-
-        "${project.rootDir}/domain/user-timetable/src/androidMain/kotlin",
-        "${project.rootDir}/domain/user-timetable/src/commonMain/kotlin",
-        "${project.rootDir}/domain/user-timetable/src/iosMain/kotlin",
-
-        // FEATURE
-        "${project.rootDir}/feature/dialogs/src/androidMain/kotlin",
-        "${project.rootDir}/feature/dialogs/src/commonMain/kotlin",
-        "${project.rootDir}/feature/dialogs/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/explore/src/androidMain/kotlin",
-        "${project.rootDir}/feature/explore/src/commonMain/kotlin",
-        "${project.rootDir}/feature/explore/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/feedback/src/androidMain/kotlin",
-        "${project.rootDir}/feature/feedback/src/commonMain/kotlin",
-        "${project.rootDir}/feature/feedback/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/form/src/androidMain/kotlin",
-        "${project.rootDir}/feature/form/src/commonMain/kotlin",
-        "${project.rootDir}/feature/form/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/free-rooms/src/androidMain/kotlin",
-        "${project.rootDir}/feature/free-rooms/src/commonMain/kotlin",
-        "${project.rootDir}/feature/free-rooms/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/group-timetable/src/androidMain/kotlin",
-        "${project.rootDir}/feature/group-timetable/src/commonMain/kotlin",
-        "${project.rootDir}/feature/group-timetable/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/groups/src/androidMain/kotlin",
-        "${project.rootDir}/feature/groups/src/commonMain/kotlin",
-        "${project.rootDir}/feature/groups/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/news/src/androidMain/kotlin",
-        "${project.rootDir}/feature/news/src/commonMain/kotlin",
-        "${project.rootDir}/feature/news/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/personal-event/src/androidMain/kotlin",
-        "${project.rootDir}/feature/personal-event/src/commonMain/kotlin",
-        "${project.rootDir}/feature/personal-event/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/room-timetable/src/androidMain/kotlin",
-        "${project.rootDir}/feature/room-timetable/src/commonMain/kotlin",
-        "${project.rootDir}/feature/room-timetable/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/rooms/src/androidMain/kotlin",
-        "${project.rootDir}/feature/rooms/src/commonMain/kotlin",
-        "${project.rootDir}/feature/rooms/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/settings/src/androidMain/kotlin",
-        "${project.rootDir}/feature/settings/src/commonMain/kotlin",
-        "${project.rootDir}/feature/settings/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/startup/src/androidMain/kotlin",
-        "${project.rootDir}/feature/startup/src/commonMain/kotlin",
-        "${project.rootDir}/feature/startup/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/study-line/src/androidMain/kotlin",
-        "${project.rootDir}/feature/study-line/src/commonMain/kotlin",
-        "${project.rootDir}/feature/study-line/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/study-lines/src/androidMain/kotlin",
-        "${project.rootDir}/feature/study-lines/src/commonMain/kotlin",
-        "${project.rootDir}/feature/study-lines/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/subject-timetable/src/androidMain/kotlin",
-        "${project.rootDir}/feature/subject-timetable/src/commonMain/kotlin",
-        "${project.rootDir}/feature/subject-timetable/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/subject/src/androidMain/kotlin",
-        "${project.rootDir}/feature/subject/src/commonMain/kotlin",
-        "${project.rootDir}/feature/subject/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/teacher-timetable/src/androidMain/kotlin",
-        "${project.rootDir}/feature/teacher-timetable/src/commonMain/kotlin",
-        "${project.rootDir}/feature/teacher-timetable/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/teachers/src/androidMain/kotlin",
-        "${project.rootDir}/feature/teachers/src/commonMain/kotlin",
-        "${project.rootDir}/feature/teachers/src/iosMain/kotlin",
-
-        "${project.rootDir}/feature/user-timetable/src/androidMain/kotlin",
-        "${project.rootDir}/feature/user-timetable/src/commonMain/kotlin",
-        "${project.rootDir}/feature/user-timetable/src/iosMain/kotlin",
-
-        // UI
-        "${project.rootDir}/ui/catalog/src/androidMain/kotlin",
-        "${project.rootDir}/ui/catalog/src/commonMain/kotlin",
-        "${project.rootDir}/ui/catalog/src/iosMain/kotlin",
-
-        "${project.rootDir}/ui/navigation/src/androidMain/kotlin",
-        "${project.rootDir}/ui/navigation/src/commonMain/kotlin",
-        "${project.rootDir}/ui/navigation/src/iosMain/kotlin",
-
-        "${project.rootDir}/ui/theme/src/androidMain/kotlin",
-        "${project.rootDir}/ui/theme/src/commonMain/kotlin",
-        "${project.rootDir}/ui/theme/src/iosMain/kotlin",
-
-    )
-
+    source.setFrom(detektSources)
     buildUponDefaultConfig = true
     parallel = true
     autoCorrect = true

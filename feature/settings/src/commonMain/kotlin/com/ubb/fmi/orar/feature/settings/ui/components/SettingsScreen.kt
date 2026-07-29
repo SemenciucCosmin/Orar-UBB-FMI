@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
@@ -24,7 +25,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_settings
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_theme
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_version
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Screen for all settings options.

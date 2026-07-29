@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "737974025604",
+    "project_id": "orar-ubb-fmi",
+    "storage_bucket": "orar-ubb-fmi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737974025604:android:92bf4280b1c0c0094e31d1",
+        "android_client_info": {
+          "package_name": "com.ubb.fmi.orar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYcfKA21BQ-5HvqlfxoD0kYdDj_q29aVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

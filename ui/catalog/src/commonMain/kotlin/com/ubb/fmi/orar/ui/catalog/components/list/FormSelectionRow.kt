@@ -7,10 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.catalog.model.FormSelectionItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a row of selectable chips with a headline.

@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.DialogProperties
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
@@ -22,7 +23,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_m
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_title
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_got_it
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

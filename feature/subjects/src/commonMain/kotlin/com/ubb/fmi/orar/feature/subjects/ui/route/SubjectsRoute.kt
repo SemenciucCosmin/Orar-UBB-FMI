@@ -6,7 +6,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.subjects.ui.components.SubjectsScreen
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.SubjectsViewModel
-import com.ubb.fmi.orar.ui.navigation.components.BottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.ExploreNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 

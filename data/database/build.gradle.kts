@@ -1,23 +1,15 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -27,12 +19,24 @@ kotlin {
         }
     }
 
+    androidLibrary {
+        namespace = "com.ubb.fmi.orar.data.database"
+        compileSdk = libs.versions.compileSdk.get().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+        }
+    }
+
     room {
         schemaDirectory("$projectDir/schemas")
     }
 
     sourceSets {
         androidMain.dependencies {
+            // ROOM
+            implementation(libs.room.ktx)
         }
 
         commonMain.dependencies {
@@ -45,43 +49,22 @@ kotlin {
             // SQLITE
             implementation(libs.sqlite.bundled)
         }
-
-        iosMain.dependencies {
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-    }
-}
-
-android {
-    namespace = "com.ubb.fmi.orar.data.database"
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
 dependencies {
-    implementation(libs.room.ktx)
+    add("kspCommonMainMetadata", libs.room.compiler)
     add("ksp", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+}
+
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+tasks.matching { it.name == "kspAndroidMain" }.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
 }

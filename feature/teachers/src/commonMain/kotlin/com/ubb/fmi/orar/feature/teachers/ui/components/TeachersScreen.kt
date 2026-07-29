@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.TeacherTitle
 import com.ubb.fmi.orar.domain.extensions.BLANK
@@ -29,7 +30,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teachers
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * TeachersScreen is a composable function that displays a list of teachers with filtering options.

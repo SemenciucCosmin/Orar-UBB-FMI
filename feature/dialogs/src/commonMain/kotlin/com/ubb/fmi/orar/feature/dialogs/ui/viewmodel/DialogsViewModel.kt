@@ -36,6 +36,7 @@ class DialogsViewModel(
         viewModelScope.launch { setUpdateAnnouncementShownUseCase() }
     }
 
+    @Suppress("UnusedPrivateMember")
     private fun getUpdateAnnouncementShown() {
         viewModelScope.launch {
             getUpdateAnnouncementShownUseCase().collectLatest { isShown ->

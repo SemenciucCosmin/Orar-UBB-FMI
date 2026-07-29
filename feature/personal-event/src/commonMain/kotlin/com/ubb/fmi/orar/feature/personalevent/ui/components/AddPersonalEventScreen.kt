@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
@@ -37,7 +38,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_caption
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_location
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val DETAILS_LINES = 3
 private const val DETAILS_MAX_CHARS = 100

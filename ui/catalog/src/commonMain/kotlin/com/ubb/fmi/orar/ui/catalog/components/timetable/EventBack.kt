@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.ui.catalog.components.custom.AlertDialog
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -28,7 +29,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_cancel
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_ok
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Composable for the face part of an Event back
