@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.ui.catalog.components.custom.AlertDialog
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -20,7 +21,6 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_ok
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_remove_personal_event_message
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * A composable that displays a button to remove an event

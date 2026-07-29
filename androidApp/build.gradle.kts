@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.detekt)
+//    alias(libs.plugins.detekt)
     alias(libs.plugins.googleServices)
 }
 
@@ -29,7 +29,7 @@ dependencies {
     implementation(libs.androidx.material)
 
     // DETEKT
-    detektPlugins(libs.detekt.formatting)
+//    detektPlugins(libs.detekt.formatting)
 
     // COMPOSE
     implementation(libs.compose.uiToolingPreview)
@@ -111,8 +111,8 @@ android {
     }
 }
 
-detekt {
-    config.setFrom(rootProject.files("config/detekt/detekt.yml"))
-    buildUponDefaultConfig = true
-    autoCorrect = true
-}
+//detekt {
+//    config.setFrom(rootProject.files("config/detekt/detekt.yml"))
+//    buildUponDefaultConfig = true
+//    autoCorrect = true
+//}

@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.news.model.Article
 import com.ubb.fmi.orar.data.news.model.ArticleType
 import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState
@@ -33,7 +34,6 @@ import kotlinx.coroutines.launch
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_news
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * NewsScreen is a composable function that displays a list of news with filtering options.
