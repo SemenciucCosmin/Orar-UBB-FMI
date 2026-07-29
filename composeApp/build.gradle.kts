@@ -1,30 +1,16 @@
-import java.util.Properties
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
-val localProperties = Properties().apply {
-    val properties = rootProject.file("local.properties")
-    if (properties.exists()) load(properties.inputStream())
-}
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.firebaseCrashlitycs)
+//    alias(libs.plugins.firebaseCrashlitycs)
     alias(libs.plugins.googleServices)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-    
     listOf(
         iosX64(),
         iosArm64(),
@@ -33,6 +19,22 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+        }
+    }
+
+    androidLibrary {
+        namespace = "com.ubb.fmi.orar"
+        compileSdk = libs.versions.compileSdk.get().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+        }
+        androidResources {
+            enable = true
+        }
+        withHostTest {
+            isIncludeAndroidResources = true
         }
     }
 
@@ -53,12 +55,12 @@ kotlin {
 
         commonMain.dependencies {
             // COMPOSE
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.runtime)
-            implementation(compose.ui)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.uiToolingPreview)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.ui)
 
             // KOIN
             implementation(libs.koin.core)
@@ -128,67 +130,8 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.ubb.fmi.orar"
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "com.ubb.fmi.orar"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 8
-        versionName = "1.2.5"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file(localProperties["KEYSTORE_PATH"] as String)
-            keyAlias = localProperties["KEY_ALIAS"] as String
-            storePassword = localProperties["STORE_PASSWORD"] as String
-            keyPassword = localProperties["KEY_PASSWORD"] as String
-        }
-
-        create("release") {
-            storeFile = file(localProperties["KEYSTORE_PATH"] as String)
-            keyAlias = localProperties["KEY_ALIAS"] as String
-            storePassword = localProperties["STORE_PASSWORD"] as String
-            keyPassword = localProperties["KEY_PASSWORD"] as String
-        }
-    }
-
-    buildTypes {
-        debug {
-            signingConfig = signingConfigs.getByName("debug")
-        }
-
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    buildFeatures {
-        buildConfig = true
-    }
-}
-
 dependencies {
     detektPlugins(libs.detekt.formatting)
-    debugImplementation(compose.uiTooling)
 }
 
 detekt {
@@ -381,7 +324,6 @@ detekt {
         "${project.rootDir}/ui/theme/src/androidMain/kotlin",
         "${project.rootDir}/ui/theme/src/commonMain/kotlin",
         "${project.rootDir}/ui/theme/src/iosMain/kotlin",
-
     )
 
     buildUponDefaultConfig = true

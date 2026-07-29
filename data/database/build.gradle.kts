@@ -1,21 +1,13 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
+//    alias(libs.plugins.ksp)
+//    alias(libs.plugins.room)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,12 +19,24 @@ kotlin {
         }
     }
 
-    room {
-        schemaDirectory("$projectDir/schemas")
+    androidLibrary {
+        namespace = "com.ubb.fmi.orar.data.database"
+        compileSdk = libs.versions.compileSdk.get().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+        }
     }
+
+//    room {
+//        schemaDirectory("$projectDir/schemas")
+//    }
 
     sourceSets {
         androidMain.dependencies {
+            // ROOM
+            implementation(libs.room.ktx)
         }
 
         commonMain.dependencies {
@@ -57,31 +61,8 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.ubb.fmi.orar.data.database"
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-}
-
 dependencies {
-    implementation(libs.room.ktx)
-    add("ksp", libs.room.compiler)
+//    kspAndroid(libs.room.compiler)
+//    add("kspIosArm64", libs.room.compiler)
+//    add("kspIosSimulatorArm64", libs.room.compiler)
 }
