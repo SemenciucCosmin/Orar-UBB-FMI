@@ -27,10 +27,6 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
-
         commonMain.dependencies {
             // DATA STORE
             implementation(libs.data.store)
@@ -45,17 +41,5 @@ kotlin {
             implementation(projects.data.preferences)
             implementation(projects.domain.logging)
         }
-
-        iosMain.dependencies {
-        }
-
-        commonTest.dependencies {
-        }
-
-        dependencies {
-        }
     }
-}
-
-dependencies {
 }

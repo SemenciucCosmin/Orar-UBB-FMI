@@ -27,31 +27,9 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
-
         commonMain.dependencies {
             // KOIN
             implementation(libs.koin.core)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
 }

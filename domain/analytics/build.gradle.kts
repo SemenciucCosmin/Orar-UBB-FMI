@@ -33,7 +33,6 @@ kotlin {
         }
 
         commonMain.dependencies {
-
             // FIREBASE
             implementation(libs.firebase.app.kmp)
             implementation(libs.firebase.analytics.kmp)
@@ -41,23 +40,5 @@ kotlin {
             // KOIN
             implementation(libs.koin.core)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
 }

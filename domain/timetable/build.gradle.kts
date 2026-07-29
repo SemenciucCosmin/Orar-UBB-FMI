@@ -27,10 +27,6 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
-
         commonMain.dependencies {
             // KOIN
             implementation(libs.koin.core)
@@ -49,23 +45,5 @@ kotlin {
             implementation(projects.data.timetable)
             implementation(projects.domain.logging)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
 }

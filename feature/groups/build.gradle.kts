@@ -29,10 +29,6 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
-
         commonMain.dependencies {
             // COMPOSE
             implementation(libs.compose.components.resources)
@@ -65,24 +61,5 @@ kotlin {
             // NAVIGATION
             implementation(libs.navigation.compose)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
-
 }

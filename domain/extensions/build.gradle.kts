@@ -36,23 +36,5 @@ kotlin {
             implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.coroutines.core)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
 }

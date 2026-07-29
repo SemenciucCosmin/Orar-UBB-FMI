@@ -57,26 +57,7 @@ kotlin {
             implementation(projects.domain.userTimetable)
             implementation(projects.ui.theme)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
-
 }
 
 compose {

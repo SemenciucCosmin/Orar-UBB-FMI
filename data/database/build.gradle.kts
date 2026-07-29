@@ -49,14 +49,6 @@ kotlin {
             // SQLITE
             implementation(libs.sqlite.bundled)
         }
-
-        iosMain.dependencies {
-
-        }
-
-        commonTest.dependencies {
-
-        }
     }
 }
 

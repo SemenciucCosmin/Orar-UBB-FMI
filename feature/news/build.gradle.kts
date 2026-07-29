@@ -75,19 +75,5 @@ kotlin {
             // KTOR
             implementation(libs.ktor.client.darwin)
         }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
-
 }

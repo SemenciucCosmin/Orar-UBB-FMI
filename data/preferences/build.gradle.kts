@@ -27,10 +27,6 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
-
         commonMain.dependencies {
             // DATA STORE
             implementation(libs.data.store)
@@ -39,24 +35,5 @@ kotlin {
             // KOIN
             implementation(libs.koin.core)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
-
 }

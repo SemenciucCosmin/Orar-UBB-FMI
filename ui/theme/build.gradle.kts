@@ -29,10 +29,6 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-
-        }
-
         commonMain.dependencies {
             // COMPOSE
             implementation(libs.compose.components.resources)
@@ -51,24 +47,5 @@ kotlin {
             implementation(projects.data.settings)
             implementation(projects.domain.theme)
         }
-
-        iosMain.dependencies {
-
-
-        }
-
-        commonTest.dependencies {
-
-
-        }
-
-        dependencies {
-
-
-        }
     }
-}
-
-dependencies {
-
 }
