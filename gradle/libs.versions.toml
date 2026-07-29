@@ -46,7 +46,7 @@ kotlinx-dateTime = "0.8.0"
 kotlinx-immutableCollections = "0.5.1"
 
 # KSP
-ksp = "2.2.10-2.0.2"
+ksp = "2.3.9"
 
 # KTOR
 ktor = "3.5.1"

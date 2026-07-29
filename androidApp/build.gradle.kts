@@ -51,10 +51,6 @@ dependencies {
 
     // NAVIGATION
     implementation(libs.navigation.compose)
-
-    // ROOM
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
 }
 
 android {

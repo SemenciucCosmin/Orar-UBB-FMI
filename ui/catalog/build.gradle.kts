@@ -23,6 +23,8 @@ kotlin {
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
 
+        androidResources.enable = true
+
         compilerOptions {
             jvmTarget = JvmTarget.JVM_21
         }

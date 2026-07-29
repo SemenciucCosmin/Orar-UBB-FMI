@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
-//    alias(libs.plugins.firebaseCrashlitycs)
 }
 
 kotlin {
@@ -318,7 +317,7 @@ detekt {
 
         "${project.rootDir}/ui/navigation/src/androidMain/kotlin",
         "${project.rootDir}/ui/navigation/src/commonMain/kotlin",
-        "${project.rootDir}/ui/navigation/src/iosMain/kotlin",w
+        "${project.rootDir}/ui/navigation/src/iosMain/kotlin",
 
         "${project.rootDir}/ui/theme/src/androidMain/kotlin",
         "${project.rootDir}/ui/theme/src/commonMain/kotlin",

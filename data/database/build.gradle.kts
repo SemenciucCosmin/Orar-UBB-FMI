@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinMultiplatform)
-//    alias(libs.plugins.ksp)
-//    alias(libs.plugins.room)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -28,9 +29,9 @@ kotlin {
         }
     }
 
-//    room {
-//        schemaDirectory("$projectDir/schemas")
-//    }
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 
     sourceSets {
         androidMain.dependencies {
@@ -55,13 +56,23 @@ kotlin {
 
         commonTest.dependencies {
 
-
         }
     }
 }
 
 dependencies {
-//    kspAndroid(libs.room.compiler)
-//    add("kspIosArm64", libs.room.compiler)
-//    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspCommonMainMetadata", libs.room.compiler)
+    add("ksp", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+}
+
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+tasks.matching { it.name == "kspAndroidMain" }.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
 }
