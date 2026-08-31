@@ -76,6 +76,7 @@ kotlin {
             implementation(projects.data.groups)
             implementation(projects.data.network)
             implementation(projects.data.news)
+            implementation(projects.data.notifications)
             implementation(projects.data.preferences)
             implementation(projects.data.rooms)
             implementation(projects.data.settings)

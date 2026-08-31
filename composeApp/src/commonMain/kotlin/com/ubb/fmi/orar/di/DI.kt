@@ -6,6 +6,7 @@ import com.ubb.fmi.orar.data.feedback.di.feedbackDataModule
 import com.ubb.fmi.orar.data.groups.di.groupsDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.news.di.newsDataModule
+import com.ubb.fmi.orar.data.notifications.di.notificationsDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.settings.di.settingsDataModule
@@ -89,6 +90,9 @@ fun commonModule() = module {
     // NEWS
     includes(newsDataModule())
     includes(newsFeatureModule())
+
+    // NOTIFICATIONS
+    includes(notificationsDataModule())
 
     // PERSONAL EVENT
     includes(personalEventFeatureModule())

@@ -37,6 +37,7 @@ include(
     ":data:groups",
     ":data:network",
     ":data:news",
+    ":data:notifications",
     ":data:preferences",
     ":data:rooms",
     ":data:settings",
