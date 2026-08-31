@@ -58,32 +58,8 @@ class NotificationPreferencesImpl(
         dataStore.edit { it.remove(SCHEDULED_IDS) }
     }
 
-    /**
-     * Returns the serialized data for the given notification ID, or null if not found
-     */
-    override suspend fun getNotificationData(id: String): String? {
-        return dataStore.data.map { it[notificationDataKey(id)] }.first()
-    }
-
-    /**
-     * Stores serialized data for the given notification ID
-     */
-    override suspend fun setNotificationData(id: String, data: String) {
-        dataStore.edit { it[notificationDataKey(id)] = data }
-    }
-
-    /**
-     * Removes stored data for the given notification ID
-     */
-    override suspend fun removeNotificationData(id: String) {
-        dataStore.edit { it.remove(notificationDataKey(id)) }
-    }
-
-    private fun notificationDataKey(id: String) = stringPreferencesKey("${DATA_KEY_PREFIX}$id")
-
     companion object {
         private const val DELIMITER = ","
-        private const val DATA_KEY_PREFIX = "DATA_"
         private val SCHEDULED_IDS = stringPreferencesKey("SCHEDULED_IDS")
     }
 }

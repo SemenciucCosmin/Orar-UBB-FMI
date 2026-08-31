@@ -70,25 +70,16 @@ class NotificationRepositoryImpl(
         }
 
         notificationPreferences.addScheduledId(notification.id)
-        notificationPreferences.setNotificationData(notification.id, serializeNotification(notification))
     }
 
     override suspend fun cancel(id: String) {
         notificationCacheDataSource.getNotificationCenter().removePendingNotificationRequestsWithIdentifiers(allIdentifiers(id))
         notificationPreferences.removeScheduledId(id)
-        notificationPreferences.removeNotificationData(id)
     }
 
     override suspend fun cancelAll() {
         notificationCacheDataSource.getNotificationCenter().removeAllPendingNotificationRequests()
         notificationPreferences.clearScheduledIds()
-    }
-
-    override suspend fun getScheduled(): List<ClassNotification> {
-        return notificationPreferences.getScheduledIds().first().mapNotNull { id ->
-            val raw = notificationPreferences.getNotificationData(id) ?: return@mapNotNull null
-            parseNotification(raw)
-        }
     }
 
     private suspend fun requestAuthorizationIfNeeded() {
@@ -149,23 +140,6 @@ class NotificationRepositoryImpl(
         val currentTimeOfDaySeconds = currentHour * 3600.0 + currentMinute * 60.0
 
         return secondsToDay + extraWeekSeconds + timeOfDaySeconds - currentTimeOfDaySeconds
-    }
-
-    private fun serializeNotification(n: ClassNotification): String =
-        "${n.id}|${n.className}|${n.classType.id}|${n.frequency.id}|${n.day.id}|${n.hour}|${n.minute}"
-
-    private fun parseNotification(raw: String): ClassNotification? {
-        val parts = raw.split("|")
-        if (parts.size < 7) return null
-        return ClassNotification(
-            id = parts[0],
-            className = parts[1],
-            classType = EventType.getById(parts[2]),
-            frequency = Frequency.getById(parts[3]),
-            day = Day.getById(parts[4]),
-            hour = parts[5].toIntOrNull() ?: return null,
-            minute = parts[6].toIntOrNull() ?: return null,
-        )
     }
 
     private fun Day.toIosWeekday(): Int = when (this) {

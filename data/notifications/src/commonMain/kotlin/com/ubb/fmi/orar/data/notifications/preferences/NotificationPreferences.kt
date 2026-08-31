@@ -27,21 +27,6 @@ interface NotificationPreferences {
      */
     suspend fun clearScheduledIds()
 
-    /**
-     * Returns the serialized data for the given notification ID, or null if not found
-     */
-    suspend fun getNotificationData(id: String): String?
-
-    /**
-     * Stores serialized data for the given notification ID
-     */
-    suspend fun setNotificationData(id: String, data: String)
-
-    /**
-     * Removes stored data for the given notification ID
-     */
-    suspend fun removeNotificationData(id: String)
-
     companion object {
         const val PREFERENCES_NAME = "NOTIFICATION_PREFERENCES"
     }

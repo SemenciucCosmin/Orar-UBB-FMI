@@ -6,5 +6,4 @@ interface NotificationRepository {
     suspend fun schedule(notification: ClassNotification)
     suspend fun cancel(id: String)
     suspend fun cancelAll()
-    suspend fun getScheduled(): List<ClassNotification>
 }
