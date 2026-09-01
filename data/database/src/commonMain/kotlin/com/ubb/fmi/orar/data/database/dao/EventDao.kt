@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Data Access Object (DAO) for managing timetable event entities in the database.
  */
+@Suppress("TooManyFunctions")
 @Dao
 interface EventDao {
 
@@ -21,6 +22,12 @@ interface EventDao {
     fun getAllAsFlowByConfiguration(
         configurationId: String,
     ): Flow<List<EventEntity>>
+
+    /**
+     * Get all timetable event entities
+     */
+    @Query("SELECT * FROM events")
+    suspend fun getAll(): List<EventEntity>
 
     /**
      * Get all timetable event entities by [configurationId] and [ownerId]

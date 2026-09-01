@@ -9,6 +9,7 @@ import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.collections.map
 
 /**
  * Data source for managing all timetable events
@@ -21,10 +22,14 @@ class EventsDataSourceImpl(
     /**
      * Retrieve list of all [Event] as [Flow] from cache
      */
-    override suspend fun getAllEventsFromCache(configurationId: String): Flow<List<Event>> {
+    override suspend fun getAllEventsFromCacheAsFlow(configurationId: String): Flow<List<Event>> {
         return eventDao.getAllAsFlowByConfiguration(configurationId).map {
             it.map(::mapEntityToEvent)
         }
+    }
+
+    override suspend fun getAllEventsFromCache(): List<Event> {
+        return eventDao.getAll().map(::mapEntityToEvent)
     }
 
     /**
@@ -43,10 +48,7 @@ class EventsDataSourceImpl(
     /**
      * Retrieve [Event] from cache
      */
-    override suspend fun getEventFromCache(
-        configurationId: String,
-        eventId: String,
-    ): Event? {
+    override suspend fun getEventFromCache(eventId: String): Event? {
         val eventEntity = eventDao.getById(eventId)
         return eventEntity?.let(::mapEntityToEvent)
     }
@@ -100,6 +102,13 @@ class EventsDataSourceImpl(
         eventDao.insert(newEventEntity)
     }
 
+    override suspend fun changeEventNotification(eventId: String) {
+        logger.d(TAG, "changeEventNotification for eventId: $eventId")
+        val eventEntity = eventDao.getById(eventId) ?: return
+        val newEventEntity = eventEntity.copy(isNotificationOn = !eventEntity.isNotificationOn)
+        eventDao.insert(newEventEntity)
+    }
+
     /**
      * Deletes event with [eventId] from database
      */
@@ -139,7 +148,8 @@ class EventsDataSourceImpl(
             participant = event.participant,
             caption = event.caption,
             details = event.details,
-            isVisible = event.isVisible
+            isVisible = event.isVisible,
+            isNotificationOn = event.isNotificationOn
         )
     }
 
@@ -164,6 +174,7 @@ class EventsDataSourceImpl(
             caption = entity.caption,
             details = entity.details,
             isVisible = entity.isVisible,
+            isNotificationOn = entity.isNotificationOn,
         )
     }
 

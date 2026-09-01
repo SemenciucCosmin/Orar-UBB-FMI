@@ -51,6 +51,7 @@ include(
     ":domain:feedback",
     ":domain:html-parser",
     ":domain:logging",
+    ":domain:notifications",
     ":domain:theme",
     ":domain:timetable",
     ":domain:user-timetable",

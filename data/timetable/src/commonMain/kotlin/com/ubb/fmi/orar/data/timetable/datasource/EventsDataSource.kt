@@ -6,14 +6,20 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Data source for managing all timetable events
  */
+@Suppress("TooManyFunctions")
 interface EventsDataSource {
 
     /**
      * Retrieve list of all [Event] as [Flow] from cache
      */
-    suspend fun getAllEventsFromCache(
+    suspend fun getAllEventsFromCacheAsFlow(
         configurationId: String,
     ): Flow<List<Event>>
+
+    /**
+     * Retrieve list of all [Event]
+     */
+    suspend fun getAllEventsFromCache(): List<Event>
 
     /**
      * Retrieve list of [Event] as [Flow] from cache
@@ -26,10 +32,7 @@ interface EventsDataSource {
     /**
      * Retrieve [Event] from cache
      */
-    suspend fun getEventFromCache(
-        configurationId: String,
-        eventId: String,
-    ): Event?
+    suspend fun getEventFromCache(eventId: String): Event?
 
     /**
      * Updates new list of [Event] to cache
@@ -65,6 +68,8 @@ interface EventsDataSource {
      * Change visibility of specific timetable event by [eventId]
      */
     suspend fun changeEventVisibility(eventId: String)
+
+    suspend fun changeEventNotification(eventId: String)
 
     /**
      * Deletes event with [eventId] from database

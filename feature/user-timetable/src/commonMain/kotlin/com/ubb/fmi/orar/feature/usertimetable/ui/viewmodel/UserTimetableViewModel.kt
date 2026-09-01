@@ -5,10 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.notifications.repository.NotificationRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Week
+import com.ubb.fmi.orar.domain.notifications.usecase.ChangeEventNotificationUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.DeletePersonalEventUseCase
-import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -34,8 +36,10 @@ import kotlinx.coroutines.launch
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
     private val changeEventVisibilityUseCase: ChangeEventVisibilityUseCase,
+    private val changeEventNotificationUseCase: ChangeEventNotificationUseCase,
     private val deletePersonalEventUseCase: DeletePersonalEventUseCase,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
+    private val notificationRepository: NotificationRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -57,6 +61,19 @@ class UserTimetableViewModel(
      * This is done in the init block to ensure it starts loading as soon as the ViewModel is created.
      */
     init {
+//        viewModelScope.launch {
+//            notificationRepository.schedule(
+//                notification = EventNotification(
+//                    id = "new_class_notification",
+//                    eventName = "New Class Notification ${Random.nextInt()}",
+//                    eventType = EventType.LABORATORY,
+//                    frequency = Frequency.BOTH,
+//                    day = Day.TUESDAY,
+//                    hour = 14,
+//                    minute = 0,
+//                )
+//            )
+//        }
         getWeek()
         job = loadTimetable()
     }
@@ -133,6 +150,24 @@ class UserTimetableViewModel(
                 when {
                     it.id != event.id -> it
                     else -> it.copy(isVisible = !it.isVisible)
+                }
+            }.toImmutableList()
+
+            state.copy(events = newEvents)
+        }
+    }
+
+    fun changeTimetableClassNotification(event: TimetableListItem.Event) {
+        viewModelScope.launch {
+            logger.d(TAG, "changeTimetableClassNotification event: $event")
+            changeEventNotificationUseCase(event.id)
+        }
+
+        _uiState.update { state ->
+            val newEvents = state.events.map {
+                when {
+                    it.id != event.id -> it
+                    else -> it.copy(isNotificationOn = !it.isNotificationOn)
                 }
             }.toImmutableList()
 

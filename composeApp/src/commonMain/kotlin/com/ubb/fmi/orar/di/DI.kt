@@ -18,6 +18,7 @@ import com.ubb.fmi.orar.domain.analytics.di.analyticsDomainModule
 import com.ubb.fmi.orar.domain.announcements.di.announcementsDomainModule
 import com.ubb.fmi.orar.domain.feedback.di.feedbackDomainModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
+import com.ubb.fmi.orar.domain.notifications.di.notificationsDomainModule
 import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
@@ -93,6 +94,7 @@ fun commonModule() = module {
 
     // NOTIFICATIONS
     includes(notificationsDataModule())
+    includes(notificationsDomainModule())
 
     // PERSONAL EVENT
     includes(personalEventFeatureModule())

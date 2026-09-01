@@ -77,6 +77,7 @@ data class TimetableUiState(
                                     caption = event.caption,
                                     details = event.details,
                                     isVisible = event.isVisible,
+                                    isNotificationOn = event.isNotificationOn,
                                     isPersonal = event.ownerId == Owner.User.id
                                 )
                             }
@@ -116,6 +117,7 @@ data class TimetableUiState(
                                     caption = event.caption,
                                     details = event.details,
                                     isVisible = event.isVisible,
+                                    isNotificationOn = event.isNotificationOn,
                                     isPersonal = event.ownerId == Owner.User.id
                                 )
                             }

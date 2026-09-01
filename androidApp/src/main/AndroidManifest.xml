@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +16,7 @@
         android:theme="@style/Theme.AppTheme"
         android:name=".OrarUbbFmiApplication">
 
-        <receiver android:name="com.ubb.fmi.orar.domain.notifications.receiver.NotificationReceiver"
+        <receiver android:name="com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver"
             android:exported="false" />
 
         <activity

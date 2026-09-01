@@ -2,7 +2,7 @@ package com.ubb.fmi.orar.data.notifications.datasource
 
 import platform.UserNotifications.UNUserNotificationCenter
 
-class NotificationCacheDataSourceImpl: NotificationCacheDataSource {
+class NotificationCacheDataSourceImpl : NotificationCacheDataSource {
 
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
 

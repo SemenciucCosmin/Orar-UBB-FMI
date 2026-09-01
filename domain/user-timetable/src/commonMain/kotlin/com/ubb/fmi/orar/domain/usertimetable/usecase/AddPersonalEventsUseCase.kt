@@ -65,7 +65,8 @@ class AddPersonalEventsUseCase(
                 participant = String.BLANK,
                 caption = caption,
                 details = details,
-                isVisible = true
+                isVisible = true,
+                isNotificationOn = true,
             )
         }
 

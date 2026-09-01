@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.domain.usertimetable.model
+package com.ubb.fmi.orar.data.timetable.model
 
 /**
  * Represents the teaching week

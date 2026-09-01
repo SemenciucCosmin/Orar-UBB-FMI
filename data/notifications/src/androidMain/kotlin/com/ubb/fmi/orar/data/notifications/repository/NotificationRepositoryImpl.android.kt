@@ -2,76 +2,46 @@ package com.ubb.fmi.orar.data.notifications.repository
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSource
+import com.ubb.fmi.orar.data.notifications.manager.scheduleExact
+import com.ubb.fmi.orar.data.notifications.model.EventNotification
+import com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.notifications.model.ClassNotification
-import com.ubb.fmi.orar.data.notifications.preferences.NotificationPreferences
-import com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver
-import kotlinx.coroutines.flow.first
 import java.util.Calendar
 
 class NotificationRepositoryImpl(
     private val context: Context,
     private val notificationCacheDataSource: NotificationCacheDataSource,
-    private val notificationPreferences: NotificationPreferences,
 ) : NotificationRepository {
 
+    init {
+        createNotificationChannel(context)
+    }
+
     @SuppressLint("MissingPermission")
-    override suspend fun schedule(notification: ClassNotification) {
+    override suspend fun schedule(notification: EventNotification) {
         val triggerMillis = getNotificationTriggerMillis(
             day = notification.day,
             hour = notification.hour,
-            minute =  notification.minute,
+            minute = notification.minute,
             frequency = notification.frequency,
         )
 
-        val intervalMillis = when (notification.frequency) {
-            Frequency.BOTH -> WEEK_IN_MS
-            else -> 2 * WEEK_IN_MS
-        }
-
-        notificationCacheDataSource.getNotificationManager().setRepeating(
+        notificationCacheDataSource.getNotificationManager().scheduleExact(
             AlarmManager.RTC_WAKEUP,
             triggerMillis,
-            intervalMillis,
             buildPendingIntent(notification),
         )
-
-        notificationPreferences.addScheduledId(notification.id)
     }
 
     override suspend fun cancel(id: String) {
-        cancelAlarm(id)
-        notificationPreferences.removeScheduledId(id)
-    }
-
-    override suspend fun cancelAll() {
-        notificationPreferences.getScheduledIds().first().forEach { cancelAlarm(it) }
-        notificationPreferences.clearScheduledIds()
-    }
-
-    private fun buildPendingIntent(notification: ClassNotification): PendingIntent {
-        val intent = Intent(context, NotificationReceiver::class.java).apply {
-            putExtra(NotificationReceiver.EXTRA_NOTIFICATION_ID, notification.id)
-            putExtra(NotificationReceiver.EXTRA_CLASS_NAME, notification.className)
-            putExtra(NotificationReceiver.EXTRA_CLASS_TYPE, notification.classType.id)
-            putExtra(NotificationReceiver.EXTRA_HOUR, notification.hour)
-            putExtra(NotificationReceiver.EXTRA_MINUTE, notification.minute)
-        }
-
-        return PendingIntent.getBroadcast(
-            context,
-            notification.id.hashCode(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-    }
-
-    private fun cancelAlarm(id: String) {
         val intent = Intent(context, NotificationReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -83,13 +53,31 @@ class NotificationRepositoryImpl(
         pendingIntent.cancel()
     }
 
+    private fun buildPendingIntent(notification: EventNotification): PendingIntent {
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra(EXTRA_NOTIFICATION_ID, notification.id)
+            putExtra(EXTRA_CLASS_NAME, notification.eventName)
+            putExtra(EXTRA_CLASS_TYPE, notification.eventType.id)
+            putExtra(EXTRA_FREQUENCY, notification.frequency.id)
+            putExtra(EXTRA_HOUR, notification.hour)
+            putExtra(EXTRA_MINUTE, notification.minute)
+        }
+
+        return PendingIntent.getBroadcast(
+            context,
+            notification.id.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
     private fun getNotificationTriggerMillis(
         day: Day,
         hour: Int,
         minute: Int,
         frequency: Frequency,
     ): Long {
-         return when (frequency) {
+        return when (frequency) {
             Frequency.BOTH -> getCalendar(day, hour, minute).timeInMillis
 
             else -> {
@@ -133,7 +121,31 @@ class NotificationRepositoryImpl(
         return calendar
     }
 
+    private fun createNotificationChannel(context: Context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+
+        val manager = context.getSystemService(
+            Context.NOTIFICATION_SERVICE
+        ) as NotificationManager
+
+        if (manager.getNotificationChannel(CHANNEL_ID) != null) return
+
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Class Notifications",
+            NotificationManager.IMPORTANCE_DEFAULT,
+        )
+
+        manager.createNotificationChannel(channel)
+    }
+
     companion object {
-        private const val WEEK_IN_MS = 7L * 24 * 60 * 60 * 1000
+        private const val CHANNEL_ID = "event_notifications"
+        private const val EXTRA_NOTIFICATION_ID = "notification_id"
+        private const val EXTRA_CLASS_NAME = "class_name"
+        private const val EXTRA_CLASS_TYPE = "class_type"
+        private const val EXTRA_FREQUENCY = "frequency"
+        private const val EXTRA_HOUR = "hour"
+        private const val EXTRA_MINUTE = "minute"
     }
 }

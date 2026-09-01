@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -43,6 +44,7 @@ fun TimetableScreen(
     topBar: @Composable () -> Unit,
     bottomBar: @Composable () -> Unit = {},
     onItemVisibilityChange: (TimetableListItem.Event) -> Unit = {},
+    onItemNotificationChange: (TimetableListItem.Event) -> Unit = {},
     onRemoveItem: (TimetableListItem.Event) -> Unit = {},
     onAddItem: ((String) -> Unit)? = null,
 ) {
@@ -80,22 +82,26 @@ fun TimetableScreen(
                         Row(
                             modifier = Modifier.animateItem(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(
-                                Pds.spacing.SMedium
-                            )
+                            horizontalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium)
                         ) {
                             AnimatedVisibility(uiState.isEditModeOn) {
-                                when {
-                                    timetableItem.isPersonal -> {
+                                Column(
+                                    verticalArrangement = Arrangement.SpaceBetween,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    EventVisibilityToggleButton(
+                                        isChecked = timetableItem.isVisible,
+                                        onClick = { onItemVisibilityChange(timetableItem) }
+                                    )
+
+                                    EventNotificationToggleButton(
+                                        isChecked = timetableItem.isNotificationOn,
+                                        onClick = { onItemNotificationChange(timetableItem) }
+                                    )
+
+                                    if (timetableItem.isPersonal) {
                                         EventRemoveButton(
                                             onRemove = { onRemoveItem(timetableItem) }
-                                        )
-                                    }
-
-                                    else -> {
-                                        EventVisibilityButton(
-                                            isVisible = timetableItem.isVisible,
-                                            onClick = { onItemVisibilityChange(timetableItem) }
                                         )
                                     }
                                 }
@@ -165,6 +171,7 @@ private fun PreviewTimetableScreen() {
                         caption = "Caption $it",
                         details = "Details $it",
                         isVisible = true,
+                        isNotificationOn = false,
                         configurationId = "20241",
                         ownerId = "$it"
                     )
@@ -183,6 +190,7 @@ private fun PreviewTimetableScreenEditMode() {
             topBar = {},
             bottomBar = {},
             onItemVisibilityChange = {},
+            onItemNotificationChange = {},
             uiState = TimetableUiState(
                 title = "",
                 studyLevel = null,
@@ -207,6 +215,7 @@ private fun PreviewTimetableScreenEditMode() {
                         caption = "Caption $it",
                         details = "Details $it",
                         isVisible = true,
+                        isNotificationOn = false,
                         configurationId = "20241",
                         ownerId = "$it",
                     )

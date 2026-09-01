@@ -2,6 +2,8 @@ package com.ubb.fmi.orar.feature.usertimetable.ui.route
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.ubb.fmi.orar.feature.usertimetable.ui.components.UserTimetableTopBar
@@ -21,13 +23,27 @@ import org.koin.compose.viewmodel.koinViewModel
 fun UserTimetableRoute(navController: NavController) {
     val viewModel: UserTimetableViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val hapticFeedback = LocalHapticFeedback.current
 
     TimetableScreen(
         uiState = uiState,
         onRetryClick = viewModel::retry,
         bottomBar = { BottomBar(navController) },
-        onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
         onRemoveItem = viewModel::removeItem,
+        onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
+        onItemNotificationChange = {
+            when {
+                it.isNotificationOn -> {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
+                }
+
+                else -> {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
+                }
+            }
+
+            viewModel.changeTimetableClassNotification(it)
+        },
         topBar = {
             UserTimetableTopBar(
                 isLoading = uiState.isLoading,

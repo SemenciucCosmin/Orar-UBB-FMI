@@ -90,6 +90,7 @@ kotlin {
             implementation(projects.domain.feedback)
             implementation(projects.domain.htmlParser)
             implementation(projects.domain.logging)
+            implementation(projects.domain.notifications)
             implementation(projects.domain.theme)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)

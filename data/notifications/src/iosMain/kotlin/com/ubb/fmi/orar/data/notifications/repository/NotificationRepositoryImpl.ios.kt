@@ -1,19 +1,16 @@
 package com.ubb.fmi.orar.data.notifications.repository
 
 import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSource
+import com.ubb.fmi.orar.data.notifications.model.EventNotification
 import com.ubb.fmi.orar.data.timetable.model.Day
-import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.notifications.model.ClassNotification
-import com.ubb.fmi.orar.data.notifications.preferences.NotificationPreferences
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarIdentifierGregorian
 import platform.Foundation.NSCalendarUnitHour
 import platform.Foundation.NSCalendarUnitMinute
-import platform.Foundation.NSCalendarUnitWeekday
 import platform.Foundation.NSCalendarUnitWeekOfYear
+import platform.Foundation.NSCalendarUnitWeekday
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateComponents
 import platform.UserNotifications.UNAuthorizationOptionAlert
@@ -27,16 +24,15 @@ import kotlin.coroutines.resume
 
 class NotificationRepositoryImpl(
     private val notificationCacheDataSource: NotificationCacheDataSource,
-    private val notificationPreferences: NotificationPreferences
 ) : NotificationRepository {
 
-    override suspend fun schedule(notification: ClassNotification) {
+    override suspend fun schedule(notification: EventNotification) {
         requestAuthorizationIfNeeded()
 
         val content = UNMutableNotificationContent().apply {
-            setTitle(notification.className)
+            setTitle(notification.eventName)
             val timeLabel = "%02d:%02d".format(notification.hour, notification.minute)
-            setBody("${notification.classType.id} • $timeLabel")
+            setBody("${notification.eventType.id} • $timeLabel")
         }
 
         when (notification.frequency) {
@@ -64,22 +60,19 @@ class NotificationRepositoryImpl(
                         content = content,
                         trigger = trigger,
                     )
-                    notificationCacheDataSource.getNotificationCenter().addNotificationRequest(request, withCompletionHandler = null)
+                    notificationCacheDataSource.getNotificationCenter().addNotificationRequest(
+                        request,
+                        withCompletionHandler = null
+                    )
                 }
             }
         }
-
-        notificationPreferences.addScheduledId(notification.id)
     }
 
     override suspend fun cancel(id: String) {
-        notificationCacheDataSource.getNotificationCenter().removePendingNotificationRequestsWithIdentifiers(allIdentifiers(id))
-        notificationPreferences.removeScheduledId(id)
-    }
-
-    override suspend fun cancelAll() {
-        notificationCacheDataSource.getNotificationCenter().removeAllPendingNotificationRequests()
-        notificationPreferences.clearScheduledIds()
+        notificationCacheDataSource.getNotificationCenter().removePendingNotificationRequestsWithIdentifiers(
+            allIdentifiers(id)
+        )
     }
 
     private suspend fun requestAuthorizationIfNeeded() {
@@ -90,7 +83,7 @@ class NotificationRepositoryImpl(
         }
     }
 
-    private fun buildWeeklyTrigger(notification: ClassNotification): UNCalendarNotificationTrigger {
+    private fun buildWeeklyTrigger(notification: EventNotification): UNCalendarNotificationTrigger {
         val components = NSDateComponents().apply {
             weekday = notification.day.toIosWeekday().toLong()
             hour = notification.hour.toLong()
@@ -108,7 +101,7 @@ class NotificationRepositoryImpl(
     private fun allIdentifiers(id: String): List<String> =
         listOf(id) + List(BI_WEEKLY_COUNT) { i -> biWeeklyIdentifier(id, i) }
 
-    private fun secondsUntilFirstBiWeeklyOccurrence(notification: ClassNotification): Double {
+    private fun secondsUntilFirstBiWeeklyOccurrence(notification: EventNotification): Double {
         val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
         val now = NSDate()
         val currentComponents = calendar.components(
@@ -154,6 +147,7 @@ class NotificationRepositoryImpl(
 
     companion object {
         private const val DAY_IN_SECONDS = 24.0 * 60 * 60
+
         /** Pre-scheduled bi-weekly occurrences (~1 year). iOS allows max 64 pending notifications. */
         private const val BI_WEEKLY_COUNT = 26
     }

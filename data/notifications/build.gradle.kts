@@ -31,14 +31,14 @@ kotlin {
             implementation(libs.androidx.core.ktx)
         }
         commonMain.dependencies {
-            // DATA STORE
-            implementation(libs.data.store)
-            implementation(libs.data.store.preferences)
-
+            // KOIN
             implementation(libs.koin.core)
+
+            // KOTLINX
             implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(projects.data.preferences)
+
+            // Modules
             implementation(projects.data.timetable)
         }
     }
