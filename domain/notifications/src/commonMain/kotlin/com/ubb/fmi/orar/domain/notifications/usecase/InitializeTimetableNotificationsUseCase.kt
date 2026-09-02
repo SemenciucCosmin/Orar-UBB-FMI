@@ -55,7 +55,8 @@ class InitializeTimetableNotificationsUseCase(
                 }
             }.filterNotNull().firstOrNull() ?: return@launch
 
-            val initializedEventsNotifications = impersonalEvents.map {
+            val visibleImpersonalEvents = impersonalEvents.filter { it.isVisible }
+            val initializedEventsNotifications = visibleImpersonalEvents.map {
                 it.copy(isNotificationOn = true)
             }
 

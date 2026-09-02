@@ -20,11 +20,8 @@ class AppInitializer : KoinComponent {
 
     private val increaseAppUsagePointsUseCase: IncreaseAppUsagePointsUseCase by inject()
 
-    private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase by inject()
-
     fun initApp() {
         coroutineScope.launch { setFirstUsageTimestampUseCase() }
         coroutineScope.launch { increaseAppUsagePointsUseCase() }
-        initializeTimetableNotificationsUseCase()
     }
 }
