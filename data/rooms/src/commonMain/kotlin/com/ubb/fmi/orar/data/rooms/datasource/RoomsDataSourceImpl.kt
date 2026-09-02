@@ -158,7 +158,7 @@ class RoomsDataSourceImpl(
                 caption = teacherCell.value,
                 details = room.address,
                 isVisible = true,
-                isNotificationOn = false,
+                isNotificationOn = true,
             )
         }
 

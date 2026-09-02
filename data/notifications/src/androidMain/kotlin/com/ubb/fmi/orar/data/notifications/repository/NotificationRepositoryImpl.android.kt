@@ -29,11 +29,10 @@ class NotificationRepositoryImpl(
     override suspend fun schedule(notification: EventNotification) {
         val triggerMillis = getNotificationTriggerMillis(
             day = notification.day,
-            hour = notification.hour,
-            minute = notification.minute,
+            startHour = notification.startHour,
+            startMinute = notification.startMinute,
             frequency = notification.frequency,
         )
-
         notificationCacheDataSource.getNotificationManager().scheduleExact(
             AlarmManager.RTC_WAKEUP,
             triggerMillis,
@@ -56,11 +55,15 @@ class NotificationRepositoryImpl(
     private fun buildPendingIntent(notification: EventNotification): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, notification.id)
-            putExtra(EXTRA_CLASS_NAME, notification.eventName)
-            putExtra(EXTRA_CLASS_TYPE, notification.eventType.id)
-            putExtra(EXTRA_FREQUENCY, notification.frequency.id)
-            putExtra(EXTRA_HOUR, notification.hour)
-            putExtra(EXTRA_MINUTE, notification.minute)
+            putExtra(EXTRA_EVENT_ACTIVITY, notification.activity)
+            putExtra(EXTRA_EVENT_TYPE_ID, notification.type.id)
+            putExtra(EXTRA_EVENT_LOCATION, notification.location)
+            putExtra(EXTRA_EVENT_PARTICIPANT, notification.participant)
+            putExtra(EXTRA_FREQUENCY_ID, notification.frequency.id)
+            putExtra(EXTRA_START_HOUR, notification.startHour)
+            putExtra(EXTRA_START_MINUTE, notification.startMinute)
+            putExtra(EXTRA_END_HOUR, notification.endHour)
+            putExtra(EXTRA_END_MINUTE, notification.endMinute)
         }
 
         return PendingIntent.getBroadcast(
@@ -73,15 +76,15 @@ class NotificationRepositoryImpl(
 
     private fun getNotificationTriggerMillis(
         day: Day,
-        hour: Int,
-        minute: Int,
+        startHour: Int,
+        startMinute: Int,
         frequency: Frequency,
     ): Long {
         return when (frequency) {
-            Frequency.BOTH -> getCalendar(day, hour, minute).timeInMillis
+            Frequency.BOTH -> getCalendar(day, startHour, startMinute).timeInMillis
 
             else -> {
-                val calendar = getCalendar(day, hour, minute)
+                val calendar = getCalendar(day, startHour, startMinute)
                 val weekNumber = calendar.get(Calendar.WEEK_OF_YEAR)
                 val isOddWeek = weekNumber % 2 != 0
                 val needsOddWeek = frequency == Frequency.WEEK_1
@@ -142,10 +145,14 @@ class NotificationRepositoryImpl(
     companion object {
         private const val CHANNEL_ID = "event_notifications"
         private const val EXTRA_NOTIFICATION_ID = "notification_id"
-        private const val EXTRA_CLASS_NAME = "class_name"
-        private const val EXTRA_CLASS_TYPE = "class_type"
-        private const val EXTRA_FREQUENCY = "frequency"
-        private const val EXTRA_HOUR = "hour"
-        private const val EXTRA_MINUTE = "minute"
+        private const val EXTRA_EVENT_ACTIVITY = "event_activity"
+        private const val EXTRA_EVENT_TYPE_ID = "event_type_id"
+        private const val EXTRA_EVENT_LOCATION = "event_location"
+        private const val EXTRA_EVENT_PARTICIPANT = "event_participant"
+        private const val EXTRA_FREQUENCY_ID = "frequency_id"
+        private const val EXTRA_START_HOUR = "start_hour"
+        private const val EXTRA_START_MINUTE = "start_minute"
+        private const val EXTRA_END_HOUR = "end_hour"
+        private const val EXTRA_END_MINUTE = "end_minute"
     }
 }

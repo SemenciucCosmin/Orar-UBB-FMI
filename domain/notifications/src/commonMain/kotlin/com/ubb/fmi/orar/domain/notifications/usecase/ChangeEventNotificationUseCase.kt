@@ -12,6 +12,7 @@ class ChangeEventNotificationUseCase(
     suspend operator fun invoke(eventId: String) {
         eventsDataSource.changeEventNotification(eventId)
         val event = eventsDataSource.getEventFromCache(eventId) ?: return
+
         when {
             event.isNotificationOn -> scheduleEventNotificationsUseCase(event)
             else -> notificationRepository.cancel(event.id)

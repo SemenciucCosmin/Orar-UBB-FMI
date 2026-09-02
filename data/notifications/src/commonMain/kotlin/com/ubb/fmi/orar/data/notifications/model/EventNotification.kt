@@ -6,10 +6,14 @@ import com.ubb.fmi.orar.data.timetable.model.Frequency
 
 data class EventNotification(
     val id: String,
-    val eventName: String,
-    val eventType: EventType,
+    val activity: String,
+    val type: EventType,
+    val location: String,
+    val participant: String,
     val frequency: Frequency,
     val day: Day,
-    val hour: Int,
-    val minute: Int,
+    val startHour: Int,
+    val startMinute: Int,
+    val endHour: Int,
+    val endMinute: Int,
 )

@@ -75,7 +75,11 @@ interface EventDao {
         val mappedEvents = entities.map { event ->
             val cachedEvent = cachedEvents.find { it.id == event.id }
             when {
-                cachedEvent != null -> event.copy(isVisible = cachedEvent.isVisible)
+                cachedEvent != null -> event.copy(
+                    isVisible = cachedEvent.isVisible,
+                    isNotificationOn = cachedEvent.isNotificationOn
+                )
+
                 else -> event
             }
         }

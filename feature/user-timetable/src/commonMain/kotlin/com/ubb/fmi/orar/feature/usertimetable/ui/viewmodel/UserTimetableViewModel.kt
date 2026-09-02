@@ -64,13 +64,17 @@ class UserTimetableViewModel(
 //        viewModelScope.launch {
 //            notificationRepository.schedule(
 //                notification = EventNotification(
-//                    id = "new_class_notification",
-//                    eventName = "New Class Notification ${Random.nextInt()}",
-//                    eventType = EventType.LABORATORY,
+//                    id = "new_class_notification 1",
+//                    activity = "Elaborarea lucrarii de licenta",
+//                    location = "Room 101",
+//                    participant = "936/2",
+//                    type = EventType.LABORATORY,
 //                    frequency = Frequency.BOTH,
 //                    day = Day.TUESDAY,
-//                    hour = 14,
-//                    minute = 0,
+//                    startHour = 15,
+//                    startMinute = 27,
+//                    endHour = 17,
+//                    endMinute = 0,
 //                )
 //            )
 //        }

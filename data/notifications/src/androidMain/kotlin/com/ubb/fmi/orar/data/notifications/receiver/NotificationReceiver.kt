@@ -9,59 +9,90 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.domain.extensions.formatTime
+import java.util.Locale
 
 class NotificationReceiver : BroadcastReceiver() {
 
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getStringExtra(EXTRA_NOTIFICATION_ID) ?: return
-        val className = intent.getStringExtra(EXTRA_CLASS_NAME) ?: return
-        val classTypeLabel = intent.getStringExtra(EXTRA_CLASS_TYPE) ?: return
-        val frequencyId = intent.getStringExtra(EXTRA_FREQUENCY) ?: return
-        val hour = intent.getIntExtra(EXTRA_HOUR, 0)
-        val minute = intent.getIntExtra(EXTRA_MINUTE, 0)
-        val timeLabel = "%02d:%02d".format(hour, minute)
+        val activity = intent.getStringExtra(EXTRA_EVENT_ACTIVITY) ?: return
+        val eventTypeId = intent.getStringExtra(EXTRA_EVENT_TYPE_ID) ?: return
+        val location = intent.getStringExtra(EXTRA_EVENT_LOCATION) ?: return
+        val participant = intent.getStringExtra(EXTRA_EVENT_PARTICIPANT) ?: return
+        val frequencyId = intent.getStringExtra(EXTRA_FREQUENCY_ID) ?: return
+        val startHour = intent.getIntExtra(EXTRA_START_HOUR, DEFAULT_TIME)
+        val startMinute = intent.getIntExtra(EXTRA_START_MINUTE, DEFAULT_TIME)
+        val endHour = intent.getIntExtra(EXTRA_END_HOUR, DEFAULT_TIME)
+        val endMinute = intent.getIntExtra(EXTRA_END_MINUTE, DEFAULT_TIME)
+        val startTime = formatTime(startHour, startMinute)
+        val endTime = formatTime(endHour, endMinute)
+        val eventTypeLabel = getEventTypeLabel(context, eventTypeId)
 
         val iconRes = context.resources.getIdentifier(
-            "ic_app_monochrome",
-            "drawable",
+            ICON_RESOURCE_ID,
+            ICON_RESOURCE_TYPE,
             context.packageName
         ).takeIf { it != 0 } ?: context.applicationInfo.icon
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(iconRes)
-            .setContentTitle(className)
-            .setContentText("$classTypeLabel • $timeLabel")
+            .setContentTitle("$activity • $startTime - $endTime")
+            .setContentText("$eventTypeLabel • $participant • $location")
             .setAutoCancel(true)
             .build()
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(id.hashCode(), notification)
+        val notificationManager = context.getSystemService(
+            Context.NOTIFICATION_SERVICE
+        ) as NotificationManager
 
-        scheduleNext(context, id, className, classTypeLabel, frequencyId, hour, minute)
+        notificationManager.notify(id.hashCode(), notification)
+        scheduleNext(
+            context = context,
+            id = id,
+            activity = activity,
+            eventTypeId = eventTypeId,
+            location = location,
+            participant = participant,
+            frequencyId = frequencyId,
+            startHour = startHour,
+            startMinute = startMinute,
+            endHour = endHour,
+            endMinute = endMinute,
+        )
     }
 
     @SuppressLint("MissingPermission")
     private fun scheduleNext(
         context: Context,
         id: String,
-        className: String,
-        classTypeLabel: String,
+        activity: String,
+        eventTypeId: String,
+        location: String,
+        participant: String,
         frequencyId: String,
-        hour: Int,
-        minute: Int,
+        startHour: Int,
+        startMinute: Int,
+        endHour: Int,
+        endMinute: Int,
     ) {
         val intervalMillis = if (frequencyId == Frequency.BOTH.id) WEEK_IN_MS else 2 * WEEK_IN_MS
         val nextTrigger = System.currentTimeMillis() + 1 * 60 * 1000L
 
         val nextIntent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, id)
-            putExtra(EXTRA_CLASS_NAME, className)
-            putExtra(EXTRA_CLASS_TYPE, classTypeLabel)
-            putExtra(EXTRA_FREQUENCY, frequencyId)
-            putExtra(EXTRA_HOUR, hour)
-            putExtra(EXTRA_MINUTE, minute)
+            putExtra(EXTRA_EVENT_ACTIVITY, activity)
+            putExtra(EXTRA_EVENT_TYPE_ID, eventTypeId)
+            putExtra(EXTRA_EVENT_LOCATION, location)
+            putExtra(EXTRA_EVENT_PARTICIPANT, participant)
+            putExtra(EXTRA_FREQUENCY_ID, frequencyId)
+            putExtra(EXTRA_START_HOUR, startHour)
+            putExtra(EXTRA_START_MINUTE, startMinute)
+            putExtra(EXTRA_END_HOUR, endHour)
+            putExtra(EXTRA_END_MINUTE, endMinute)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -74,18 +105,59 @@ class NotificationReceiver : BroadcastReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTrigger, pendingIntent)
         } else {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTrigger, pendingIntent)
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                nextTrigger,
+                pendingIntent
+            )
+        }
+    }
+
+    private fun getEventTypeLabel(context: Context, eventTypeId: String): String {
+        val eventType = EventType.getById(eventTypeId)
+        val resourceId = when (eventType) {
+            EventType.LECTURE -> LECTURE_RESOURCE_ID
+            EventType.SEMINARY -> SEMINARY_RESOURCE_ID
+            EventType.LABORATORY -> LABORATORY_RESOURCE_ID
+            EventType.STAFF -> STAFF_RESOURCE_ID
+            EventType.PERSONAL -> PERSONAL_RESOURCE_ID
+        }
+
+        val labelResId = context.resources.getIdentifier(
+            resourceId,
+            LABEL_RESOURCE_TYPE,
+            context.packageName
+        )
+
+        return when {
+            labelResId != 0 -> context.getString(labelResId)
+            else -> eventType.name.lowercase().replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+            }
         }
     }
 
     companion object {
         private const val CHANNEL_ID = "event_notifications"
         private const val EXTRA_NOTIFICATION_ID = "notification_id"
-        private const val EXTRA_CLASS_NAME = "class_name"
-        private const val EXTRA_CLASS_TYPE = "class_type"
-        private const val EXTRA_FREQUENCY = "frequency"
-        private const val EXTRA_HOUR = "hour"
-        private const val EXTRA_MINUTE = "minute"
+        private const val EXTRA_EVENT_ACTIVITY = "event_activity"
+        private const val EXTRA_EVENT_TYPE_ID = "event_type_id"
+        private const val EXTRA_EVENT_LOCATION = "event_location"
+        private const val EXTRA_EVENT_PARTICIPANT = "event_participant"
+        private const val EXTRA_FREQUENCY_ID = "frequency_id"
+        private const val EXTRA_START_HOUR = "start_hour"
+        private const val EXTRA_START_MINUTE = "start_minute"
+        private const val EXTRA_END_HOUR = "end_hour"
+        private const val EXTRA_END_MINUTE = "end_minute"
         private const val WEEK_IN_MS = 7L * 24 * 60 * 60 * 1000
+        private const val DEFAULT_TIME = 0
+        private const val ICON_RESOURCE_ID = "ic_app_monochrome"
+        private const val ICON_RESOURCE_TYPE = "drawable"
+        private const val LABEL_RESOURCE_TYPE = "string"
+        private const val LECTURE_RESOURCE_ID = "lbl_lecture"
+        private const val SEMINARY_RESOURCE_ID = "lbl_seminary"
+        private const val LABORATORY_RESOURCE_ID = "lbl_laboratory"
+        private const val STAFF_RESOURCE_ID = "lbl_staff"
+        private const val PERSONAL_RESOURCE_ID = "lbl_personal"
     }
 }

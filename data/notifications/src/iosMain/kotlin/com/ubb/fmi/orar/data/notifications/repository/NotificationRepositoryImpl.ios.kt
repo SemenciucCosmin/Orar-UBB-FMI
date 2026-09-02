@@ -30,9 +30,9 @@ class NotificationRepositoryImpl(
         requestAuthorizationIfNeeded()
 
         val content = UNMutableNotificationContent().apply {
-            setTitle(notification.eventName)
-            val timeLabel = "%02d:%02d".format(notification.hour, notification.minute)
-            setBody("${notification.eventType.id} • $timeLabel")
+            setTitle(notification.activity)
+            val timeLabel = "%02d:%02d".format(notification.startHour, notification.startMinute)
+            setBody("${notification.type.id} • $timeLabel")
         }
 
         when (notification.frequency) {
@@ -86,8 +86,8 @@ class NotificationRepositoryImpl(
     private fun buildWeeklyTrigger(notification: EventNotification): UNCalendarNotificationTrigger {
         val components = NSDateComponents().apply {
             weekday = notification.day.toIosWeekday().toLong()
-            hour = notification.hour.toLong()
-            minute = notification.minute.toLong()
+            hour = notification.startHour.toLong()
+            minute = notification.startMinute.toLong()
             second = 0
         }
         return UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(
@@ -115,7 +115,7 @@ class NotificationRepositoryImpl(
 
         var daysUntil = (targetWeekday - currentWeekday + 7) % 7
         if (daysUntil == 0 &&
-            (notification.hour < currentHour || (notification.hour == currentHour && notification.minute <= currentMinute))
+            (notification.startHour < currentHour || (notification.startHour == currentHour && notification.startMinute <= currentMinute))
         ) {
             daysUntil = 7
         }
@@ -129,7 +129,7 @@ class NotificationRepositoryImpl(
         val needsOddWeek = notification.frequency == Frequency.WEEK_1
         val extraWeekSeconds = if (isOddWeek != needsOddWeek) DAY_IN_SECONDS * 7 else 0.0
 
-        val timeOfDaySeconds = notification.hour * 3600.0 + notification.minute * 60.0
+        val timeOfDaySeconds = notification.startHour * 3600.0 + notification.startMinute * 60.0
         val currentTimeOfDaySeconds = currentHour * 3600.0 + currentMinute * 60.0
 
         return secondsToDay + extraWeekSeconds + timeOfDaySeconds - currentTimeOfDaySeconds

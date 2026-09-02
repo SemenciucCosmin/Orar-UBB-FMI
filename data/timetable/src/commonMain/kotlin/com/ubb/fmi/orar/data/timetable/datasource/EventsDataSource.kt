@@ -40,7 +40,7 @@ interface EventsDataSource {
     suspend fun updateEventsInCache(
         configurationId: String,
         ownerId: String,
-        events: List<Event>
+        events: List<Event>,
     )
 
     /**

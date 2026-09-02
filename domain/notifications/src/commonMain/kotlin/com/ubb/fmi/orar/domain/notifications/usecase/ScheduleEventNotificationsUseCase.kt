@@ -14,12 +14,16 @@ class ScheduleEventNotificationsUseCase(
         val eventNotifications = events.map { event ->
             EventNotification(
                 id = event.id,
-                eventName = event.activity,
-                eventType = event.type,
+                activity = event.activity,
+                type = event.type,
+                location = event.location,
+                participant = event.participant,
                 frequency = event.frequency,
                 day = event.day,
-                hour = event.startHour.dec(),
-                minute = event.endMinute
+                startHour = event.startHour,
+                startMinute = event.startMinute,
+                endHour = event.endHour,
+                endMinute = event.endMinute,
             )
         }
 
