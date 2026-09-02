@@ -17,10 +17,6 @@ interface SettingsPreferences {
      */
     suspend fun setThemeOption(value: String)
 
-    suspend fun getNotificationsInitialSetup(): Boolean
-
-    suspend fun setNotificationsInitialSetup(value: Boolean)
-
     companion object {
         const val PREFERENCES_NAME = "SETTINGS_PREFERENCES"
     }
