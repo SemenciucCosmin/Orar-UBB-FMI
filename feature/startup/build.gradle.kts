@@ -47,8 +47,11 @@ kotlin {
             implementation(libs.kotlinx.immutableCollections)
 
             // MODULES
+            implementation(projects.data.permissions)
             implementation(projects.data.timetable)
             implementation(projects.domain.logging)
+            implementation(projects.domain.notifications)
+            implementation(projects.domain.permissions)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
             implementation(projects.ui.catalog)

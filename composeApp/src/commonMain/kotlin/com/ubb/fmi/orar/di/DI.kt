@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.data.groups.di.groupsDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.news.di.newsDataModule
 import com.ubb.fmi.orar.data.notifications.di.notificationsDataModule
+import com.ubb.fmi.orar.data.permissions.di.permissionsDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.settings.di.settingsDataModule
@@ -19,6 +20,7 @@ import com.ubb.fmi.orar.domain.announcements.di.announcementsDomainModule
 import com.ubb.fmi.orar.domain.feedback.di.feedbackDomainModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
 import com.ubb.fmi.orar.domain.notifications.di.notificationsDomainModule
+import com.ubb.fmi.orar.domain.permissions.di.permissionsDomainModule
 import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
@@ -95,6 +97,10 @@ fun commonModule() = module {
     // NOTIFICATIONS
     includes(notificationsDataModule())
     includes(notificationsDomainModule())
+
+    // PERMISSIONS
+    includes(permissionsDataModule())
+    includes(permissionsDomainModule())
 
     // PERSONAL EVENT
     includes(personalEventFeatureModule())

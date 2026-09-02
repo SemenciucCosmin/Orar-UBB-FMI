@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
 import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -31,6 +32,7 @@ import kotlin.time.Duration.Companion.seconds
 class TeachersFormViewModel(
     private val teacherRepository: TeacherRepository,
     private val timetablePreferences: TimetablePreferences,
+    private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase,
     private val logger: Logger,
 ) : EventViewModel<TeachersFormUiState.TeachersFormUiEvent>() {
 
@@ -131,6 +133,7 @@ class TeachersFormViewModel(
             _uiState.value.selectedTeacherId?.let { teacherId ->
                 logger.d(TAG, "finishSelection teacher: $teacherId")
                 timetablePreferences.setTeacherId(teacherId)
+                initializeTimetableNotificationsUseCase()
                 registerEvent(TeachersFormUiState.TeachersFormUiEvent.CONFIGURATION_DONE)
             }
         }

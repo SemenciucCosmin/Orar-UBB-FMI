@@ -1,12 +1,15 @@
 package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.permissions.model.Permission
+import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
+import com.ubb.fmi.orar.domain.permissions.usecase.IsPermissionGrantedUseCase
+import com.ubb.fmi.orar.domain.permissions.usecase.RequestPermissionUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedNewsDataValidityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedTimetableDataValidityUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.IsConfigurationDoneUseCase
 import com.ubb.fmi.orar.feature.startup.ui.viewmodel.model.StartupUiEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -18,7 +21,9 @@ class StartupViewModel(
     private val checkCachedTimetableDataValidityUseCase: CheckCachedTimetableDataValidityUseCase,
     private val checkCachedNewsDataValidityUseCase: CheckCachedNewsDataValidityUseCase,
     private val isConfigurationDoneUseCase: IsConfigurationDoneUseCase,
-    private val coroutineScope: CoroutineScope,
+    private val requestPermissionUseCase: RequestPermissionUseCase,
+    private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
+    private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase
 ) : EventViewModel<StartupUiEvent>() {
 
     /**
@@ -28,14 +33,28 @@ class StartupViewModel(
     init {
         checkDataValidity()
         checkConfiguration()
+        checkNotificationPermission()
     }
 
     /**
      * Starts coroutines independent from ViewModel for checking cached data validity
      */
     private fun checkDataValidity() {
-        coroutineScope.launch { checkCachedTimetableDataValidityUseCase() }
-        coroutineScope.launch { checkCachedNewsDataValidityUseCase() }
+        viewModelScope.launch { checkCachedTimetableDataValidityUseCase() }
+        viewModelScope.launch { checkCachedNewsDataValidityUseCase() }
+    }
+
+    /**
+     * Requests notification permission from the user, if needed, so scheduled event
+     * notifications can actually be displayed on both Android and iOS.
+     */
+    private fun checkNotificationPermission() {
+        viewModelScope.launch {
+            if (!isPermissionGrantedUseCase(Permission.NOTIFICATIONS)) {
+                val isRequestGranted = requestPermissionUseCase(Permission.NOTIFICATIONS)
+                if (isRequestGranted) initializeTimetableNotificationsUseCase()
+            }
+        }
     }
 
     /**
