@@ -32,6 +32,10 @@ class EventsDataSourceImpl(
         return eventDao.getAll().map(::mapEntityToEvent)
     }
 
+    override suspend fun getEventsWithNotificationsOnFromCache(): List<Event> {
+        return eventDao.getAllWithNotificationsOn().map(::mapEntityToEvent)
+    }
+
     /**
      * Retrieve list of [Event] as [Flow] from cache
      */

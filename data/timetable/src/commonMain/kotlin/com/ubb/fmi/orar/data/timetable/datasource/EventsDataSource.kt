@@ -22,6 +22,13 @@ interface EventsDataSource {
     suspend fun getAllEventsFromCache(): List<Event>
 
     /**
+     * Retrieve list of [Event] from cache that currently have notifications enabled.
+     * Scoped at the database level so only the small subset of events with an active
+     * notification is loaded, instead of every cached event across the whole app.
+     */
+    suspend fun getEventsWithNotificationsOnFromCache(): List<Event>
+
+    /**
      * Retrieve list of [Event] as [Flow] from cache
      */
     suspend fun getEventsFromCache(

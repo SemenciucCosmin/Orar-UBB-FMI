@@ -9,7 +9,7 @@ class InvalidateTimetableNotificationsUseCase(
     private val notificationRepository: NotificationRepository,
 ) {
     suspend operator fun invoke() {
-        val events = eventsDataSource.getAllEventsFromCache()
+        val events = eventsDataSource.getEventsWithNotificationsOnFromCache()
         val nonPersonalEvents = events.filter { it.type != EventType.PERSONAL }
         val eventsWithNotifications = nonPersonalEvents.filter { it.isNotificationOn }
         val invalidatedEventsNotifications = eventsWithNotifications.map {

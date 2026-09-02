@@ -30,6 +30,13 @@ interface EventDao {
     suspend fun getAll(): List<EventEntity>
 
     /**
+     * Get all timetable event entities that currently have notifications enabled.
+     * Only these should ever need invalidating when a user's configuration changes.
+     */
+    @Query("SELECT * FROM events WHERE isNotificationOn = 1")
+    suspend fun getAllWithNotificationsOn(): List<EventEntity>
+
+    /**
      * Get all timetable event entities by [configurationId] and [ownerId]
      */
     @Query("SELECT * FROM events WHERE configurationId LIKE :configurationId AND ownerId LIKE :ownerId")
