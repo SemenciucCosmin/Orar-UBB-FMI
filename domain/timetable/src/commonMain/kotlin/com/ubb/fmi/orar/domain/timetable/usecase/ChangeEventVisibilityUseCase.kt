@@ -25,7 +25,18 @@ class ChangeEventVisibilityUseCase(
         val event = eventsDataSource.getEventFromCache(eventId) ?: return
 
         when {
+            !event.isVisible && event.isNotificationOn -> {
+                eventsDataSource.changeEventNotification(eventId)
+                notificationRepository.cancel(event.id)
+            }
+
             !event.isVisible -> notificationRepository.cancel(event.id)
+
+            event.isVisible && !event.isNotificationOn -> {
+                eventsDataSource.changeEventNotification(eventId)
+                scheduleEventNotificationsUseCase(event)
+            }
+
             event.isNotificationOn -> scheduleEventNotificationsUseCase(event)
         }
     }
