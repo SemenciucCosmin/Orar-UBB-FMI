@@ -41,6 +41,7 @@ kotlin {
             // Modules
             implementation(projects.data.timetable)
             implementation(projects.domain.extensions)
+            implementation(projects.domain.logging)
         }
     }
 }

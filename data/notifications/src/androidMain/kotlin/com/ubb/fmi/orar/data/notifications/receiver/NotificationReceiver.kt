@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.notifications.receiver
 
+import Logger
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.NotificationManager
@@ -7,14 +8,26 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.extensions.formatTime
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.Locale
 
-class NotificationReceiver : BroadcastReceiver() {
+/**
+ * Builds a stable, unique data [Uri] for a notification's alarm [Intent] so that
+ * [PendingIntent] equality never collides between different notification ids,
+ * even when their `hashCode()`s happen to match.
+ */
+fun buildNotificationIntentUri(id: String): Uri = Uri.parse("notification://event/$id")
+
+class NotificationReceiver : BroadcastReceiver(), KoinComponent {
+
+    private val logger: Logger by inject()
 
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
@@ -81,6 +94,7 @@ class NotificationReceiver : BroadcastReceiver() {
     ) {
         val intervalMillis = if (frequencyId == Frequency.BOTH.id) WEEK_IN_MS else BI_WEEKLY_IN_MS
         val nextIntent = Intent(context, NotificationReceiver::class.java).apply {
+            data = buildNotificationIntentUri(id)
             putExtra(EXTRA_NOTIFICATION_ID, id)
             putExtra(EXTRA_EVENT_ACTIVITY, activity)
             putExtra(EXTRA_EVENT_TYPE_ID, eventTypeId)
@@ -100,14 +114,20 @@ class NotificationReceiver : BroadcastReceiver() {
         )
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, intervalMillis, pendingIntent)
-        } else {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                intervalMillis,
-                pendingIntent
-            )
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, intervalMillis, pendingIntent)
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    intervalMillis,
+                    pendingIntent
+                )
+            }
+        } catch (exception: SecurityException) {
+            // Chain broken here: without this alarm, the notification will never
+            // fire again for this event until the app is reopened and re-syncs.
+            logger.e(TAG, "Failed to schedule next occurrence for notification $id: ${exception.message}")
         }
     }
 
@@ -136,6 +156,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     companion object {
+        private const val TAG = "NotificationReceiver"
         private const val CHANNEL_ID = "event_notifications"
         private const val EXTRA_NOTIFICATION_ID = "notification_id"
         private const val EXTRA_EVENT_ACTIVITY = "event_activity"

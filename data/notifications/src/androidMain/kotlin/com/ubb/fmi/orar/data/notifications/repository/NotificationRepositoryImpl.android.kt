@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.notifications.repository
 
+import Logger
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.NotificationChannel
@@ -12,6 +13,7 @@ import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSourc
 import com.ubb.fmi.orar.data.notifications.manager.scheduleExact
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
 import com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver
+import com.ubb.fmi.orar.data.notifications.receiver.buildNotificationIntentUri
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import java.util.Calendar
@@ -19,6 +21,7 @@ import java.util.Calendar
 class NotificationRepositoryImpl(
     private val context: Context,
     private val notificationCacheDataSource: NotificationCacheDataSource,
+    private val logger: Logger,
 ) : NotificationRepository {
 
     init {
@@ -27,21 +30,27 @@ class NotificationRepositoryImpl(
 
     @SuppressLint("MissingPermission")
     override suspend fun schedule(notification: EventNotification) {
-        val triggerMillis = getNotificationTriggerMillis(
-            day = notification.day,
-            startHour = notification.startHour,
-            startMinute = notification.startMinute,
-            frequency = notification.frequency,
-        )
-        notificationCacheDataSource.getNotificationManager().scheduleExact(
-            AlarmManager.RTC_WAKEUP,
-            triggerMillis,
-            buildPendingIntent(notification),
-        )
+        try {
+            val triggerMillis = getNotificationTriggerMillis(
+                day = notification.day,
+                startHour = notification.startHour,
+                startMinute = notification.startMinute,
+                frequency = notification.frequency,
+            )
+            notificationCacheDataSource.getNotificationManager().scheduleExact(
+                AlarmManager.RTC_WAKEUP,
+                triggerMillis,
+                buildPendingIntent(notification),
+            )
+        } catch (exception: SecurityException) {
+            logger.e(TAG, "Failed to schedule notification ${notification.id}: ${exception.message}")
+        }
     }
 
     override suspend fun cancel(id: String) {
-        val intent = Intent(context, NotificationReceiver::class.java)
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            data = buildNotificationIntentUri(id)
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             id.hashCode(),
@@ -54,6 +63,9 @@ class NotificationRepositoryImpl(
 
     private fun buildPendingIntent(notification: EventNotification): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java).apply {
+            // Unique data Uri ensures PendingIntent equality never collides across
+            // different notification ids, even if their hashCodes happen to match.
+            data = buildNotificationIntentUri(notification.id)
             putExtra(EXTRA_NOTIFICATION_ID, notification.id)
             putExtra(EXTRA_EVENT_ACTIVITY, notification.activity)
             putExtra(EXTRA_EVENT_TYPE_ID, notification.type.id)
@@ -143,6 +155,7 @@ class NotificationRepositoryImpl(
     }
 
     companion object {
+        private const val TAG = "NotificationRepository"
         private const val CHANNEL_ID = "event_notifications"
         private const val EXTRA_NOTIFICATION_ID = "notification_id"
         private const val EXTRA_EVENT_ACTIVITY = "event_activity"

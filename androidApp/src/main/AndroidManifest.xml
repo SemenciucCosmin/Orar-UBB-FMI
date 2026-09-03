@@ -19,6 +19,14 @@
         <receiver android:name="com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver"
             android:exported="false" />
 
+        <receiver android:name="com.ubb.fmi.orar.app.notifications.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".app.MainActivity"
             android:exported="true">

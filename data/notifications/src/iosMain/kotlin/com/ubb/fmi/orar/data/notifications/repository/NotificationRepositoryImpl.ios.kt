@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.notifications.repository
 
+import Logger
 import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSource
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
 import com.ubb.fmi.orar.data.timetable.model.Day
@@ -26,6 +27,7 @@ import kotlin.coroutines.resume
 @Suppress("TooManyFunctions")
 class NotificationRepositoryImpl(
     private val notificationCacheDataSource: NotificationCacheDataSource,
+    private val logger: Logger,
 ) : NotificationRepository {
 
     override suspend fun schedule(notification: EventNotification) {
@@ -61,13 +63,26 @@ class NotificationRepositoryImpl(
         addNotificationRequest(request)
     }
 
-    private fun scheduleBiWeeklyNotification(
+    private suspend fun scheduleBiWeeklyNotification(
         notification: EventNotification,
         content: UNMutableNotificationContent,
     ) {
-        val firstOccurrenceSeconds = secondsUntilFirstBiWeeklyOccurrence(notification)
+        // Clear any previously scheduled occurrences for this event first so a
+        // reduced budget/occurrence count never leaves stale orphaned requests
+        // behind, wasting the app-wide 64 pending notification slots iOS allows.
+        notificationCacheDataSource
+            .getNotificationCenter()
+            .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(notification.id))
 
-        repeat(BI_WEEKLY_OCCURRENCE_COUNT) { occurrenceIndex ->
+        val firstOccurrenceSeconds = secondsUntilFirstBiWeeklyOccurrence(notification)
+        val occurrenceCount = resolveAvailableOccurrenceCount(notification.id)
+
+        if (occurrenceCount <= 0) {
+            logger.e(TAG, "Skipped scheduling notification ${notification.id}: pending notification budget exhausted")
+            return
+        }
+
+        repeat(occurrenceCount) { occurrenceIndex ->
             val occurrenceOffsetSeconds = occurrenceIndex * BI_WEEKLY_INTERVAL_DAYS * DAY_IN_SECONDS
             val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
                 timeInterval = firstOccurrenceSeconds + occurrenceOffsetSeconds,
@@ -84,11 +99,44 @@ class NotificationRepositoryImpl(
         }
     }
 
+    /**
+     * iOS caps every app at 64 pending local notifications
+     * system-wide; requests beyond that are silently dropped with no error surfaced to the
+     * app unless the completion handler is inspected. This keeps a safety margin below that
+     * hard limit and trims how many future occurrences we ask for accordingly.
+     */
+    private suspend fun resolveAvailableOccurrenceCount(id: String): Int {
+        val pendingCount = getPendingNotificationsCount()
+        val availableBudget = (MAX_PENDING_NOTIFICATIONS_BUDGET - pendingCount).coerceAtLeast(0)
+
+        if (availableBudget < BI_WEEKLY_OCCURRENCE_COUNT) {
+            logger.i(
+                TAG,
+                "Limited notification $id to $availableBudget occurrences " +
+                    "(pending=$pendingCount, budget=$MAX_PENDING_NOTIFICATIONS_BUDGET)",
+            )
+        }
+
+        return minOf(BI_WEEKLY_OCCURRENCE_COUNT, availableBudget)
+    }
+
+    private suspend fun getPendingNotificationsCount(): Int = suspendCancellableCoroutine { cont ->
+        notificationCacheDataSource.getNotificationCenter().getPendingNotificationRequestsWithCompletionHandler {
+            cont.resume(it?.size ?: 0)
+        }
+    }
+
     private fun addNotificationRequest(request: UNNotificationRequest) {
         notificationCacheDataSource.getNotificationCenter().addNotificationRequest(
             request = request,
-            withCompletionHandler = null
-        )
+        ) { error ->
+            // The handler was previously null, silently swallowing scheduling failures
+            // (e.g. exceeding the pending notification limit). Logging here at least
+            // makes the loss traceable instead of the notification vanishing unnoticed.
+            if (error != null) {
+                logger.e(TAG, "Failed to schedule notification ${request.identifier}: ${error.localizedDescription}")
+            }
+        }
     }
 
     override suspend fun cancel(id: String) {
@@ -215,6 +263,7 @@ class NotificationRepositoryImpl(
     }
 
     companion object {
+        private const val TAG = "NotificationRepository"
         private const val MINUTES_IN_HOUR = 60
         private const val SECONDS_IN_MINUTE = 60.0
         private const val SECONDS_IN_HOUR = MINUTES_IN_HOUR * SECONDS_IN_MINUTE
@@ -222,6 +271,14 @@ class NotificationRepositoryImpl(
         private const val DAY_IN_SECONDS = HOURS_IN_DAY * SECONDS_IN_HOUR
         private const val DAYS_IN_WEEK = 7
         private const val BI_WEEKLY_INTERVAL_DAYS = DAYS_IN_WEEK * 2
-        private const val BI_WEEKLY_OCCURRENCE_COUNT = 26
+
+        // A university semester is ~14-16 weeks, so 12 alternating-week occurrences
+        // (~6 months) comfortably covers a semester without needlessly consuming the
+        // iOS-wide pending notification budget a year of occurrences would.
+        private const val BI_WEEKLY_OCCURRENCE_COUNT = 12
+
+        // iOS enforces a hard cap of 64 pending local notifications per app. Keep a
+        // safety margin below it so scheduling for one event never starves others.
+        private const val MAX_PENDING_NOTIFICATIONS_BUDGET = 60
     }
 }
