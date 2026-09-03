@@ -9,8 +9,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.ubb.fmi.orar.data.notifications.manager.scheduleExact
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.extensions.formatTime
@@ -128,15 +128,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, intervalMillis, pendingIntent)
-            } else {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    intervalMillis,
-                    pendingIntent
-                )
-            }
+            alarmManager.scheduleExact(AlarmManager.RTC_WAKEUP, intervalMillis, pendingIntent)
         } catch (exception: SecurityException) {
             // Chain broken here: without this alarm, the notification will never
             // fire again for this event until the app is reopened and re-syncs.
