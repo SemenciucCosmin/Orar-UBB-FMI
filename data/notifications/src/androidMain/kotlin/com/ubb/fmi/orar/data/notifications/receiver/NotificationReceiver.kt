@@ -79,9 +79,7 @@ class NotificationReceiver : BroadcastReceiver() {
         endHour: Int,
         endMinute: Int,
     ) {
-        val intervalMillis = if (frequencyId == Frequency.BOTH.id) WEEK_IN_MS else 2 * WEEK_IN_MS
-        val nextTrigger = System.currentTimeMillis() + 1 * 60 * 1000L
-
+        val intervalMillis = if (frequencyId == Frequency.BOTH.id) WEEK_IN_MS else BI_WEEKLY_IN_MS
         val nextIntent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra(EXTRA_NOTIFICATION_ID, id)
             putExtra(EXTRA_EVENT_ACTIVITY, activity)
@@ -103,11 +101,11 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTrigger, pendingIntent)
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, intervalMillis, pendingIntent)
         } else {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                nextTrigger,
+                intervalMillis,
                 pendingIntent
             )
         }
@@ -149,7 +147,8 @@ class NotificationReceiver : BroadcastReceiver() {
         private const val EXTRA_START_MINUTE = "start_minute"
         private const val EXTRA_END_HOUR = "end_hour"
         private const val EXTRA_END_MINUTE = "end_minute"
-        private const val WEEK_IN_MS = 7L * 24 * 60 * 60 * 1000
+        private const val WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000L
+        private const val BI_WEEKLY_IN_MS = 2 * WEEK_IN_MS
         private const val DEFAULT_TIME = 0
         private const val ICON_RESOURCE_ID = "ic_app_monochrome"
         private const val ICON_RESOURCE_TYPE = "drawable"

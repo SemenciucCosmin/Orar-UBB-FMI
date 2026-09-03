@@ -23,64 +23,88 @@ import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import kotlin.coroutines.resume
 
+@Suppress("TooManyFunctions")
 class NotificationRepositoryImpl(
     private val notificationCacheDataSource: NotificationCacheDataSource,
 ) : NotificationRepository {
 
     override suspend fun schedule(notification: EventNotification) {
         requestAuthorizationIfNeeded()
+        val content = buildNotificationContent(notification)
 
-        val content = UNMutableNotificationContent().apply {
-            val startTimeLabel = formatTime(notification.startHour, notification.startMinute)
-            val endTimeLabel = formatTime(notification.endHour, notification.endMinute)
+        when (notification.frequency) {
+            Frequency.BOTH -> scheduleWeeklyNotification(notification, content)
+            else -> scheduleBiWeeklyNotification(notification, content)
+        }
+    }
+
+    private fun buildNotificationContent(notification: EventNotification): UNMutableNotificationContent {
+        val startTimeLabel = formatTime(notification.startHour, notification.startMinute)
+        val endTimeLabel = formatTime(notification.endHour, notification.endMinute)
+
+        return UNMutableNotificationContent().apply {
             setTitle("${notification.activity} • $startTimeLabel - $endTimeLabel")
             setBody("${notification.type.id} • ${notification.participant} • ${notification.location}")
         }
+    }
 
-        when (notification.frequency) {
-            Frequency.BOTH -> {
-                val request = UNNotificationRequest.requestWithIdentifier(
-                    identifier = notification.id,
-                    content = content,
-                    trigger = buildWeeklyTrigger(notification),
-                )
-                notificationCacheDataSource
-                    .getNotificationCenter()
-                    .addNotificationRequest(request, withCompletionHandler = null)
-            }
-            else -> {
-                // Pre-schedule BI_WEEKLY_COUNT occurrences since UNCalendarNotificationTrigger
-                // cannot express bi-weekly patterns natively.
-                val firstOccurrenceSeconds = secondsUntilFirstBiWeeklyOccurrence(notification)
-                repeat(BI_WEEKLY_COUNT) { i ->
-                    val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
-                        timeInterval = firstOccurrenceSeconds + i * 14 * DAY_IN_SECONDS,
-                        repeats = false,
-                    )
-                    val request = UNNotificationRequest.requestWithIdentifier(
-                        identifier = biWeeklyIdentifier(notification.id, i),
-                        content = content,
-                        trigger = trigger,
-                    )
-                    notificationCacheDataSource.getNotificationCenter().addNotificationRequest(
-                        request,
-                        withCompletionHandler = null
-                    )
-                }
-            }
+    private fun scheduleWeeklyNotification(
+        notification: EventNotification,
+        content: UNMutableNotificationContent,
+    ) {
+        val request = UNNotificationRequest.requestWithIdentifier(
+            identifier = notification.id,
+            content = content,
+            trigger = buildWeeklyTrigger(notification),
+        )
+
+        addNotificationRequest(request)
+    }
+
+    private fun scheduleBiWeeklyNotification(
+        notification: EventNotification,
+        content: UNMutableNotificationContent,
+    ) {
+        val firstOccurrenceSeconds = secondsUntilFirstBiWeeklyOccurrence(notification)
+
+        repeat(BI_WEEKLY_OCCURRENCE_COUNT) { occurrenceIndex ->
+            val occurrenceOffsetSeconds = occurrenceIndex * BI_WEEKLY_INTERVAL_DAYS * DAY_IN_SECONDS
+            val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
+                timeInterval = firstOccurrenceSeconds + occurrenceOffsetSeconds,
+                repeats = false,
+            )
+
+            val request = UNNotificationRequest.requestWithIdentifier(
+                identifier = biWeeklyIdentifier(notification.id, occurrenceIndex),
+                content = content,
+                trigger = trigger,
+            )
+
+            addNotificationRequest(request)
         }
     }
 
-    override suspend fun cancel(id: String) {
-        notificationCacheDataSource.getNotificationCenter().removePendingNotificationRequestsWithIdentifiers(
-            allIdentifiers(id)
+    private fun addNotificationRequest(request: UNNotificationRequest) {
+        notificationCacheDataSource.getNotificationCenter().addNotificationRequest(
+            request = request,
+            withCompletionHandler = null
         )
     }
 
+    override suspend fun cancel(id: String) {
+        notificationCacheDataSource
+            .getNotificationCenter()
+            .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(id))
+    }
+
     private suspend fun requestAuthorizationIfNeeded() {
+        val requestedPermissions = UNAuthorizationOptionAlert or
+            UNAuthorizationOptionSound or
+            UNAuthorizationOptionBadge
+
         suspendCancellableCoroutine { cont ->
             notificationCacheDataSource.getNotificationCenter().requestAuthorizationWithOptions(
-                options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
+                options = requestedPermissions,
             ) { _, _ -> cont.resume(Unit) }
         }
     }
@@ -92,52 +116,94 @@ class NotificationRepositoryImpl(
             minute = notification.startMinute.toLong()
             second = 0
         }
+
         return UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(
             dateComponents = components,
             repeats = true,
         )
     }
 
-    private fun biWeeklyIdentifier(id: String, index: Int) = "${id}_bw_$index"
+    private fun biWeeklyIdentifier(id: String, occurrenceIndex: Int) = "${id}_bw_$occurrenceIndex"
 
-    private fun allIdentifiers(id: String): List<String> =
-        listOf(id) + List(BI_WEEKLY_COUNT) { i -> biWeeklyIdentifier(id, i) }
+    private fun allNotificationIdentifiers(id: String): List<String> =
+        listOf(id) + List(BI_WEEKLY_OCCURRENCE_COUNT) { occurrenceIndex -> biWeeklyIdentifier(id, occurrenceIndex) }
 
     private fun secondsUntilFirstBiWeeklyOccurrence(notification: EventNotification): Double {
-        val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
         val now = NSDate()
+        val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
         val currentComponents = calendar.components(
-            unitFlags = NSCalendarUnitWeekday or NSCalendarUnitWeekOfYear or NSCalendarUnitHour or NSCalendarUnitMinute,
             fromDate = now,
+            unitFlags = NSCalendarUnitWeekday or
+                NSCalendarUnitWeekOfYear or
+                NSCalendarUnitHour or
+                NSCalendarUnitMinute,
         )
-        val targetWeekday = notification.day.toIosWeekday()
+
         val currentWeekday = currentComponents.weekday.toInt()
         val currentHour = currentComponents.hour.toInt()
         val currentMinute = currentComponents.minute.toInt()
+        val targetWeekday = notification.day.toIosWeekday()
 
-        var daysUntil = (targetWeekday - currentWeekday + 7) % 7
-        if (daysUntil == 0 &&
-            (notification.startHour < currentHour || (notification.startHour == currentHour && notification.startMinute <= currentMinute))
-        ) {
-            daysUntil = 7
-        }
+        val daysUntilTargetWeekday = daysUntilNextWeekdayOccurrence(
+            targetWeekday = targetWeekday,
+            currentWeekday = currentWeekday,
+            eventAlreadyStartedToday = isEventStartTimeReached(
+                notification = notification,
+                hour = currentHour,
+                minute = currentMinute
+            ),
+        )
 
-        val secondsToDay = daysUntil * DAY_IN_SECONDS
-        val targetDateEstimate =
-            NSDate(timeIntervalSinceReferenceDate = now.timeIntervalSinceReferenceDate + secondsToDay)
-        val targetWeekComponents = calendar.components(NSCalendarUnitWeekOfYear, fromDate = targetDateEstimate)
-        val targetWeek = targetWeekComponents.weekOfYear.toInt()
+        val secondsUntilTargetDay = daysUntilTargetWeekday * DAY_IN_SECONDS
+        val estimatedTargetDate = NSDate(now.timeIntervalSinceReferenceDate + secondsUntilTargetDay)
+        val estimatedTargetWeekOfYear = calendar
+            .components(NSCalendarUnitWeekOfYear, estimatedTargetDate)
+            .weekOfYear
+            .toInt()
 
-        val isOddWeek = targetWeek % 2 != 0
-        val needsOddWeek = notification.frequency == Frequency.WEEK_1
-        val extraWeekSeconds = if (isOddWeek != needsOddWeek) DAY_IN_SECONDS * 7 else 0.0
+        val targetWeekIsOdd = estimatedTargetWeekOfYear % 2 != 0
+        val notificationRequiresOddWeek = notification.frequency == Frequency.WEEK_1
+        val weekParityMismatches = targetWeekIsOdd != notificationRequiresOddWeek
+        val weekParityAdjustmentSeconds = if (weekParityMismatches) DAY_IN_SECONDS * DAYS_IN_WEEK else 0.0
 
-        val timeOfDaySeconds = notification.startHour * 3600.0 + notification.startMinute * 60.0
-        val currentTimeOfDaySeconds = currentHour * 3600.0 + currentMinute * 60.0
+        val targetStartHourSeconds = notification.startHour * SECONDS_IN_HOUR
+        val targetStartMinuteSeconds = notification.startMinute * SECONDS_IN_MINUTE
+        val targetTimeOfDaySeconds = targetStartHourSeconds + targetStartMinuteSeconds
 
-        return secondsToDay + extraWeekSeconds + timeOfDaySeconds - currentTimeOfDaySeconds
+        val currentHourSeconds = currentHour * SECONDS_IN_HOUR
+        val currentMinuteSeconds = currentMinute * SECONDS_IN_MINUTE
+        val currentTimeOfDaySeconds = currentHourSeconds + currentMinuteSeconds
+
+        val adjustedSecondsUntilTargetDay = secondsUntilTargetDay + weekParityAdjustmentSeconds
+        val timeOfDayDifferenceSeconds = targetTimeOfDaySeconds - currentTimeOfDaySeconds
+        return adjustedSecondsUntilTargetDay + timeOfDayDifferenceSeconds
     }
 
+    private fun daysUntilNextWeekdayOccurrence(
+        targetWeekday: Int,
+        currentWeekday: Int,
+        eventAlreadyStartedToday: Boolean,
+    ): Int {
+        val weekdayOffset = targetWeekday - currentWeekday
+        val weekdayOffsetWithoutNegatives = weekdayOffset + DAYS_IN_WEEK
+        val daysUntilSameWeekdayOccurrence = weekdayOffsetWithoutNegatives % DAYS_IN_WEEK
+        val targetWeekdayIsToday = daysUntilSameWeekdayOccurrence == 0
+
+        return when {
+            targetWeekdayIsToday && eventAlreadyStartedToday -> DAYS_IN_WEEK
+            else -> daysUntilSameWeekdayOccurrence
+        }
+    }
+
+    private fun isEventStartTimeReached(notification: EventNotification, hour: Int, minute: Int): Boolean {
+        val startHourAlreadyPassed = notification.startHour < hour
+        val startHourIsNow = notification.startHour == hour
+        val startMinuteAlreadyReached = notification.startMinute <= minute
+        val startHourIsNowAndMinuteReached = startHourIsNow && startMinuteAlreadyReached
+        return startHourAlreadyPassed || startHourIsNowAndMinuteReached
+    }
+
+    @Suppress("MagicNumber")
     private fun Day.toIosWeekday(): Int = when (this) {
         Day.SUNDAY -> 1
         Day.MONDAY -> 2
@@ -149,9 +215,13 @@ class NotificationRepositoryImpl(
     }
 
     companion object {
-        private const val DAY_IN_SECONDS = 24.0 * 60 * 60
-
-        /** Pre-scheduled bi-weekly occurrences (~1 year). iOS allows max 64 pending notifications. */
-        private const val BI_WEEKLY_COUNT = 26
+        private const val MINUTES_IN_HOUR = 60
+        private const val SECONDS_IN_MINUTE = 60.0
+        private const val SECONDS_IN_HOUR = MINUTES_IN_HOUR * SECONDS_IN_MINUTE
+        private const val HOURS_IN_DAY = 24
+        private const val DAY_IN_SECONDS = HOURS_IN_DAY * SECONDS_IN_HOUR
+        private const val DAYS_IN_WEEK = 7
+        private const val BI_WEEKLY_INTERVAL_DAYS = DAYS_IN_WEEK * 2
+        private const val BI_WEEKLY_OCCURRENCE_COUNT = 26
     }
 }
