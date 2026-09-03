@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.domain.notifications.usecase
 
+import Logger
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 
 /**
@@ -12,10 +13,16 @@ import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 class RescheduleCachedNotificationsUseCase(
     private val eventsDataSource: EventsDataSource,
     private val scheduleEventNotificationsUseCase: ScheduleEventNotificationsUseCase,
+    private val logger: Logger,
 ) {
     suspend operator fun invoke() {
         val eventsWithNotificationsOn = eventsDataSource.getEventsWithNotificationsOnFromCache()
+        logger.d(TAG, "Rescheduling ${eventsWithNotificationsOn.size} cached event notification(s)")
         if (eventsWithNotificationsOn.isEmpty()) return
         scheduleEventNotificationsUseCase(*eventsWithNotificationsOn.toTypedArray())
+    }
+
+    companion object {
+        private const val TAG = "RescheduleCachedNotificationsUseCase"
     }
 }

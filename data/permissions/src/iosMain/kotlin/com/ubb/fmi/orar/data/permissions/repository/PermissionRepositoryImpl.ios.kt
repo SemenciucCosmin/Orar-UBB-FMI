@@ -9,6 +9,10 @@ import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.coroutines.resume
 
+/**
+ * iOS [PermissionRepository] implementation backed by `UNUserNotificationCenter`'s
+ * authorization APIs.
+ */
 class PermissionRepositoryImpl : PermissionRepository {
 
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()

@@ -8,6 +8,11 @@ import androidx.core.content.ContextCompat
 import com.ubb.fmi.orar.data.permissions.bridge.PermissionRequestBridge
 import com.ubb.fmi.orar.data.permissions.model.Permission
 
+/**
+ * Android [PermissionRepository] implementation backed by [ContextCompat] for the granted
+ * check, and [PermissionRequestBridge] to hop over to the hosting Activity for the actual
+ * system permission request (the data layer has no Activity reference of its own).
+ */
 class PermissionRepositoryImpl(
     private val context: Context,
 ) : PermissionRepository {

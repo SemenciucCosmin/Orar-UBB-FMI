@@ -25,6 +25,14 @@ import java.util.Locale
  */
 fun buildNotificationIntentUri(id: String): Uri = Uri.parse("notification://event/$id")
 
+/**
+ * Receives the [AlarmManager] alarm scheduled by [com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl]
+ * for a single event occurrence: displays the notification, then immediately reschedules the
+ * next occurrence itself (weekly or bi-weekly, based on [Frequency]). If this reschedule step
+ * ever fails or doesn't run (e.g. the receiver never fires because the alarm was dropped by the
+ * OS/OEM battery optimizations), no future occurrence gets scheduled for this event until the
+ * app is reopened and re-syncs notifications.
+ */
 class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
     private val logger: Logger by inject()
@@ -63,6 +71,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         ) as NotificationManager
 
         notificationManager.notify(id.hashCode(), notification)
+        logger.d(TAG, "Displayed notification $id, rescheduling next occurrence")
         scheduleNext(
             context = context,
             id = id,
@@ -78,6 +87,10 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         )
     }
 
+    /**
+     * Reschedules the next occurrence of this event's notification: one week later for weekly
+     * ([Frequency.BOTH]) events, or two weeks later for alternating-week events.
+     */
     @SuppressLint("MissingPermission")
     private fun scheduleNext(
         context: Context,
@@ -131,6 +144,10 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         }
     }
 
+    /**
+     * Returns the localized display label for [eventTypeId] (e.g. "Lecture", "Seminary"),
+     * falling back to a title-cased enum name if the string resource can't be resolved.
+     */
     private fun getEventTypeLabel(context: Context, eventTypeId: String): String {
         val eventType = EventType.getById(eventTypeId)
         val resourceId = when (eventType) {

@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.app.notifications
 
+import Logger
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -22,6 +23,7 @@ import org.koin.core.component.inject
 class BootReceiver : BroadcastReceiver(), KoinComponent {
 
     private val rescheduleCachedNotificationsUseCase: RescheduleCachedNotificationsUseCase by inject()
+    private val logger: Logger by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Intent.ACTION_BOOT_COMPLETED &&
@@ -30,6 +32,7 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
             return
         }
 
+        logger.d(TAG, "Received ${intent.action}, restoring cached notifications")
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.Default).launch {
             try {
@@ -38,5 +41,9 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
                 pendingResult.finish()
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "BootReceiver"
     }
 }

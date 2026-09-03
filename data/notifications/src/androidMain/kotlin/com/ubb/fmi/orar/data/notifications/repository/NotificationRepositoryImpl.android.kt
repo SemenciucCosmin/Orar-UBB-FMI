@@ -18,6 +18,12 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import java.util.Calendar
 
+/**
+ * Android [NotificationRepository] implementation, scheduling local notifications as
+ * [AlarmManager] alarms that trigger [NotificationReceiver]. Each occurrence reschedules the
+ * next one itself from within the receiver (see [NotificationReceiver]), so cancelling relies
+ * on rebuilding the exact same [PendingIntent] used at schedule time.
+ */
 class NotificationRepositoryImpl(
     private val context: Context,
     private val notificationCacheDataSource: NotificationCacheDataSource,
@@ -42,6 +48,7 @@ class NotificationRepositoryImpl(
                 triggerMillis,
                 buildPendingIntent(notification),
             )
+            logger.d(TAG, "Scheduled notification ${notification.id} for $triggerMillis")
         } catch (exception: SecurityException) {
             logger.e(TAG, "Failed to schedule notification ${notification.id}: ${exception.message}")
         }
@@ -56,11 +63,19 @@ class NotificationRepositoryImpl(
             id.hashCode(),
             intent,
             PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
-        ) ?: return
+        ) ?: run {
+            logger.d(TAG, "Cancel skipped, no pending alarm found for notification $id")
+            return
+        }
         notificationCacheDataSource.getNotificationManager().cancel(pendingIntent)
         pendingIntent.cancel()
+        logger.d(TAG, "Cancelled notification $id")
     }
 
+    /**
+     * Builds the [PendingIntent] carrying all data [NotificationReceiver] needs to display the
+     * notification and reschedule its next occurrence.
+     */
     private fun buildPendingIntent(notification: EventNotification): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             // Unique data Uri ensures PendingIntent equality never collides across
@@ -86,6 +101,10 @@ class NotificationRepositoryImpl(
         )
     }
 
+    /**
+     * Resolves the next absolute trigger time for [frequency], accounting for the alternating
+     * odd/even week pattern of [Frequency.WEEK_1]/[Frequency.WEEK_2] events.
+     */
     private fun getNotificationTriggerMillis(
         day: Day,
         startHour: Int,
@@ -110,6 +129,10 @@ class NotificationRepositoryImpl(
         }
     }
 
+    /**
+     * Returns the next occurrence of [day]/[hour]:[minute], rolling over to next week if that
+     * time has already passed today/this week.
+     */
     private fun getCalendar(day: Day, hour: Int, minute: Int): Calendar {
         val calendarDay = when (day) {
             Day.MONDAY -> Calendar.MONDAY
@@ -136,6 +159,10 @@ class NotificationRepositoryImpl(
         return calendar
     }
 
+    /**
+     * Creates the notification channel used for all event notifications, if it doesn't
+     * already exist (Android 8.0/API 26+ requires one before any notification can be posted).
+     */
     private fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 

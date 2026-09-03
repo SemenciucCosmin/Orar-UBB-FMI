@@ -13,6 +13,10 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_notification_off
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_notification_on
 import org.jetbrains.compose.resources.painterResource
 
+/**
+ * A composable that displays a button to toggle whether a local notification is scheduled
+ * for an event.
+ */
 @Composable
 fun EventNotificationToggleButton(
     isChecked: Boolean,

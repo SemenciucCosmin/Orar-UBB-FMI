@@ -4,6 +4,11 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 
+/**
+ * Platform-agnostic representation of a single timetable [com.ubb.fmi.orar.data.timetable.model.Event]
+ * to schedule/cancel a local notification for. [id] must match the originating event's id, since
+ * it's reused as the notification/alarm identifier so it can be individually cancelled later.
+ */
 data class EventNotification(
     val id: String,
     val activity: String,

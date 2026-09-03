@@ -15,6 +15,17 @@ import kotlinx.coroutines.launch
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+/**
+ * Re-syncs notifications from the network: invalidates all currently scheduled notifications,
+ * fetches the user's current timetable, force-enables notifications for every visible
+ * non-personal event, and schedules them.
+ *
+ * This always turns notifications *on* for every visible event, overriding any per-event
+ * choice the user previously made. It's meant for first-time setup (e.g. when notification
+ * permission is newly granted), not for periodic refreshes — use
+ * [RescheduleCachedNotificationsUseCase] instead when you only want to restore the
+ * notifications the user already had enabled.
+ */
 class InitializeTimetableNotificationsUseCase(
     private val coroutineScope: CoroutineScope,
     private val groupsRepository: GroupsRepository,
