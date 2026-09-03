@@ -2,7 +2,6 @@ package com.ubb.fmi.orar.app
 
 import com.ubb.fmi.orar.domain.feedback.usecase.IncreaseAppUsagePointsUseCase
 import com.ubb.fmi.orar.domain.feedback.usecase.SetFirstUsageTimestampUseCase
-import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent

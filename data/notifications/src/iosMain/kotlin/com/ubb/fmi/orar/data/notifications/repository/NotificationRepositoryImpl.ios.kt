@@ -4,6 +4,7 @@ import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSourc
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.domain.extensions.formatTime
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarIdentifierGregorian
@@ -30,9 +31,10 @@ class NotificationRepositoryImpl(
         requestAuthorizationIfNeeded()
 
         val content = UNMutableNotificationContent().apply {
-            setTitle(notification.activity)
-            val timeLabel = "%02d:%02d".format(notification.startHour, notification.startMinute)
-            setBody("${notification.type.id} • $timeLabel")
+            val startTimeLabel = formatTime(notification.startHour, notification.startMinute)
+            val endTimeLabel = formatTime(notification.endHour, notification.endMinute)
+            setTitle("${notification.activity} • $startTimeLabel - $endTimeLabel")
+            setBody("${notification.type.id} • ${notification.participant} • ${notification.location}")
         }
 
         when (notification.frequency) {
@@ -121,7 +123,8 @@ class NotificationRepositoryImpl(
         }
 
         val secondsToDay = daysUntil * DAY_IN_SECONDS
-        val targetDateEstimate = NSDate(timeIntervalSinceNow = secondsToDay)
+        val targetDateEstimate =
+            NSDate(timeIntervalSinceReferenceDate = now.timeIntervalSinceReferenceDate + secondsToDay)
         val targetWeekComponents = calendar.components(NSCalendarUnitWeekOfYear, fromDate = targetDateEstimate)
         val targetWeek = targetWeekComponents.weekOfYear.toInt()
 

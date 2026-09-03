@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
-import com.ubb.fmi.orar.data.notifications.repository.NotificationRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Week
 import com.ubb.fmi.orar.domain.notifications.usecase.ChangeEventNotificationUseCase
@@ -39,7 +38,6 @@ class UserTimetableViewModel(
     private val changeEventNotificationUseCase: ChangeEventNotificationUseCase,
     private val deletePersonalEventUseCase: DeletePersonalEventUseCase,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
-    private val notificationRepository: NotificationRepository,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -61,23 +59,6 @@ class UserTimetableViewModel(
      * This is done in the init block to ensure it starts loading as soon as the ViewModel is created.
      */
     init {
-//        viewModelScope.launch {
-//            notificationRepository.schedule(
-//                notification = EventNotification(
-//                    id = "new_class_notification 1",
-//                    activity = "Elaborarea lucrarii de licenta",
-//                    location = "Room 101",
-//                    participant = "936/2",
-//                    type = EventType.LABORATORY,
-//                    frequency = Frequency.BOTH,
-//                    day = Day.TUESDAY,
-//                    startHour = 15,
-//                    startMinute = 27,
-//                    endHour = 17,
-//                    endMinute = 0,
-//                )
-//            )
-//        }
         getWeek()
         job = loadTimetable()
     }
