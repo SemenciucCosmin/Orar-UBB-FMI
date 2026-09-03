@@ -8,12 +8,13 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import androidx.core.net.toUri
 import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSource
 import com.ubb.fmi.orar.data.notifications.manager.scheduleExact
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
 import com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver
-import com.ubb.fmi.orar.data.notifications.receiver.buildNotificationIntentUri
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import java.util.Calendar
@@ -180,6 +181,13 @@ class NotificationRepositoryImpl(
 
         manager.createNotificationChannel(channel)
     }
+
+    /**
+     * Builds a stable, unique data [Uri] for a notification's alarm [Intent] so that
+     * [PendingIntent] equality never collides between different notification ids,
+     * even when their `hashCode()`s happen to match.
+     */
+    private fun buildNotificationIntentUri(id: String): Uri = "notification://event/$id".toUri()
 
     companion object {
         private const val TAG = "NotificationRepository"

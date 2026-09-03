@@ -17,13 +17,7 @@ import com.ubb.fmi.orar.domain.extensions.formatTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Locale
-
-/**
- * Builds a stable, unique data [Uri] for a notification's alarm [Intent] so that
- * [PendingIntent] equality never collides between different notification ids,
- * even when their `hashCode()`s happen to match.
- */
-fun buildNotificationIntentUri(id: String): Uri = Uri.parse("notification://event/$id")
+import androidx.core.net.toUri
 
 /**
  * Receives the [AlarmManager] alarm scheduled by [com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl]
@@ -163,6 +157,13 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             }
         }
     }
+
+    /**
+     * Builds a stable, unique data [Uri] for a notification's alarm [Intent] so that
+     * [PendingIntent] equality never collides between different notification ids,
+     * even when their `hashCode()`s happen to match.
+     */
+    private fun buildNotificationIntentUri(id: String): Uri = "notification://event/$id".toUri()
 
     companion object {
         private const val TAG = "NotificationReceiver"
