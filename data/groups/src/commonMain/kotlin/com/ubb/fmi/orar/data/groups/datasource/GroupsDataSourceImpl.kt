@@ -191,7 +191,7 @@ class GroupsDataSourceImpl(
                 caption = teacherCell.value,
                 details = room?.address ?: String.BLANK,
                 isVisible = true,
-                isNotificationOn = true
+                isNotificationOn = false
             )
         }
 

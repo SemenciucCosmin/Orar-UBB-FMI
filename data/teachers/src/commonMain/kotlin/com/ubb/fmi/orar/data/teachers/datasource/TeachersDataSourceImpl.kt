@@ -196,7 +196,7 @@ class TeachersDataSourceImpl(
                 caption = "${teacher.title.label} ${teacher.name}",
                 details = room?.address ?: String.BLANK,
                 isVisible = true,
-                isNotificationOn = true,
+                isNotificationOn = false,
             )
         }
 

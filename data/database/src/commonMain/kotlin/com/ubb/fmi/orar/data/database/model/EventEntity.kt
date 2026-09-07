@@ -42,5 +42,5 @@ data class EventEntity(
     @ColumnInfo(name = "caption") val caption: String,
     @ColumnInfo(name = "details") val details: String,
     @ColumnInfo(name = "isVisible") val isVisible: Boolean,
-    @ColumnInfo(name = "isNotificationOn", defaultValue = "1") val isNotificationOn: Boolean = true,
+    @ColumnInfo(name = "isNotificationOn", defaultValue = "0") val isNotificationOn: Boolean = false,
 )

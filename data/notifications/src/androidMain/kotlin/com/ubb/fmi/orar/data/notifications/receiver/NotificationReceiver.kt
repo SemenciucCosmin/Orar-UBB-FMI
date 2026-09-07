@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.ubb.fmi.orar.data.notifications.manager.scheduleExact
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
@@ -17,7 +18,6 @@ import com.ubb.fmi.orar.domain.extensions.formatTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Locale
-import androidx.core.net.toUri
 
 /**
  * Receives the [AlarmManager] alarm scheduled by [com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl]
