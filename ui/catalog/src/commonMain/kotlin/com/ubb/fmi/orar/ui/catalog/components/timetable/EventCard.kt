@@ -1,14 +1,18 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.ui.catalog.components.animation.AnimatedCard
+import com.ubb.fmi.orar.ui.catalog.components.animation.rememberAnimatedCardState
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 
 /**
  * Composable for the Event card
- * Uses a [FlippingCard] with [EventFace] and [EventBack]
+ * Uses a [AnimatedCard] with [EventFace] and [EventBack]
  */
 @Composable
 fun EventCard(
@@ -25,9 +29,13 @@ fun EventCard(
     modifier: Modifier = Modifier,
     onAddClick: (() -> Unit)? = null,
 ) {
-    FlippingCard(
+    val animatedCardState = rememberAnimatedCardState()
+
+    AnimatedCard(
         modifier = modifier,
         enabled = enabled,
+        animatedCardState = animatedCardState,
+        onClick = { animatedCardState.animateShake() },
         faceContent = { modifier ->
             EventFace(
                 modifier = modifier,
