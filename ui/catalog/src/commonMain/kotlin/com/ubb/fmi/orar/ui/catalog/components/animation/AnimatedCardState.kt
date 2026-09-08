@@ -132,23 +132,28 @@ class AnimatedCardState(
     fun animateFlip() {
         if (animationJob?.isActive == true) return
         animationJob = coroutineScope.launch {
-            val newRotation = if (isCardFaceSide) FULL_ROTATION else NO_ROTATION
-
             _xRotation.animateTo(
-                targetValue = newRotation,
                 animationSpec = tween(config.flipAnimationDurationMs),
+                targetValue = when {
+                    isCardFaceSide -> FULL_ROTATION
+                    else -> NO_ROTATION
+                },
                 block = {
                     // Swap face visibility at halfway point during animation
                     if (value > HALF_ROTATION && isCardFaceSide) {
                         isCardFaceSide = false
-                        _zRotation.snapTo(FULL_ROTATION)
-                        _yRotation.snapTo(FULL_ROTATION)
+                        coroutineScope.launch {
+                            _zRotation.snapTo(FULL_ROTATION)
+                            _yRotation.snapTo(FULL_ROTATION)
+                        }
                     }
 
                     if (value < HALF_ROTATION && !isCardFaceSide) {
                         isCardFaceSide = true
-                        _zRotation.snapTo(NO_ROTATION)
-                        _yRotation.snapTo(NO_ROTATION)
+                        coroutineScope.launch {
+                            _zRotation.snapTo(NO_ROTATION)
+                            _yRotation.snapTo(NO_ROTATION)
+                        }
                     }
                 }
             )
@@ -180,12 +185,14 @@ class AnimatedCardState(
 
             repeat(config.shakeIterations) {
                 _zRotation.animateTo(
-                    targetValue = if (_zRotation.value == config.shakeRotationDegrees) {
-                        -config.shakeRotationDegrees
-                    } else {
-                        config.shakeRotationDegrees
-                    },
-                    animationSpec = tween(config.shakeAnimationDurationMs)
+                    animationSpec = tween(config.shakeAnimationDurationMs),
+                    targetValue = when {
+                        _zRotation.value == config.shakeRotationDegrees -> {
+                            -config.shakeRotationDegrees
+                        }
+
+                        else -> config.shakeRotationDegrees
+                    }
                 )
             }
 
