@@ -2,6 +2,8 @@ package com.ubb.fmi.orar
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.ComposeUIViewController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -16,11 +18,20 @@ import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.koin.compose.koinInject
 
 /**
+ * Bridges deep link URLs coming from the iOS shell (SwiftUI's `onOpenURL`/notification taps)
+ * into the already-running Compose UI, so a new deep link never requires recreating the
+ * [ComposeUIViewController] itself (which would restart the whole app UI from scratch).
+ */
+object DeepLinkHandler {
+    var deepLinkUrl: String? by mutableStateOf(null)
+}
+
+/**
  * Main view controller for the Orar UBB FMI application on iOS.
  * This function initializes Koin and sets up the main content view using Compose.
  */
 @Suppress("FunctionNaming")
-fun MainViewController(deepLinkUrl: String? = null) = ComposeUIViewController(
+fun MainViewController() = ComposeUIViewController(
     configure = {
         KoinInitializer.initKoin()
         AppInitializer().initApp()
@@ -32,9 +43,11 @@ fun MainViewController(deepLinkUrl: String? = null) = ComposeUIViewController(
         initialValue = ThemeOption.SYSTEM
     )
 
+    val deepLinkUrl = DeepLinkHandler.deepLinkUrl
     LaunchedEffect(deepLinkUrl) {
         deepLinkUrl?.let(::extractEventIdFromDeepLink)?.let { eventId ->
             navController.navigate(MainNavDestination.UserMain(eventId)) {
+                popUpTo(MainNavDestination.UserMain()) { inclusive = true }
                 launchSingleTop = true
             }
         }

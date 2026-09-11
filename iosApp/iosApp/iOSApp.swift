@@ -29,11 +29,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        if let deepLink = response.notification.request.content.userInfo["deep_link"] as? String {
-            NotificationCenter.default.post(name: .openTimetableDeepLink, object: deepLink)
-            if let url = URL(string: deepLink) {
-                UIApplication.shared.open(url)
-            }
+        if let deepLink = response.notification.request.content.userInfo["deep_link"] as? String,
+           let url = URL(string: deepLink) {
+            UIApplication.shared.open(url)
         }
         completionHandler()
     }
@@ -48,8 +46,4 @@ struct iOSApp: App {
             ContentView()
         }
     }
-}
-
-extension Notification.Name {
-    static let openTimetableDeepLink = Notification.Name("openTimetableDeepLink")
 }
