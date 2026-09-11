@@ -8,7 +8,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,11 +22,11 @@ import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.ti
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val FIRST_INDEX = 0
 private const val SCROLL_INDEX_OFFSET = 3
+private val SCROLL_START_DELAY = 500.milliseconds
 
 /**
  * A composable that displays the timetable screen with a list of timetable items.
@@ -36,7 +35,8 @@ private const val SCROLL_INDEX_OFFSET = 3
  * @param topBar Composable for the top bar of the screen.
  * @param bottomBar Composable for the bottom bar of the screen (optional).
  * @param onItemVisibilityChange Callback invoked when the visibility of a timetable item changes.
- * @param selectedEventId Optional event ID to scroll to and animate when the screen loads.
+ * @param selectedEventId Optional event ID to scroll to; once the scroll finishes, the
+ * corresponding item plays a shake animation to draw attention to it.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,27 +52,19 @@ fun TimetableScreen(
     selectedEventId: String? = null,
 ) {
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    var isScrollDone by remember { mutableStateOf(false) }
+    var eventIdToAnimate by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(selectedEventId, uiState.timetableListItems) {
-        if (selectedEventId == null || uiState.timetableListItems.isEmpty()) return@LaunchedEffect
-        val itemIndex = uiState.timetableListItems.indexOfFirst { item ->
-            item is TimetableListItem.Event && item.id == selectedEventId
-        }.let {
-            when {
-                it - SCROLL_INDEX_OFFSET >= FIRST_INDEX -> it - SCROLL_INDEX_OFFSET
-                else -> FIRST_INDEX
+        eventIdToAnimate = null
+        val targetIndex = selectedEventId?.let { id ->
+            uiState.timetableListItems.indexOfFirst {
+                it is TimetableListItem.Event && it.id == id
             }
-        }
+        }?.takeIf { it >= FIRST_INDEX } ?: return@LaunchedEffect
 
-        if (itemIndex >= FIRST_INDEX) {
-            isScrollDone = false
-            coroutineScope.launch {
-                delay(500.milliseconds)
-                listState.animateScrollToItem(itemIndex)
-            }.invokeOnCompletion { isScrollDone = true }
-        }
+        delay(SCROLL_START_DELAY)
+        listState.animateScrollToItem((targetIndex - SCROLL_INDEX_OFFSET).coerceAtLeast(FIRST_INDEX))
+        eventIdToAnimate = selectedEventId
     }
 
     StateScaffold(
@@ -92,6 +84,7 @@ fun TimetableScreen(
             onNotificationClick = onItemNotificationChange,
             onRemoveClick = onRemoveItem,
             onAddItem = onAddItem,
+            selectedEventId = eventIdToAnimate,
         )
     }
 }
