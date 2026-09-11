@@ -30,7 +30,7 @@ fun DialogsRoute(navController: NavController) {
 
             DialogsUiEvent.FEEDBACK_LOOP -> {
                 navController.navigate(FeedbackNavDestination.Choice) {
-                    popUpTo(MainNavDestination.UserMain) {
+                    popUpTo(MainNavDestination.UserMain()) {
                         inclusive = true
                     }
                 }

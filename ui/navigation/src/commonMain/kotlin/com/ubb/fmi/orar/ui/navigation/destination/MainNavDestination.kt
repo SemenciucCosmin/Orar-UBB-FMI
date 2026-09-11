@@ -26,7 +26,9 @@ sealed class MainNavDestination {
      * This destination is used to navigate to the timetable for a specific user.
      */
     @Serializable
-    data object UserMain : MainNavDestination()
+    data class UserMain(
+        val eventId: String? = null,
+    ) : MainNavDestination()
 
     /**
      * Represents the news destination.
@@ -40,4 +42,8 @@ sealed class MainNavDestination {
      */
     @Serializable
     data object Explore : MainNavDestination()
+
+    companion object {
+        const val USER_TIMETABLE_DEEP_LINK = "orarubbfmi://user-timetable"
+    }
 }

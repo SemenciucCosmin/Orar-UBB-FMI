@@ -19,8 +19,8 @@ fun NavGraphBuilder.feedbackGraph(navController: NavController) {
         FeedbackChoiceRoute(
             onNavigate = navController::navigate,
             onFinish = {
-                navController.navigate(MainNavDestination.UserMain) {
-                    popUpTo(MainNavDestination.UserMain) {
+                navController.navigate(MainNavDestination.UserMain()) {
+                    popUpTo(MainNavDestination.UserMain()) {
                         inclusive = true
                     }
                 }
@@ -34,8 +34,8 @@ fun NavGraphBuilder.feedbackGraph(navController: NavController) {
         FeedbackOutcomeRoute(
             feedbackChoice = FeedbackChoice.getById(args.feedbackChoiceId),
             onFinish = {
-                navController.navigate(MainNavDestination.UserMain) {
-                    popUpTo(MainNavDestination.UserMain) {
+                navController.navigate(MainNavDestination.UserMain()) {
+                    popUpTo(MainNavDestination.UserMain()) {
                         inclusive = true
                     }
                 }

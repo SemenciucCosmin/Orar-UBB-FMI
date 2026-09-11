@@ -52,10 +52,12 @@ class NotificationRepositoryImpl(
     private fun buildNotificationContent(notification: EventNotification): UNMutableNotificationContent {
         val startTimeLabel = formatTime(notification.startHour, notification.startMinute)
         val endTimeLabel = formatTime(notification.endHour, notification.endMinute)
+        val deepLink = "$USER_TIMETABLE_DEEP_LINK_BASE?eventId=${notification.id}"
 
         return UNMutableNotificationContent().apply {
             setTitle("${notification.activity} • $startTimeLabel - $endTimeLabel")
             setBody("${notification.type.id} • ${notification.participant} • ${notification.location}")
+            setUserInfo(mapOf(DEEP_LINK_USER_INFO_KEY to deepLink))
         }
     }
 
@@ -318,5 +320,7 @@ class NotificationRepositoryImpl(
         // iOS enforces a hard cap of 64 pending local notifications per app. Keep a
         // safety margin below it so scheduling for one event never starves others.
         private const val MAX_PENDING_NOTIFICATIONS_BUDGET = 60
+        private const val DEEP_LINK_USER_INFO_KEY = "deep_link"
+        private const val USER_TIMETABLE_DEEP_LINK_BASE = "orarubbfmi://user-timetable"
     }
 }

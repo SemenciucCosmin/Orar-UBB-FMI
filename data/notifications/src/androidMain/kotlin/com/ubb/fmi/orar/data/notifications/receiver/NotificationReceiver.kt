@@ -53,11 +53,25 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             context.packageName
         ).takeIf { it != 0 } ?: context.applicationInfo.icon
 
+        val deepLinkUri = "$USER_TIMETABLE_DEEP_LINK_BASE?eventId=${Uri.encode(id)}".toUri()
+        val deeplinkIntent = Intent(Intent.ACTION_VIEW, deepLinkUri).apply {
+            setPackage(context.packageName)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            id.hashCode(),
+            deeplinkIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(iconRes)
             .setContentTitle("$activity • $startTime - $endTime")
             .setContentText("$eventTypeLabel • $participant • $location")
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
             .build()
 
         val notificationManager = context.getSystemService(
@@ -189,5 +203,6 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         private const val LABORATORY_RESOURCE_ID = "lbl_laboratory"
         private const val STAFF_RESOURCE_ID = "lbl_staff"
         private const val PERSONAL_RESOURCE_ID = "lbl_personal"
+        private const val USER_TIMETABLE_DEEP_LINK_BASE = "orarubbfmi://user-timetable"
     }
 }

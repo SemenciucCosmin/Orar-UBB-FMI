@@ -26,7 +26,7 @@ fun StartupRoute(navController: NavController) {
         when (event) {
             StartupUiEvent.CONFIGURATION_COMPLETE -> {
                 viewModel.unregisterEvent(event)
-                navController.navigate(MainNavDestination.UserMain) {
+                navController.navigate(MainNavDestination.UserMain()) {
                     popUpTo(MainNavDestination.Startup) {
                         inclusive = true
                         saveState = true

@@ -1,32 +1,33 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.domain.extensions.formatTime
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
-import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.timetableListItems
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
-import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.resources.stringResource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
+
+private const val FIRST_INDEX = 0
+private const val SCROLL_INDEX_OFFSET = 3
 
 /**
  * A composable that displays the timetable screen with a list of timetable items.
@@ -35,6 +36,7 @@ import org.jetbrains.compose.resources.stringResource
  * @param topBar Composable for the top bar of the screen.
  * @param bottomBar Composable for the bottom bar of the screen (optional).
  * @param onItemVisibilityChange Callback invoked when the visibility of a timetable item changes.
+ * @param selectedEventId Optional event ID to scroll to and animate when the screen loads.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +49,32 @@ fun TimetableScreen(
     onItemNotificationChange: (TimetableListItem.Event) -> Unit = {},
     onRemoveItem: (TimetableListItem.Event) -> Unit = {},
     onAddItem: ((String) -> Unit)? = null,
+    selectedEventId: String? = null,
 ) {
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    var isScrollDone by remember { mutableStateOf(false) }
+
+    LaunchedEffect(selectedEventId, uiState.timetableListItems) {
+        if (selectedEventId == null || uiState.timetableListItems.isEmpty()) return@LaunchedEffect
+        val itemIndex = uiState.timetableListItems.indexOfFirst { item ->
+            item is TimetableListItem.Event && item.id == selectedEventId
+        }.let {
+            when {
+                it - SCROLL_INDEX_OFFSET >= FIRST_INDEX -> it - SCROLL_INDEX_OFFSET
+                else -> FIRST_INDEX
+            }
+        }
+
+        if (itemIndex >= FIRST_INDEX) {
+            isScrollDone = false
+            coroutineScope.launch {
+                delay(500.milliseconds)
+                listState.animateScrollToItem(itemIndex)
+            }.invokeOnCompletion { isScrollDone = true }
+        }
+    }
+
     StateScaffold(
         isLoading = uiState.isLoading,
         isEmpty = uiState.isEmpty,
@@ -56,85 +83,16 @@ fun TimetableScreen(
         topBar = topBar,
         bottomBar = bottomBar
     ) { paddingValues ->
-        LazyColumn(
+        EventsList(
             modifier = Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-            contentPadding = PaddingValues(Pds.spacing.SMedium),
-        ) {
-            items(
-                uiState.timetableListItems,
-                key = { timetableItem ->
-                    when (timetableItem) {
-                        is TimetableListItem.Divider -> timetableItem.day
-                        is TimetableListItem.Event -> timetableItem.id
-                    }
-                }
-            ) { timetableItem ->
-                when (timetableItem) {
-                    is TimetableListItem.Divider -> {
-                        TimetableListDivider(
-                            modifier = Modifier.animateItem(),
-                            text = stringResource(timetableItem.day.labelRes),
-                        )
-                    }
-
-                    is TimetableListItem.Event -> {
-                        Row(
-                            modifier = Modifier.animateItem(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium)
-                        ) {
-                            AnimatedVisibility(uiState.isEditModeOn) {
-                                Column(
-                                    verticalArrangement = Arrangement.SpaceBetween,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    EventVisibilityToggleButton(
-                                        isChecked = timetableItem.isVisible,
-                                        onClick = { onItemVisibilityChange(timetableItem) }
-                                    )
-
-                                    EventNotificationToggleButton(
-                                        isChecked = timetableItem.isNotificationOn,
-                                        onClick = { onItemNotificationChange(timetableItem) }
-                                    )
-
-                                    if (timetableItem.isPersonal) {
-                                        EventRemoveButton(
-                                            onRemove = { onRemoveItem(timetableItem) }
-                                        )
-                                    }
-                                }
-                            }
-
-                            EventCard(
-                                startTime = formatTime(
-                                    timetableItem.startHour,
-                                    timetableItem.startMinute
-                                ),
-                                endTime = formatTime(
-                                    timetableItem.endHour,
-                                    timetableItem.endMinute
-                                ),
-                                enabled = timetableItem.isVisible,
-                                expanded = !uiState.isEditModeOn,
-                                location = timetableItem.location,
-                                title = timetableItem.title,
-                                type = timetableItem.type,
-                                participant = timetableItem.participant,
-                                caption = timetableItem.caption,
-                                details = timetableItem.details,
-                                onAddClick = onAddItem?.let {
-                                    {
-                                        onAddItem(timetableItem.id)
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-        }
+            items = uiState.timetableListItems,
+            isEditModeOn = uiState.isEditModeOn,
+            listState = listState,
+            onVisibleClick = onItemVisibilityChange,
+            onNotificationClick = onItemNotificationChange,
+            onRemoveClick = onRemoveItem,
+            onAddItem = onAddItem,
+        )
     }
 }
 

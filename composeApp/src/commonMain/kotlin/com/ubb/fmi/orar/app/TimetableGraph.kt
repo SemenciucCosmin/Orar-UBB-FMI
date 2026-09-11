@@ -3,6 +3,8 @@ package com.ubb.fmi.orar.app
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.explore.ui.route.ExploreRoute
 import com.ubb.fmi.orar.feature.news.ui.route.NewsRoute
 import com.ubb.fmi.orar.feature.startup.ui.route.StartupRoute
@@ -20,8 +22,15 @@ fun NavGraphBuilder.mainGraph(navController: NavController) {
         StartupRoute(navController)
     }
 
-    composable<MainNavDestination.UserMain> { navBackStackEntry ->
-        UserTimetableRoute(navController)
+    composable<MainNavDestination.UserMain>(
+        deepLinks = listOf(
+            navDeepLink {
+                uriPattern = "${MainNavDestination.USER_TIMETABLE_DEEP_LINK}?eventId={eventId}"
+            }
+        )
+    ) { navBackStackEntry ->
+        val args = navBackStackEntry.toRoute<MainNavDestination.UserMain>()
+        UserTimetableRoute(navController, args.eventId)
     }
 
     composable<MainNavDestination.News> { navBackStackEntry ->

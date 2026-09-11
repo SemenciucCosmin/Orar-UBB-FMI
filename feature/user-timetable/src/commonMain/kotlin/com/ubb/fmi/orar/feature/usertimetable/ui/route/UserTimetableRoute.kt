@@ -20,13 +20,14 @@ import org.koin.compose.viewmodel.koinViewModel
  * It includes a top bar for frequency selection and edit mode, and a bottom bar for navigation.
  */
 @Composable
-fun UserTimetableRoute(navController: NavController) {
+fun UserTimetableRoute(navController: NavController, selectedEventId: String? = null) {
     val viewModel: UserTimetableViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val hapticFeedback = LocalHapticFeedback.current
 
     TimetableScreen(
         uiState = uiState,
+        selectedEventId = selectedEventId,
         onRetryClick = viewModel::retry,
         bottomBar = { BottomBar(navController) },
         onRemoveItem = viewModel::removeItem,
@@ -54,6 +55,6 @@ fun UserTimetableRoute(navController: NavController) {
                 onEditClick = viewModel::changeEditMode,
                 onSettingsClick = { navController.navigate(SettingsNavDestination.Settings) }
             )
-        }
+        },
     )
 }
