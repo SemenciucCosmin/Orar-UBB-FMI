@@ -48,7 +48,7 @@ class NotificationRepositoryImpl(
             notificationCacheDataSource.getNotificationManager().scheduleExact(
                 AlarmManager.RTC_WAKEUP,
                 triggerMillis,
-                buildPendingIntent(notification),
+                buildPendingIntent(notification, triggerMillis),
             )
             logger.d(TAG, "Scheduled notification ${notification.id} for $triggerMillis")
         } catch (exception: SecurityException) {
@@ -76,9 +76,11 @@ class NotificationRepositoryImpl(
 
     /**
      * Builds the [PendingIntent] carrying all data [NotificationReceiver] needs to display the
-     * notification and reschedule its next occurrence.
+     * notification and reschedule its next occurrence. [triggerMillis] is the absolute time
+     * this alarm is set for, carried along so the receiver can derive the next occurrence
+     * from it without drifting.
      */
-    private fun buildPendingIntent(notification: EventNotification): PendingIntent {
+    private fun buildPendingIntent(notification: EventNotification, triggerMillis: Long): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             // Unique data Uri ensures PendingIntent equality never collides across
             // different notification ids, even if their hashCodes happen to match.
@@ -93,6 +95,7 @@ class NotificationRepositoryImpl(
             putExtra(EXTRA_START_MINUTE, notification.startMinute)
             putExtra(EXTRA_END_HOUR, notification.endHour)
             putExtra(EXTRA_END_MINUTE, notification.endMinute)
+            putExtra(EXTRA_TRIGGER_AT_MILLIS, triggerMillis)
         }
 
         return PendingIntent.getBroadcast(
@@ -206,5 +209,6 @@ class NotificationRepositoryImpl(
         private const val EXTRA_START_MINUTE = "start_minute"
         private const val EXTRA_END_HOUR = "end_hour"
         private const val EXTRA_END_MINUTE = "end_minute"
+        private const val EXTRA_TRIGGER_AT_MILLIS = "trigger_at_millis"
     }
 }

@@ -92,6 +92,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             startMinute = startMinute,
             endHour = endHour,
             endMinute = endMinute,
+            triggeredAtMillis = intent.getLongExtra(EXTRA_TRIGGER_AT_MILLIS, NO_TRIGGER_TIME),
         )
     }
 
@@ -100,6 +101,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
      * ([Frequency.BOTH]) events, or two weeks later for alternating-week events.
      */
     @SuppressLint("MissingPermission")
+    @Suppress("LongParameterList")
     private fun scheduleNext(
         context: Context,
         id: String,
@@ -112,8 +114,10 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         startMinute: Int,
         endHour: Int,
         endMinute: Int,
+        triggeredAtMillis: Long,
     ) {
         val intervalMillis = if (frequencyId == Frequency.BOTH.id) WEEK_IN_MS else BI_WEEKLY_IN_MS
+        val nextTriggerMillis = getNextTriggerMillis(triggeredAtMillis, intervalMillis)
         val nextIntent = Intent(context, NotificationReceiver::class.java).apply {
             data = buildNotificationIntentUri(id)
             putExtra(EXTRA_NOTIFICATION_ID, id)
@@ -126,6 +130,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             putExtra(EXTRA_START_MINUTE, startMinute)
             putExtra(EXTRA_END_HOUR, endHour)
             putExtra(EXTRA_END_MINUTE, endMinute)
+            putExtra(EXTRA_TRIGGER_AT_MILLIS, nextTriggerMillis)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -136,12 +141,30 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         try {
-            alarmManager.scheduleExact(AlarmManager.RTC_WAKEUP, intervalMillis, pendingIntent)
+            alarmManager.scheduleExact(AlarmManager.RTC_WAKEUP, nextTriggerMillis, pendingIntent)
+            logger.d(TAG, "Scheduled next occurrence for notification $id at $nextTriggerMillis")
         } catch (exception: SecurityException) {
             // Chain broken here: without this alarm, the notification will never
             // fire again for this event until the app is reopened and re-syncs.
             logger.e(TAG, "Failed to schedule next occurrence for notification $id: ${exception.message}")
         }
+    }
+
+    /**
+     * Returns the absolute epoch time of the next occurrence, always strictly in the future.
+     *
+     * [AlarmManager.RTC_WAKEUP] takes an absolute timestamp, so a past value would make the OS
+     * fire the alarm immediately and, since the receiver reschedules itself, loop endlessly.
+     * Advancing by whole [intervalMillis] steps keeps the original time-of-day and week parity
+     * intact even when an alarm is delivered late or several occurrences were missed (Doze,
+     * device powered off, etc.).
+     */
+    private fun getNextTriggerMillis(triggeredAtMillis: Long, intervalMillis: Long): Long {
+        val now = System.currentTimeMillis()
+        if (triggeredAtMillis <= NO_TRIGGER_TIME) return now + intervalMillis
+
+        val missedIntervals = (now - triggeredAtMillis).floorDiv(intervalMillis) + 1
+        return triggeredAtMillis + missedIntervals * intervalMillis
     }
 
     /**
@@ -192,6 +215,8 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         private const val EXTRA_START_MINUTE = "start_minute"
         private const val EXTRA_END_HOUR = "end_hour"
         private const val EXTRA_END_MINUTE = "end_minute"
+        private const val EXTRA_TRIGGER_AT_MILLIS = "trigger_at_millis"
+        private const val NO_TRIGGER_TIME = 0L
         private const val WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000L
         private const val BI_WEEKLY_IN_MS = 2 * WEEK_IN_MS
         private const val DEFAULT_TIME = 0
