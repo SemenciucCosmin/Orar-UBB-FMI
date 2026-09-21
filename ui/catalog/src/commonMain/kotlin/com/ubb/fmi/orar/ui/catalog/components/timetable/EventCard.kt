@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.EventType

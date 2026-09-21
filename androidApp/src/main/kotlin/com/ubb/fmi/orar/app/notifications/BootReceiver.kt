@@ -4,7 +4,7 @@ import Logger
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.ubb.fmi.orar.domain.notifications.usecase.RescheduleCachedNotificationsUseCase
+import com.ubb.fmi.orar.domain.notifications.usecase.RescheduleNotificationsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ import org.koin.core.component.inject
  */
 class BootReceiver : BroadcastReceiver(), KoinComponent {
 
-    private val rescheduleCachedNotificationsUseCase: RescheduleCachedNotificationsUseCase by inject()
+    private val rescheduleNotificationsUseCase: RescheduleNotificationsUseCase by inject()
     private val logger: Logger by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -36,7 +36,7 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.Default).launch {
             try {
-                rescheduleCachedNotificationsUseCase()
+                rescheduleNotificationsUseCase()
             } finally {
                 pendingResult.finish()
             }

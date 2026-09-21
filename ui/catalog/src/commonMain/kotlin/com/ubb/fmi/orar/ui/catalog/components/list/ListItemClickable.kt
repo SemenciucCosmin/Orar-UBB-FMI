@@ -38,15 +38,18 @@ fun ListItemClickable(
     headline: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     textAlign: TextAlign = TextAlign.Start,
     headlineTextStyle: TextStyle = MaterialTheme.typography.titleSmall,
     overline: String? = null,
     underLine: String? = null,
     leadingIcon: Painter? = null,
     trailingIconSize: Dp = Pds.icon.Medium,
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     ElevatedCard(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
     ) {
         ListRow(
@@ -59,6 +62,7 @@ fun ListItemClickable(
             trailingIconSize = trailingIconSize,
             headlineTextStyle = headlineTextStyle,
             trailingIcon = painterResource(Res.drawable.ic_right_arrow),
+            trailingContent = trailingContent
         )
     }
 }

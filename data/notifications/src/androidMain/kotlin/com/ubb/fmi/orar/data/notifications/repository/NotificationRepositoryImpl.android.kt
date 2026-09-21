@@ -38,11 +38,12 @@ class NotificationRepositoryImpl(
     @SuppressLint("MissingPermission")
     override suspend fun schedule(notification: EventNotification) {
         try {
-            val triggerMillis = getNotificationTriggerMillis(
+            val triggerMillis = getTriggerMillis(
                 day = notification.day,
                 startHour = notification.startHour,
                 startMinute = notification.startMinute,
                 frequency = notification.frequency,
+                advanceMinutes = notification.advanceMinutes,
             )
             notificationCacheDataSource.getNotificationManager().scheduleExact(
                 AlarmManager.RTC_WAKEUP,
@@ -103,20 +104,22 @@ class NotificationRepositoryImpl(
     }
 
     /**
-     * Resolves the next absolute trigger time for [frequency], accounting for the alternating
-     * odd/even week pattern of [Frequency.WEEK_1]/[Frequency.WEEK_2] events.
+     * Gets the next absolute trigger time for [frequency], accounting for the alternating
+     * odd/even week pattern of [Frequency.WEEK_1]/[Frequency.WEEK_2] events, and firing
+     * [advanceMinutes] minutes before the event's actual start time.
      */
-    private fun getNotificationTriggerMillis(
+    private fun getTriggerMillis(
         day: Day,
         startHour: Int,
         startMinute: Int,
         frequency: Frequency,
+        advanceMinutes: Int,
     ): Long {
         return when (frequency) {
-            Frequency.BOTH -> getCalendar(day, startHour, startMinute).timeInMillis
+            Frequency.BOTH -> getCalendar(day, startHour, startMinute, advanceMinutes).timeInMillis
 
             else -> {
-                val calendar = getCalendar(day, startHour, startMinute)
+                val calendar = getCalendar(day, startHour, startMinute, advanceMinutes)
                 val weekNumber = calendar.get(Calendar.WEEK_OF_YEAR)
                 val isOddWeek = weekNumber % 2 != 0
                 val needsOddWeek = frequency == Frequency.WEEK_1
@@ -131,10 +134,10 @@ class NotificationRepositoryImpl(
     }
 
     /**
-     * Returns the next occurrence of [day]/[hour]:[minute], rolling over to next week if that
-     * time has already passed today/this week.
+     * Gets the next occurrence of [day]/[hour]:[minute] moved back by [advanceMinutes]
+     * minutes, rolling over to next week if that time has already passed today/this week.
      */
-    private fun getCalendar(day: Day, hour: Int, minute: Int): Calendar {
+    private fun getCalendar(day: Day, hour: Int, minute: Int, advanceMinutes: Int): Calendar {
         val calendarDay = when (day) {
             Day.MONDAY -> Calendar.MONDAY
             Day.TUESDAY -> Calendar.TUESDAY
@@ -151,6 +154,7 @@ class NotificationRepositoryImpl(
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
+            add(Calendar.MINUTE, -advanceMinutes)
         }
 
         if (calendar.timeInMillis <= System.currentTimeMillis()) {

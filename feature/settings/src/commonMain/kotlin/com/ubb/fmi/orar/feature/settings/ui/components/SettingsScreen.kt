@@ -21,6 +21,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_change_configuration
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_contact_me_at
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_developed_by
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_notifications
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_settings
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_theme
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_version
@@ -36,6 +37,7 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onChangeConfigurationClick: () -> Unit,
     onThemeClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -60,6 +62,11 @@ fun SettingsScreen(
             ListItemClickable(
                 headline = stringResource(Res.string.lbl_theme),
                 onClick = onThemeClick
+            )
+
+            ListItemClickable(
+                headline = stringResource(Res.string.lbl_notifications),
+                onClick = onNotificationsClick
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -112,6 +119,7 @@ private fun PreviewSettingsScreen() {
             onBack = {},
             onChangeConfigurationClick = {},
             onThemeClick = {},
+            onNotificationsClick = {},
         )
     }
 }

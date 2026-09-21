@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,7 +23,7 @@ import com.ubb.fmi.orar.feature.freerooms.ui.viewmodel.model.FreeRoomsUiState
 import com.ubb.fmi.orar.feature.freerooms.ui.viewmodel.model.FreeRoomsUiState.Companion.filteredRooms
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.form.DayMultiselectionRow
-import com.ubb.fmi.orar.ui.catalog.components.form.TimePicker
+import com.ubb.fmi.orar.ui.catalog.components.form.TimeChip
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
@@ -35,7 +34,6 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Composable function that displays a list of rooms.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeRoomsScreen(
     uiState: FreeRoomsUiState,
@@ -74,7 +72,7 @@ fun FreeRoomsScreen(
                         horizontalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        TimePicker(
+                        TimeChip(
                             hour = uiState.startHour,
                             minute = uiState.startMinute,
                             onHourChanged = onStartHourChange,
@@ -86,7 +84,7 @@ fun FreeRoomsScreen(
                             style = MaterialTheme.typography.titleMedium
                         )
 
-                        TimePicker(
+                        TimeChip(
                             hour = uiState.endHour,
                             minute = uiState.endMinute,
                             onHourChanged = onEndHourChange,

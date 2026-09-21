@@ -23,7 +23,7 @@ import kotlin.collections.component2
  * This always turns notifications *on* for every visible event, overriding any per-event
  * choice the user previously made. It's meant for first-time setup (e.g. when notification
  * permission is newly granted), not for periodic refreshes — use
- * [RescheduleCachedNotificationsUseCase] instead when you only want to restore the
+ * [RescheduleNotificationsUseCase] instead when you only want to restore the
  * notifications the user already had enabled.
  */
 class InitializeTimetableNotificationsUseCase(

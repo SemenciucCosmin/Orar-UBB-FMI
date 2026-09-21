@@ -104,6 +104,7 @@ kotlin {
             implementation(projects.feature.groupTimetable)
             implementation(projects.feature.groups)
             implementation(projects.feature.news)
+            implementation(projects.feature.notifications)
             implementation(projects.feature.personalEvent)
             implementation(projects.feature.roomTimetable)
             implementation(projects.feature.rooms)

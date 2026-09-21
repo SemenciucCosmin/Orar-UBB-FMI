@@ -156,4 +156,11 @@
 • Actualizare automată a datelor
     </string>
 
+    <!--  NOTIFICATIONS SETTINGS  -->
+    <string name="lbl_notifications">Notificări</string>
+    <string name="lbl_notifications_enabled">Notificări evenimente</string>
+    <string name="lbl_notification_advance_minutes">Timp înainte de notificare</string>
+    <string name="lbl_minute_abr">%1$sm</string>
+    <string name="lbl_hour_abr">%1$sh</string>
+
 </resources>

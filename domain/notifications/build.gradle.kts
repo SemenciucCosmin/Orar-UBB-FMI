@@ -42,6 +42,7 @@ kotlin {
             implementation(projects.data.groups)
             implementation(projects.data.network)
             implementation(projects.data.notifications)
+            implementation(projects.data.settings)
             implementation(projects.data.teachers)
             implementation(projects.data.timetable)
             implementation(projects.domain.logging)

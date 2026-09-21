@@ -26,7 +26,7 @@ import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.custom.OutlinedTextField
 import com.ubb.fmi.orar.ui.catalog.components.form.DayMultiselectionRow
 import com.ubb.fmi.orar.ui.catalog.components.form.FrequencySelectionRow
-import com.ubb.fmi.orar.ui.catalog.components.form.TimePicker
+import com.ubb.fmi.orar.ui.catalog.components.form.TimeChip
 import com.ubb.fmi.orar.ui.catalog.components.timetable.EventCard
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -143,7 +143,7 @@ fun AddPersonalEventScreen(
                 horizontalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TimePicker(
+                TimeChip(
                     hour = startHour,
                     minute = startMinute,
                     onHourChanged = onStartHourChange,
@@ -155,7 +155,7 @@ fun AddPersonalEventScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                TimePicker(
+                TimeChip(
                     hour = endHour,
                     minute = endMinute,
                     onHourChanged = onEndHourChange,

@@ -189,10 +189,17 @@ class NotificationRepositoryImpl(
     }
 
     private fun buildWeeklyTrigger(notification: EventNotification): UNCalendarNotificationTrigger {
+        val (advanceWeekday, advanceHour, advanceMinute) = getAdvanceTime(
+            weekday = notification.day.toIosWeekday(),
+            hour = notification.startHour,
+            minute = notification.startMinute,
+            advanceMinutes = notification.advanceMinutes,
+        )
+
         val components = NSDateComponents().apply {
-            weekday = notification.day.toIosWeekday().toLong()
-            hour = notification.startHour.toLong()
-            minute = notification.startMinute.toLong()
+            weekday = advanceWeekday.toLong()
+            hour = advanceHour.toLong()
+            minute = advanceMinute.toLong()
             second = 0
         }
 
@@ -213,8 +220,9 @@ class NotificationRepositoryImpl(
         listOf(id) + List(BI_WEEKLY_OCCURRENCE_COUNT) { occurrenceIndex -> biWeeklyIdentifier(id, occurrenceIndex) }
 
     /**
-     * Computes the delay, in seconds from now, until [notification]'s first upcoming occurrence
-     * that matches both its weekday/time and its odd/even week parity requirement.
+     * Computes the delay, in seconds from now, until [notification]'s first upcoming notify
+     * time (its start time moved back by [EventNotification.advanceMinutes]) that matches both
+     * the weekday/time and its odd/even week parity requirement.
      */
     private fun secondsUntilFirstBiWeeklyOccurrence(notification: EventNotification): Double {
         val now = NSDate()
@@ -230,13 +238,19 @@ class NotificationRepositoryImpl(
         val currentWeekday = currentComponents.weekday.toInt()
         val currentHour = currentComponents.hour.toInt()
         val currentMinute = currentComponents.minute.toInt()
-        val targetWeekday = notification.day.toIosWeekday()
+        val (advanceWeekday, advanceHour, advanceMinute) = getAdvanceTime(
+            weekday = notification.day.toIosWeekday(),
+            hour = notification.startHour,
+            minute = notification.startMinute,
+            advanceMinutes = notification.advanceMinutes,
+        )
 
         val daysUntilTargetWeekday = daysUntilNextWeekdayOccurrence(
-            targetWeekday = targetWeekday,
+            targetWeekday = advanceWeekday,
             currentWeekday = currentWeekday,
-            eventAlreadyStartedToday = isEventStartTimeReached(
-                notification = notification,
+            eventAlreadyStartedToday = isAdvanceTimeReached(
+                advanceHour = advanceHour,
+                advanceMinute = advanceMinute,
                 hour = currentHour,
                 minute = currentMinute
             ),
@@ -254,9 +268,9 @@ class NotificationRepositoryImpl(
         val weekParityMismatches = targetWeekIsOdd != notificationRequiresOddWeek
         val weekParityAdjustmentSeconds = if (weekParityMismatches) DAY_IN_SECONDS * DAYS_IN_WEEK else 0.0
 
-        val targetStartHourSeconds = notification.startHour * SECONDS_IN_HOUR
-        val targetStartMinuteSeconds = notification.startMinute * SECONDS_IN_MINUTE
-        val targetTimeOfDaySeconds = targetStartHourSeconds + targetStartMinuteSeconds
+        val targetHourSeconds = advanceHour * SECONDS_IN_HOUR
+        val targetMinuteSeconds = advanceMinute * SECONDS_IN_MINUTE
+        val targetTimeOfDaySeconds = targetHourSeconds + targetMinuteSeconds
 
         val currentHourSeconds = currentHour * SECONDS_IN_HOUR
         val currentMinuteSeconds = currentMinute * SECONDS_IN_MINUTE
@@ -283,12 +297,29 @@ class NotificationRepositoryImpl(
         }
     }
 
-    private fun isEventStartTimeReached(notification: EventNotification, hour: Int, minute: Int): Boolean {
-        val startHourAlreadyPassed = notification.startHour < hour
-        val startHourIsNow = notification.startHour == hour
-        val startMinuteAlreadyReached = notification.startMinute <= minute
-        val startHourIsNowAndMinuteReached = startHourIsNow && startMinuteAlreadyReached
-        return startHourAlreadyPassed || startHourIsNowAndMinuteReached
+    private fun isAdvanceTimeReached(advanceHour: Int, advanceMinute: Int, hour: Int, minute: Int): Boolean {
+        val hourAlreadyPassed = advanceHour < hour
+        val hourIsNow = advanceHour == hour
+        val minuteAlreadyReached = advanceMinute <= minute
+        val hourIsNowAndMinuteReached = hourIsNow && minuteAlreadyReached
+        return hourAlreadyPassed || hourIsNowAndMinuteReached
+    }
+
+    /**
+     * Moves [hour]:[minute] on [weekday] back by [advanceMinutes] minutes, rolling over to the
+     * previous iOS weekday (1-7) if the shift crosses midnight. Returns
+     * (weekday, hour, minute) of the resulting notify time.
+     */
+    private fun getAdvanceTime(weekday: Int, hour: Int, minute: Int, advanceMinutes: Int): Triple<Int, Int, Int> {
+        val totalMinutes = hour * MINUTES_IN_HOUR + minute - advanceMinutes
+        val crossesToPreviousDay = totalMinutes < 0
+        val wrappedMinutes = if (crossesToPreviousDay) totalMinutes + MINUTES_IN_DAY else totalMinutes
+        val advanceWeekday = when {
+            crossesToPreviousDay -> if (weekday == 1) DAYS_IN_WEEK else weekday - 1
+            else -> weekday
+        }
+
+        return Triple(advanceWeekday, wrappedMinutes / MINUTES_IN_HOUR, wrappedMinutes % MINUTES_IN_HOUR)
     }
 
     @Suppress("MagicNumber")
@@ -309,6 +340,7 @@ class NotificationRepositoryImpl(
         private const val SECONDS_IN_HOUR = MINUTES_IN_HOUR * SECONDS_IN_MINUTE
         private const val HOURS_IN_DAY = 24
         private const val DAY_IN_SECONDS = HOURS_IN_DAY * SECONDS_IN_HOUR
+        private const val MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR
         private const val DAYS_IN_WEEK = 7
         private const val BI_WEEKLY_INTERVAL_DAYS = DAYS_IN_WEEK * 2
 
