@@ -11,6 +11,7 @@ import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.extensions.PIPE
+import com.ubb.fmi.orar.domain.notifications.usecase.ScheduleEventNotificationsUseCase
 import kotlinx.coroutines.flow.firstOrNull
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.time.ExperimentalTime
@@ -19,6 +20,7 @@ class AddPersonalEventsUseCase(
     private val timetablePreferences: TimetablePreferences,
     private val eventsDataSource: EventsDataSource,
     private val analyticsLogger: AnalyticsLogger,
+    private val scheduleEventNotificationsUseCase: ScheduleEventNotificationsUseCase,
 ) {
     @OptIn(ExperimentalTime::class)
     suspend operator fun invoke(
@@ -75,5 +77,10 @@ class AddPersonalEventsUseCase(
             ownerId = Owner.User.id,
             events = personalEvents
         )
+
+        // The events are created with notifications already on, so they have to be scheduled
+        // right away; otherwise the user would get no reminder for a freshly added personal
+        // event until the app is next restarted and cached notifications are rescheduled.
+        scheduleEventNotificationsUseCase(*personalEvents.toTypedArray())
     }
 }

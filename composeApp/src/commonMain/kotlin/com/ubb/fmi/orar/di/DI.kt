@@ -17,6 +17,7 @@ import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
 import com.ubb.fmi.orar.domain.analytics.di.analyticsDomainModule
 import com.ubb.fmi.orar.domain.announcements.di.announcementsDomainModule
+import com.ubb.fmi.orar.domain.calendar.di.calendarDomainModule
 import com.ubb.fmi.orar.domain.feedback.di.feedbackDomainModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
 import com.ubb.fmi.orar.domain.notifications.di.notificationsDomainModule
@@ -59,6 +60,9 @@ fun commonModule() = module {
 
     // ANALYTICS
     includes(analyticsDomainModule())
+
+    // CALENDAR
+    includes(calendarDomainModule())
 
     // COMMON
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }

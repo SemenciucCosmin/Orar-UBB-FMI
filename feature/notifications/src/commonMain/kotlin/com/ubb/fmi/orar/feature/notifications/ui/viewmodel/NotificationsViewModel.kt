@@ -52,14 +52,25 @@ class NotificationsViewModel(
     /**
      * Persists the global notifications switch and reacts immediately: turning it on re-syncs
      * and re-schedules every visible event, turning it off cancels everything scheduled.
+     *
+     * The preference write is awaited before scheduling runs, because scheduling now reads that
+     * same flag to decide whether it is allowed to arm anything; kicking both off concurrently
+     * would let the scheduler observe the previous value and no-op.
+     *
+     * This is the one place invalidation runs with `forceAll`, since muting is the only case
+     * where personal event notifications must go quiet too. Their per-event preference survives,
+     * so switching back on restores exactly what the user had.
      */
     fun setNotificationsEnabled(enabled: Boolean) {
         logger.d(TAG, "setNotificationsEnabled: $enabled")
-        viewModelScope.launch { settingsPreferences.setNotificationsEnabled(enabled) }
 
-        when {
-            enabled -> initializeTimetableNotificationsUseCase()
-            else -> viewModelScope.launch { invalidateTimetableNotificationsUseCase() }
+        viewModelScope.launch {
+            settingsPreferences.setNotificationsEnabled(enabled)
+
+            when {
+                enabled -> initializeTimetableNotificationsUseCase()
+                else -> invalidateTimetableNotificationsUseCase(forceAll = true)
+            }
         }
     }
 

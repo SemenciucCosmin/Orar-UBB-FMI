@@ -3,47 +3,100 @@ package com.ubb.fmi.orar.data.notifications.repository
 import Logger
 import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSource
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
-import com.ubb.fmi.orar.data.timetable.model.Day
-import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.domain.calendar.usecase.GetUpcomingEventOccurrencesUseCase
 import com.ubb.fmi.orar.domain.extensions.formatTime
 import kotlinx.coroutines.suspendCancellableCoroutine
-import platform.Foundation.NSCalendar
-import platform.Foundation.NSCalendarIdentifierGregorian
-import platform.Foundation.NSCalendarUnitHour
-import platform.Foundation.NSCalendarUnitMinute
-import platform.Foundation.NSCalendarUnitWeekOfYear
-import platform.Foundation.NSCalendarUnitWeekday
-import platform.Foundation.NSDate
-import platform.Foundation.NSDateComponents
-import platform.UserNotifications.UNAuthorizationOptionAlert
-import platform.UserNotifications.UNAuthorizationOptionBadge
-import platform.UserNotifications.UNAuthorizationOptionSound
-import platform.UserNotifications.UNCalendarNotificationTrigger
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import kotlin.coroutines.resume
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.ExperimentalTime
 
 /**
- * iOS [NotificationRepository] implementation, backed by `UNUserNotificationCenter`. Weekly
- * events use a single repeating `UNCalendarNotificationTrigger`; alternating-week events use a
- * bounded batch of one-shot `UNTimeIntervalNotificationTrigger` requests (see
- * [scheduleBiWeeklyNotification]) since iOS has no native "every N weeks" trigger.
+ * iOS [NotificationRepository] implementation, backed by `UNUserNotificationCenter`.
+ *
+ * Every event is scheduled as a bounded batch of one-shot `UNTimeIntervalNotificationTrigger`
+ * requests, one per upcoming teaching week occurrence. A repeating `UNCalendarNotificationTrigger`
+ * would be cheaper, but iOS offers no way to suspend one for the weeks it must stay silent, so it
+ * would keep firing right through the winter, Easter, exam and summer periods.
+ *
+ * Because iOS caps an app at 64 pending local notifications, the batch is sized from what's left
+ * of that budget divided across the events being scheduled, and topped up again every time the
+ * app re-syncs its notifications.
  */
-@Suppress("TooManyFunctions")
 class NotificationRepositoryImpl(
     private val notificationCacheDataSource: NotificationCacheDataSource,
+    private val getUpcomingEventOccurrencesUseCase: GetUpcomingEventOccurrencesUseCase,
     private val logger: Logger,
 ) : NotificationRepository {
 
-    override suspend fun schedule(notification: EventNotification) {
-        requestAuthorizationIfNeeded()
-        val content = buildNotificationContent(notification)
+    @OptIn(ExperimentalTime::class)
+    override suspend fun schedule(notifications: List<EventNotification>) {
+        if (notifications.isEmpty()) return
 
-        when (notification.frequency) {
-            Frequency.BOTH -> scheduleWeeklyNotification(notification, content)
-            else -> scheduleBiWeeklyNotification(notification, content)
+        val occurrenceCount = resolveOccurrencesPerEvent(notifications)
+        if (occurrenceCount <= 0) {
+            logger.e(TAG, "Skipped scheduling ${notifications.size} event(s): pending notification budget exhausted")
+            return
         }
+
+        val nowMillis = Clock.System.now().toEpochMilliseconds()
+        notifications.forEach { notification ->
+            schedule(notification, occurrenceCount, nowMillis)
+        }
+    }
+
+    /**
+     * Replaces everything pending for [notification] with its next [occurrenceCount] teaching
+     * week occurrences.
+     */
+    private fun schedule(notification: EventNotification, occurrenceCount: Int, nowMillis: Long) {
+        // Clear every identifier this event may have used before. Without this, an event whose
+        // frequency or lead time changed would leave its old requests pending alongside the new
+        // ones, firing at both times and wasting the app-wide pending notification budget.
+        notificationCacheDataSource
+            .getNotificationCenter()
+            .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(notification.id))
+
+        val occurrencesMillis = getUpcomingEventOccurrencesUseCase(
+            semester = notification.academicSemester,
+            day = notification.day,
+            frequency = notification.frequency,
+            startHour = notification.startHour,
+            startMinute = notification.startMinute,
+            advanceMinutes = notification.advanceMinutes,
+            afterMillis = nowMillis,
+            limit = occurrenceCount,
+        )
+        if (occurrencesMillis.isEmpty()) {
+            logger.d(TAG, "Skipped notification ${notification.id}, no teaching week left to fire in")
+            return
+        }
+
+        val content = buildNotificationContent(notification)
+        occurrencesMillis.forEachIndexed { occurrenceIndex, occurrenceMillis ->
+            val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
+                timeInterval = (occurrenceMillis - nowMillis).milliseconds.inWholeSeconds.toDouble(),
+                repeats = false,
+            )
+
+            val request = UNNotificationRequest.requestWithIdentifier(
+                identifier = occurrenceIdentifier(notification.id, occurrenceIndex),
+                content = content,
+                trigger = trigger,
+            )
+
+            addNotificationRequest(request)
+        }
+    }
+
+    override suspend fun cancel(id: String) {
+        notificationCacheDataSource
+            .getNotificationCenter()
+            .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(id))
+        logger.d(TAG, "Cancelled notification $id")
     }
 
     /**
@@ -62,91 +115,44 @@ class NotificationRepositoryImpl(
     }
 
     /**
-     * Schedules a single, indefinitely repeating notification for weekly ([Frequency.BOTH])
-     * events, keyed by [EventNotification.id].
+     * Decides how many future occurrences each event of the batch may claim.
+     *
+     * iOS silently drops local notification requests past 64 pending ones app-wide, so the
+     * remaining budget is split evenly instead of letting the first events of the batch consume
+     * all of it and leave the rest with nothing.
      */
-    private fun scheduleWeeklyNotification(
-        notification: EventNotification,
-        content: UNMutableNotificationContent,
-    ) {
-        val request = UNNotificationRequest.requestWithIdentifier(
-            identifier = notification.id,
-            content = content,
-            trigger = buildWeeklyTrigger(notification),
-        )
+    private suspend fun resolveOccurrencesPerEvent(notifications: List<EventNotification>): Int {
+        val ownedCount = countPendingNotifications(notifications.map { it.id }.toSet())
+        val pendingCount = countPendingNotifications(ids = null)
 
-        addNotificationRequest(request)
-    }
+        // Requests this batch already owns are about to be replaced, so they are free to reuse.
+        val availableBudget = (MAX_PENDING_NOTIFICATIONS_BUDGET - pendingCount + ownedCount).coerceAtLeast(0)
+        val perEvent = availableBudget / notifications.size
 
-    /**
-     * Schedules alternating-week events as a batch of one-shot requests (up to
-     * [BI_WEEKLY_OCCURRENCE_COUNT], trimmed by [resolveAvailableOccurrenceCount]) two weeks
-     * apart, since iOS calendar triggers can't natively express "every other week".
-     */
-    private suspend fun scheduleBiWeeklyNotification(
-        notification: EventNotification,
-        content: UNMutableNotificationContent,
-    ) {
-        // Clear any previously scheduled occurrences for this event first so a
-        // reduced budget/occurrence count never leaves stale orphaned requests
-        // behind, wasting the app-wide 64 pending notification slots iOS allows.
-        notificationCacheDataSource
-            .getNotificationCenter()
-            .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(notification.id))
-
-        val firstOccurrenceSeconds = secondsUntilFirstBiWeeklyOccurrence(notification)
-        val occurrenceCount = resolveAvailableOccurrenceCount(notification.id)
-
-        if (occurrenceCount <= 0) {
-            logger.e(TAG, "Skipped scheduling notification ${notification.id}: pending notification budget exhausted")
-            return
-        }
-
-        repeat(occurrenceCount) { occurrenceIndex ->
-            val occurrenceOffsetSeconds = occurrenceIndex * BI_WEEKLY_INTERVAL_DAYS * DAY_IN_SECONDS
-            val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
-                timeInterval = firstOccurrenceSeconds + occurrenceOffsetSeconds,
-                repeats = false,
-            )
-
-            val request = UNNotificationRequest.requestWithIdentifier(
-                identifier = biWeeklyIdentifier(notification.id, occurrenceIndex),
-                content = content,
-                trigger = trigger,
-            )
-
-            addNotificationRequest(request)
-        }
-    }
-
-    /**
-     * iOS caps every app at 64 pending local notifications
-     * system-wide; requests beyond that are silently dropped with no error surfaced to the
-     * app unless the completion handler is inspected. This keeps a safety margin below that
-     * hard limit and trims how many future occurrences we ask for accordingly.
-     */
-    private suspend fun resolveAvailableOccurrenceCount(id: String): Int {
-        val pendingCount = getPendingNotificationsCount()
-        val availableBudget = (MAX_PENDING_NOTIFICATIONS_BUDGET - pendingCount).coerceAtLeast(0)
-
-        if (availableBudget < BI_WEEKLY_OCCURRENCE_COUNT) {
+        if (perEvent < MAX_OCCURRENCES_PER_EVENT) {
             logger.i(
                 TAG,
-                "Limited notification $id to $availableBudget occurrences " +
+                "Limited ${notifications.size} event(s) to $perEvent occurrence(s) each " +
                     "(pending=$pendingCount, budget=$MAX_PENDING_NOTIFICATIONS_BUDGET)",
             )
         }
 
-        return minOf(BI_WEEKLY_OCCURRENCE_COUNT, availableBudget)
+        return minOf(MAX_OCCURRENCES_PER_EVENT, perEvent)
     }
 
     /**
-     * Returns how many local notifications are currently pending for this app, across all
-     * events, used to stay under iOS's 64-pending-notification-per-app limit.
+     * Returns how many local notifications are currently pending for this app, either in total
+     * ([ids] `null`) or only those belonging to the given event ids.
      */
-    private suspend fun getPendingNotificationsCount(): Int = suspendCancellableCoroutine { cont ->
+    private suspend fun countPendingNotifications(ids: Set<String>?): Int = suspendCancellableCoroutine { cont ->
         notificationCacheDataSource.getNotificationCenter().getPendingNotificationRequestsWithCompletionHandler {
-            cont.resume(it?.size ?: 0)
+            val requests = it.orEmpty().filterIsInstance<UNNotificationRequest>()
+            val count = when (ids) {
+                null -> requests.size
+                else -> requests.count { request -> eventIdOf(request.identifier) in ids }
+            }
+
+            cont.resume(count)
         }
     }
 
@@ -165,193 +171,46 @@ class NotificationRepositoryImpl(
         }
     }
 
-    override suspend fun cancel(id: String) {
-        notificationCacheDataSource
-            .getNotificationCenter()
-            .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(id))
-        logger.d(TAG, "Cancelled notification $id")
-    }
+    private fun occurrenceIdentifier(id: String, occurrenceIndex: Int) = "$id$OCCURRENCE_SEPARATOR$occurrenceIndex"
+
+    /** Recovers the event id an occurrence identifier was built from. */
+    private fun eventIdOf(identifier: String) = identifier.substringBefore(OCCURRENCE_SEPARATOR)
 
     /**
-     * Requests notification authorization from the user if not already determined. No-op if
-     * already granted/denied; iOS only shows the system prompt once per app install.
+     * Returns every identifier ever used for [id]'s notifications (every possible occurrence
+     * slot, plus the bare id and the legacy alternating-week slots earlier versions used), so
+     * pending/stale requests are fully cleared regardless of how many occurrences were actually
+     * scheduled at the time, or by which app version.
      */
-    private suspend fun requestAuthorizationIfNeeded() {
-        val requestedPermissions = UNAuthorizationOptionAlert or
-            UNAuthorizationOptionSound or
-            UNAuthorizationOptionBadge
-
-        suspendCancellableCoroutine { cont ->
-            notificationCacheDataSource.getNotificationCenter().requestAuthorizationWithOptions(
-                options = requestedPermissions,
-            ) { _, _ -> cont.resume(Unit) }
-        }
-    }
-
-    private fun buildWeeklyTrigger(notification: EventNotification): UNCalendarNotificationTrigger {
-        val (advanceWeekday, advanceHour, advanceMinute) = getAdvanceTime(
-            weekday = notification.day.toIosWeekday(),
-            hour = notification.startHour,
-            minute = notification.startMinute,
-            advanceMinutes = notification.advanceMinutes,
-        )
-
-        val components = NSDateComponents().apply {
-            weekday = advanceWeekday.toLong()
-            hour = advanceHour.toLong()
-            minute = advanceMinute.toLong()
-            second = 0
+    private fun allNotificationIdentifiers(id: String): List<String> {
+        val occurrenceIdentifiers = List(MAX_OCCURRENCES_PER_EVENT) { index -> occurrenceIdentifier(id, index) }
+        val legacyIdentifiers = List(LEGACY_BI_WEEKLY_OCCURRENCE_COUNT) { index ->
+            "$id$LEGACY_BI_WEEKLY_SEPARATOR$index"
         }
 
-        return UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(
-            dateComponents = components,
-            repeats = true,
-        )
-    }
-
-    private fun biWeeklyIdentifier(id: String, occurrenceIndex: Int) = "${id}_bw_$occurrenceIndex"
-
-    /**
-     * Returns every identifier ever used for [id]'s notifications (the weekly id itself, plus
-     * every possible bi-weekly occurrence slot), so pending/stale requests can be fully cleared
-     * regardless of how many occurrences were actually scheduled at the time.
-     */
-    private fun allNotificationIdentifiers(id: String): List<String> =
-        listOf(id) + List(BI_WEEKLY_OCCURRENCE_COUNT) { occurrenceIndex -> biWeeklyIdentifier(id, occurrenceIndex) }
-
-    /**
-     * Computes the delay, in seconds from now, until [notification]'s first upcoming notify
-     * time (its start time moved back by [EventNotification.advanceMinutes]) that matches both
-     * the weekday/time and its odd/even week parity requirement.
-     */
-    private fun secondsUntilFirstBiWeeklyOccurrence(notification: EventNotification): Double {
-        val now = NSDate()
-        val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
-        val currentComponents = calendar.components(
-            fromDate = now,
-            unitFlags = NSCalendarUnitWeekday or
-                NSCalendarUnitWeekOfYear or
-                NSCalendarUnitHour or
-                NSCalendarUnitMinute,
-        )
-
-        val currentWeekday = currentComponents.weekday.toInt()
-        val currentHour = currentComponents.hour.toInt()
-        val currentMinute = currentComponents.minute.toInt()
-        val (advanceWeekday, advanceHour, advanceMinute) = getAdvanceTime(
-            weekday = notification.day.toIosWeekday(),
-            hour = notification.startHour,
-            minute = notification.startMinute,
-            advanceMinutes = notification.advanceMinutes,
-        )
-
-        val daysUntilTargetWeekday = daysUntilNextWeekdayOccurrence(
-            targetWeekday = advanceWeekday,
-            currentWeekday = currentWeekday,
-            eventAlreadyStartedToday = isAdvanceTimeReached(
-                advanceHour = advanceHour,
-                advanceMinute = advanceMinute,
-                hour = currentHour,
-                minute = currentMinute
-            ),
-        )
-
-        val secondsUntilTargetDay = daysUntilTargetWeekday * DAY_IN_SECONDS
-        val estimatedTargetDate = NSDate(now.timeIntervalSinceReferenceDate + secondsUntilTargetDay)
-        val estimatedTargetWeekOfYear = calendar
-            .components(NSCalendarUnitWeekOfYear, estimatedTargetDate)
-            .weekOfYear
-            .toInt()
-
-        val targetWeekIsOdd = estimatedTargetWeekOfYear % 2 != 0
-        val notificationRequiresOddWeek = notification.frequency == Frequency.WEEK_1
-        val weekParityMismatches = targetWeekIsOdd != notificationRequiresOddWeek
-        val weekParityAdjustmentSeconds = if (weekParityMismatches) DAY_IN_SECONDS * DAYS_IN_WEEK else 0.0
-
-        val targetHourSeconds = advanceHour * SECONDS_IN_HOUR
-        val targetMinuteSeconds = advanceMinute * SECONDS_IN_MINUTE
-        val targetTimeOfDaySeconds = targetHourSeconds + targetMinuteSeconds
-
-        val currentHourSeconds = currentHour * SECONDS_IN_HOUR
-        val currentMinuteSeconds = currentMinute * SECONDS_IN_MINUTE
-        val currentTimeOfDaySeconds = currentHourSeconds + currentMinuteSeconds
-
-        val adjustedSecondsUntilTargetDay = secondsUntilTargetDay + weekParityAdjustmentSeconds
-        val timeOfDayDifferenceSeconds = targetTimeOfDaySeconds - currentTimeOfDaySeconds
-        return adjustedSecondsUntilTargetDay + timeOfDayDifferenceSeconds
-    }
-
-    private fun daysUntilNextWeekdayOccurrence(
-        targetWeekday: Int,
-        currentWeekday: Int,
-        eventAlreadyStartedToday: Boolean,
-    ): Int {
-        val weekdayOffset = targetWeekday - currentWeekday
-        val weekdayOffsetWithoutNegatives = weekdayOffset + DAYS_IN_WEEK
-        val daysUntilSameWeekdayOccurrence = weekdayOffsetWithoutNegatives % DAYS_IN_WEEK
-        val targetWeekdayIsToday = daysUntilSameWeekdayOccurrence == 0
-
-        return when {
-            targetWeekdayIsToday && eventAlreadyStartedToday -> DAYS_IN_WEEK
-            else -> daysUntilSameWeekdayOccurrence
-        }
-    }
-
-    private fun isAdvanceTimeReached(advanceHour: Int, advanceMinute: Int, hour: Int, minute: Int): Boolean {
-        val hourAlreadyPassed = advanceHour < hour
-        val hourIsNow = advanceHour == hour
-        val minuteAlreadyReached = advanceMinute <= minute
-        val hourIsNowAndMinuteReached = hourIsNow && minuteAlreadyReached
-        return hourAlreadyPassed || hourIsNowAndMinuteReached
-    }
-
-    /**
-     * Moves [hour]:[minute] on [weekday] back by [advanceMinutes] minutes, rolling over to the
-     * previous iOS weekday (1-7) if the shift crosses midnight. Returns
-     * (weekday, hour, minute) of the resulting notify time.
-     */
-    private fun getAdvanceTime(weekday: Int, hour: Int, minute: Int, advanceMinutes: Int): Triple<Int, Int, Int> {
-        val totalMinutes = hour * MINUTES_IN_HOUR + minute - advanceMinutes
-        val crossesToPreviousDay = totalMinutes < 0
-        val wrappedMinutes = if (crossesToPreviousDay) totalMinutes + MINUTES_IN_DAY else totalMinutes
-        val advanceWeekday = when {
-            crossesToPreviousDay -> if (weekday == 1) DAYS_IN_WEEK else weekday - 1
-            else -> weekday
-        }
-
-        return Triple(advanceWeekday, wrappedMinutes / MINUTES_IN_HOUR, wrappedMinutes % MINUTES_IN_HOUR)
-    }
-
-    @Suppress("MagicNumber")
-    private fun Day.toIosWeekday(): Int = when (this) {
-        Day.SUNDAY -> 1
-        Day.MONDAY -> 2
-        Day.TUESDAY -> 3
-        Day.WEDNESDAY -> 4
-        Day.THURSDAY -> 5
-        Day.FRIDAY -> 6
-        Day.SATURDAY -> 7
+        return listOf(id) + occurrenceIdentifiers + legacyIdentifiers
     }
 
     companion object {
         private const val TAG = "NotificationRepository"
-        private const val MINUTES_IN_HOUR = 60
-        private const val SECONDS_IN_MINUTE = 60.0
-        private const val SECONDS_IN_HOUR = MINUTES_IN_HOUR * SECONDS_IN_MINUTE
-        private const val HOURS_IN_DAY = 24
-        private const val DAY_IN_SECONDS = HOURS_IN_DAY * SECONDS_IN_HOUR
-        private const val MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR
-        private const val DAYS_IN_WEEK = 7
-        private const val BI_WEEKLY_INTERVAL_DAYS = DAYS_IN_WEEK * 2
-
-        // A university semester is ~14-16 weeks, so 12 alternating-week occurrences
-        // (~6 months) comfortably covers a semester without needlessly consuming the
-        // iOS-wide pending notification budget a year of occurrences would.
-        private const val BI_WEEKLY_OCCURRENCE_COUNT = 12
 
         // iOS enforces a hard cap of 64 pending local notifications per app. Keep a
         // safety margin below it so scheduling for one event never starves others.
         private const val MAX_PENDING_NOTIFICATIONS_BUDGET = 60
+
+        // Upper bound on how far ahead a single event is armed. The app tops every event back
+        // up whenever it re-syncs notifications, so this only has to outlast the gap between
+        // two launches, not a whole semester.
+        private const val MAX_OCCURRENCES_PER_EVENT = 8
+
+        private const val OCCURRENCE_SEPARATOR = "_occurrence_"
+
+        // Identifier scheme used before notifications were bound to teaching weeks. Kept only so
+        // requests an older install left pending are cleared on upgrade instead of firing
+        // alongside the new ones.
+        private const val LEGACY_BI_WEEKLY_SEPARATOR = "_bw_"
+        private const val LEGACY_BI_WEEKLY_OCCURRENCE_COUNT = 12
+
         private const val DEEP_LINK_USER_INFO_KEY = "deep_link"
         private const val USER_TIMETABLE_DEEP_LINK_BASE = "orarubbfmi://user-timetable"
     }

@@ -87,6 +87,7 @@ kotlin {
             implementation(projects.data.timetable)
             implementation(projects.domain.analytics)
             implementation(projects.domain.announcements)
+            implementation(projects.domain.calendar)
             implementation(projects.domain.extensions)
             implementation(projects.domain.feedback)
             implementation(projects.domain.htmlParser)

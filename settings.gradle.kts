@@ -48,6 +48,7 @@ include(
     ":data:timetable",
     ":domain:analytics",
     ":domain:announcements",
+    ":domain:calendar",
     ":domain:extensions",
     ":domain:feedback",
     ":domain:html-parser",

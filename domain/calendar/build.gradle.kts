@@ -17,7 +17,7 @@ kotlin {
     }
 
     androidLibrary {
-        namespace = "com.ubb.fmi.orar.data.notifications"
+        namespace = "com.ubb.fmi.orar.domain.calendar"
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
 
@@ -27,22 +27,15 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.androidx.core.ktx)
-        }
         commonMain.dependencies {
+            // MODULES
+            implementation(projects.data.timetable)
+
             // KOIN
             implementation(libs.koin.core)
 
             // KOTLINX
             implementation(libs.kotlinx.date.time)
-            implementation(libs.kotlinx.coroutines.core)
-
-            // Modules
-            implementation(projects.data.timetable)
-            implementation(projects.domain.calendar)
-            implementation(projects.domain.extensions)
-            implementation(projects.domain.logging)
         }
     }
 }

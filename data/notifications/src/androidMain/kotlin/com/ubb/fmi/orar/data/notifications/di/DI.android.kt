@@ -9,5 +9,5 @@ import org.koin.dsl.module
 
 actual fun platformNotificationModule(): Module = module {
     single<NotificationCacheDataSource> { NotificationCacheDataSourceImpl(get()) }
-    factory<NotificationRepository> { NotificationRepositoryImpl(get(), get(), get()) }
+    factory<NotificationRepository> { NotificationRepositoryImpl(get(), get(), get(), get(), get()) }
 }

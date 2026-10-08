@@ -11,41 +11,51 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
-import com.ubb.fmi.orar.data.notifications.manager.scheduleExact
+import com.ubb.fmi.orar.data.notifications.model.EventNotification
+import com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl
 import com.ubb.fmi.orar.data.timetable.model.EventType
-import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.extensions.formatTime
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Locale
 
 /**
- * Receives the [AlarmManager] alarm scheduled by [com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl]
- * for a single event occurrence: displays the notification, then immediately reschedules the
- * next occurrence itself (weekly or bi-weekly, based on [Frequency]). If this reschedule step
- * ever fails or doesn't run (e.g. the receiver never fires because the alarm was dropped by the
- * OS/OEM battery optimizations), no future occurrence gets scheduled for this event until the
- * app is reopened and re-syncs notifications.
+ * Receives the [AlarmManager] alarm scheduled by
+ * [com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl] for a single event
+ * occurrence: displays the notification, then immediately schedules the next one.
+ *
+ * Rescheduling is delegated straight back to [NotificationRepositoryImpl] with the event rebuilt
+ * from the alarm intent, so the "which teaching week comes next" decision lives in exactly one
+ * place and the receiver can't drift away from it. If this step ever fails or doesn't run (e.g.
+ * the alarm was dropped by OEM battery optimizations), no future occurrence gets scheduled for
+ * this event until the app is reopened and re-syncs notifications.
  */
 class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
     private val logger: Logger by inject()
+    private val notificationRepository: NotificationRepositoryImpl by inject()
 
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
-        val id = intent.getStringExtra(EXTRA_NOTIFICATION_ID) ?: return
-        val activity = intent.getStringExtra(EXTRA_EVENT_ACTIVITY) ?: return
-        val eventTypeId = intent.getStringExtra(EXTRA_EVENT_TYPE_ID) ?: return
-        val location = intent.getStringExtra(EXTRA_EVENT_LOCATION) ?: return
-        val participant = intent.getStringExtra(EXTRA_EVENT_PARTICIPANT) ?: return
-        val frequencyId = intent.getStringExtra(EXTRA_FREQUENCY_ID) ?: return
-        val startHour = intent.getIntExtra(EXTRA_START_HOUR, DEFAULT_TIME)
-        val startMinute = intent.getIntExtra(EXTRA_START_MINUTE, DEFAULT_TIME)
-        val endHour = intent.getIntExtra(EXTRA_END_HOUR, DEFAULT_TIME)
-        val endMinute = intent.getIntExtra(EXTRA_END_MINUTE, DEFAULT_TIME)
-        val startTime = formatTime(startHour, startMinute)
-        val endTime = formatTime(endHour, endMinute)
-        val eventTypeLabel = getEventTypeLabel(context, eventTypeId)
+        val notification = notificationRepository.getEventNotification(intent) ?: run {
+            logger.e(TAG, "Dropped alarm, intent is missing event notification data")
+            return
+        }
+
+        display(context, notification)
+        scheduleNext(notification)
+    }
+
+    /** Posts the visible notification for the occurrence this alarm was armed for. */
+    @SuppressLint("MissingPermission")
+    private fun display(context: Context, notification: EventNotification) {
+        val startTime = formatTime(notification.startHour, notification.startMinute)
+        val endTime = formatTime(notification.endHour, notification.endMinute)
+        val eventTypeLabel = getEventTypeLabel(context, notification.type)
 
         val iconRes = context.resources.getIdentifier(
             ICON_RESOURCE_ID,
@@ -53,7 +63,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             context.packageName
         ).takeIf { it != 0 } ?: context.applicationInfo.icon
 
-        val deepLinkUri = "$USER_TIMETABLE_DEEP_LINK_BASE?eventId=${Uri.encode(id)}".toUri()
+        val deepLinkUri = "$USER_TIMETABLE_DEEP_LINK_BASE?eventId=${Uri.encode(notification.id)}".toUri()
         val deeplinkIntent = Intent(Intent.ACTION_VIEW, deepLinkUri).apply {
             setPackage(context.packageName)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -61,15 +71,15 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
         val pendingIntent = PendingIntent.getActivity(
             context,
-            id.hashCode(),
+            notification.id.hashCode(),
             deeplinkIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val displayedNotification = NotificationCompat.Builder(context, NotificationRepositoryImpl.CHANNEL_ID)
             .setSmallIcon(iconRes)
-            .setContentTitle("$activity • $startTime - $endTime")
-            .setContentText("$eventTypeLabel • $participant • $location")
+            .setContentTitle("${notification.activity} • $startTime - $endTime")
+            .setContentText("$eventTypeLabel • ${notification.participant} • ${notification.location}")
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
@@ -78,101 +88,32 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             Context.NOTIFICATION_SERVICE
         ) as NotificationManager
 
-        notificationManager.notify(id.hashCode(), notification)
-        logger.d(TAG, "Displayed notification $id, rescheduling next occurrence")
-        scheduleNext(
-            context = context,
-            id = id,
-            activity = activity,
-            eventTypeId = eventTypeId,
-            location = location,
-            participant = participant,
-            frequencyId = frequencyId,
-            startHour = startHour,
-            startMinute = startMinute,
-            endHour = endHour,
-            endMinute = endMinute,
-            triggeredAtMillis = intent.getLongExtra(EXTRA_TRIGGER_AT_MILLIS, NO_TRIGGER_TIME),
-        )
+        notificationManager.notify(notification.id.hashCode(), displayedNotification)
+        logger.d(TAG, "Displayed notification ${notification.id}")
     }
 
     /**
-     * Reschedules the next occurrence of this event's notification: one week later for weekly
-     * ([Frequency.BOTH]) events, or two weeks later for alternating-week events.
-     */
-    @SuppressLint("MissingPermission")
-    @Suppress("LongParameterList")
-    private fun scheduleNext(
-        context: Context,
-        id: String,
-        activity: String,
-        eventTypeId: String,
-        location: String,
-        participant: String,
-        frequencyId: String,
-        startHour: Int,
-        startMinute: Int,
-        endHour: Int,
-        endMinute: Int,
-        triggeredAtMillis: Long,
-    ) {
-        val intervalMillis = if (frequencyId == Frequency.BOTH.id) WEEK_IN_MS else BI_WEEKLY_IN_MS
-        val nextTriggerMillis = getNextTriggerMillis(triggeredAtMillis, intervalMillis)
-        val nextIntent = Intent(context, NotificationReceiver::class.java).apply {
-            data = buildNotificationIntentUri(id)
-            putExtra(EXTRA_NOTIFICATION_ID, id)
-            putExtra(EXTRA_EVENT_ACTIVITY, activity)
-            putExtra(EXTRA_EVENT_TYPE_ID, eventTypeId)
-            putExtra(EXTRA_EVENT_LOCATION, location)
-            putExtra(EXTRA_EVENT_PARTICIPANT, participant)
-            putExtra(EXTRA_FREQUENCY_ID, frequencyId)
-            putExtra(EXTRA_START_HOUR, startHour)
-            putExtra(EXTRA_START_MINUTE, startMinute)
-            putExtra(EXTRA_END_HOUR, endHour)
-            putExtra(EXTRA_END_MINUTE, endMinute)
-            putExtra(EXTRA_TRIGGER_AT_MILLIS, nextTriggerMillis)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            id.hashCode(),
-            nextIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        try {
-            alarmManager.scheduleExact(AlarmManager.RTC_WAKEUP, nextTriggerMillis, pendingIntent)
-            logger.d(TAG, "Scheduled next occurrence for notification $id at $nextTriggerMillis")
-        } catch (exception: SecurityException) {
-            // Chain broken here: without this alarm, the notification will never
-            // fire again for this event until the app is reopened and re-syncs.
-            logger.e(TAG, "Failed to schedule next occurrence for notification $id: ${exception.message}")
-        }
-    }
-
-    /**
-     * Returns the absolute epoch time of the next occurrence, always strictly in the future.
+     * Arms the occurrence following the one that just fired, keeping the alarm chain alive.
      *
-     * [AlarmManager.RTC_WAKEUP] takes an absolute timestamp, so a past value would make the OS
-     * fire the alarm immediately and, since the receiver reschedules itself, loop endlessly.
-     * Advancing by whole [intervalMillis] steps keeps the original time-of-day and week parity
-     * intact even when an alarm is delivered late or several occurrences were missed (Doze,
-     * device powered off, etc.).
+     * [goAsync] holds the broadcast open while the suspending scheduling call runs, since a
+     * receiver's process may be killed as soon as [onReceive] returns.
      */
-    private fun getNextTriggerMillis(triggeredAtMillis: Long, intervalMillis: Long): Long {
-        val now = System.currentTimeMillis()
-        if (triggeredAtMillis <= NO_TRIGGER_TIME) return now + intervalMillis
-
-        val missedIntervals = (now - triggeredAtMillis).floorDiv(intervalMillis) + 1
-        return triggeredAtMillis + missedIntervals * intervalMillis
+    private fun scheduleNext(notification: EventNotification) {
+        val pendingResult = goAsync()
+        CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
+            try {
+                notificationRepository.schedule(listOf(notification))
+            } finally {
+                pendingResult.finish()
+            }
+        }
     }
 
     /**
-     * Returns the localized display label for [eventTypeId] (e.g. "Lecture", "Seminary"),
+     * Returns the localized display label for [eventType] (e.g. "Lecture", "Seminary"),
      * falling back to a title-cased enum name if the string resource can't be resolved.
      */
-    private fun getEventTypeLabel(context: Context, eventTypeId: String): String {
-        val eventType = EventType.getById(eventTypeId)
+    private fun getEventTypeLabel(context: Context, eventType: EventType): String {
         val resourceId = when (eventType) {
             EventType.LECTURE -> LECTURE_RESOURCE_ID
             EventType.SEMINARY -> SEMINARY_RESOURCE_ID
@@ -195,31 +136,8 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         }
     }
 
-    /**
-     * Builds a stable, unique data [Uri] for a notification's alarm [Intent] so that
-     * [PendingIntent] equality never collides between different notification ids,
-     * even when their `hashCode()`s happen to match.
-     */
-    private fun buildNotificationIntentUri(id: String): Uri = "notification://event/$id".toUri()
-
     companion object {
         private const val TAG = "NotificationReceiver"
-        private const val CHANNEL_ID = "event_notifications"
-        private const val EXTRA_NOTIFICATION_ID = "notification_id"
-        private const val EXTRA_EVENT_ACTIVITY = "event_activity"
-        private const val EXTRA_EVENT_TYPE_ID = "event_type_id"
-        private const val EXTRA_EVENT_LOCATION = "event_location"
-        private const val EXTRA_EVENT_PARTICIPANT = "event_participant"
-        private const val EXTRA_FREQUENCY_ID = "frequency_id"
-        private const val EXTRA_START_HOUR = "start_hour"
-        private const val EXTRA_START_MINUTE = "start_minute"
-        private const val EXTRA_END_HOUR = "end_hour"
-        private const val EXTRA_END_MINUTE = "end_minute"
-        private const val EXTRA_TRIGGER_AT_MILLIS = "trigger_at_millis"
-        private const val NO_TRIGGER_TIME = 0L
-        private const val WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000L
-        private const val BI_WEEKLY_IN_MS = 2 * WEEK_IN_MS
-        private const val DEFAULT_TIME = 0
         private const val ICON_RESOURCE_ID = "ic_app_monochrome"
         private const val ICON_RESOURCE_TYPE = "drawable"
         private const val LABEL_RESOURCE_TYPE = "string"

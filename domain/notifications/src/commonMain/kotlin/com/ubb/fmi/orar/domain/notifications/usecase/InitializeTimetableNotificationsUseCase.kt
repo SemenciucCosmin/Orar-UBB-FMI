@@ -4,6 +4,7 @@ import Logger
 import com.ubb.fmi.orar.data.groups.repository.GroupsRepository
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.UserType
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
@@ -78,7 +79,19 @@ class InitializeTimetableNotificationsUseCase(
                 )
             }
 
-            scheduleEventNotificationsUseCase(*initializedEventsNotifications.toTypedArray())
+            // Personal events have no network counterpart, so they are not part of the synced
+            // set above and the invalidation step deliberately left them armed. Re-schedule them
+            // anyway, so they pick up the current lead time and teaching calendar like the rest.
+            val personalEvents = eventsDataSource
+                .getEventsWithNotificationsOnFromCache()
+                .filter { it.type == EventType.PERSONAL }
+
+            // Scheduled as a single batch rather than two, because iOS divides its app-wide
+            // pending notification budget across whatever it is handed: scheduling the network
+            // events first would let them claim all of it and leave personal events with none.
+            logger.d(TAG, "Rescheduling ${personalEvents.size} personal event notification(s)")
+            val events = initializedEventsNotifications + personalEvents
+            scheduleEventNotificationsUseCase(*events.toTypedArray())
         }
     }
 
