@@ -5,9 +5,12 @@ import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSourc
 import com.ubb.fmi.orar.data.notifications.repository.NotificationRepository
 import com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl
 import org.koin.core.module.Module
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual fun platformNotificationModule(): Module = module {
     single<NotificationCacheDataSource> { NotificationCacheDataSourceImpl(get()) }
-    factory<NotificationRepository> { NotificationRepositoryImpl(get(), get(), get(), get(), get()) }
+    factory {
+        NotificationRepositoryImpl(get(), get(), get(), get(), get())
+    } bind NotificationRepository::class
 }
