@@ -21,6 +21,7 @@ sealed interface TimetableListItem {
      */
     data class Event(
         val id: String,
+        val day: Day,
         val startHour: Int,
         val startMinute: Int,
         val endHour: Int,

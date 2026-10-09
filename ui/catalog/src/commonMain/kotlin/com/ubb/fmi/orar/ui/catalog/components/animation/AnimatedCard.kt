@@ -7,7 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.unit.dp
+import com.ubb.fmi.orar.ui.catalog.extensions.animatedGradientBorder
+import com.ubb.fmi.orar.ui.catalog.extensions.conditional
+
+private val OUTLINE_WIDTH = 2.dp
 
 /**
  * A flip card component with animation support.
@@ -19,6 +26,8 @@ import androidx.compose.ui.graphics.graphicsLayer
  * @param faceContent Composable lambda for front-facing content
  * @param backContent Composable lambda for back-facing content
  * @param modifier Optional modifier for styling the card
+ * @param outlineColor Color of the animated gradient outline drawn around the card; no outline
+ * when unspecified
  */
 @Composable
 fun AnimatedCard(
@@ -28,6 +37,7 @@ fun AnimatedCard(
     faceContent: @Composable (modifier: Modifier) -> Unit,
     backContent: @Composable (modifier: Modifier) -> Unit,
     modifier: Modifier = Modifier,
+    outlineColor: Color = Color.Unspecified,
 ) {
     ElevatedCard(
         enabled = enabled,
@@ -39,6 +49,12 @@ fun AnimatedCard(
             rotationX = animatedCardState.xRotation
             rotationY = animatedCardState.yRotation
             rotationZ = animatedCardState.zRotation
+        }.conditional(outlineColor.isSpecified) {
+            animatedGradientBorder(
+                color = outlineColor,
+                width = OUTLINE_WIDTH,
+                shape = CardDefaults.elevatedShape,
+            )
         }
     ) {
         Box {

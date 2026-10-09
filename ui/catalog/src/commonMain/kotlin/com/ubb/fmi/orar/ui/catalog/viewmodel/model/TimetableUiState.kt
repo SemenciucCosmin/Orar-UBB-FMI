@@ -27,6 +27,7 @@ import kotlin.time.Clock
  * @property studyLevel The study level associated with the timetable, such as first year, second year, etc.
  * @property group The group identifier for the classes in the timetable.
  * @property selectedFrequency The frequency of classes to be displayed, such as weekly or bi-weekly.
+ * @property currentFrequency The week type of the current calendar week, if known.
  * @property isEditModeOn Indicates whether the timetable is in edit mode, allowing modifications
  * @property isLoading Indicates whether the timetable data is currently being loaded.
  * @property errorStatus Indicates whether there was an error loading the timetable data.
@@ -41,6 +42,7 @@ data class TimetableUiState(
     val isLoading: Boolean = false,
     val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
+    private val currentFrequency: Frequency? = null,
 ) {
     /**
      * Creates an initial state for the timetable UI.
@@ -67,6 +69,7 @@ data class TimetableUiState(
                         events.map { event ->
                             TimetableListItem.Event(
                                 id = event.id,
+                                day = event.day,
                                 startHour = event.startHour,
                                 startMinute = event.startMinute,
                                 endHour = event.endHour,
@@ -107,6 +110,7 @@ data class TimetableUiState(
 
                             TimetableListItem.Event(
                                 id = event.id,
+                                day = event.day,
                                 startHour = event.startHour,
                                 startMinute = event.startMinute,
                                 endHour = event.endHour,
@@ -133,6 +137,28 @@ data class TimetableUiState(
             }.flatten().toImmutableList()
         }
 
+    /**
+     * Ids of the displayed events taking place right now.
+     */
+    val ongoingEventIds: ImmutableList<String>
+        get() {
+            val currentMinutes = currentMinutes
+            return todayEvents.filter { event ->
+                currentMinutes in event.startMinutes until event.endMinutes
+            }.map { it.id }.toImmutableList()
+        }
+
+    /**
+     * Ids of the displayed events starting later today.
+     */
+    val upcomingEventIds: ImmutableList<String>
+        get() {
+            val currentMinutes = currentMinutes
+            return todayEvents.filter { event ->
+                event.startMinutes > currentMinutes
+            }.map { it.id }.toImmutableList()
+        }
+
     val currentDayIndex: Int
         get() {
             val currentDayIndex = Clock.System.now()
@@ -145,7 +171,40 @@ data class TimetableUiState(
             }.takeIf { it >= FIRST_INDEX } ?: FIRST_INDEX
         }
 
+    /**
+     * Today's displayed events. Empty unless the current week is displayed.
+     */
+    private val todayEvents: List<TimetableListItem.Event>
+        get() {
+            if (selectedFrequency != currentFrequency) return emptyList()
+
+            val currentDayIndex = Clock.System.now()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .dayOfWeek
+                .ordinal
+
+            return timetableListItems
+                .filterIsInstance<TimetableListItem.Event>()
+                .filter { it.day.orderIndex == currentDayIndex }
+        }
+
+    /**
+     * Current time, in minutes since midnight.
+     */
+    private val currentMinutes: Int
+        get() {
+            val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            return now.hour * MINUTES_PER_HOUR + now.minute
+        }
+
+    private val TimetableListItem.Event.startMinutes: Int
+        get() = startHour * MINUTES_PER_HOUR + startMinute
+
+    private val TimetableListItem.Event.endMinutes: Int
+        get() = endHour * MINUTES_PER_HOUR + endMinute
+
     companion object {
         private const val FIRST_INDEX = 0
+        private const val MINUTES_PER_HOUR = 60
     }
 }

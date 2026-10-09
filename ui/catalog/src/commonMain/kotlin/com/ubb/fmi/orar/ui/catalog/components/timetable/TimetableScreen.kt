@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,10 +22,15 @@ import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 private const val FIRST_INDEX = 0
 private const val SCROLL_INDEX_OFFSET = 3
+private const val SECONDS_PER_MINUTE = 60
 private val SCROLL_START_DELAY = 500.milliseconds
 
 /**
@@ -53,6 +59,9 @@ fun TimetableScreen(
     val listState = rememberLazyListState()
     var eventIdToAnimate by remember { mutableStateOf<String?>(null) }
     var hasScrolledToCurrentDay by rememberSaveable { mutableStateOf(false) }
+    val minuteTick = rememberMinuteTick()
+    val ongoingEventIds = remember(uiState, minuteTick) { uiState.ongoingEventIds }
+    val upcomingEventIds = remember(uiState, minuteTick) { uiState.upcomingEventIds }
 
     LaunchedEffect(selectedEventId, uiState.timetableListItems, uiState.isLoading) {
         eventIdToAnimate = null
@@ -91,6 +100,8 @@ fun TimetableScreen(
             modifier = Modifier.padding(paddingValues),
             items = uiState.timetableListItems,
             isEditModeOn = uiState.isEditModeOn,
+            ongoingEventIds = ongoingEventIds,
+            upcomingEventIds = upcomingEventIds,
             listState = listState,
             onVisibleClick = onItemVisibilityChange,
             onNotificationClick = onItemNotificationChange,
@@ -99,6 +110,26 @@ fun TimetableScreen(
             selectedEventId = eventIdToAnimate,
         )
     }
+}
+
+/**
+ * A counter that increases at the start of every minute, used to refresh time-based state.
+ */
+@Composable
+private fun rememberMinuteTick(): Int {
+    var tick by remember { mutableIntStateOf(FIRST_INDEX) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            val currentSecond = Clock.System.now()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .second
+            delay((SECONDS_PER_MINUTE - currentSecond).seconds)
+            tick++
+        }
+    }
+
+    return tick
 }
 
 @Preview

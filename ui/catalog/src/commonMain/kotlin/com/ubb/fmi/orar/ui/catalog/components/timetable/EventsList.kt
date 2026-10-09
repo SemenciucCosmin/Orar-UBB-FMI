@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.ubb.fmi.orar.domain.extensions.formatTime
 import com.ubb.fmi.orar.ui.catalog.components.animation.rememberAnimatedCardState
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
@@ -19,10 +20,15 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
 
+private val ONGOING_EVENT_OUTLINE_COLOR = Color(0xFF1DB954)
+private val UPCOMING_EVENT_OUTLINE_COLOR = Color(0xFFFFAC1C)
+
 @Composable
 fun EventsList(
     items: ImmutableList<TimetableListItem>,
     isEditModeOn: Boolean,
+    ongoingEventIds: ImmutableList<String>,
+    upcomingEventIds: ImmutableList<String>,
     listState: LazyListState,
     onVisibleClick: (TimetableListItem.Event) -> Unit,
     onNotificationClick: (TimetableListItem.Event) -> Unit,
@@ -97,6 +103,11 @@ fun EventsList(
                             caption = timetableItem.caption,
                             details = timetableItem.details,
                             animatedCardState = animatedCardState,
+                            outlineColor = when (timetableItem.id) {
+                                in ongoingEventIds -> ONGOING_EVENT_OUTLINE_COLOR
+                                in upcomingEventIds -> UPCOMING_EVENT_OUTLINE_COLOR
+                                else -> Color.Unspecified
+                            },
                             onAddClick = onAddItem?.let {
                                 {
                                     onAddItem(timetableItem.id)
