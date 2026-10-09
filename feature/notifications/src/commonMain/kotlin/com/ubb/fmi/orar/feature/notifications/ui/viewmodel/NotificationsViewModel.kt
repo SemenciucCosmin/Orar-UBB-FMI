@@ -4,6 +4,9 @@ import Logger
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.settings.preferences.SettingsPreferences
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
 import com.ubb.fmi.orar.domain.notifications.usecase.InvalidateTimetableNotificationsUseCase
 import com.ubb.fmi.orar.domain.notifications.usecase.RescheduleNotificationsUseCase
@@ -24,6 +27,7 @@ class NotificationsViewModel(
     private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase,
     private val invalidateTimetableNotificationsUseCase: InvalidateTimetableNotificationsUseCase,
     private val rescheduleNotificationsUseCase: RescheduleNotificationsUseCase,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -63,6 +67,12 @@ class NotificationsViewModel(
      */
     fun setNotificationsEnabled(enabled: Boolean) {
         logger.d(TAG, "setNotificationsEnabled: $enabled")
+        analyticsLogger.logEvent(
+            when {
+                enabled -> AnalyticsEvent.NOTIFICATIONS_ENABLED
+                else -> AnalyticsEvent.NOTIFICATIONS_DISABLED
+            }
+        )
 
         viewModelScope.launch {
             settingsPreferences.setNotificationsEnabled(enabled)
@@ -80,6 +90,10 @@ class NotificationsViewModel(
      */
     fun setNotificationAdvanceMinutes(advanceMinutes: Int) {
         logger.d(TAG, "setNotificationAdvanceMinutes: $advanceMinutes")
+        analyticsLogger.logEvent(
+            event = AnalyticsEvent.NOTIFICATION_ADVANCE_CHANGED,
+            params = mapOf(AnalyticsParameter.ADVANCE_MINUTES to advanceMinutes),
+        )
         viewModelScope.launch {
             settingsPreferences.setNotificationAdvanceMinutes(advanceMinutes)
             rescheduleNotificationsUseCase()

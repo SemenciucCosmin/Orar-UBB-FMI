@@ -4,6 +4,8 @@ import Logger
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.domain.notifications.usecase.RescheduleNotificationsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +26,7 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
 
     private val rescheduleNotificationsUseCase: RescheduleNotificationsUseCase by inject()
     private val logger: Logger by inject()
+    private val analyticsLogger: AnalyticsLogger by inject()
 
     @Suppress("TooGenericExceptionCaught")
     override fun onReceive(context: Context, intent: Intent) {
@@ -39,6 +42,7 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
             try {
                 rescheduleNotificationsUseCase()
                 logger.d(TAG, "Restored cached notifications after ${intent.action}")
+                analyticsLogger.logEvent(AnalyticsEvent.NOTIFICATIONS_RESTORED_AFTER_BOOT)
             } catch (exception: Exception) {
                 logger.e(TAG, "Failed to restore notifications after ${intent.action}: ${exception.stackTraceToString()}")
             } finally {

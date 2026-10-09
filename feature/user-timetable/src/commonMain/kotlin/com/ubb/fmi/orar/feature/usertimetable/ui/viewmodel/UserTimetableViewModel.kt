@@ -7,6 +7,10 @@ import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Week
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsTimetableType
 import com.ubb.fmi.orar.domain.notifications.usecase.ChangeEventNotificationUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.DeletePersonalEventUseCase
@@ -38,6 +42,7 @@ class UserTimetableViewModel(
     private val changeEventNotificationUseCase: ChangeEventNotificationUseCase,
     private val deletePersonalEventUseCase: DeletePersonalEventUseCase,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -72,11 +77,22 @@ class UserTimetableViewModel(
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
         getUserTimetableUseCase().collectLatest { resource ->
             logger.d(TAG, "loadTimetable: $resource")
+            val errorStatus = resource.status.toErrorStatus()
+            if (errorStatus != null && _uiState.value.errorStatus == null) {
+                analyticsLogger.logEvent(
+                    event = AnalyticsEvent.TIMETABLE_LOAD_ERROR,
+                    params = mapOf(
+                        AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.USER,
+                        AnalyticsParameter.ERROR_TYPE to errorStatus.name,
+                    ),
+                )
+            }
+
             _uiState.update {
                 it.copy(
                     isLoading = resource.status.isLoading(),
                     isEmpty = resource.status.isEmpty(),
-                    errorStatus = resource.status.toErrorStatus(),
+                    errorStatus = errorStatus,
                     events = resource.payload?.toImmutableList() ?: persistentListOf()
                 )
             }
@@ -94,7 +110,7 @@ class UserTimetableViewModel(
                 Week.EVEN -> Frequency.WEEK_2
             }
 
-            selectFrequency(frequency)
+            _uiState.update { it.copy(selectedFrequency = frequency) }
         }
     }
 
@@ -105,6 +121,13 @@ class UserTimetableViewModel(
      */
     fun selectFrequency(frequency: Frequency) {
         logger.d(TAG, "selectFrequency: $frequency")
+        analyticsLogger.logEvent(
+            event = AnalyticsEvent.WEEK_FILTER_CHANGED,
+            params = mapOf(
+                AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.USER,
+                AnalyticsParameter.FREQUENCY to frequency.name,
+            ),
+        )
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
@@ -113,10 +136,24 @@ class UserTimetableViewModel(
      * This updates the UI state to reflect whether edit mode is currently on or off.
      */
     fun changeEditMode() {
+        if (!_uiState.value.isEditModeOn) {
+            analyticsLogger.logEvent(AnalyticsEvent.EDIT_MODE_OPENED)
+        }
+
         _uiState.update {
             logger.d(TAG, "changeEditMode to: ${!it.isEditModeOn}")
             it.copy(isEditModeOn = !it.isEditModeOn)
         }
+    }
+
+    /**
+     * Records that the timetable was opened from a notification for [eventId]. Each event id is
+     * reported only once per ViewModel, so recompositions or configuration changes that replay
+     * the same deep link argument aren't counted again.
+     */
+    fun logNotificationOpen(eventId: String) {
+        logger.d(TAG, "Opened from notification for event $eventId")
+        analyticsLogger.logEvent(AnalyticsEvent.NOTIFICATION_OPENED)
     }
 
     /**
@@ -181,6 +218,10 @@ class UserTimetableViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        analyticsLogger.logEvent(
+            event = AnalyticsEvent.TIMETABLE_RETRY,
+            params = mapOf(AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.USER),
+        )
         job.cancel()
         job = loadTimetable()
     }

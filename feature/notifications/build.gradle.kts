@@ -48,6 +48,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.settings)
+            implementation(projects.domain.analytics)
             implementation(projects.domain.logging)
             implementation(projects.domain.extensions)
             implementation(projects.domain.notifications)

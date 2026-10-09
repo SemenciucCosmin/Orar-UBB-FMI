@@ -38,6 +38,9 @@ fun SettingsScreen(
     onChangeConfigurationClick: () -> Unit,
     onThemeClick: () -> Unit,
     onNotificationsClick: () -> Unit,
+    onRepositoryClick: () -> Unit = {},
+    onReportIssueClick: () -> Unit = {},
+    onLeaveFeedbackClick: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -91,12 +94,12 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.labelMedium
                 )
 
-                RepositoryHyperlinkText()
+                RepositoryHyperlinkText(onClick = onRepositoryClick)
 
                 Row(horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Medium)) {
-                    ReportIssueHyperlinkText()
+                    ReportIssueHyperlinkText(onClick = onReportIssueClick)
 
-                    LeaveFeedbackHyperlinkText()
+                    LeaveFeedbackHyperlinkText(onClick = onLeaveFeedbackClick)
                 }
 
                 Text(

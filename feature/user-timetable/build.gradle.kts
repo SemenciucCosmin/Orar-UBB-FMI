@@ -52,6 +52,7 @@ kotlin {
             implementation(projects.data.notifications)
             implementation(projects.data.timetable)
             implementation(projects.domain.feedback)
+            implementation(projects.domain.analytics)
             implementation(projects.domain.logging)
             implementation(projects.domain.notifications)
             implementation(projects.domain.timetable)

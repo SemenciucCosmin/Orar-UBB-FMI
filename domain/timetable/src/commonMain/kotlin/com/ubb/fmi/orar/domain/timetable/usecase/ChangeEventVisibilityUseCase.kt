@@ -3,6 +3,9 @@ package com.ubb.fmi.orar.domain.timetable.usecase
 import Logger
 import com.ubb.fmi.orar.data.notifications.repository.NotificationRepository
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.domain.notifications.usecase.ScheduleEventNotificationsUseCase
 
 /**
@@ -17,6 +20,7 @@ class ChangeEventVisibilityUseCase(
     private val eventsDataSource: EventsDataSource,
     private val scheduleEventNotificationsUseCase: ScheduleEventNotificationsUseCase,
     private val notificationRepository: NotificationRepository,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) {
     /**
@@ -32,6 +36,13 @@ class ChangeEventVisibilityUseCase(
         logger.d(
             TAG,
             "Event $eventId visibility toggled to ${event.isVisible}, notificationOn: ${event.isNotificationOn}",
+        )
+        analyticsLogger.logEvent(
+            event = when {
+                event.isVisible -> AnalyticsEvent.SHOW_EVENT
+                else -> AnalyticsEvent.HIDE_EVENT
+            },
+            params = mapOf(AnalyticsParameter.EVENT_TYPE to event.type.id),
         )
 
         when {

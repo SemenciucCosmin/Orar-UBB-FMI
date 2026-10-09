@@ -21,7 +21,7 @@ import org.jetbrains.compose.resources.stringResource
 private const val URL = "https://forms.gle/T1ZK6aB3NCVphqfZ8"
 
 @Composable
-fun LeaveFeedbackHyperlinkText() {
+fun LeaveFeedbackHyperlinkText(onClick: () -> Unit = {}) {
     val context = getContext()
     val toastMessage = stringResource(Res.string.lbl_generic_error_message)
 
@@ -30,6 +30,7 @@ fun LeaveFeedbackHyperlinkText() {
             LinkAnnotation.Clickable(
                 tag = stringResource(Res.string.lbl_leave_feedback),
                 linkInteractionListener = {
+                    onClick()
                     openUrl(URL, context) {
                         showToast(context, toastMessage, ToastLength.SHORT)
                     }
