@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.compose.ui)
 
             // KOTLINX
+            implementation(libs.kotlinx.date.time)
             implementation(libs.kotlinx.immutableCollections)
 
             // MODULES

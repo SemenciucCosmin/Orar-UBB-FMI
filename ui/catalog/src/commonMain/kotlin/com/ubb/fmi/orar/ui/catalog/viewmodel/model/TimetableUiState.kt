@@ -12,9 +12,11 @@ import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.String
 import kotlin.comparisons.compareBy
-import kotlin.time.ExperimentalTime
+import kotlin.time.Clock
 
 /**
  * Represents the UI state of the timetable, including the list of classes, title, study level,
@@ -40,97 +42,110 @@ data class TimetableUiState(
     val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
 ) {
-    companion object {
-        /**
-         * Creates an initial state for the timetable UI.
-         * This state is used when the timetable is first loaded or reset.
-         */
-        @OptIn(ExperimentalTime::class)
-        val TimetableUiState.timetableListItems: ImmutableList<TimetableListItem>
-            get() {
-                val filteredEvents = events.filter { event ->
-                    event.frequency.id in listOf(Frequency.BOTH.id, selectedFrequency.id)
-                }.sortedWith(
-                    compareBy<Event> { it.day.orderIndex }
-                        .thenBy { it.startHour }
-                        .thenBy { it.endHour }
-                        .thenBy { it.activity }
-                )
+    /**
+     * Creates an initial state for the timetable UI.
+     * This state is used when the timetable is first loaded or reset.
+     */
+    val timetableListItems: ImmutableList<TimetableListItem>
+        get() {
+            val filteredEvents = events.filter { event ->
+                event.frequency.id in listOf(Frequency.BOTH.id, selectedFrequency.id)
+            }.sortedWith(
+                compareBy<Event> { it.day.orderIndex }
+                    .thenBy { it.startHour }
+                    .thenBy { it.endHour }
+                    .thenBy { it.activity }
+            )
 
-                val groupedEvents = filteredEvents.groupBy { it.day }.mapKeys { (day, _) ->
-                    TimetableListItem.Divider(day)
-                }
+            val groupedEvents = filteredEvents.groupBy { it.day }.mapKeys { (day, _) ->
+                TimetableListItem.Divider(day)
+            }
 
-                val timetableItems = groupedEvents.mapValues { (_, events) ->
-                    when {
-                        isEditModeOn -> {
-                            events.map { event ->
-                                TimetableListItem.Event(
-                                    id = event.id,
-                                    startHour = event.startHour,
-                                    startMinute = event.startMinute,
-                                    endHour = event.endHour,
-                                    endMinute = event.endMinute,
-                                    location = event.location,
-                                    title = event.activity,
-                                    type = event.type,
-                                    participant = event.participant,
-                                    caption = event.caption,
-                                    details = event.details,
-                                    isVisible = event.isVisible,
-                                    isNotificationOn = event.isNotificationOn,
-                                    isPersonal = event.ownerId == Owner.User.id,
-                                )
-                            }
+            val timetableItems = groupedEvents.mapValues { (_, events) ->
+                when {
+                    isEditModeOn -> {
+                        events.map { event ->
+                            TimetableListItem.Event(
+                                id = event.id,
+                                startHour = event.startHour,
+                                startMinute = event.startMinute,
+                                endHour = event.endHour,
+                                endMinute = event.endMinute,
+                                location = event.location,
+                                title = event.activity,
+                                type = event.type,
+                                participant = event.participant,
+                                caption = event.caption,
+                                details = event.details,
+                                isVisible = event.isVisible,
+                                isNotificationOn = event.isNotificationOn,
+                                isPersonal = event.ownerId == Owner.User.id,
+                            )
+                        }
+                    }
+
+                    else -> {
+                        val visibleEvents = events.filter { it.isVisible }
+                        val groupedEvents = visibleEvents.groupBy { event ->
+                            listOf(
+                                event.day,
+                                event.startHour,
+                                event.endHour,
+                                event.location,
+                                event.activity,
+                                event.type,
+                                event.caption,
+                            )
                         }
 
-                        else -> {
-                            val visibleEvents = events.filter { it.isVisible }
-                            val groupedEvents = visibleEvents.groupBy { event ->
-                                listOf(
-                                    event.day,
-                                    event.startHour,
-                                    event.endHour,
-                                    event.location,
-                                    event.activity,
-                                    event.type,
-                                    event.caption,
-                                )
-                            }
+                        groupedEvents.values.mapNotNull { events ->
+                            val joinedParticipantName = events.joinToString(
+                                String.COMMA + String.SPACE
+                            ) { it.participant }
 
-                            groupedEvents.values.mapNotNull { events ->
-                                val joinedParticipantName = events.joinToString(
-                                    String.COMMA + String.SPACE
-                                ) { it.participant }
+                            val event = events.firstOrNull() ?: return@mapNotNull null
 
-                                val event = events.firstOrNull() ?: return@mapNotNull null
-
-                                TimetableListItem.Event(
-                                    id = event.id,
-                                    startHour = event.startHour,
-                                    startMinute = event.startMinute,
-                                    endHour = event.endHour,
-                                    endMinute = event.endMinute,
-                                    location = event.location,
-                                    title = event.activity,
-                                    type = event.type,
-                                    participant = joinedParticipantName,
-                                    caption = event.caption,
-                                    details = event.details,
-                                    isVisible = event.isVisible,
-                                    isNotificationOn = event.isNotificationOn,
-                                    isPersonal = event.ownerId == Owner.User.id
-                                )
-                            }
+                            TimetableListItem.Event(
+                                id = event.id,
+                                startHour = event.startHour,
+                                startMinute = event.startMinute,
+                                endHour = event.endHour,
+                                endMinute = event.endMinute,
+                                location = event.location,
+                                title = event.activity,
+                                type = event.type,
+                                participant = joinedParticipantName,
+                                caption = event.caption,
+                                details = event.details,
+                                isVisible = event.isVisible,
+                                isNotificationOn = event.isNotificationOn,
+                                isPersonal = event.ownerId == Owner.User.id
+                            )
                         }
                     }
                 }
-
-                return timetableItems.filter { (_, events) ->
-                    events.isNotEmpty()
-                }.map { (day, events) ->
-                    listOf(day) + events
-                }.flatten().toImmutableList()
             }
+
+            return timetableItems.filter { (_, events) ->
+                events.isNotEmpty()
+            }.map { (day, events) ->
+                listOf(day) + events
+            }.flatten().toImmutableList()
+        }
+
+    val currentDayIndex: Int
+        get() {
+            val currentDayIndex = Clock.System.now()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .dayOfWeek
+                .ordinal
+
+            return timetableListItems.indexOfFirst {
+                it is TimetableListItem.Divider && it.day.orderIndex >= currentDayIndex
+            }.takeIf { it >= FIRST_INDEX } ?: FIRST_INDEX
+        }
+
+    companion object {
+        private const val FIRST_INDEX = 0
     }
 }
