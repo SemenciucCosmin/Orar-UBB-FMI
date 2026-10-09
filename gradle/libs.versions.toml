@@ -18,7 +18,7 @@ coil = "3.6.3"
 
 # COMPOSE MULTIPLATFORM
 compose-multiplatform = "1.12.1"
-material3 = "1.11.0-alpha07"
+material3 = "1.12.0-alpha03"
 
 # DATA STORE
 data-store = "1.2.1"
