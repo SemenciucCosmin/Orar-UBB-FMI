@@ -2,12 +2,12 @@ package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,7 +18,6 @@ import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
-import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.timetableListItems
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
@@ -36,9 +35,9 @@ private val SCROLL_START_DELAY = 500.milliseconds
  * @param bottomBar Composable for the bottom bar of the screen (optional).
  * @param onItemVisibilityChange Callback invoked when the visibility of a timetable item changes.
  * @param selectedEventId Optional event ID to scroll to; once the scroll finishes, the
- * corresponding item plays a shake animation to draw attention to it.
+ * corresponding item plays a shake animation to draw attention to it. When absent, the list jumps
+ * once, without animation, to the current day.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetableScreen(
     uiState: TimetableUiState,
@@ -53,18 +52,31 @@ fun TimetableScreen(
 ) {
     val listState = rememberLazyListState()
     var eventIdToAnimate by remember { mutableStateOf<String?>(null) }
+    var hasScrolledToCurrentDay by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(selectedEventId, uiState.timetableListItems) {
+    LaunchedEffect(selectedEventId, uiState.timetableListItems, uiState.isLoading) {
         eventIdToAnimate = null
-        val targetIndex = selectedEventId?.let { id ->
-            uiState.timetableListItems.indexOfFirst {
-                it is TimetableListItem.Event && it.id == id
-            }
-        }?.takeIf { it >= FIRST_INDEX } ?: return@LaunchedEffect
+        val isListReady = !uiState.isLoading && uiState.timetableListItems.isNotEmpty()
 
-        delay(SCROLL_START_DELAY)
-        listState.animateScrollToItem((targetIndex - SCROLL_INDEX_OFFSET).coerceAtLeast(FIRST_INDEX))
-        eventIdToAnimate = selectedEventId
+        when {
+            selectedEventId == null && !hasScrolledToCurrentDay && isListReady -> {
+                hasScrolledToCurrentDay = true
+                listState.animateScrollToItem(uiState.currentDayIndex)
+            }
+
+            else -> {
+                val targetIndex = uiState.timetableListItems.indexOfFirst {
+                    it is TimetableListItem.Event && it.id == selectedEventId
+                }.takeIf { it >= FIRST_INDEX } ?: return@LaunchedEffect
+
+                delay(SCROLL_START_DELAY)
+                listState.animateScrollToItem(
+                    index = (targetIndex - SCROLL_INDEX_OFFSET).coerceAtLeast(FIRST_INDEX)
+                )
+
+                eventIdToAnimate = selectedEventId
+            }
+        }
     }
 
     StateScaffold(
