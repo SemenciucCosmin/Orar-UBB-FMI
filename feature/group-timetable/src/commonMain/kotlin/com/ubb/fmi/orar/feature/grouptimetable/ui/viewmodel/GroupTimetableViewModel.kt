@@ -123,7 +123,9 @@ class GroupTimetableViewModel(
                 Week.EVEN -> Frequency.WEEK_2
             }
 
-            _uiState.update { it.copy(selectedFrequency = frequency) }
+            _uiState.update {
+                it.copy(selectedFrequency = frequency, currentFrequency = frequency)
+            }
         }
     }
 
