@@ -56,6 +56,7 @@ kotlin {
             implementation(projects.domain.analytics)
             implementation(projects.domain.extensions)
             implementation(projects.domain.logging)
+            implementation(projects.domain.notifications)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
             implementation(projects.ui.catalog)

@@ -54,6 +54,7 @@ data class TimetableUiState(
                     compareBy<Event> { it.day.orderIndex }
                         .thenBy { it.startHour }
                         .thenBy { it.endHour }
+                        .thenBy { it.activity }
                 )
 
                 val groupedEvents = filteredEvents.groupBy { it.day }.mapKeys { (day, _) ->
@@ -77,7 +78,8 @@ data class TimetableUiState(
                                     caption = event.caption,
                                     details = event.details,
                                     isVisible = event.isVisible,
-                                    isPersonal = event.ownerId == Owner.User.id
+                                    isNotificationOn = event.isNotificationOn,
+                                    isPersonal = event.ownerId == Owner.User.id,
                                 )
                             }
                         }
@@ -116,6 +118,7 @@ data class TimetableUiState(
                                     caption = event.caption,
                                     details = event.details,
                                     isVisible = event.isVisible,
+                                    isNotificationOn = event.isNotificationOn,
                                     isPersonal = event.ownerId == Owner.User.id
                                 )
                             }

@@ -40,7 +40,7 @@ fun BottomBar(navController: NavController) {
                 selected = isSelected,
                 onClick = {
                     navController.navigate(timetableBottomBarItem.destination) {
-                        popUpTo(MainNavDestination.UserMain) { saveState = true }
+                        popUpTo(MainNavDestination.UserMain()) { saveState = true }
                         launchSingleTop = true
                         restoreState = true
                     }

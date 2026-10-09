@@ -77,7 +77,7 @@ class RoomsRepositoryImpl(
             val rooms = resource.payload ?: emptyList()
             prefetchAll(configuration.year, configuration.semesterId, rooms)
 
-            eventsDataSource.getAllEventsFromCache(configurationId).collectLatest { events ->
+            eventsDataSource.getAllEventsFromCacheAsFlow(configurationId).collectLatest { events ->
                 emit(rooms to events)
             }
         }.distinctUntilChanged()

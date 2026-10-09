@@ -48,6 +48,7 @@ fun ListRow(
     leadingIcon: Painter? = null,
     trailingIcon: Painter? = null,
     trailingIconSize: Dp = Pds.icon.Medium,
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = modifier,
@@ -96,8 +97,10 @@ fun ListRow(
             }
         }
 
-        trailingIcon?.let {
-            Icon(
+        when {
+            trailingContent != null -> trailingContent()
+
+            trailingIcon != null -> Icon(
                 modifier = Modifier.size(trailingIconSize),
                 painter = trailingIcon,
                 contentDescription = null,

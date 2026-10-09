@@ -36,4 +36,5 @@ data class Event(
     val caption: String,
     val details: String,
     val isVisible: Boolean,
+    val isNotificationOn: Boolean,
 )

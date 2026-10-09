@@ -7,7 +7,7 @@ package com.ubb.fmi.orar.data.timetable.model
  */
 enum class Day(
     val id: String,
-    val orderIndex: Int
+    val orderIndex: Int,
 ) {
     MONDAY(
         id = "Luni",

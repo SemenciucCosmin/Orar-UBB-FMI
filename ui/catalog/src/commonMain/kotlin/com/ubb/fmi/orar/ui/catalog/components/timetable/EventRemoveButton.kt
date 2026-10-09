@@ -34,7 +34,7 @@ fun EventRemoveButton(
     var isDialogOpen by remember { mutableStateOf(false) }
 
     IconButton(
-        modifier = modifier,
+        modifier = modifier.size(Pds.icon.Medium),
         onClick = { isDialogOpen = true }
     ) {
         Icon(

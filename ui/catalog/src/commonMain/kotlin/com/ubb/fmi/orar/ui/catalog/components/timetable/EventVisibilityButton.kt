@@ -17,21 +17,21 @@ import org.jetbrains.compose.resources.painterResource
  * A composable that displays a button to toggle the visibility of an event.
  */
 @Composable
-fun EventVisibilityButton(
-    isVisible: Boolean,
+fun EventVisibilityToggleButton(
+    isChecked: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     IconToggleButton(
-        modifier = modifier,
-        checked = isVisible,
+        modifier = modifier.size(Pds.icon.Medium),
+        checked = isChecked,
         onCheckedChange = { onClick() },
     ) {
         Icon(
             modifier = Modifier.size(Pds.icon.SMedium),
             contentDescription = null,
             painter = when {
-                isVisible -> painterResource(Res.drawable.ic_show)
+                isChecked -> painterResource(Res.drawable.ic_show)
                 else -> painterResource(Res.drawable.ic_hide)
             }
         )
@@ -40,10 +40,10 @@ fun EventVisibilityButton(
 
 @Preview
 @Composable
-private fun PreviewEventVisibilityButtonVisible() {
+private fun PreviewEventVisibilityToggleButtonOn() {
     OrarUbbFmiTheme {
-        EventVisibilityButton(
-            isVisible = true,
+        EventVisibilityToggleButton(
+            isChecked = true,
             onClick = {}
         )
     }
@@ -51,10 +51,10 @@ private fun PreviewEventVisibilityButtonVisible() {
 
 @Preview
 @Composable
-private fun PreviewEventVisibilityButtonNotVisible() {
+private fun PreviewEventVisibilityToggleButtonOff() {
     OrarUbbFmiTheme {
-        EventVisibilityButton(
-            isVisible = false,
+        EventVisibilityToggleButton(
+            isChecked = false,
             onClick = {}
         )
     }

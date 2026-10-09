@@ -1,6 +1,9 @@
 package com.ubb.fmi.orar
 
+import Logger
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.ComposeUIViewController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -10,6 +13,7 @@ import com.ubb.fmi.orar.di.KoinInitializer
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
 import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOptionUseCase
 import com.ubb.fmi.orar.feature.dialogs.ui.route.DialogsRoute
+import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.koin.compose.koinInject
 
@@ -26,12 +30,44 @@ fun MainViewController() = ComposeUIViewController(
 ) {
     val navController = rememberNavController()
     val getThemeOptionUseCase: GetThemeOptionUseCase = koinInject()
+    val logger: Logger = koinInject()
     val themeOption by getThemeOptionUseCase().collectAsStateWithLifecycle(
         initialValue = ThemeOption.SYSTEM
     )
+
+    val deepLinkUrl = DeepLinkHandler.deepLinkUrl
+    LaunchedEffect(deepLinkUrl) {
+        if (deepLinkUrl == null) return@LaunchedEffect
+        val eventId = extractEventIdFromDeepLink(deepLinkUrl)
+        logger.d(DEEP_LINK_TAG, "Received deep link $deepLinkUrl, eventId: $eventId")
+
+        eventId?.let {
+            navController.navigate(MainNavDestination.UserMain(eventId)) {
+                popUpTo(MainNavDestination.UserMain()) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+    }
 
     OrarUbbFmiTheme(themeOption) {
         AppGraph(navController)
         DialogsRoute(navController)
     }
+}
+
+private const val DEEP_LINK_TAG = "DeepLinkHandler"
+
+private fun extractEventIdFromDeepLink(url: String): String? {
+    val query = url.substringAfter("?", "")
+    if (query.isBlank()) return null
+    return query.split("&")
+        .asSequence()
+        .mapNotNull { queryPart ->
+            val separatorIndex = queryPart.indexOf("=")
+            if (separatorIndex <= 0) return@mapNotNull null
+            queryPart.substring(0, separatorIndex) to queryPart.substring(separatorIndex + 1)
+        }
+        .firstOrNull { (key, _) -> key == "eventId" }
+        ?.second
+        ?.takeIf { it.isNotBlank() }
 }

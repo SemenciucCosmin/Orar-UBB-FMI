@@ -6,6 +6,8 @@ import com.ubb.fmi.orar.data.feedback.di.feedbackDataModule
 import com.ubb.fmi.orar.data.groups.di.groupsDataModule
 import com.ubb.fmi.orar.data.network.di.networkDataModule
 import com.ubb.fmi.orar.data.news.di.newsDataModule
+import com.ubb.fmi.orar.data.notifications.di.notificationsDataModule
+import com.ubb.fmi.orar.data.permissions.di.permissionsDataModule
 import com.ubb.fmi.orar.data.preferences.di.preferencesDataModule
 import com.ubb.fmi.orar.data.rooms.di.roomsDataModule
 import com.ubb.fmi.orar.data.settings.di.settingsDataModule
@@ -15,8 +17,11 @@ import com.ubb.fmi.orar.data.teachers.di.teachersDataModule
 import com.ubb.fmi.orar.data.timetable.di.timetableDataModule
 import com.ubb.fmi.orar.domain.analytics.di.analyticsDomainModule
 import com.ubb.fmi.orar.domain.announcements.di.announcementsDomainModule
+import com.ubb.fmi.orar.domain.calendar.di.calendarDomainModule
 import com.ubb.fmi.orar.domain.feedback.di.feedbackDomainModule
 import com.ubb.fmi.orar.domain.logging.di.loggingDomainModule
+import com.ubb.fmi.orar.domain.notifications.di.notificationsDomainModule
+import com.ubb.fmi.orar.domain.permissions.di.permissionsDomainModule
 import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
@@ -27,6 +32,7 @@ import com.ubb.fmi.orar.feature.freerooms.di.freeRoomsFeatureModule
 import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
 import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
 import com.ubb.fmi.orar.feature.news.di.newsFeatureModule
+import com.ubb.fmi.orar.feature.notifications.di.notificationsFeatureModule
 import com.ubb.fmi.orar.feature.personalevent.di.personalEventFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
@@ -54,6 +60,9 @@ fun commonModule() = module {
 
     // ANALYTICS
     includes(analyticsDomainModule())
+
+    // CALENDAR
+    includes(calendarDomainModule())
 
     // COMMON
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
@@ -89,6 +98,15 @@ fun commonModule() = module {
     // NEWS
     includes(newsDataModule())
     includes(newsFeatureModule())
+
+    // NOTIFICATIONS
+    includes(notificationsDataModule())
+    includes(notificationsDomainModule())
+    includes(notificationsFeatureModule())
+
+    // PERMISSIONS
+    includes(permissionsDataModule())
+    includes(permissionsDomainModule())
 
     // PERSONAL EVENT
     includes(personalEventFeatureModule())

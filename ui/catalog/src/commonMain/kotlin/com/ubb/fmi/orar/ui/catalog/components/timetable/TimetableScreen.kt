@@ -1,31 +1,32 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.domain.extensions.formatTime
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
-import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.Companion.timetableListItems
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
-import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.resources.stringResource
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+
+private const val FIRST_INDEX = 0
+private const val SCROLL_INDEX_OFFSET = 3
+private val SCROLL_START_DELAY = 500.milliseconds
 
 /**
  * A composable that displays the timetable screen with a list of timetable items.
@@ -34,6 +35,8 @@ import org.jetbrains.compose.resources.stringResource
  * @param topBar Composable for the top bar of the screen.
  * @param bottomBar Composable for the bottom bar of the screen (optional).
  * @param onItemVisibilityChange Callback invoked when the visibility of a timetable item changes.
+ * @param selectedEventId Optional event ID to scroll to; once the scroll finishes, the
+ * corresponding item plays a shake animation to draw attention to it.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,9 +46,27 @@ fun TimetableScreen(
     topBar: @Composable () -> Unit,
     bottomBar: @Composable () -> Unit = {},
     onItemVisibilityChange: (TimetableListItem.Event) -> Unit = {},
+    onItemNotificationChange: (TimetableListItem.Event) -> Unit = {},
     onRemoveItem: (TimetableListItem.Event) -> Unit = {},
     onAddItem: ((String) -> Unit)? = null,
+    selectedEventId: String? = null,
 ) {
+    val listState = rememberLazyListState()
+    var eventIdToAnimate by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(selectedEventId, uiState.timetableListItems) {
+        eventIdToAnimate = null
+        val targetIndex = selectedEventId?.let { id ->
+            uiState.timetableListItems.indexOfFirst {
+                it is TimetableListItem.Event && it.id == id
+            }
+        }?.takeIf { it >= FIRST_INDEX } ?: return@LaunchedEffect
+
+        delay(SCROLL_START_DELAY)
+        listState.animateScrollToItem((targetIndex - SCROLL_INDEX_OFFSET).coerceAtLeast(FIRST_INDEX))
+        eventIdToAnimate = selectedEventId
+    }
+
     StateScaffold(
         isLoading = uiState.isLoading,
         isEmpty = uiState.isEmpty,
@@ -54,81 +75,17 @@ fun TimetableScreen(
         topBar = topBar,
         bottomBar = bottomBar
     ) { paddingValues ->
-        LazyColumn(
+        EventsList(
             modifier = Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-            contentPadding = PaddingValues(Pds.spacing.SMedium),
-        ) {
-            items(
-                uiState.timetableListItems,
-                key = { timetableItem ->
-                    when (timetableItem) {
-                        is TimetableListItem.Divider -> timetableItem.day
-                        is TimetableListItem.Event -> timetableItem.id
-                    }
-                }
-            ) { timetableItem ->
-                when (timetableItem) {
-                    is TimetableListItem.Divider -> {
-                        TimetableListDivider(
-                            modifier = Modifier.animateItem(),
-                            text = stringResource(timetableItem.day.labelRes),
-                        )
-                    }
-
-                    is TimetableListItem.Event -> {
-                        Row(
-                            modifier = Modifier.animateItem(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(
-                                Pds.spacing.SMedium
-                            )
-                        ) {
-                            AnimatedVisibility(uiState.isEditModeOn) {
-                                when {
-                                    timetableItem.isPersonal -> {
-                                        EventRemoveButton(
-                                            onRemove = { onRemoveItem(timetableItem) }
-                                        )
-                                    }
-
-                                    else -> {
-                                        EventVisibilityButton(
-                                            isVisible = timetableItem.isVisible,
-                                            onClick = { onItemVisibilityChange(timetableItem) }
-                                        )
-                                    }
-                                }
-                            }
-
-                            EventCard(
-                                startTime = formatTime(
-                                    timetableItem.startHour,
-                                    timetableItem.startMinute
-                                ),
-                                endTime = formatTime(
-                                    timetableItem.endHour,
-                                    timetableItem.endMinute
-                                ),
-                                enabled = timetableItem.isVisible,
-                                expanded = !uiState.isEditModeOn,
-                                location = timetableItem.location,
-                                title = timetableItem.title,
-                                type = timetableItem.type,
-                                participant = timetableItem.participant,
-                                caption = timetableItem.caption,
-                                details = timetableItem.details,
-                                onAddClick = onAddItem?.let {
-                                    {
-                                        onAddItem(timetableItem.id)
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-        }
+            items = uiState.timetableListItems,
+            isEditModeOn = uiState.isEditModeOn,
+            listState = listState,
+            onVisibleClick = onItemVisibilityChange,
+            onNotificationClick = onItemNotificationChange,
+            onRemoveClick = onRemoveItem,
+            onAddItem = onAddItem,
+            selectedEventId = eventIdToAnimate,
+        )
     }
 }
 
@@ -165,6 +122,7 @@ private fun PreviewTimetableScreen() {
                         caption = "Caption $it",
                         details = "Details $it",
                         isVisible = true,
+                        isNotificationOn = false,
                         configurationId = "20241",
                         ownerId = "$it"
                     )
@@ -183,6 +141,7 @@ private fun PreviewTimetableScreenEditMode() {
             topBar = {},
             bottomBar = {},
             onItemVisibilityChange = {},
+            onItemNotificationChange = {},
             uiState = TimetableUiState(
                 title = "",
                 studyLevel = null,
@@ -207,6 +166,7 @@ private fun PreviewTimetableScreenEditMode() {
                         caption = "Caption $it",
                         details = "Details $it",
                         isVisible = true,
+                        isNotificationOn = false,
                         configurationId = "20241",
                         ownerId = "$it",
                     )

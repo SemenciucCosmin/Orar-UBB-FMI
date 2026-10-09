@@ -62,7 +62,7 @@ data class AnimatedCardConfig(
         private const val DEFAULT_FLIP_ANIMATION_TIME = 700
         private const val DEFAULT_SHAKE_ANIMATION_TIME = 40
         private const val DEFAULT_SHARP_ROTATION = 2f
-        private const val DEFAULT_SHAKE_ANIMATIONS_COUNT = 10
+        private const val DEFAULT_SHAKE_ANIMATIONS_COUNT = 15
         private const val DEFAULT_MIN_ELEVATION = 1f
         private const val DEFAULT_MAX_ELEVATION = 15f
     }

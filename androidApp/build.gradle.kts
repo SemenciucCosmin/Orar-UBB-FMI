@@ -41,6 +41,9 @@ dependencies {
 
     // MODULES
     implementation(projects.composeApp)
+    implementation(projects.data.permissions)
+    implementation(projects.domain.logging)
+    implementation(projects.domain.notifications)
     implementation(projects.domain.theme)
     implementation(projects.feature.dialogs)
     implementation(projects.ui.theme)

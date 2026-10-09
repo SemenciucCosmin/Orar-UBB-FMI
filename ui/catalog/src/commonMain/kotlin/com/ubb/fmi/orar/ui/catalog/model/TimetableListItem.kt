@@ -32,6 +32,7 @@ sealed interface TimetableListItem {
         val caption: String,
         val details: String,
         val isVisible: Boolean,
+        val isNotificationOn: Boolean,
         val isPersonal: Boolean
     ) : TimetableListItem
 }

@@ -1,7 +1,7 @@
-package com.ubb.fmi.orar
+package com.ubb.fmi.orar.app
 
 import android.app.Application
-import com.ubb.fmi.orar.app.AppInitializer
+import com.ubb.fmi.orar.BuildConfig
 import com.ubb.fmi.orar.di.KoinInitializer
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseOptions

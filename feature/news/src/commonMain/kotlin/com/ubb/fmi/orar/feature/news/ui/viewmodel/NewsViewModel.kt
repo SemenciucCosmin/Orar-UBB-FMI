@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.news.model.ArticleType
 import com.ubb.fmi.orar.data.news.repository.NewsRepository
+import com.ubb.fmi.orar.data.timetable.model.UserType
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf

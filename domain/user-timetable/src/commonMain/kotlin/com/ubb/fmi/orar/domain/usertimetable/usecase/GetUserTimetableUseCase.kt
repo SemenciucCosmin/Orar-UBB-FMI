@@ -8,8 +8,8 @@ import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
+import com.ubb.fmi.orar.data.timetable.model.UserType
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -59,9 +59,7 @@ class GetUserTimetableUseCase(
                 }
 
                 UserType.TEACHER -> {
-                    val teacherId = configuration.teacherId
-                    if (teacherId == null) return@transformLatest
-
+                    val teacherId = configuration.teacherId ?: return@transformLatest
                     teacherRepository.getTimetable(teacherId).map {
                         Resource(it.payload?.events, it.status)
                     }

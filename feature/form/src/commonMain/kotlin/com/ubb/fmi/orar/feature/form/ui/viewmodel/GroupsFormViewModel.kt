@@ -7,6 +7,7 @@ import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.GroupsFromUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
@@ -34,6 +35,7 @@ import kotlin.time.Duration.Companion.seconds
 class GroupsFormViewModel(
     private val groupsRepository: GroupsRepository,
     private val timetablePreferences: TimetablePreferences,
+    private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase,
     private val logger: Logger,
 ) : EventViewModel<GroupsFromUiState.GroupsFromUiEvent>() {
 
@@ -110,6 +112,7 @@ class GroupsFormViewModel(
             _uiState.value.selectedGroupId?.let { groupId ->
                 logger.d(TAG, "finishSelection group: $groupId")
                 timetablePreferences.setGroupId(groupId)
+                initializeTimetableNotificationsUseCase()
                 registerEvent(GroupsFromUiState.GroupsFromUiEvent.CONFIGURATION_DONE)
             }
         }

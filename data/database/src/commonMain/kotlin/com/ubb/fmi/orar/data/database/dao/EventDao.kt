@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Data Access Object (DAO) for managing timetable event entities in the database.
  */
+@Suppress("TooManyFunctions")
 @Dao
 interface EventDao {
 
@@ -21,6 +22,19 @@ interface EventDao {
     fun getAllAsFlowByConfiguration(
         configurationId: String,
     ): Flow<List<EventEntity>>
+
+    /**
+     * Get all timetable event entities
+     */
+    @Query("SELECT * FROM events")
+    suspend fun getAll(): List<EventEntity>
+
+    /**
+     * Get all timetable event entities that currently have notifications enabled.
+     * Only these should ever need invalidating when a user's configuration changes.
+     */
+    @Query("SELECT * FROM events WHERE isNotificationOn = 1")
+    suspend fun getAllWithNotificationsOn(): List<EventEntity>
 
     /**
      * Get all timetable event entities by [configurationId] and [ownerId]
@@ -68,7 +82,11 @@ interface EventDao {
         val mappedEvents = entities.map { event ->
             val cachedEvent = cachedEvents.find { it.id == event.id }
             when {
-                cachedEvent != null -> event.copy(isVisible = cachedEvent.isVisible)
+                cachedEvent != null -> event.copy(
+                    isVisible = cachedEvent.isVisible,
+                    isNotificationOn = cachedEvent.isNotificationOn
+                )
+
                 else -> event
             }
         }

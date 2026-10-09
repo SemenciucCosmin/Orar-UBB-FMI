@@ -45,9 +45,11 @@ kotlin {
             implementation(projects.data.timetable)
             implementation(projects.data.network)
             implementation(projects.domain.analytics)
+            implementation(projects.domain.calendar)
             implementation(projects.domain.extensions)
-            implementation(projects.domain.timetable)
             implementation(projects.domain.logging)
+            implementation(projects.domain.notifications)
+            implementation(projects.domain.timetable)
         }
     }
 }

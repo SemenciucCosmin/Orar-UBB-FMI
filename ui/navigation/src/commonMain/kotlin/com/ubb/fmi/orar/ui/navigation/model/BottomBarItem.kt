@@ -26,7 +26,7 @@ enum class BottomBarItem(
     HOME(
         labelRes = Res.string.lbl_home,
         icon = Res.drawable.ic_home,
-        destination = MainNavDestination.UserMain,
+        destination = MainNavDestination.UserMain(),
     ),
     NEWS(
         labelRes = Res.string.lbl_news,

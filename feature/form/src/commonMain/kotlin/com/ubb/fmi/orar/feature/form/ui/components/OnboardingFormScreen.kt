@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.ubb.fmi.orar.data.timetable.model.UserType
 import com.ubb.fmi.orar.domain.timetable.model.Semester
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.FormSelectionRow

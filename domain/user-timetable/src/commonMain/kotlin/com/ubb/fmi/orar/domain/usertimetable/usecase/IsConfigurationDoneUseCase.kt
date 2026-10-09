@@ -1,8 +1,8 @@
 package com.ubb.fmi.orar.domain.usertimetable.usecase
 
 import Logger
+import com.ubb.fmi.orar.data.timetable.model.UserType
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map

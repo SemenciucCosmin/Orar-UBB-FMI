@@ -6,8 +6,8 @@ import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.data.timetable.model.Week
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.domain.usertimetable.model.Week
 import com.ubb.fmi.orar.domain.usertimetable.usecase.AdoptEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus

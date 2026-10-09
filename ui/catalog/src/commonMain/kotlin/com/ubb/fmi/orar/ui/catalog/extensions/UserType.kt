@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.ui.catalog.extensions
 
-import com.ubb.fmi.orar.domain.usertimetable.model.UserType
+import com.ubb.fmi.orar.data.timetable.model.UserType
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_student
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_teacher

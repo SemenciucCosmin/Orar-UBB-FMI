@@ -45,7 +45,7 @@ fun TeachersFormRoute(navController: NavController) {
         when (event) {
             TeachersFormUiState.TeachersFormUiEvent.CONFIGURATION_DONE -> {
                 viewModel.unregisterEvent(event)
-                navController.navigate(MainNavDestination.UserMain) {
+                navController.navigate(MainNavDestination.UserMain()) {
                     popUpTo(
                         ConfigurationFormNavDestination.OnboardingForm(
                             configurationFormTypeId = ConfigurationFormType.STARTUP.id
