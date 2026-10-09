@@ -17,11 +17,13 @@ import com.ubb.fmi.orar.ui.theme.Pds
  *
  * @param text The text to be displayed in the divider.
  * @param modifier Modifier to be applied to the row.
+ * @param activeAnimationEnabled Whether to show a pulsing dot between the text and the line, marking today.
  */
 @Composable
 fun TimetableListDivider(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    activeAnimationEnabled: Boolean = false,
 ) {
     Row(
         modifier = modifier,
@@ -34,8 +36,12 @@ fun TimetableListDivider(
             color = MaterialTheme.colorScheme.onSurface
         )
 
+        if (activeAnimationEnabled) {
+            PulsingDot(defaults = PulsingDotDefaults.Active())
+        }
+
         HorizontalDivider(
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onSurface
         )
     }
@@ -47,6 +53,17 @@ private fun PreviewTimetableListDivider() {
     OrarUbbFmiTheme {
         TimetableListDivider(
             text = "Monday"
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewActiveTimetableListDivider() {
+    OrarUbbFmiTheme {
+        TimetableListDivider(
+            text = "Monday",
+            activeAnimationEnabled = true,
         )
     }
 }

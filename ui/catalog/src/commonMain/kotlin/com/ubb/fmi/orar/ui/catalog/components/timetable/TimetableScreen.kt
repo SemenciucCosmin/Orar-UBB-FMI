@@ -62,6 +62,7 @@ fun TimetableScreen(
     val minuteTick = rememberMinuteTick()
     val ongoingEventIds = remember(uiState, minuteTick) { uiState.ongoingEventIds }
     val upcomingEventIds = remember(uiState, minuteTick) { uiState.upcomingEventIds }
+    val currentDay = remember(uiState, minuteTick) { uiState.currentDay }
 
     LaunchedEffect(selectedEventId, uiState.timetableListItems, uiState.isLoading) {
         eventIdToAnimate = null
@@ -102,6 +103,7 @@ fun TimetableScreen(
             isEditModeOn = uiState.isEditModeOn,
             ongoingEventIds = ongoingEventIds,
             upcomingEventIds = upcomingEventIds,
+            currentDay = currentDay,
             listState = listState,
             onVisibleClick = onItemVisibilityChange,
             onNotificationClick = onItemNotificationChange,

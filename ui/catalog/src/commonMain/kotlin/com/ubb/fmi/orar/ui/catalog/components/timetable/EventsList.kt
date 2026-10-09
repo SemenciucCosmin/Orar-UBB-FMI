@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.domain.extensions.formatTime
 import com.ubb.fmi.orar.ui.catalog.components.animation.rememberAnimatedCardState
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
@@ -29,6 +30,7 @@ fun EventsList(
     isEditModeOn: Boolean,
     ongoingEventIds: ImmutableList<String>,
     upcomingEventIds: ImmutableList<String>,
+    currentDay: Day?,
     listState: LazyListState,
     onVisibleClick: (TimetableListItem.Event) -> Unit,
     onNotificationClick: (TimetableListItem.Event) -> Unit,
@@ -57,6 +59,7 @@ fun EventsList(
                     TimetableListDivider(
                         modifier = Modifier.animateItem(),
                         text = stringResource(timetableItem.day.labelRes),
+                        activeAnimationEnabled = timetableItem.day == currentDay,
                     )
                 }
 

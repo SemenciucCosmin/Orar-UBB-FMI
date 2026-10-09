@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.ui.catalog.viewmodel.model
 
+import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Owner
@@ -172,20 +173,30 @@ data class TimetableUiState(
         }
 
     /**
-     * Today's displayed events. Empty unless the current week is displayed.
+     * Today, if the current week is displayed; null otherwise.
      */
-    private val todayEvents: List<TimetableListItem.Event>
+    val currentDay: Day?
         get() {
-            if (selectedFrequency != currentFrequency) return emptyList()
+            if (selectedFrequency != currentFrequency) return null
 
             val currentDayIndex = Clock.System.now()
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .dayOfWeek
                 .ordinal
 
+            return Day.entries.firstOrNull { it.orderIndex == currentDayIndex }
+        }
+
+    /**
+     * Today's displayed events. Empty unless the current week is displayed.
+     */
+    private val todayEvents: List<TimetableListItem.Event>
+        get() {
+            val currentDay = currentDay ?: return emptyList()
+
             return timetableListItems
                 .filterIsInstance<TimetableListItem.Event>()
-                .filter { it.day.orderIndex == currentDayIndex }
+                .filter { it.day == currentDay }
         }
 
     /**
