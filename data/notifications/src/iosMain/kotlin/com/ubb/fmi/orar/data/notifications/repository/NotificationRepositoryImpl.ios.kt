@@ -12,7 +12,6 @@ import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import kotlin.coroutines.resume
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 /**
@@ -33,7 +32,6 @@ class NotificationRepositoryImpl(
     private val logger: Logger,
 ) : NotificationRepository {
 
-    @OptIn(ExperimentalTime::class)
     override suspend fun schedule(notifications: List<EventNotification>) {
         if (notifications.isEmpty()) return
 

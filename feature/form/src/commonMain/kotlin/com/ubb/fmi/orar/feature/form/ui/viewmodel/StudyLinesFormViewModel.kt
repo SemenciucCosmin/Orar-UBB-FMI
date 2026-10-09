@@ -15,7 +15,6 @@ import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,7 +56,6 @@ class StudyLinesFormViewModel(
      * This method updates the UI state with the fetched study lines, grouped by field ID,
      * and sets the selected study line based on the current configuration.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 

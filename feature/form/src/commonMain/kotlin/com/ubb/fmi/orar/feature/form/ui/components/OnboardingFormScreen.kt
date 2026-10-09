@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,7 +49,6 @@ import org.jetbrains.compose.resources.stringResource
  * @param onNextClick: lambda for next button action
  * @param onBack: lambda for back button action
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingFormScreen(
     configurationFormType: ConfigurationFormType,

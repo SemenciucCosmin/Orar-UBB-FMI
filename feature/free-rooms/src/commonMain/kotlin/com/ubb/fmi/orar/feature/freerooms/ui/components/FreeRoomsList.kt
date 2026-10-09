@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +27,6 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Composable function that displays a list of rooms with states.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FreeRoomsList(
     rooms: ImmutableList<Owner.Room>,

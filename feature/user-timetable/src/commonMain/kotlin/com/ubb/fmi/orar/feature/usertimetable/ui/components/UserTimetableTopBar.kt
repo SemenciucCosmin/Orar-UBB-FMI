@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.feature.usertimetable.ui.components
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,7 +30,6 @@ import org.jetbrains.compose.resources.painterResource
  * @param onFrequencyClick Callback for when a frequency is selected.
  * @param modifier Optional modifier for styling.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserTimetableTopBar(
     isLoading: Boolean,

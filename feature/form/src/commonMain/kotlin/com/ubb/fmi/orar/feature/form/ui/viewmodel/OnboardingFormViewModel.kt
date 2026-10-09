@@ -22,7 +22,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 /**
  * ViewModel for managing the onboarding form state in the application.
@@ -136,7 +135,6 @@ class OnboardingFormViewModel(
      * Submits the current configuration to the preferences.
      * This method is called when the user completes the onboarding form.
      */
-    @OptIn(ExperimentalTime::class)
     private fun getStudyYears(): List<Int> {
         val currentInstant = Clock.System.now()
         val currentDate = currentInstant.toLocalDateTime(TimeZone.currentSystemDefault())

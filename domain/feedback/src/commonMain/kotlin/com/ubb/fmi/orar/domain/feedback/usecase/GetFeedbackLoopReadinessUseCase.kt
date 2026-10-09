@@ -5,7 +5,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 /**
  * Use case for determining if feedback loop is ready to show
@@ -14,7 +13,7 @@ class GetFeedbackLoopReadinessUseCase(
     private val feedbackPreferences: FeedbackPreferences,
 ) {
 
-    @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend operator fun invoke(): Flow<Boolean> {
         return feedbackPreferences.getFeedbackMetrics().mapLatest { feedbackMetrics ->
             val currentMillis = Clock.System.now().toEpochMilliseconds()

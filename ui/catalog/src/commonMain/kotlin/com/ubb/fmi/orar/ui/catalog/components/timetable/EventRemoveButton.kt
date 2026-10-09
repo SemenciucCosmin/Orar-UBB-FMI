@@ -1,7 +1,6 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -25,7 +24,6 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * A composable that displays a button to remove an event
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventRemoveButton(
     onRemove: () -> Unit,
