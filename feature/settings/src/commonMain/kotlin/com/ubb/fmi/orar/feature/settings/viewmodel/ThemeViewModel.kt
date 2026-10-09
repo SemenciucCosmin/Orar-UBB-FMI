@@ -3,6 +3,9 @@ package com.ubb.fmi.orar.feature.settings.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.settings.preferences.SettingsPreferences
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
 import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOptionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +26,7 @@ import kotlin.time.Duration.Companion.seconds
 class ThemeViewModel(
     private val settingsPreferences: SettingsPreferences,
     private val getThemeOptionUseCase: GetThemeOptionUseCase,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
 
     private val _themeOption = MutableStateFlow(ThemeOption.SYSTEM)
@@ -41,6 +45,13 @@ class ThemeViewModel(
         )
 
     fun selectThemeOption(themeOption: ThemeOption) {
+        if (themeOption != _themeOption.value) {
+            analyticsLogger.logEvent(
+                event = AnalyticsEvent.THEME_CHANGED,
+                params = mapOf(AnalyticsParameter.THEME to themeOption.id),
+            )
+        }
+
         viewModelScope.launch { settingsPreferences.setThemeOption(themeOption.id) }
     }
 }

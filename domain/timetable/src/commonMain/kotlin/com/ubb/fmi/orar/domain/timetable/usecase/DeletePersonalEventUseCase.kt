@@ -3,6 +3,8 @@ package com.ubb.fmi.orar.domain.timetable.usecase
 import Logger
 import com.ubb.fmi.orar.data.notifications.repository.NotificationRepository
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 
 /**
  * Use case for deleting a certain event from database
@@ -13,6 +15,7 @@ import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 class DeletePersonalEventUseCase(
     private val eventsDataSource: EventsDataSource,
     private val notificationRepository: NotificationRepository,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) {
     /**
@@ -22,6 +25,7 @@ class DeletePersonalEventUseCase(
         logger.d(TAG, "Deleting event $eventId and cancelling its notification")
         notificationRepository.cancel(eventId)
         eventsDataSource.deleteEvent(eventId)
+        analyticsLogger.logEvent(AnalyticsEvent.DELETE_PERSONAL_EVENT)
     }
 
     companion object {

@@ -6,6 +6,7 @@ import com.ubb.fmi.orar.data.timetable.model.UserType
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.OnboardingFormUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.toImmutableList
@@ -108,6 +109,14 @@ class OnboardingFormViewModel(
             timetablePreferences.setYear(year)
             timetablePreferences.setSemester(semesterId)
             timetablePreferences.setUserType(userTypeId)
+
+            val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            if (configuration?.groupId != null || configuration?.teacherId != null) {
+                analyticsLogger.logEvent(
+                    event = AnalyticsEvent.CONFIG_CHANGED,
+                    params = mapOf(AnalyticsParameter.USER_TYPE to userType.id),
+                )
+            }
 
             when (userType) {
                 UserType.STUDENT -> {

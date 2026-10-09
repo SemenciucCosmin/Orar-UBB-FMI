@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.feature.usertimetable.ui.route
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -24,6 +25,10 @@ fun UserTimetableRoute(navController: NavController, selectedEventId: String? = 
     val viewModel: UserTimetableViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val hapticFeedback = LocalHapticFeedback.current
+
+    LaunchedEffect(selectedEventId) {
+        selectedEventId?.let(viewModel::logNotificationOpen)
+    }
 
     TimetableScreen(
         uiState = uiState,

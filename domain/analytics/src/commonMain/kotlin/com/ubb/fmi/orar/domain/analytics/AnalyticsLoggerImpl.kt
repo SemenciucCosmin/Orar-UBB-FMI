@@ -9,7 +9,7 @@ import dev.gitlive.firebase.analytics.analytics
  */
 class AnalyticsLoggerImpl : AnalyticsLogger {
 
-    override fun logEvent(event: AnalyticsEvent) {
-        Firebase.analytics.logEvent(event.id, null)
+    override fun logEvent(event: AnalyticsEvent, params: Map<String, Any>?) {
+        Firebase.analytics.logEvent(event.id, params)
     }
 }

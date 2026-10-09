@@ -49,6 +49,7 @@ kotlin {
             // MODULES
             implementation(projects.data.permissions)
             implementation(projects.data.timetable)
+            implementation(projects.domain.analytics)
             implementation(projects.domain.logging)
             implementation(projects.domain.notifications)
             implementation(projects.domain.permissions)

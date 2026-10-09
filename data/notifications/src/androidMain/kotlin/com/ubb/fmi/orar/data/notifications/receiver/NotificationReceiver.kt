@@ -15,6 +15,9 @@ import androidx.core.net.toUri
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
 import com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl
 import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.domain.extensions.formatTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +41,7 @@ import java.util.Locale
 class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
     private val logger: Logger by inject()
+    private val analyticsLogger: AnalyticsLogger by inject()
     private val notificationRepository: NotificationRepositoryImpl by inject()
 
     @SuppressLint("MissingPermission")
@@ -98,6 +102,10 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         }
 
         notificationManager.notify(notification.id.hashCode(), displayedNotification)
+        analyticsLogger.logEvent(
+            event = AnalyticsEvent.NOTIFICATION_DISPLAYED,
+            params = mapOf(AnalyticsParameter.EVENT_TYPE to notification.type.id),
+        )
         logger.d(TAG, "Displayed notification ${notification.id} (${notification.activity}, ${notification.day.id})")
     }
 

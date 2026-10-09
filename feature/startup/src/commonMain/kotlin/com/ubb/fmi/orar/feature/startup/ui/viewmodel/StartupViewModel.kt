@@ -3,6 +3,8 @@ package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.permissions.model.Permission
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
 import com.ubb.fmi.orar.domain.permissions.usecase.IsPermissionGrantedUseCase
 import com.ubb.fmi.orar.domain.permissions.usecase.RequestPermissionUseCase
@@ -25,6 +27,7 @@ class StartupViewModel(
     private val requestPermissionUseCase: RequestPermissionUseCase,
     private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
     private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : EventViewModel<StartupUiEvent>() {
 
@@ -59,6 +62,12 @@ class StartupViewModel(
 
             val isRequestGranted = requestPermissionUseCase(Permission.NOTIFICATIONS)
             logger.d(TAG, "Notification permission request granted: $isRequestGranted")
+            analyticsLogger.logEvent(
+                when {
+                    isRequestGranted -> AnalyticsEvent.NOTIFICATION_PERMISSION_GRANTED
+                    else -> AnalyticsEvent.NOTIFICATION_PERMISSION_DENIED
+                }
+            )
             if (isRequestGranted) initializeTimetableNotificationsUseCase()
         }
     }

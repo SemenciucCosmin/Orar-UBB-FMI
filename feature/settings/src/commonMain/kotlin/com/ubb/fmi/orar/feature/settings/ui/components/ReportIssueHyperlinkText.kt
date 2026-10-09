@@ -21,7 +21,7 @@ import org.jetbrains.compose.resources.stringResource
 private const val URL = "https://github.com/SemenciucCosmin/Orar-UBB-FMI/issues/new"
 
 @Composable
-fun ReportIssueHyperlinkText() {
+fun ReportIssueHyperlinkText(onClick: () -> Unit = {}) {
     val context = getContext()
     val toastMessage = stringResource(Res.string.lbl_generic_error_message)
 
@@ -30,6 +30,7 @@ fun ReportIssueHyperlinkText() {
             LinkAnnotation.Clickable(
                 tag = stringResource(Res.string.lbl_report_issue),
                 linkInteractionListener = {
+                    onClick()
                     openUrl(URL, context) {
                         showToast(context, toastMessage, ToastLength.SHORT)
                     }

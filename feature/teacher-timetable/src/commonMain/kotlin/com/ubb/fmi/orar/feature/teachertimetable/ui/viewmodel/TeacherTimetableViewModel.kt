@@ -7,6 +7,10 @@ import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Week
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsTimetableType
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.usecase.AdoptEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
@@ -37,6 +41,7 @@ class TeacherTimetableViewModel(
     private val teacherRepository: TeacherRepository,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val adoptEventUseCase: AdoptEventUseCase,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : EventViewModel<TimetableUiEvent>() {
 
@@ -72,11 +77,22 @@ class TeacherTimetableViewModel(
                     it.copy(isVisible = true)
                 }?.toImmutableList() ?: persistentListOf()
 
+                val errorStatus = resource.status.toErrorStatus()
+                if (errorStatus != null && _uiState.value.errorStatus == null) {
+                    analyticsLogger.logEvent(
+                        event = AnalyticsEvent.TIMETABLE_LOAD_ERROR,
+                        params = mapOf(
+                            AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.TEACHER,
+                            AnalyticsParameter.ERROR_TYPE to errorStatus.name,
+                        ),
+                    )
+                }
+
                 _uiState.update {
                     it.copy(
                         isLoading = resource.status.isLoading(),
                         isEmpty = resource.status.isEmpty(),
-                        errorStatus = resource.status.toErrorStatus(),
+                        errorStatus = errorStatus,
                         events = events,
                         title = resource.payload?.owner?.name ?: String.BLANK
                     )
@@ -96,7 +112,7 @@ class TeacherTimetableViewModel(
                 Week.EVEN -> Frequency.WEEK_2
             }
 
-            selectFrequency(frequency)
+            _uiState.update { it.copy(selectedFrequency = frequency) }
         }
     }
 
@@ -108,6 +124,13 @@ class TeacherTimetableViewModel(
      */
     fun selectFrequency(frequency: Frequency) {
         logger.d(TAG, "selectFrequency: $frequency")
+        analyticsLogger.logEvent(
+            event = AnalyticsEvent.WEEK_FILTER_CHANGED,
+            params = mapOf(
+                AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.TEACHER,
+                AnalyticsParameter.FREQUENCY to frequency.name,
+            ),
+        )
         _uiState.update { it.copy(selectedFrequency = frequency) }
     }
 
@@ -118,6 +141,10 @@ class TeacherTimetableViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        analyticsLogger.logEvent(
+            event = AnalyticsEvent.TIMETABLE_RETRY,
+            params = mapOf(AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.TEACHER),
+        )
         loadTimetable()
     }
 
