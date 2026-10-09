@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
@@ -53,18 +52,7 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", libs.room.compiler)
-    add("ksp", libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
-}
-
-tasks.withType<KotlinCompilationTask<*>>().configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
-
-tasks.matching { it.name == "kspAndroidMain" }.configureEach {
-    dependsOn("kspCommonMainKotlinMetadata")
 }
