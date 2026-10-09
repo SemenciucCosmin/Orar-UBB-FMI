@@ -13,7 +13,6 @@ import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,7 +56,6 @@ class GroupsViewModel(
      * Initializes the ViewModel by fetching the groups based on the provided field ID and study level ID.
      * This method updates the UI state with the fetched groups, title, and study level.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getGroups() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 

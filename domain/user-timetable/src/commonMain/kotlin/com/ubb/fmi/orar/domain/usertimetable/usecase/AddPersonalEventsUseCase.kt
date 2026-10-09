@@ -15,7 +15,6 @@ import com.ubb.fmi.orar.domain.extensions.PIPE
 import com.ubb.fmi.orar.domain.notifications.usecase.ScheduleEventNotificationsUseCase
 import kotlinx.coroutines.flow.firstOrNull
 import okio.ByteString.Companion.encodeUtf8
-import kotlin.time.ExperimentalTime
 
 class AddPersonalEventsUseCase(
     private val timetablePreferences: TimetablePreferences,
@@ -24,7 +23,6 @@ class AddPersonalEventsUseCase(
     private val scheduleEventNotificationsUseCase: ScheduleEventNotificationsUseCase,
     private val logger: Logger,
 ) {
-    @OptIn(ExperimentalTime::class)
     suspend operator fun invoke(
         activity: String,
         location: String,

@@ -10,7 +10,6 @@ import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,7 +54,6 @@ class StudyLinesViewModel(
      * It updates the UI state with loading, error, and fetched data.
      * The coroutine collects the timetable configuration and uses it to fetch study lines.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getStudyLines() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
         studyLinesRepository.getStudyLines().collectLatest { resource ->

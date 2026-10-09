@@ -3,10 +3,8 @@ package com.ubb.fmi.orar.domain.extensions
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 fun Long.formatToDate(): String {
     val instant = Instant.fromEpochMilliseconds(this)
     val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date

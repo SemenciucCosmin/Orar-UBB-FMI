@@ -13,7 +13,6 @@ import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,7 +55,6 @@ class GroupsFormViewModel(
      * Initializes the ViewModel and starts fetching groups.
      * This is done in the init block to ensure that groups are fetched as soon as the ViewModel is created.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getGroups() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true, errorStatus = null) }
 

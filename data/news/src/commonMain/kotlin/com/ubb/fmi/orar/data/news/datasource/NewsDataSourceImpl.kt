@@ -20,7 +20,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import okio.ByteString.Companion.encodeUtf8
-import kotlin.time.ExperimentalTime
 
 /**
  * Data source for managing room related information
@@ -138,7 +137,6 @@ class NewsDataSourceImpl(
     /**
      * Converts a date string like "05.11.2000" to millis
      */
-    @OptIn(ExperimentalTime::class)
     private fun getMillisFromDate(date: String): Long? {
         val parts = date.split(String.DOT)
         val (day, month, year) = parts.map { it.toIntOrNull() }

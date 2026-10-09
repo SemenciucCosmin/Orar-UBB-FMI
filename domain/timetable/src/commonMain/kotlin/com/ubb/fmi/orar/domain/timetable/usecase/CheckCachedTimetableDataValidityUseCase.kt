@@ -5,7 +5,6 @@ import com.ubb.fmi.orar.domain.timetable.model.Semester
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 /**
  * Use case for checking the validity of cached data in the timetable domain.
@@ -23,7 +22,6 @@ class CheckCachedTimetableDataValidityUseCase(
      * This function retrieves the current date, calculates the year two years ago,
      * and invalidates cached data for all semesters for that year.
      */
-    @OptIn(ExperimentalTime::class)
     suspend operator fun invoke() {
         val currentInstant = Clock.System.now()
         val currentDate = currentInstant.toLocalDateTime(TimeZone.currentSystemDefault())
