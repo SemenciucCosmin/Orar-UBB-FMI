@@ -6,5 +6,5 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformPermissionModule(): Module = module {
-    factory<PermissionRepository> { PermissionRepositoryImpl() }
+    factory<PermissionRepository> { PermissionRepositoryImpl(get()) }
 }

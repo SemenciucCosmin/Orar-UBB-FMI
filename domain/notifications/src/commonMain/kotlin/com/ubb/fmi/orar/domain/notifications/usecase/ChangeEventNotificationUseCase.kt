@@ -18,7 +18,10 @@ class ChangeEventNotificationUseCase(
 
     suspend operator fun invoke(eventId: String) {
         eventsDataSource.changeEventNotification(eventId)
-        val event = eventsDataSource.getEventFromCache(eventId) ?: return
+        val event = eventsDataSource.getEventFromCache(eventId) ?: run {
+            logger.e(TAG, "Notification toggled for event $eventId, but it is missing from cache")
+            return
+        }
 
         logger.d(TAG, "Notification for event $eventId toggled to ${event.isNotificationOn}")
         when {

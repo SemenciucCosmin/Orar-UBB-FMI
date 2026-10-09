@@ -25,6 +25,7 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
     private val rescheduleNotificationsUseCase: RescheduleNotificationsUseCase by inject()
     private val logger: Logger by inject()
 
+    @Suppress("TooGenericExceptionCaught")
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Intent.ACTION_BOOT_COMPLETED &&
             intent.action != Intent.ACTION_MY_PACKAGE_REPLACED
@@ -37,6 +38,9 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 rescheduleNotificationsUseCase()
+                logger.d(TAG, "Restored cached notifications after ${intent.action}")
+            } catch (exception: Exception) {
+                logger.e(TAG, "Failed to restore notifications after ${intent.action}: ${exception.stackTraceToString()}")
             } finally {
                 pendingResult.finish()
             }

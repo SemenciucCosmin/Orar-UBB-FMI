@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.domain.usertimetable.usecase
 
+import Logger
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
@@ -21,6 +22,7 @@ class AddPersonalEventsUseCase(
     private val eventsDataSource: EventsDataSource,
     private val analyticsLogger: AnalyticsLogger,
     private val scheduleEventNotificationsUseCase: ScheduleEventNotificationsUseCase,
+    private val logger: Logger,
 ) {
     @OptIn(ExperimentalTime::class)
     suspend operator fun invoke(
@@ -81,6 +83,15 @@ class AddPersonalEventsUseCase(
         // The events are created with notifications already on, so they have to be scheduled
         // right away; otherwise the user would get no reminder for a freshly added personal
         // event until the app is next restarted and cached notifications are rescheduled.
+        logger.d(
+            TAG,
+            "Scheduling notifications for ${personalEvents.size} new personal event(s): " +
+                personalEvents.joinToString { it.id }
+        )
         scheduleEventNotificationsUseCase(*personalEvents.toTypedArray())
+    }
+
+    companion object {
+        private const val TAG = "AddPersonalEventsUseCase"
     }
 }

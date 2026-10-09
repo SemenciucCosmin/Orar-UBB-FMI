@@ -53,9 +53,26 @@ class ScheduleEventNotificationsUseCase(
         // the semester they were fetched for. Scheduling them across the whole academic year
         // would keep last semester's timetable firing against this semester's schedule.
         val semesterNumber = configuration?.semesterId?.toIntOrNull()
-        val academicSemester = semesterNumber
-            ?.let { number -> academicYear.semesters.firstOrNull { it.index == number } }
-            ?: academicYear.getSemesterAt(currentMillis)
+        val configuredSemester = semesterNumber?.let { number ->
+            academicYear.semesters.firstOrNull { it.index == number }
+        }
+        val academicSemester = configuredSemester ?: academicYear.getSemesterAt(currentMillis)
+
+        if (configuredSemester == null) {
+            logger.d(
+                TAG,
+                "Configured semester ${configuration?.semesterId} not resolved for year " +
+                    "${academicYear.startYear}, fell back to semester in session: ${academicSemester?.index}",
+            )
+        }
+
+        logger.d(
+            TAG,
+            "Scheduling context: advanceMinutes=$advanceMinutes, configuredYear=${configuration?.year}, " +
+                "academicYear=${academicYear.startYear}, semester=${academicSemester?.index} " +
+                "[${academicSemester?.startMillis}..${academicSemester?.endMillis}], " +
+                "teachingWeeks=${academicSemester?.teachingWeeks?.size}",
+        )
 
         val (personalEvents, timetableEvents) = events.partition { it.type == EventType.PERSONAL }
         val schedulableEvents = when (academicSemester) {
@@ -85,7 +102,11 @@ class ScheduleEventNotificationsUseCase(
             )
         }
 
-        logger.d(TAG, "Scheduling ${eventNotifications.size} event notification(s)")
+        logger.d(
+            TAG,
+            "Scheduling ${eventNotifications.size} event notification(s): " +
+                eventNotifications.joinToString { it.id },
+        )
         notificationRepository.schedule(eventNotifications)
     }
 

@@ -34,6 +34,6 @@ class RescheduleNotificationsUseCase(
     }
 
     companion object {
-        private const val TAG = "RescheduleCachedNotificationsUseCase"
+        private const val TAG = "RescheduleNotificationsUseCase"
     }
 }

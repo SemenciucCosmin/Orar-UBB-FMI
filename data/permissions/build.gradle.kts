@@ -37,6 +37,9 @@ kotlin {
 
             // KOTLINX
             implementation(libs.kotlinx.coroutines.core)
+
+            // PROJECTS
+            implementation(projects.domain.logging)
         }
     }
 }

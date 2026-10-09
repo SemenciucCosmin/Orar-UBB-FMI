@@ -13,6 +13,7 @@ import kotlin.coroutines.resume
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * iOS [NotificationRepository] implementation, backed by `UNUserNotificationCenter`.
@@ -75,6 +76,14 @@ class NotificationRepositoryImpl(
             return
         }
 
+        logger.d(
+            TAG,
+            "Scheduling ${occurrencesMillis.size}/$occurrenceCount occurrence(s) of ${notification.id}, " +
+                "first: ${Instant.fromEpochMilliseconds(occurrencesMillis.first())}, " +
+                "last: ${Instant.fromEpochMilliseconds(occurrencesMillis.last())}, " +
+                "advanceMinutes: ${notification.advanceMinutes}, semester: ${notification.academicSemester?.index}",
+        )
+
         val content = buildNotificationContent(notification)
         occurrencesMillis.forEachIndexed { occurrenceIndex, occurrenceMillis ->
             val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
@@ -128,6 +137,12 @@ class NotificationRepositoryImpl(
         // Requests this batch already owns are about to be replaced, so they are free to reuse.
         val availableBudget = (MAX_PENDING_NOTIFICATIONS_BUDGET - pendingCount + ownedCount).coerceAtLeast(0)
         val perEvent = availableBudget / notifications.size
+
+        logger.d(
+            TAG,
+            "Budget for ${notifications.size} event(s): pending=$pendingCount, owned=$ownedCount, " +
+                "available=$availableBudget, perEvent=$perEvent",
+        )
 
         if (perEvent < MAX_OCCURRENCES_PER_EVENT) {
             logger.i(

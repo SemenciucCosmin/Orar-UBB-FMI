@@ -41,7 +41,10 @@ class InitializeTimetableNotificationsUseCase(
         coroutineScope.launch {
             val configuration = timetablePreferences
                 .getConfiguration()
-                .firstOrNull() ?: return@launch
+                .firstOrNull() ?: run {
+                logger.e(TAG, "Initialization aborted, no timetable configuration saved")
+                return@launch
+            }
 
             invalidateTimetableNotificationsUseCase()
             logger.d(TAG, "configuration $configuration")
@@ -53,21 +56,39 @@ class InitializeTimetableNotificationsUseCase(
                     val groupId = configuration.groupId
                     val studyLineId = studyLevel?.notation?.let { fieldId + it }
 
-                    if (studyLineId == null || groupId == null) return@launch
+                    if (studyLineId == null || groupId == null) {
+                        logger.e(
+                            TAG,
+                            "Initialization aborted, incomplete student configuration " +
+                                "(studyLineId: $studyLineId, groupId: $groupId)",
+                        )
+                        return@launch
+                    }
                     groupsRepository.getTimetable(groupId, studyLineId).map {
                         it.payload?.events
                     }
                 }
 
                 UserType.TEACHER -> {
-                    val teacherId = configuration.teacherId ?: return@launch
+                    val teacherId = configuration.teacherId ?: run {
+                        logger.e(TAG, "Initialization aborted, teacher configuration has no teacherId")
+                        return@launch
+                    }
                     teacherRepository.getTimetable(teacherId).map {
                         it.payload?.events
                     }
                 }
-            }.filterNotNull().firstOrNull() ?: return@launch
+            }.filterNotNull().firstOrNull() ?: run {
+                logger.e(TAG, "Initialization aborted, timetable could not be fetched")
+                return@launch
+            }
 
             val visibleImpersonalEvents = impersonalEvents.filter { it.isVisible }
+            logger.d(
+                TAG,
+                "Fetched ${impersonalEvents.size} timetable event(s), " +
+                    "${visibleImpersonalEvents.size} visible get notifications on",
+            )
             val initializedEventsNotifications = visibleImpersonalEvents.map {
                 it.copy(isNotificationOn = true)
             }
@@ -96,6 +117,6 @@ class InitializeTimetableNotificationsUseCase(
     }
 
     companion object {
-        private const val TAG = "SetupEventsNotificationUseCase"
+        private const val TAG = "InitializeTimetableNotificationsUseCase"
     }
 }

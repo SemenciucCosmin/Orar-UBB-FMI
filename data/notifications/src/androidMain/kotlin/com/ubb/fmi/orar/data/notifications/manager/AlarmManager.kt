@@ -13,12 +13,16 @@ import android.os.Build
  * [AlarmManager.setExactAndAllowWhileIdle] would otherwise throw a [SecurityException]. The
  * inexact fallback may be delayed by Doze/App Standby batching, so the notification can fire
  * later than [triggerAtMillis].
+ *
+ * @return `true` when an exact alarm was armed, `false` when the inexact fallback was used.
  */
 @SuppressLint("MissingPermission")
-fun AlarmManager.scheduleExact(type: Int, triggerAtMillis: Long, operation: PendingIntent) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !canScheduleExactAlarms()) {
+fun AlarmManager.scheduleExact(type: Int, triggerAtMillis: Long, operation: PendingIntent): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !canScheduleExactAlarms()) {
         setAndAllowWhileIdle(type, triggerAtMillis, operation)
+        false
     } else {
         setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
+        true
     }
 }

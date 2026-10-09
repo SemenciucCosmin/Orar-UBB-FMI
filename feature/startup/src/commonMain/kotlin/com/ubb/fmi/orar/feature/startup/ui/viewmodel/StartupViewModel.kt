@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.feature.startup.ui.viewmodel
 
+import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.permissions.model.Permission
 import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
@@ -23,7 +24,8 @@ class StartupViewModel(
     private val isConfigurationDoneUseCase: IsConfigurationDoneUseCase,
     private val requestPermissionUseCase: RequestPermissionUseCase,
     private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
-    private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase
+    private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase,
+    private val logger: Logger,
 ) : EventViewModel<StartupUiEvent>() {
 
     /**
@@ -50,10 +52,14 @@ class StartupViewModel(
      */
     private fun checkNotificationPermission() {
         viewModelScope.launch {
-            if (!isPermissionGrantedUseCase(Permission.NOTIFICATIONS)) {
-                val isRequestGranted = requestPermissionUseCase(Permission.NOTIFICATIONS)
-                if (isRequestGranted) initializeTimetableNotificationsUseCase()
+            if (isPermissionGrantedUseCase(Permission.NOTIFICATIONS)) {
+                logger.d(TAG, "Notification permission already granted")
+                return@launch
             }
+
+            val isRequestGranted = requestPermissionUseCase(Permission.NOTIFICATIONS)
+            logger.d(TAG, "Notification permission request granted: $isRequestGranted")
+            if (isRequestGranted) initializeTimetableNotificationsUseCase()
         }
     }
 
@@ -70,5 +76,9 @@ class StartupViewModel(
                 else -> registerEvent(StartupUiEvent.CONFIGURATION_INCOMPLETE)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "StartupViewModel"
     }
 }

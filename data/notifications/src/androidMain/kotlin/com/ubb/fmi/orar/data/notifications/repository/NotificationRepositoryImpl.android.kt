@@ -21,6 +21,7 @@ import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.calendar.usecase.GetAcademicYearUseCase
 import com.ubb.fmi.orar.domain.calendar.usecase.GetUpcomingEventOccurrencesUseCase
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * Android [NotificationRepository] implementation, scheduling local notifications as
@@ -68,17 +69,29 @@ class NotificationRepositoryImpl(
         ).firstOrNull()
 
         if (triggerMillis == null) {
-            logger.d(TAG, "Skipped notification ${notification.id}, no teaching week left to fire in")
+            logger.d(
+                TAG,
+                "Skipped notification ${notification.id}, no teaching week left to fire in " +
+                    "(semester: ${notification.academicSemester?.index})",
+            )
             return
         }
 
         try {
-            notificationCacheDataSource.getNotificationManager().scheduleExact(
+            val isExact = notificationCacheDataSource.getNotificationManager().scheduleExact(
                 AlarmManager.RTC_WAKEUP,
                 triggerMillis,
                 buildPendingIntent(notification),
             )
-            logger.d(TAG, "Scheduled notification ${notification.id} for $triggerMillis")
+            logger.d(
+                TAG,
+                "Scheduled notification ${notification.id} for ${Instant.fromEpochMilliseconds(triggerMillis)} " +
+                    "($triggerMillis), exact: $isExact, day: ${notification.day.id}, " +
+                    "frequency: ${notification.frequency.id}, " +
+                    "start: ${notification.startHour}:${notification.startMinute}, " +
+                    "advanceMinutes: ${notification.advanceMinutes}, " +
+                    "semester: ${notification.academicSemester?.index}",
+            )
         } catch (exception: SecurityException) {
             logger.e(TAG, "Failed to schedule notification ${notification.id}: ${exception.message}")
         }
@@ -112,25 +125,32 @@ class NotificationRepositoryImpl(
      */
     @Suppress("ReturnCount")
     fun getEventNotification(intent: Intent): EventNotification? {
+        val id = intent.requireStringExtra(EXTRA_NOTIFICATION_ID) ?: return null
         val semesterMillis = intent.getLongExtra(EXTRA_SEMESTER_MILLIS, NO_SEMESTER_MILLIS)
         val academicSemester = when (semesterMillis) {
             NO_SEMESTER_MILLIS -> null
             else -> {
                 val semesterIndex = intent.getIntExtra(EXTRA_SEMESTER_INDEX, NO_SEMESTER_INDEX)
-                getAcademicYearUseCase(semesterMillis).semesters.firstOrNull {
-                    it.index == semesterIndex
-                } ?: return null
+                val academicYear = getAcademicYearUseCase(semesterMillis)
+                academicYear.semesters.firstOrNull { it.index == semesterIndex } ?: run {
+                    logger.e(
+                        TAG,
+                        "Alarm $id references semester $semesterIndex, missing from academic year " +
+                            "${academicYear.startYear} resolved from $semesterMillis",
+                    )
+                    return null
+                }
             }
         }
 
         return EventNotification(
-            id = intent.getStringExtra(EXTRA_NOTIFICATION_ID) ?: return null,
-            activity = intent.getStringExtra(EXTRA_EVENT_ACTIVITY) ?: return null,
-            type = EventType.getById(intent.getStringExtra(EXTRA_EVENT_TYPE_ID) ?: return null),
-            location = intent.getStringExtra(EXTRA_EVENT_LOCATION) ?: return null,
-            participant = intent.getStringExtra(EXTRA_EVENT_PARTICIPANT) ?: return null,
-            frequency = Frequency.getById(intent.getStringExtra(EXTRA_FREQUENCY_ID) ?: return null),
-            day = Day.getById(intent.getStringExtra(EXTRA_DAY_ID) ?: return null),
+            id = id,
+            activity = intent.requireStringExtra(EXTRA_EVENT_ACTIVITY) ?: return null,
+            type = EventType.getById(intent.requireStringExtra(EXTRA_EVENT_TYPE_ID) ?: return null),
+            location = intent.requireStringExtra(EXTRA_EVENT_LOCATION) ?: return null,
+            participant = intent.requireStringExtra(EXTRA_EVENT_PARTICIPANT) ?: return null,
+            frequency = Frequency.getById(intent.requireStringExtra(EXTRA_FREQUENCY_ID) ?: return null),
+            day = Day.getById(intent.requireStringExtra(EXTRA_DAY_ID) ?: return null),
             startHour = intent.getIntExtra(EXTRA_START_HOUR, DEFAULT_TIME),
             startMinute = intent.getIntExtra(EXTRA_START_MINUTE, DEFAULT_TIME),
             endHour = intent.getIntExtra(EXTRA_END_HOUR, DEFAULT_TIME),
@@ -138,6 +158,14 @@ class NotificationRepositoryImpl(
             advanceMinutes = intent.getIntExtra(EXTRA_ADVANCE_MINUTES, DEFAULT_TIME),
             academicSemester = academicSemester,
         )
+    }
+
+    /** Reads the string extra [key], logging which one is missing so a dropped alarm is traceable. */
+    private fun Intent.requireStringExtra(key: String): String? {
+        return getStringExtra(key) ?: run {
+            logger.e(TAG, "Alarm intent $data is missing extra '$key'")
+            null
+        }
     }
 
     /**
@@ -188,7 +216,12 @@ class NotificationRepositoryImpl(
             Context.NOTIFICATION_SERVICE
         ) as NotificationManager
 
-        if (manager.getNotificationChannel(CHANNEL_ID) != null) return
+        manager.getNotificationChannel(CHANNEL_ID)?.let { existingChannel ->
+            if (existingChannel.importance == NotificationManager.IMPORTANCE_NONE) {
+                logger.e(TAG, "Notification channel $CHANNEL_ID is blocked by the user")
+            }
+            return
+        }
 
         val channel = NotificationChannel(
             CHANNEL_ID,
@@ -197,6 +230,7 @@ class NotificationRepositoryImpl(
         )
 
         manager.createNotificationChannel(channel)
+        logger.d(TAG, "Created notification channel $CHANNEL_ID")
     }
 
     /**

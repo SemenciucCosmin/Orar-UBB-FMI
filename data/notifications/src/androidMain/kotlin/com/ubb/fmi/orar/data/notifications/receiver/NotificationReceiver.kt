@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
 import com.ubb.fmi.orar.data.notifications.repository.NotificationRepositoryImpl
@@ -41,8 +42,9 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
+        logger.d(TAG, "Alarm received for ${intent.data}")
         val notification = notificationRepository.getEventNotification(intent) ?: run {
-            logger.e(TAG, "Dropped alarm, intent is missing event notification data")
+            logger.e(TAG, "Dropped alarm ${intent.data}, intent is missing event notification data")
             return
         }
 
@@ -61,7 +63,10 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             ICON_RESOURCE_ID,
             ICON_RESOURCE_TYPE,
             context.packageName
-        ).takeIf { it != 0 } ?: context.applicationInfo.icon
+        ).takeIf { it != 0 } ?: run {
+            logger.e(TAG, "Icon $ICON_RESOURCE_ID not found, falling back to the app icon")
+            context.applicationInfo.icon
+        }
 
         val deepLinkUri = "$USER_TIMETABLE_DEEP_LINK_BASE?eventId=${Uri.encode(notification.id)}".toUri()
         val deeplinkIntent = Intent(Intent.ACTION_VIEW, deepLinkUri).apply {
@@ -88,8 +93,12 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             Context.NOTIFICATION_SERVICE
         ) as NotificationManager
 
+        if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+            logger.e(TAG, "Notification ${notification.id} will be dropped, app notifications are disabled")
+        }
+
         notificationManager.notify(notification.id.hashCode(), displayedNotification)
-        logger.d(TAG, "Displayed notification ${notification.id}")
+        logger.d(TAG, "Displayed notification ${notification.id} (${notification.activity}, ${notification.day.id})")
     }
 
     /**
@@ -98,11 +107,19 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
      * [goAsync] holds the broadcast open while the suspending scheduling call runs, since a
      * receiver's process may be killed as soon as [onReceive] returns.
      */
+    @Suppress("TooGenericExceptionCaught")
     private fun scheduleNext(notification: EventNotification) {
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
             try {
+                logger.d(TAG, "Scheduling next occurrence of ${notification.id}")
                 notificationRepository.schedule(listOf(notification))
+            } catch (exception: Exception) {
+                logger.e(
+                    TAG,
+                    "Failed to schedule next occurrence of ${notification.id}, chain broken until next app " +
+                        "launch: ${exception.stackTraceToString()}",
+                )
             } finally {
                 pendingResult.finish()
             }
