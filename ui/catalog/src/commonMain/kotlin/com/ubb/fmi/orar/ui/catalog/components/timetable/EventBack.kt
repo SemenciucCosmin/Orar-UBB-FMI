@@ -26,12 +26,14 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_plus_circle
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_event_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_cancel
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_no_event_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_ok
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Composable for the face part of an Event back
+ * Composable for the back side of an Event card, showing its details, or an empty state
+ * message when there are none.
  */
 @Composable
 fun EventBack(
@@ -54,13 +56,14 @@ fun EventBack(
                 )
             }
 
-            if (text.isNotEmpty()) {
-                VerticalDivider()
-            }
+            VerticalDivider()
         }
 
         Text(
-            text = text,
+            text = when {
+                text.isBlank() -> stringResource(Res.string.lbl_no_event_details)
+                else -> text
+            },
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
             modifier = modifier.padding(Pds.spacing.SMedium)
@@ -87,6 +90,17 @@ private fun PreviewEventBack() {
     OrarUbbFmiTheme {
         EventBack(
             text = "Str. Teodor Mihali nr. 38-40",
+            onAddClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewEmptyEventBack() {
+    OrarUbbFmiTheme {
+        EventBack(
+            text = "",
             onAddClick = {}
         )
     }

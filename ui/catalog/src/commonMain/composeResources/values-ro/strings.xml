@@ -15,6 +15,7 @@
     <string name="lbl_optional">Opțional</string>
     <string name="lbl_got_it">Am înțeles</string>
     <string name="lbl_add">Adaugă</string>
+    <string name="lbl_no_event_details">Nu există detalii suplimentare</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Bun venit!</string>

@@ -14,6 +14,7 @@
     <string name="lbl_optional">Optional</string>
     <string name="lbl_got_it">Got it</string>
     <string name="lbl_add">Add</string>
+    <string name="lbl_no_event_details">No additional details</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Welcome!</string>
