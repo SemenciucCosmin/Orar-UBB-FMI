@@ -1,4 +1,4 @@
-@file:Suppress("MatchingDeclarationName", "MagicNumber")
+@file:Suppress("MatchingDeclarationName")
 
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
@@ -14,10 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import com.ubb.fmi.orar.domain.colorpack.model.ColorItem
+import com.ubb.fmi.orar.ui.colorpack.LocalColorPack
+import com.ubb.fmi.orar.ui.colorpack.extensions.getColor
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
@@ -32,9 +34,9 @@ import org.jetbrains.compose.resources.stringResource
 sealed class StatusIndicator {
 
     /**
-     * The color of both the dot and the label.
+     * The customizable color item providing the color of both the dot and the label.
      */
-    abstract val color: Color
+    abstract val colorItem: ColorItem
 
     /**
      * The label displayed next to the dot.
@@ -45,7 +47,7 @@ sealed class StatusIndicator {
      * Marks something happening right now, such as an ongoing event, the current day or week.
      */
     data class Ongoing(
-        override val color: Color = Color(0xFF1DB954),
+        override val colorItem: ColorItem = ColorItem.STATUS_ONGOING,
         override val label: StringResource = Res.string.lbl_now,
     ) : StatusIndicator()
 
@@ -53,7 +55,7 @@ sealed class StatusIndicator {
      * Marks something about to happen, such as the next event.
      */
     data class Upcoming(
-        override val color: Color = Color(0xFFFFAC1C),
+        override val colorItem: ColorItem = ColorItem.STATUS_UPCOMING,
         override val label: StringResource = Res.string.lbl_up_next,
     ) : StatusIndicator()
 
@@ -95,6 +97,8 @@ fun StatusIndicator(
     spacing: Dp = StatusIndicator.SPACING,
     dotSize: Dp = StatusIndicator.DOT_SIZE,
 ) {
+    val color = LocalColorPack.current.getColor(defaults.colorItem)
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(spacing),
@@ -103,13 +107,13 @@ fun StatusIndicator(
         Box(
             modifier = Modifier
                 .size(dotSize)
-                .background(color = defaults.color, shape = CircleShape)
+                .background(color = color, shape = CircleShape)
         )
 
         Text(
             style = textStyle,
             text = stringResource(defaults.label),
-            color = defaults.color
+            color = color
         )
     }
 }

@@ -26,4 +26,17 @@ sealed class SettingsNavDestination {
      */
     @Serializable
     data object Notifications : SettingsNavDestination()
+
+    /**
+     * Represents a navigation destination for the customizable colors list.
+     */
+    @Serializable
+    data object Colors : SettingsNavDestination()
+
+    /**
+     * Represents a navigation destination for picking the color of a single color item.
+     * @param colorItemId The id of the color item being customized.
+     */
+    @Serializable
+    data class ColorPicker(val colorItemId: String) : SettingsNavDestination()
 }

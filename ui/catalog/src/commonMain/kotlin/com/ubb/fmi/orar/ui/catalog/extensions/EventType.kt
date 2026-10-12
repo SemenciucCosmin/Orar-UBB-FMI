@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.ui.catalog.extensions
 
-import androidx.compose.ui.graphics.Color
 import com.ubb.fmi.orar.data.timetable.model.EventType
+import com.ubb.fmi.orar.domain.colorpack.model.ColorItem
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_laboratory
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_lecture
@@ -34,20 +34,11 @@ val EventType.imageRes: DrawableResource
         EventType.PERSONAL -> Res.drawable.ic_personal
     }
 
-val EventType.colorLight: Color
+val EventType.colorItem: ColorItem
     get() = when (this) {
-        EventType.LECTURE -> Color(0xFF00A300)
-        EventType.SEMINARY -> Color(0xFF5D3FD3)
-        EventType.LABORATORY -> Color(0xFF0000D1)
-        EventType.STAFF -> Color(0xFFD12300)
-        EventType.PERSONAL -> Color(0xFFFFAC1C)
-    }
-
-val EventType.colorDark: Color
-    get() = when (this) {
-        EventType.LECTURE -> Color(0xFF1DB954)
-        EventType.SEMINARY -> Color(0xFF8C6FF0)
-        EventType.LABORATORY -> Color(0xFF3D5AFE)
-        EventType.STAFF -> Color(0xFFFF6E40)
-        EventType.PERSONAL -> Color(0xFFFFC000)
+        EventType.LECTURE -> ColorItem.EVENT_LECTURE
+        EventType.SEMINARY -> ColorItem.EVENT_SEMINARY
+        EventType.LABORATORY -> ColorItem.EVENT_LABORATORY
+        EventType.STAFF -> ColorItem.EVENT_STAFF
+        EventType.PERSONAL -> ColorItem.EVENT_PERSONAL
     }

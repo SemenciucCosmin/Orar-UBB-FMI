@@ -9,16 +9,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.EventType
-import com.ubb.fmi.orar.ui.catalog.extensions.colorDark
-import com.ubb.fmi.orar.ui.catalog.extensions.colorLight
+import com.ubb.fmi.orar.ui.catalog.extensions.colorItem
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
+import com.ubb.fmi.orar.ui.colorpack.LocalColorPack
+import com.ubb.fmi.orar.ui.colorpack.extensions.contentColor
+import com.ubb.fmi.orar.ui.colorpack.extensions.getColor
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
-import com.ubb.fmi.orar.ui.theme.isAppInDarkTheme
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -31,13 +31,12 @@ fun EventTypeChip(
     enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val color = LocalColorPack.current.getColor(type.colorItem)
+
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.extraLarge,
-        color = when {
-            isAppInDarkTheme() -> type.colorDark
-            else -> type.colorLight
-        }.copy(
+        color = color.copy(
             alpha = when {
                 enabled -> 1f
                 else -> 0.5f
@@ -47,7 +46,7 @@ fun EventTypeChip(
         Text(
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = Color.White,
+            color = color.contentColor(),
             text = when {
                 text.isEmpty() -> stringResource(type.labelRes)
                 else -> "${stringResource(type.labelRes)} - $text"

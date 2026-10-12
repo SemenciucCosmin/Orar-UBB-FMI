@@ -167,4 +167,12 @@
     <string name="lbl_notification_permission_message">Notifications are off because the app isn't allowed to send them. Open settings to grant the permission?</string>
     <string name="lbl_open_settings">Open settings</string>
 
+    <string name="lbl_colors">Colors</string>
+    <string name="lbl_status_indicators">Status indicators</string>
+    <string name="lbl_event_types">Event types</string>
+    <string name="lbl_color_ongoing">Ongoing</string>
+    <string name="lbl_color_upcoming">Up next</string>
+    <string name="lbl_save">Save</string>
+    <string name="lbl_preview">Preview</string>
+    <string name="lbl_reset_to_default">Reset to default</string>
 </resources>

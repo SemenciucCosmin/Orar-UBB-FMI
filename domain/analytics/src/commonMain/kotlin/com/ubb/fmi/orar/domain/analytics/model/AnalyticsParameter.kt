@@ -11,6 +11,7 @@ object AnalyticsParameter {
     const val EVENT_TYPE = "event_type"
     const val ADVANCE_MINUTES = "advance_minutes"
     const val THEME = "theme"
+    const val COLOR_ITEM = "color_item"
     const val USER_TYPE = "user_type"
 }
 

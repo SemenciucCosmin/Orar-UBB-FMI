@@ -26,6 +26,7 @@ fun SettingsRoute(navController: NavController) {
         onBack = navController::navigateUp,
         onThemeClick = { navController.navigate(SettingsNavDestination.Theme) },
         onNotificationsClick = { navController.navigate(SettingsNavDestination.Notifications) },
+        onColorsClick = { navController.navigate(SettingsNavDestination.Colors) },
         onRepositoryClick = viewModel::onRepositoryClick,
         onReportIssueClick = viewModel::onReportIssueClick,
         onLeaveFeedbackClick = viewModel::onLeaveFeedbackClick,

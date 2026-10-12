@@ -53,9 +53,11 @@ kotlin {
             // MODULES
             implementation(projects.data.network)
             implementation(projects.data.timetable)
+            implementation(projects.domain.colorPack)
             implementation(projects.domain.extensions)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
+            implementation(projects.ui.colorPack)
             implementation(projects.ui.theme)
         }
     }

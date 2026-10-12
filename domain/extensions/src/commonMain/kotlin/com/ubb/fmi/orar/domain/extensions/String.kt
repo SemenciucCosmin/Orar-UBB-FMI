@@ -79,6 +79,12 @@ val String.Companion.ELLIPSIS: String
     get() = "..."
 
 /**
+ * String extension for hash sign
+ */
+val String.Companion.HASH: String
+    get() = "#"
+
+/**
  * Returns substring between [afterDelimiter] and [beforeDelimiter]
  */
 fun String.substringBetween(

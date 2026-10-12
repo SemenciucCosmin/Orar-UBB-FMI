@@ -66,7 +66,31 @@ class SettingsPreferencesImpl(
         }.distinctUntilChanged().firstOrNull() ?: DEFAULT_NOTIFICATION_ADVANCE_MINUTES
     }
 
+    override fun getCustomColors(): Flow<Map<String, String>> {
+        return dataStore.data.map { preferences ->
+            preferences.asMap()
+                .filterKeys { it.name.startsWith(CUSTOM_COLOR_PREFIX) }
+                .mapNotNull { (key, value) ->
+                    (value as? String)?.let { key.name.removePrefix(CUSTOM_COLOR_PREFIX) to it }
+                }
+                .toMap()
+        }.distinctUntilChanged()
+    }
+
+    override suspend fun setCustomColor(itemId: String, hex: String) {
+        dataStore.edit {
+            it[stringPreferencesKey(CUSTOM_COLOR_PREFIX + itemId)] = hex
+        }
+    }
+
+    override suspend fun removeCustomColor(itemId: String) {
+        dataStore.edit {
+            it.remove(stringPreferencesKey(CUSTOM_COLOR_PREFIX + itemId))
+        }
+    }
+
     companion object {
+        private const val CUSTOM_COLOR_PREFIX = "CUSTOM_COLOR_"
         private const val DEFAULT_THEME_OPTION = "system"
         private const val DEFAULT_NOTIFICATIONS_ENABLED = true
         private const val DEFAULT_NOTIFICATION_ADVANCE_MINUTES = 30

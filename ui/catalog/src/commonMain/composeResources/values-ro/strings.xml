@@ -168,4 +168,12 @@
     <string name="lbl_notification_permission_message">Notificările sunt oprite deoarece aplicația nu are permisiunea de a le trimite. Deschizi setările pentru a acorda permisiunea?</string>
     <string name="lbl_open_settings">Deschide setările</string>
 
+    <string name="lbl_colors">Culori</string>
+    <string name="lbl_status_indicators">Indicatori de status</string>
+    <string name="lbl_event_types">Tipuri de evenimente</string>
+    <string name="lbl_color_ongoing">În desfășurare</string>
+    <string name="lbl_color_upcoming">Urmează</string>
+    <string name="lbl_save">Salvează</string>
+    <string name="lbl_preview">Previzualizare</string>
+    <string name="lbl_reset_to_default">Resetează la implicit</string>
 </resources>

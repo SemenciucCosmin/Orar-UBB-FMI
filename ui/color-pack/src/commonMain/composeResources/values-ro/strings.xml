@@ -1,0 +1,4 @@
+<resources>
+    <string name="lbl_hex_code">Cod hex</string>
+    <string name="lbl_invalid_hex_code">Introdu un cod hex de 6 cifre, ex. #1DB954</string>
+</resources>

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Interface for preferences with configured settings
  */
+@Suppress("TooManyFunctions")
 interface SettingsPreferences {
 
     /**
@@ -49,6 +50,22 @@ interface SettingsPreferences {
      * for one-off reads from business logic that doesn't need to react to further changes.
      */
     suspend fun getNotificationAdvanceMinutes(): Int
+
+    /**
+     * Get [Flow] with all user customized colors, mapped from color item id to hex color string.
+     * Items missing from the map use their default color.
+     */
+    fun getCustomColors(): Flow<Map<String, String>>
+
+    /**
+     * Sets the customized hex color string for the color item with [itemId].
+     */
+    suspend fun setCustomColor(itemId: String, hex: String)
+
+    /**
+     * Removes the customized color for the color item with [itemId], restoring its default.
+     */
+    suspend fun removeCustomColor(itemId: String)
 
     companion object {
         const val PREFERENCES_NAME = "SETTINGS_PREFERENCES"

@@ -10,11 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.catalog.components.timetable.StatusIndicator
 import com.ubb.fmi.orar.ui.catalog.extensions.animatedGradientBorder
 import com.ubb.fmi.orar.ui.catalog.extensions.conditional
+import com.ubb.fmi.orar.ui.colorpack.LocalColorPack
+import com.ubb.fmi.orar.ui.colorpack.extensions.getColor
 import com.ubb.fmi.orar.ui.theme.Pds
 
 private val OUTLINE_WIDTH = 2.dp
@@ -29,9 +30,6 @@ private val OUTLINE_WIDTH = 2.dp
  * @param faceContent Composable lambda for front-facing content
  * @param backContent Composable lambda for back-facing content
  * @param modifier Optional modifier for styling the card
- * @param outlineColor Color of the animated gradient outline drawn around the card; no outline
- * when unspecified
- * @param badge Optional content shown in the top end corner of the card, fading out with the face
  */
 @Composable
 fun AnimatedCard(
@@ -43,8 +41,6 @@ fun AnimatedCard(
     modifier: Modifier = Modifier,
     statusIndicator: StatusIndicator? = null,
 ) {
-    val indicatorColor = statusIndicator?.color ?: Color.Unspecified
-
     ElevatedCard(
         enabled = enabled,
         onClick = onClick,
@@ -55,11 +51,13 @@ fun AnimatedCard(
             rotationX = animatedCardState.xRotation
             rotationY = animatedCardState.yRotation
             rotationZ = animatedCardState.zRotation
-        }.conditional(indicatorColor.isSpecified) {
+        }.conditional(statusIndicator != null) {
             animatedGradientBorder(
-                color = indicatorColor,
                 width = OUTLINE_WIDTH,
                 shape = CardDefaults.elevatedShape,
+                color = statusIndicator?.colorItem?.let(
+                    LocalColorPack.current::getColor
+                ) ?: Color.Unspecified,
             )
         }
     ) {

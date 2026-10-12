@@ -49,6 +49,7 @@ include(
     ":domain:analytics",
     ":domain:announcements",
     ":domain:calendar",
+    ":domain:color-pack",
     ":domain:extensions",
     ":domain:feedback",
     ":domain:html-parser",
@@ -79,6 +80,7 @@ include(
     ":feature:teachers",
     ":feature:user-timetable",
     ":ui:catalog",
+    ":ui:color-pack",
     ":ui:navigation",
     ":ui:theme",
 )

@@ -19,6 +19,7 @@ import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_change_configuration
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_colors
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_contact_me_at
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_developed_by
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_notifications
@@ -38,6 +39,7 @@ fun SettingsScreen(
     onChangeConfigurationClick: () -> Unit,
     onThemeClick: () -> Unit,
     onNotificationsClick: () -> Unit,
+    onColorsClick: () -> Unit,
     onRepositoryClick: () -> Unit = {},
     onReportIssueClick: () -> Unit = {},
     onLeaveFeedbackClick: () -> Unit = {},
@@ -65,6 +67,11 @@ fun SettingsScreen(
             ListItemClickable(
                 headline = stringResource(Res.string.lbl_theme),
                 onClick = onThemeClick
+            )
+
+            ListItemClickable(
+                headline = stringResource(Res.string.lbl_colors),
+                onClick = onColorsClick
             )
 
             ListItemClickable(
@@ -123,6 +130,7 @@ private fun PreviewSettingsScreen() {
             onChangeConfigurationClick = {},
             onThemeClick = {},
             onNotificationsClick = {},
+            onColorsClick = {},
         )
     }
 }

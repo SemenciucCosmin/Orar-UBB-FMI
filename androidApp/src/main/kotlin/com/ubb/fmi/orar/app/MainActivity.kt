@@ -7,14 +7,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.ubb.fmi.orar.data.permissions.bridge.PermissionRequestBridge
+import com.ubb.fmi.orar.domain.colorpack.model.ColorPack
+import com.ubb.fmi.orar.domain.colorpack.usecase.GetColorPackUseCase
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
 import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOptionUseCase
 import com.ubb.fmi.orar.feature.dialogs.ui.route.DialogsRoute
+import com.ubb.fmi.orar.ui.colorpack.ColorPackProvider
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -26,6 +30,7 @@ import org.koin.core.component.inject
 class MainActivity : ComponentActivity(), KoinComponent {
 
     private val getThemeOptionUseCase: GetThemeOptionUseCase by inject()
+    private val getColorPackUseCase: GetColorPackUseCase by inject()
 
     private val permissionRequestLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -42,10 +47,16 @@ class MainActivity : ComponentActivity(), KoinComponent {
             val themeOption by getThemeOptionUseCase().collectAsStateWithLifecycle(
                 initialValue = ThemeOption.SYSTEM
             )
+            val colorPackFlow = remember { getColorPackUseCase() }
+            val colorPack by colorPackFlow.collectAsStateWithLifecycle(
+                initialValue = ColorPack.Default
+            )
 
             OrarUbbFmiTheme(themeOption) {
-                AppGraph(navController)
-                DialogsRoute(navController)
+                ColorPackProvider(colorPack) {
+                    AppGraph(navController)
+                    DialogsRoute(navController)
+                }
             }
         }
     }

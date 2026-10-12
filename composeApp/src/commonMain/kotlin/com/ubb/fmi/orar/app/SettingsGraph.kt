@@ -3,7 +3,10 @@ package com.ubb.fmi.orar.app
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.notifications.ui.route.NotificationsRoute
+import com.ubb.fmi.orar.feature.settings.ui.route.ColorPickerRoute
+import com.ubb.fmi.orar.feature.settings.ui.route.ColorsRoute
 import com.ubb.fmi.orar.feature.settings.ui.route.SettingsRoute
 import com.ubb.fmi.orar.feature.settings.ui.route.ThemeRoute
 import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
@@ -25,5 +28,18 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 
     composable<SettingsNavDestination.Notifications> { navBackStackEntry ->
         NotificationsRoute(navController)
+    }
+
+    composable<SettingsNavDestination.Colors> { navBackStackEntry ->
+        ColorsRoute(navController)
+    }
+
+    composable<SettingsNavDestination.ColorPicker> { navBackStackEntry ->
+        val args = navBackStackEntry.toRoute<SettingsNavDestination.ColorPicker>()
+
+        ColorPickerRoute(
+            navController = navController,
+            colorItemId = args.colorItemId,
+        )
     }
 }

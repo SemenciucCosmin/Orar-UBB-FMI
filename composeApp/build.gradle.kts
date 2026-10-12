@@ -88,6 +88,7 @@ kotlin {
             implementation(projects.domain.analytics)
             implementation(projects.domain.announcements)
             implementation(projects.domain.calendar)
+            implementation(projects.domain.colorPack)
             implementation(projects.domain.extensions)
             implementation(projects.domain.feedback)
             implementation(projects.domain.htmlParser)
@@ -118,6 +119,7 @@ kotlin {
             implementation(projects.feature.teachers)
             implementation(projects.feature.userTimetable)
             implementation(projects.ui.catalog)
+            implementation(projects.ui.colorPack)
             implementation(projects.ui.navigation)
             implementation(projects.ui.theme)
         }

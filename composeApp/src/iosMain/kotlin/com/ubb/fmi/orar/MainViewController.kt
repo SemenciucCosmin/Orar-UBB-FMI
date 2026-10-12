@@ -3,6 +3,7 @@ package com.ubb.fmi.orar
 import Logger
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.ComposeUIViewController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -10,9 +11,12 @@ import androidx.navigation.compose.rememberNavController
 import com.ubb.fmi.orar.app.AppGraph
 import com.ubb.fmi.orar.app.AppInitializer
 import com.ubb.fmi.orar.di.KoinInitializer
+import com.ubb.fmi.orar.domain.colorpack.model.ColorPack
+import com.ubb.fmi.orar.domain.colorpack.usecase.GetColorPackUseCase
 import com.ubb.fmi.orar.domain.theme.model.ThemeOption
 import com.ubb.fmi.orar.domain.theme.usecase.GetThemeOptionUseCase
 import com.ubb.fmi.orar.feature.dialogs.ui.route.DialogsRoute
+import com.ubb.fmi.orar.ui.colorpack.ColorPackProvider
 import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.koin.compose.koinInject
@@ -34,6 +38,11 @@ fun MainViewController() = ComposeUIViewController(
     val themeOption by getThemeOptionUseCase().collectAsStateWithLifecycle(
         initialValue = ThemeOption.SYSTEM
     )
+    val getColorPackUseCase: GetColorPackUseCase = koinInject()
+    val colorPackFlow = remember(getColorPackUseCase) { getColorPackUseCase() }
+    val colorPack by colorPackFlow.collectAsStateWithLifecycle(
+        initialValue = ColorPack.Default
+    )
 
     val deepLinkUrl = DeepLinkHandler.deepLinkUrl
     LaunchedEffect(deepLinkUrl) {
@@ -50,8 +59,10 @@ fun MainViewController() = ComposeUIViewController(
     }
 
     OrarUbbFmiTheme(themeOption) {
-        AppGraph(navController)
-        DialogsRoute(navController)
+        ColorPackProvider(colorPack) {
+            AppGraph(navController)
+            DialogsRoute(navController)
+        }
     }
 }
 
