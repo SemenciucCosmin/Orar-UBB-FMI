@@ -37,6 +37,7 @@ fun EventsList(
     onRemoveClick: (TimetableListItem.Event) -> Unit,
     modifier: Modifier = Modifier,
     selectedEventId: String? = null,
+    onSelectedEventAnimated: () -> Unit = {},
     onAddItem: ((String) -> Unit)? = null,
 ) {
     LazyColumn(
@@ -69,6 +70,7 @@ fun EventsList(
                     LaunchedEffect(selectedEventId) {
                         if (timetableItem.id == selectedEventId) {
                             animatedCardState.animateShake()
+                            onSelectedEventAnimated()
                         }
                     }
 

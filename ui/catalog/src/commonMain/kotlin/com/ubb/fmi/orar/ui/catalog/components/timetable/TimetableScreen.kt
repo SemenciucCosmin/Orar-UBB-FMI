@@ -110,6 +110,7 @@ fun TimetableScreen(
             onRemoveClick = onRemoveItem,
             onAddItem = onAddItem,
             selectedEventId = eventIdToAnimate,
+            onSelectedEventAnimated = { eventIdToAnimate = null },
         )
     }
 }
