@@ -16,7 +16,7 @@
     <string name="lbl_add">Add</string>
     <string name="lbl_no_event_details">No additional details</string>
     <string name="lbl_now">now</string>
-    <string name="lbl_up_next">next</string>
+    <string name="lbl_up_next">up next</string>
 
     <!--  ONBOARDING  -->
     <string name="lbl_welcome">Welcome!</string>
