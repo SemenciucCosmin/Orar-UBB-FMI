@@ -32,6 +32,8 @@ import kotlin.time.Clock
  * @property isEditModeOn Indicates whether the timetable is in edit mode, allowing modifications
  * @property isLoading Indicates whether the timetable data is currently being loaded.
  * @property errorStatus Indicates whether there was an error loading the timetable data.
+ * @property isNotificationPermissionGranted Whether the system allows the app to post
+ * notifications; while it doesn't, every event's notification is shown as off.
  */
 data class TimetableUiState(
     val events: ImmutableList<Event> = persistentListOf(),
@@ -43,6 +45,7 @@ data class TimetableUiState(
     val isLoading: Boolean = false,
     val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
+    val isNotificationPermissionGranted: Boolean = false,
     private val currentFrequency: Frequency? = null,
 ) {
     /**
@@ -82,7 +85,8 @@ data class TimetableUiState(
                                 caption = event.caption,
                                 details = event.details,
                                 isVisible = event.isVisible,
-                                isNotificationOn = event.isNotificationOn,
+                                isNotificationOn = event.isNotificationOn &&
+                                    isNotificationPermissionGranted,
                                 isPersonal = event.ownerId == Owner.User.id,
                             )
                         }
@@ -123,7 +127,8 @@ data class TimetableUiState(
                                 caption = event.caption,
                                 details = event.details,
                                 isVisible = event.isVisible,
-                                isNotificationOn = event.isNotificationOn,
+                                isNotificationOn = event.isNotificationOn &&
+                                    isNotificationPermissionGranted,
                                 isPersonal = event.ownerId == Owner.User.id
                             )
                         }
@@ -213,6 +218,14 @@ data class TimetableUiState(
 
     private val TimetableListItem.Event.endMinutes: Int
         get() = endHour * MINUTES_PER_HOUR + endMinute
+
+    /**
+     * One-off events of the timetable screens.
+     */
+    enum class TimetableUiEvent : UiEvent {
+        EVENT_ADOPTION_SUCCESSFUL,
+        NOTIFICATION_PERMISSION_REQUIRED,
+    }
 
     companion object {
         private const val FIRST_INDEX = 0

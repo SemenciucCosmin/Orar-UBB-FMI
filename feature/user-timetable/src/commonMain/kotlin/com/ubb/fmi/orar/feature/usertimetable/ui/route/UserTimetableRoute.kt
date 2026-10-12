@@ -5,11 +5,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.ubb.fmi.orar.feature.notifications.ui.components.NotificationPermissionDialog
 import com.ubb.fmi.orar.feature.usertimetable.ui.components.UserTimetableTopBar
 import com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel.UserTimetableViewModel
+import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.TimetableUiEvent
 import com.ubb.fmi.orar.ui.navigation.components.BottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
 import org.koin.compose.viewmodel.koinViewModel
@@ -26,6 +30,11 @@ fun UserTimetableRoute(navController: NavController, selectedEventId: String? = 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val hapticFeedback = LocalHapticFeedback.current
 
+    LifecycleResumeEffect(viewModel) {
+        viewModel.refreshNotificationPermission()
+        onPauseOrDispose {}
+    }
+
     LaunchedEffect(selectedEventId) {
         selectedEventId?.let(viewModel::logNotificationOpen)
     }
@@ -39,6 +48,7 @@ fun UserTimetableRoute(navController: NavController, selectedEventId: String? = 
         onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
         onItemNotificationChange = {
             when {
+                !uiState.isNotificationPermissionGranted -> Unit
                 it.isNotificationOn -> {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
                 }
@@ -62,4 +72,20 @@ fun UserTimetableRoute(navController: NavController, selectedEventId: String? = 
             )
         },
     )
+
+    EventHandler(viewModel.events) { event ->
+        when (event) {
+            TimetableUiEvent.NOTIFICATION_PERMISSION_REQUIRED -> {
+                NotificationPermissionDialog(
+                    onOpenSettingsClick = {
+                        viewModel.unregisterEvent(event)
+                        viewModel.openNotificationPermissionSettings()
+                    },
+                    onDismiss = { viewModel.unregisterEvent(event) },
+                )
+            }
+
+            TimetableUiEvent.EVENT_ADOPTION_SUCCESSFUL -> Unit
+        }
+    }
 }

@@ -45,13 +45,16 @@ kotlin {
 
             // KOTLINX
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.immutableCollections)
 
             // MODULES
+            implementation(projects.data.permissions)
             implementation(projects.data.settings)
             implementation(projects.domain.analytics)
             implementation(projects.domain.logging)
             implementation(projects.domain.extensions)
             implementation(projects.domain.notifications)
+            implementation(projects.domain.permissions)
             implementation(projects.ui.catalog)
             implementation(projects.ui.navigation)
             implementation(projects.ui.theme)

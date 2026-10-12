@@ -1,10 +1,10 @@
 package com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel
 
 import Logger
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.permissions.model.Permission
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Week
 import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
@@ -12,13 +12,18 @@ import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsTimetableType
 import com.ubb.fmi.orar.domain.notifications.usecase.ChangeEventNotificationUseCase
+import com.ubb.fmi.orar.domain.notifications.usecase.RescheduleNotificationsUseCase
+import com.ubb.fmi.orar.domain.permissions.usecase.IsPermissionGrantedUseCase
+import com.ubb.fmi.orar.domain.permissions.usecase.OpenPermissionSettingsUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.DeletePersonalEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.TimetableUiEvent
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -36,15 +41,19 @@ import kotlinx.coroutines.launch
  * @property getUserTimetableUseCase Use case for fetching the user's timetable.
  * @property changeEventVisibilityUseCase Use case for changing the visibility of a timetable
  */
+@Suppress("LongParameterList", "TooManyFunctions")
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
     private val changeEventVisibilityUseCase: ChangeEventVisibilityUseCase,
     private val changeEventNotificationUseCase: ChangeEventNotificationUseCase,
     private val deletePersonalEventUseCase: DeletePersonalEventUseCase,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
+    private val rescheduleNotificationsUseCase: RescheduleNotificationsUseCase,
+    private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
+    private val openPermissionSettingsUseCase: OpenPermissionSettingsUseCase,
     private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
-) : ViewModel() {
+) : EventViewModel<TimetableUiEvent>() {
 
     /**
      * Job to manage the loading of the timetable.
@@ -181,7 +190,39 @@ class UserTimetableViewModel(
         }
     }
 
+    /**
+     * Re-checks the notification permission, e.g. when returning from the system settings.
+     * If it was just granted, restores the notifications the user already had enabled.
+     */
+    fun refreshNotificationPermission() {
+        viewModelScope.launch {
+            val isGranted = isPermissionGrantedUseCase(Permission.NOTIFICATIONS)
+            val wasGranted = _uiState.value.isNotificationPermissionGranted
+            logger.d(TAG, "refreshNotificationPermission, granted: $isGranted")
+            _uiState.update { it.copy(isNotificationPermissionGranted = isGranted) }
+            if (isGranted && !wasGranted) rescheduleNotificationsUseCase()
+        }
+    }
+
+    /**
+     * Opens the system settings screen where the notification permission can be granted.
+     */
+    fun openNotificationPermissionSettings() {
+        openPermissionSettingsUseCase(Permission.NOTIFICATIONS)
+    }
+
+    /**
+     * Toggles the notification of [event], or prompts the user to grant the notification
+     * permission if it isn't granted.
+     */
     fun changeTimetableClassNotification(event: TimetableListItem.Event) {
+        if (!_uiState.value.isNotificationPermissionGranted) {
+            registerEvent(TimetableUiEvent.NOTIFICATION_PERMISSION_REQUIRED) {
+                it == TimetableUiEvent.NOTIFICATION_PERMISSION_REQUIRED
+            }
+            return
+        }
+
         viewModelScope.launch {
             logger.d(TAG, "changeTimetableClassNotification event: $event")
             changeEventNotificationUseCase(event.id)

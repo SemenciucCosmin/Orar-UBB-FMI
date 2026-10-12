@@ -19,4 +19,10 @@ interface PermissionRepository {
      * Returns whether the permission ends up granted.
      */
     suspend fun request(permission: Permission): Boolean
+
+    /**
+     * Opens the system settings screen where the user can grant [permission] manually, for
+     * when it was denied and can no longer be requested in-app.
+     */
+    fun openSettings(permission: Permission)
 }

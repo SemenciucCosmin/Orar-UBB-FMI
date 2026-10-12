@@ -15,9 +15,9 @@ import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.domain.usertimetable.usecase.AdoptEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
-import com.ubb.fmi.orar.ui.catalog.model.TimetableUiEvent
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.TimetableUiEvent
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow

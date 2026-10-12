@@ -3,6 +3,9 @@ package com.ubb.fmi.orar.data.permissions.repository
 import Logger
 import com.ubb.fmi.orar.data.permissions.model.Permission
 import kotlinx.coroutines.suspendCancellableCoroutine
+import platform.Foundation.NSURL
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationOpenSettingsURLString
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
@@ -44,6 +47,21 @@ class PermissionRepositoryImpl(
                 }
                 cont.resume(granted)
             }
+        }
+    }
+
+    override fun openSettings(permission: Permission): Unit = when (permission) {
+        Permission.NOTIFICATIONS -> {
+            val url = NSURL.URLWithString(UIApplicationOpenSettingsURLString) ?: run {
+                logger.e(TAG, "Invalid app settings URL")
+                return
+            }
+
+            UIApplication.sharedApplication.openURL(
+                url = url,
+                options = emptyMap<Any?, Any>(),
+                completionHandler = null,
+            )
         }
     }
 

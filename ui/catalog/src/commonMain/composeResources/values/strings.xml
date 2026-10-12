@@ -161,5 +161,7 @@
     <string name="lbl_notification_advance_minutes">Notify before event</string>
     <string name="lbl_minute_abr">%1$sm</string>
     <string name="lbl_hour_abr">%1$sh</string>
+    <string name="lbl_notification_permission_message">Notifications are off because the app isn't allowed to send them. Open settings to grant the permission?</string>
+    <string name="lbl_open_settings">Open settings</string>
 
 </resources>

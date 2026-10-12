@@ -45,10 +45,10 @@ fun NotificationsScreen(
         ) {
             ListItemClickable(
                 headline = stringResource(Res.string.lbl_notifications_enabled),
-                onClick = { onNotificationsEnabledChange(!uiState.notificationsEnabled) }
+                onClick = { onNotificationsEnabledChange(!uiState.areNotificationsOn) }
             ) {
                 Switch(
-                    checked = uiState.notificationsEnabled,
+                    checked = uiState.areNotificationsOn,
                     onCheckedChange = onNotificationsEnabledChange
                 )
             }
@@ -56,7 +56,7 @@ fun NotificationsScreen(
             NotificationsTimeListItem(
                 advanceMinutes = uiState.notificationAdvanceMinutes,
                 advanceHours = uiState.notificationAdvanceHours,
-                enabled = uiState.notificationsEnabled,
+                enabled = uiState.areNotificationsOn,
                 onSetMinutes = onNotificationAdvanceMinutesChange
             )
         }

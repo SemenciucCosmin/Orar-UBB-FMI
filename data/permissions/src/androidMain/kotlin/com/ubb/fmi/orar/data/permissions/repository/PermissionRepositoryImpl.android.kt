@@ -2,8 +2,11 @@ package com.ubb.fmi.orar.data.permissions.repository
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.core.content.ContextCompat
 import com.ubb.fmi.orar.data.permissions.bridge.PermissionRequestBridge
 import com.ubb.fmi.orar.data.permissions.model.Permission
@@ -31,6 +34,28 @@ class PermissionRepositoryImpl(
         return PermissionRequestBridge.request(androidPermission)
     }
 
+    override fun openSettings(permission: Permission) {
+        val intent = when (permission) {
+            Permission.NOTIFICATIONS -> when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(
+                        Settings.EXTRA_APP_PACKAGE,
+                        context.packageName
+                    )
+                }
+
+                else -> {
+                    Intent(
+                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.fromParts(PACKAGE_SCHEME, context.packageName, null),
+                    )
+                }
+            }
+        }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        context.startActivity(intent)
+    }
+
     /**
      * Maps a common [Permission] to its Android manifest permission string.
      * Returns null when the permission isn't required on the current API level
@@ -44,5 +69,9 @@ class PermissionRepositoryImpl(
                 null
             }
         }
+    }
+
+    companion object {
+        private const val PACKAGE_SCHEME = "package"
     }
 }

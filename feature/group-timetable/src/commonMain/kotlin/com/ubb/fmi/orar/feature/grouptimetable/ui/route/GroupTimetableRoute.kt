@@ -12,8 +12,8 @@ import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
 import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.catalog.extensions.showToast
-import com.ubb.fmi.orar.ui.catalog.model.TimetableUiEvent
 import com.ubb.fmi.orar.ui.catalog.model.ToastLength
+import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.TimetableUiEvent
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_event_added
 import org.jetbrains.compose.resources.stringResource
@@ -75,6 +75,8 @@ fun GroupTimetableRoute(
                 viewModel.unregisterEvent(event)
                 showToast(context, stringResource(Res.string.lbl_event_added), ToastLength.SHORT)
             }
+
+            TimetableUiEvent.NOTIFICATION_PERMISSION_REQUIRED -> Unit
         }
     }
 }

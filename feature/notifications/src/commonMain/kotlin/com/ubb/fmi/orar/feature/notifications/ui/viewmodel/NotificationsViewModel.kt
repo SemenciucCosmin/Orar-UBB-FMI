@@ -1,8 +1,8 @@
 package com.ubb.fmi.orar.feature.notifications.ui.viewmodel
 
 import Logger
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubb.fmi.orar.data.permissions.model.Permission
 import com.ubb.fmi.orar.data.settings.preferences.SettingsPreferences
 import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
@@ -10,7 +10,11 @@ import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
 import com.ubb.fmi.orar.domain.notifications.usecase.InvalidateTimetableNotificationsUseCase
 import com.ubb.fmi.orar.domain.notifications.usecase.RescheduleNotificationsUseCase
+import com.ubb.fmi.orar.domain.permissions.usecase.IsPermissionGrantedUseCase
+import com.ubb.fmi.orar.domain.permissions.usecase.OpenPermissionSettingsUseCase
 import com.ubb.fmi.orar.feature.notifications.ui.viewmodel.model.NotificationsUiState
+import com.ubb.fmi.orar.feature.notifications.ui.viewmodel.model.NotificationsUiState.NotificationsUiEvent
+import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -27,9 +31,11 @@ class NotificationsViewModel(
     private val initializeTimetableNotificationsUseCase: InitializeTimetableNotificationsUseCase,
     private val invalidateTimetableNotificationsUseCase: InvalidateTimetableNotificationsUseCase,
     private val rescheduleNotificationsUseCase: RescheduleNotificationsUseCase,
+    private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
+    private val openPermissionSettingsUseCase: OpenPermissionSettingsUseCase,
     private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
-) : ViewModel() {
+) : EventViewModel<NotificationsUiEvent>() {
 
     private val _uiState = MutableStateFlow(NotificationsUiState())
     val uiState = _uiState.asStateFlow()
@@ -44,13 +50,50 @@ class NotificationsViewModel(
                 settingsPreferences.getNotificationsEnabledFlow(),
                 settingsPreferences.getNotificationAdvanceMinutesFlow(),
             ) { notificationsEnabled, notificationAdvanceMinutes ->
-                NotificationsUiState(
-                    notificationsEnabled = notificationsEnabled,
-                    notificationAdvanceMinutes = notificationAdvanceMinutes % MINUTES_IN_HOUR,
-                    notificationAdvanceHours = notificationAdvanceMinutes / MINUTES_IN_HOUR,
-                )
-            }.collectLatest { uiState -> _uiState.update { uiState } }
+                notificationsEnabled to notificationAdvanceMinutes
+            }.collectLatest { (notificationsEnabled, notificationAdvanceMinutes) ->
+                _uiState.update {
+                    it.copy(
+                        notificationsEnabled = notificationsEnabled,
+                        notificationAdvanceMinutes = notificationAdvanceMinutes % MINUTES_IN_HOUR,
+                        notificationAdvanceHours = notificationAdvanceMinutes / MINUTES_IN_HOUR,
+                    )
+                }
+            }
         }
+    }
+
+    /**
+     * Re-checks the notification permission, e.g. when returning from the system settings.
+     * If it was just granted, restores the notifications the user already had enabled.
+     */
+    fun refreshNotificationPermission() {
+        viewModelScope.launch {
+            val isGranted = isPermissionGrantedUseCase(Permission.NOTIFICATIONS)
+            val wasGranted = _uiState.value.isNotificationPermissionGranted
+            logger.d(TAG, "refreshNotificationPermission, granted: $isGranted")
+            _uiState.update { it.copy(isNotificationPermissionGranted = isGranted) }
+            if (isGranted && !wasGranted) rescheduleNotificationsUseCase()
+        }
+    }
+
+    /**
+     * Opens the system settings screen where the notification permission can be granted.
+     */
+    fun openNotificationPermissionSettings() {
+        openPermissionSettingsUseCase(Permission.NOTIFICATIONS)
+    }
+
+    /**
+     * Prompts the user to grant the notification permission instead of changing a setting when
+     * it isn't granted. Returns whether the permission is granted.
+     */
+    private fun ensureNotificationPermission(): Boolean {
+        if (_uiState.value.isNotificationPermissionGranted) return true
+        registerEvent(NotificationsUiEvent.NOTIFICATION_PERMISSION_REQUIRED) {
+            it == NotificationsUiEvent.NOTIFICATION_PERMISSION_REQUIRED
+        }
+        return false
     }
 
     /**
@@ -66,6 +109,7 @@ class NotificationsViewModel(
      * so switching back on restores exactly what the user had.
      */
     fun setNotificationsEnabled(enabled: Boolean) {
+        if (!ensureNotificationPermission()) return
         logger.d(TAG, "setNotificationsEnabled: $enabled")
         analyticsLogger.logEvent(
             when {
@@ -89,6 +133,7 @@ class NotificationsViewModel(
      * currently has notifications on, so the new lead time takes effect immediately.
      */
     fun setNotificationAdvanceMinutes(advanceMinutes: Int) {
+        if (!ensureNotificationPermission()) return
         logger.d(TAG, "setNotificationAdvanceMinutes: $advanceMinutes")
         analyticsLogger.logEvent(
             event = AnalyticsEvent.NOTIFICATION_ADVANCE_CHANGED,

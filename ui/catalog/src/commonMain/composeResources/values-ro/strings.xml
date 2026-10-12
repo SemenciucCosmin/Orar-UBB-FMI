@@ -162,5 +162,7 @@
     <string name="lbl_notification_advance_minutes">Notificare înainte de eveniment</string>
     <string name="lbl_minute_abr">%1$sm</string>
     <string name="lbl_hour_abr">%1$sh</string>
+    <string name="lbl_notification_permission_message">Notificările sunt oprite deoarece aplicația nu are permisiunea de a le trimite. Deschizi setările pentru a acorda permisiunea?</string>
+    <string name="lbl_open_settings">Deschide setările</string>
 
 </resources>
