@@ -46,7 +46,7 @@ data class TimetableUiState(
     val isEmpty: Boolean = false,
     val errorStatus: ErrorStatus? = null,
     val isNotificationPermissionGranted: Boolean = false,
-    private val currentFrequency: Frequency? = null,
+    val currentFrequency: Frequency? = null,
 ) {
     /**
      * Creates an initial state for the timetable UI.

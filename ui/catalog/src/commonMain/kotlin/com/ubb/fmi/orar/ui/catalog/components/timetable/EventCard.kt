@@ -2,7 +2,6 @@ package com.ubb.fmi.orar.ui.catalog.components.timetable
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.ui.catalog.components.animation.AnimatedCard
@@ -13,7 +12,8 @@ import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 /**
  * Composable for the Event card
  * Uses a [AnimatedCard] with [EventFace] and [EventBack]
- * @param outlineColor Color of the outline drawn around the card; no outline when unspecified
+ * @param statusIndicator Status shown in the top end corner of the card and as an outline in its
+ * color; nothing when null
  */
 @Composable
 fun EventCard(
@@ -29,12 +29,12 @@ fun EventCard(
     expanded: Boolean,
     modifier: Modifier = Modifier,
     onAddClick: (() -> Unit)? = null,
-    outlineColor: Color = Color.Unspecified,
+    statusIndicator: StatusIndicator? = null,
     animatedCardState: AnimatedCardState = rememberAnimatedCardState()
 ) {
     AnimatedCard(
         modifier = modifier,
-        outlineColor = outlineColor,
+        statusIndicator = statusIndicator,
         enabled = enabled,
         animatedCardState = animatedCardState,
         onClick = { animatedCardState.animateFlip() },
@@ -77,7 +77,8 @@ private fun PreviewEventCard() {
             location = "A304",
             enabled = true,
             expanded = true,
-            onAddClick = {}
+            onAddClick = {},
+            statusIndicator = StatusIndicator.Ongoing(),
         )
     }
 }

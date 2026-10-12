@@ -29,6 +29,7 @@ import org.jetbrains.compose.resources.painterResource
  * @param onEditClick Callback for when the edit toggle button is clicked.
  * @param onFrequencyClick Callback for when a frequency is selected.
  * @param modifier Optional modifier for styling.
+ * @param currentFrequency The week type of the current calendar week, if known.
  */
 @Composable
 fun UserTimetableTopBar(
@@ -40,6 +41,7 @@ fun UserTimetableTopBar(
     onEditClick: () -> Unit,
     onFrequencyClick: (Frequency) -> Unit,
     modifier: Modifier = Modifier,
+    currentFrequency: Frequency? = null,
 ) {
     TopAppBar(
         modifier = modifier,
@@ -70,6 +72,7 @@ fun UserTimetableTopBar(
             if (!isError && !isLoading) {
                 TimetableFrequencyTab(
                     selectedFrequency = selectedFrequency,
+                    currentFrequency = currentFrequency,
                     onFrequencyClick = onFrequencyClick
                 )
             }

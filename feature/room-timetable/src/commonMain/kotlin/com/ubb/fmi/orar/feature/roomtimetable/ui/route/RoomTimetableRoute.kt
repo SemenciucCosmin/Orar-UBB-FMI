@@ -42,9 +42,10 @@ fun RoomTimetableRoute(
                 title = uiState.title,
                 onBack = navController::navigateUp,
                 trailingContent = {
-                    if (uiState.errorStatus == null) {
+                    if (uiState.errorStatus == null && uiState.currentFrequency != null) {
                         TimetableFrequencyTab(
                             selectedFrequency = uiState.selectedFrequency,
+                            currentFrequency = uiState.currentFrequency,
                             onFrequencyClick = viewModel::selectFrequency
                         )
                     }

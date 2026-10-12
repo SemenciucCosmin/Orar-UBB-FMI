@@ -66,6 +66,7 @@ fun UserTimetableRoute(navController: NavController, selectedEventId: String? = 
                 isError = uiState.errorStatus != null,
                 isEditModeOn = uiState.isEditModeOn,
                 selectedFrequency = uiState.selectedFrequency,
+                currentFrequency = uiState.currentFrequency,
                 onFrequencyClick = viewModel::selectFrequency,
                 onEditClick = viewModel::changeEditMode,
                 onSettingsClick = { navController.navigate(SettingsNavDestination.Settings) }

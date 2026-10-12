@@ -20,42 +20,62 @@ import org.jetbrains.compose.resources.stringResource
  * @param selectedFrequency The currently selected frequency.
  * @param onFrequencyClick Callback invoked when a frequency is clicked, passing the selected frequency.
  * @param modifier Modifier to be applied to the row.
+ * @param currentFrequency The week type of the current calendar week, whose label is followed
+ * by a [StatusIndicator]; no week is marked when null.
  */
 @Composable
 fun TimetableFrequencyTab(
     selectedFrequency: Frequency,
     onFrequencyClick: (Frequency) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    currentFrequency: Frequency? = null,
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        FilterChip(
-            selected = selectedFrequency == Frequency.WEEK_1,
-            onClick = { onFrequencyClick(Frequency.WEEK_1) },
-            shape = MaterialTheme.shapes.medium,
-            label = {
-                Text(
-                    text = stringResource(Frequency.WEEK_1.labelRes),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-        )
-
-        FilterChip(
-            selected = selectedFrequency == Frequency.WEEK_2,
-            onClick = { onFrequencyClick(Frequency.WEEK_2) },
-            shape = MaterialTheme.shapes.medium,
-            label = {
-                Text(
-                    text = stringResource(Frequency.WEEK_2.labelRes),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-        )
+        listOf(Frequency.WEEK_1, Frequency.WEEK_2).forEach { frequency ->
+            FrequencyChip(
+                frequency = frequency,
+                selected = selectedFrequency == frequency,
+                showIndicator = currentFrequency == frequency,
+                onClick = { onFrequencyClick(frequency) },
+            )
+        }
     }
+}
+
+/**
+ * A filter chip for a single [frequency], followed by a [StatusIndicator] when [showIndicator].
+ */
+@Composable
+private fun FrequencyChip(
+    frequency: Frequency,
+    selected: Boolean,
+    showIndicator: Boolean,
+    onClick: () -> Unit,
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        shape = MaterialTheme.shapes.medium,
+        label = {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Pds.spacing.XXSmall),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    style = MaterialTheme.typography.labelLarge,
+                    text = stringResource(frequency.labelRes)
+                )
+
+                if (showIndicator) {
+                    StatusIndicator(defaults = StatusIndicator.Ongoing())
+                }
+            }
+        }
+    )
 }
 
 @Preview
@@ -64,7 +84,8 @@ private fun PreviewTimetableFrequencyTab() {
     OrarUbbFmiTheme {
         TimetableFrequencyTab(
             selectedFrequency = Frequency.WEEK_1,
-            onFrequencyClick = {}
+            onFrequencyClick = {},
+            currentFrequency = Frequency.WEEK_2,
         )
     }
 }

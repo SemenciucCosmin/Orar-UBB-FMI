@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.domain.extensions.formatTime
 import com.ubb.fmi.orar.ui.catalog.components.animation.rememberAnimatedCardState
@@ -20,9 +19,6 @@ import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
-
-private val ONGOING_EVENT_OUTLINE_COLOR = Color(0xFF1DB954)
-private val UPCOMING_EVENT_OUTLINE_COLOR = Color(0xFFFFAC1C)
 
 @Composable
 fun EventsList(
@@ -60,7 +56,7 @@ fun EventsList(
                     TimetableListDivider(
                         modifier = Modifier.animateItem(),
                         text = stringResource(timetableItem.day.labelRes),
-                        activeAnimationEnabled = timetableItem.day == currentDay,
+                        isIndicatorVisible = timetableItem.day == currentDay,
                     )
                 }
 
@@ -108,10 +104,10 @@ fun EventsList(
                             caption = timetableItem.caption,
                             details = timetableItem.details,
                             animatedCardState = animatedCardState,
-                            outlineColor = when (timetableItem.id) {
-                                in ongoingEventIds -> ONGOING_EVENT_OUTLINE_COLOR
-                                in upcomingEventIds -> UPCOMING_EVENT_OUTLINE_COLOR
-                                else -> Color.Unspecified
+                            statusIndicator = when (timetableItem.id) {
+                                in ongoingEventIds -> StatusIndicator.Ongoing()
+                                in upcomingEventIds -> StatusIndicator.Upcoming()
+                                else -> null
                             },
                             onAddClick = onAddItem?.let {
                                 {
