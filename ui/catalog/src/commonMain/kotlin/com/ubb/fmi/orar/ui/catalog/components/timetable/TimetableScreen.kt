@@ -59,6 +59,7 @@ fun TimetableScreen(
     val listState = rememberLazyListState()
     var eventIdToAnimate by remember { mutableStateOf<String?>(null) }
     var hasScrolledToCurrentDay by rememberSaveable { mutableStateOf(false) }
+    var handledSelectedEventId by rememberSaveable { mutableStateOf<String?>(null) }
     val minuteTick = rememberMinuteTick()
     val ongoingEventIds = remember(uiState, minuteTick) { uiState.ongoingEventIds }
     val upcomingEventIds = remember(uiState, minuteTick) { uiState.upcomingEventIds }
@@ -74,7 +75,7 @@ fun TimetableScreen(
                 listState.animateScrollToItem(uiState.currentDayIndex)
             }
 
-            else -> {
+            selectedEventId != null && selectedEventId != handledSelectedEventId -> {
                 val targetIndex = uiState.timetableListItems.indexOfFirst {
                     it is TimetableListItem.Event && it.id == selectedEventId
                 }.takeIf { it >= FIRST_INDEX } ?: return@LaunchedEffect
@@ -84,6 +85,7 @@ fun TimetableScreen(
                     index = (targetIndex - SCROLL_INDEX_OFFSET).coerceAtLeast(FIRST_INDEX)
                 )
 
+                handledSelectedEventId = selectedEventId
                 eventIdToAnimate = selectedEventId
             }
         }
