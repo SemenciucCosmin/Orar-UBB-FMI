@@ -87,7 +87,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
         val displayedNotification = NotificationCompat.Builder(context, NotificationRepositoryImpl.CHANNEL_ID)
             .setSmallIcon(iconRes)
-            .setContentTitle("${notification.activity} • $startTime - $endTime")
+            .setContentTitle("$startTime - $endTime • ${notification.activity}")
             .setContentText("$eventTypeLabel • ${notification.participant} • ${notification.location}")
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

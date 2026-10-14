@@ -115,7 +115,7 @@ class NotificationRepositoryImpl(
         val deepLink = "$USER_TIMETABLE_DEEP_LINK_BASE?eventId=${notification.id}"
 
         return UNMutableNotificationContent().apply {
-            setTitle("${notification.activity} • $startTimeLabel - $endTimeLabel")
+            setTitle("$startTimeLabel - $endTimeLabel • ${notification.activity}")
             setBody("${notification.type.id} • ${notification.participant} • ${notification.location}")
             setUserInfo(mapOf(DEEP_LINK_USER_INFO_KEY to deepLink))
         }
