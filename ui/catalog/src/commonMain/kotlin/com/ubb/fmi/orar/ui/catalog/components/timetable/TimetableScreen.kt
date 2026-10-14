@@ -40,9 +40,9 @@ private val SCROLL_START_DELAY = 500.milliseconds
  * @param topBar Composable for the top bar of the screen.
  * @param bottomBar Composable for the bottom bar of the screen (optional).
  * @param onItemVisibilityChange Callback invoked when the visibility of a timetable item changes.
- * @param selectedEventId Optional event ID to scroll to; once the scroll finishes, the
- * corresponding item plays a shake animation to draw attention to it. When absent, the list jumps
- * once, without animation, to the current day.
+ * @param selectedEventId Optional event ID to scroll to once the list is loaded; the scrolled to
+ * card then plays a shake animation to draw attention to it. When absent, the list scrolls to the
+ * current day instead. Either scroll happens only once per screen.
  */
 @Composable
 fun TimetableScreen(
@@ -58,37 +58,33 @@ fun TimetableScreen(
 ) {
     val listState = rememberLazyListState()
     var eventIdToAnimate by remember { mutableStateOf<String?>(null) }
-    var hasScrolledToCurrentDay by rememberSaveable { mutableStateOf(false) }
-    var handledSelectedEventId by rememberSaveable { mutableStateOf<String?>(null) }
+    var hasScrolled by rememberSaveable { mutableStateOf(false) }
     val minuteTick = rememberMinuteTick()
     val ongoingEventIds = remember(uiState, minuteTick) { uiState.ongoingEventIds }
     val upcomingEventIds = remember(uiState, minuteTick) { uiState.upcomingEventIds }
     val currentDay = remember(uiState, minuteTick) { uiState.currentDay }
 
-    LaunchedEffect(selectedEventId, uiState.timetableListItems, uiState.isLoading) {
-        eventIdToAnimate = null
-        val isListReady = !uiState.isLoading && uiState.timetableListItems.isNotEmpty()
+    LaunchedEffect(uiState.timetableListItems, uiState.isLoading) {
+        val items = uiState.timetableListItems
+        if (hasScrolled || uiState.isLoading || items.isEmpty()) return@LaunchedEffect
+
+        val selectedIndex = items.indexOfFirst {
+            it is TimetableListItem.Event && it.id == selectedEventId
+        }
 
         when {
-            selectedEventId == null && !hasScrolledToCurrentDay && isListReady -> {
-                hasScrolledToCurrentDay = true
-                listState.animateScrollToItem(uiState.currentDayIndex)
-            }
-
-            selectedEventId != null && selectedEventId != handledSelectedEventId -> {
-                val targetIndex = uiState.timetableListItems.indexOfFirst {
-                    it is TimetableListItem.Event && it.id == selectedEventId
-                }.takeIf { it >= FIRST_INDEX } ?: return@LaunchedEffect
-
+            selectedEventId == null -> listState.animateScrollToItem(uiState.currentDayIndex)
+            selectedIndex < FIRST_INDEX -> return@LaunchedEffect
+            else -> {
                 delay(SCROLL_START_DELAY)
                 listState.animateScrollToItem(
-                    index = (targetIndex - SCROLL_INDEX_OFFSET).coerceAtLeast(FIRST_INDEX)
+                    index = (selectedIndex - SCROLL_INDEX_OFFSET).coerceAtLeast(FIRST_INDEX)
                 )
-
-                handledSelectedEventId = selectedEventId
                 eventIdToAnimate = selectedEventId
             }
         }
+
+        hasScrolled = true
     }
 
     StateScaffold(
