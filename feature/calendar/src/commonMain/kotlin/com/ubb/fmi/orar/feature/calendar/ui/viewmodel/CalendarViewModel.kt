@@ -71,10 +71,15 @@ class CalendarViewModel(
             logger.d(TAG, "getCalendar academicCalendar: $academicCalendar")
             val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
             val months = academicCalendar?.let { getMonths(it, today) }.orEmpty()
+            val periods = academicCalendar?.semesters
+                ?.flatMap { it.periods }
+                ?.sortedBy { it.startDateMillis }
+                .orEmpty()
 
             _uiState.update {
                 it.copy(
                     months = months.toImmutableList(),
+                    periods = periods.toImmutableList(),
                     initialPage = months.indexOfLast { month -> month.firstDate <= today }.coerceAtLeast(0),
                     isLoading = false,
                     errorStatus = when (academicCalendar) {

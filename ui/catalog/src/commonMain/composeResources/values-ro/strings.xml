@@ -204,4 +204,14 @@
     <string name="lbl_october">Octombrie</string>
     <string name="lbl_november">Noiembrie</string>
     <string name="lbl_december">Decembrie</string>
+    <string name="lbl_academic_preparation">Pregătirea anului universitar</string>
+    <string name="lbl_teaching_activity">Activitate didactică</string>
+    <string name="lbl_christmas_holiday">Vacanța de Crăciun</string>
+    <string name="lbl_easter_holiday">Vacanța de Paști</string>
+    <string name="lbl_exam_session">Sesiune de examene</string>
+    <string name="lbl_retake_session">Sesiune de restanțe</string>
+    <string name="lbl_internship_period">Perioada de practică</string>
+    <string name="lbl_thesis_preparation">Pregătirea examenului de licență/disertație</string>
+    <string name="lbl_thesis_exam">Examen de licență/disertație</string>
+    <string name="lbl_holiday">Vacanță</string>
 </resources>

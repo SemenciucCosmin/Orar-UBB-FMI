@@ -90,6 +90,11 @@ fun CalendarScreen(
             CalendarLegend(
                 modifier = Modifier.padding(horizontal = Pds.spacing.Medium),
             )
+
+            CalendarPeriods(
+                periods = uiState.periods,
+                modifier = Modifier.padding(horizontal = Pds.spacing.Medium),
+            )
         }
     }
 }

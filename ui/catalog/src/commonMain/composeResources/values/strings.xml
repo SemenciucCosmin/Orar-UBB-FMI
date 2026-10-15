@@ -203,4 +203,14 @@
     <string name="lbl_october">October</string>
     <string name="lbl_november">November</string>
     <string name="lbl_december">December</string>
+    <string name="lbl_academic_preparation">Academic year preparation</string>
+    <string name="lbl_teaching_activity">Teaching activity</string>
+    <string name="lbl_christmas_holiday">Christmas holiday</string>
+    <string name="lbl_easter_holiday">Easter holiday</string>
+    <string name="lbl_exam_session">Exam session</string>
+    <string name="lbl_retake_session">Retake session</string>
+    <string name="lbl_internship_period">Internship period</string>
+    <string name="lbl_thesis_preparation">Thesis preparation</string>
+    <string name="lbl_thesis_exam">Thesis exam</string>
+    <string name="lbl_holiday">Holiday</string>
 </resources>
