@@ -10,7 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.ubb.fmi.orar.data.timetable.model.Degree
+import com.ubb.fmi.orar.data.timetable.model.Field
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
 import com.ubb.fmi.orar.feature.studylines.ui.viewmodel.model.StudyLinesUiState
@@ -81,7 +81,7 @@ fun StudyLinesScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 items(uiState.filteredGroupedStudyLines) { groupedStudyLines ->
-                    val fieldId = groupedStudyLines.firstOrNull()?.fieldId ?: return@items
+                    val fieldId = groupedStudyLines.firstOrNull()?.field?.id ?: return@items
                     val label = groupedStudyLines.firstOrNull()?.name ?: return@items
 
                     ListItemExpandable(
@@ -127,9 +127,8 @@ private fun PreviewStudyLinesScreen() {
                             id = "IE1",
                             name = "Informatica Engleza",
                             configurationId = "20241",
-                            fieldId = "IE",
                             level = StudyLevel.LEVEL_1,
-                            degree = Degree.LICENCE
+                            field = Field.entries.random()
                         )
                     }.toImmutableList()
                 }.toImmutableList(),

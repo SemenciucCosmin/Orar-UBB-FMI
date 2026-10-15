@@ -4,9 +4,9 @@ import Logger
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.teachers.repository.TeacherRepository
+import com.ubb.fmi.orar.data.timetable.model.Semester
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
 import com.ubb.fmi.orar.domain.notifications.usecase.InitializeTimetableNotificationsUseCase
-import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.TeachersFormUiState
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter

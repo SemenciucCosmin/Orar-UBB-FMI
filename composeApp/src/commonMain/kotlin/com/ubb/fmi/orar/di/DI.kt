@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.di
 
 import com.ubb.fmi.orar.data.announcements.di.announcementsDataModule
+import com.ubb.fmi.orar.data.calendar.di.calendarDataModule
 import com.ubb.fmi.orar.data.database.di.databaseDataModule
 import com.ubb.fmi.orar.data.feedback.di.feedbackDataModule
 import com.ubb.fmi.orar.data.groups.di.groupsDataModule
@@ -63,6 +64,7 @@ fun commonModule() = module {
     includes(analyticsDomainModule())
 
     // CALENDAR
+    includes(calendarDataModule())
     includes(calendarDomainModule())
 
     // COLOR PACK

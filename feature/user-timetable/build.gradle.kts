@@ -63,6 +63,7 @@ kotlin {
             implementation(projects.ui.catalog)
             implementation(projects.ui.navigation)
             implementation(projects.ui.theme)
+            implementation(projects.data.calendar)
 
             // NAVIGATION
             implementation(libs.navigation.compose)

@@ -71,6 +71,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.announcements)
+            implementation(projects.data.calendar)
             implementation(projects.data.database)
             implementation(projects.data.feedback)
             implementation(projects.data.groups)

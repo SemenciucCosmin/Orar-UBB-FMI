@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.data.network.di
 
+import com.ubb.fmi.orar.data.network.service.AcademicCalendarApi
 import com.ubb.fmi.orar.data.network.service.NewsApi
 import com.ubb.fmi.orar.data.network.service.RoomsApi
 import com.ubb.fmi.orar.data.network.service.StudentsApi
@@ -61,6 +62,7 @@ fun networkDataModule() = module {
 
     factory<NewsApi> { NewsApi(get()) }
     factory<RoomsApi> { RoomsApi(get()) }
+    factory<AcademicCalendarApi> { AcademicCalendarApi(get()) }
     factory<StudentsApi> { StudentsApi(get()) }
     factory<SubjectsApi> { SubjectsApi(get()) }
     factory<TeachersApi> { TeachersApi(get()) }

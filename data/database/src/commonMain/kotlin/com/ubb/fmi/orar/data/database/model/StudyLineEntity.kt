@@ -9,7 +9,6 @@ import androidx.room.Entity
  * @param [name]: study line display name
  * @param [fieldId]: study line field id (Software Engineering - IS ...)
  * @param [levelId]: study line level id (Year1, Year2, Year3)
- * @param [degreeId]: study line degree id (License or Master)
  * @param [configurationId]: configuration id of which this study line belongs to
  */
 @Entity(
@@ -21,6 +20,5 @@ data class StudyLineEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "fieldId") val fieldId: String,
     @ColumnInfo(name = "levelId") val levelId: String,
-    @ColumnInfo(name = "degreeId") val degreeId: String,
     @ColumnInfo(name = "configurationId") val configurationId: String,
 )

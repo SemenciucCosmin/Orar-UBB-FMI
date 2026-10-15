@@ -32,6 +32,7 @@ include(
     ":androidApp",
     ":composeApp",
     ":data:announcements",
+    ":data:calendar",
     ":data:database",
     ":data:feedback",
     ":data:groups",

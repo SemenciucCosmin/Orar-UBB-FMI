@@ -61,6 +61,7 @@
     <string name="lbl_level_1">Year 1</string>
     <string name="lbl_level_2">Year 2</string>
     <string name="lbl_level_3">Year 3</string>
+    <string name="lbl_level_4">Year 4</string>
 
     <!--  TEACHER TITLE  -->
     <string name="lbl_professor_abr">Prof.</string>

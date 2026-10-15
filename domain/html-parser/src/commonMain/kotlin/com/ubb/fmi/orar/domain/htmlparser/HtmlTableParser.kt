@@ -29,9 +29,9 @@ object HtmlTableParser {
      * Each row contains a list of [Cell] objects, where each cell has an ID and a value.
      */
     fun extractTables(html: String): List<Table> {
-        val headers = html.select(HEADLINE_TAG_OPEN, HEADLINE_TAG_CLOSED).drop(1).map {
+        val headers = html.select(HEADLINE_TAG_OPEN, HEADLINE_TAG_CLOSED).drop(1).flatMap {
             it.select(TAG_RIGHT, TAG_LEFT)
-        }.flatten()
+        }
 
         val tablesHtml = html.select(TABLE_TAG_OPEN, TABLE_TAG_CLOSED).map { tableHtml ->
             tableHtml.select(TABLE_ROW_TAG_OPEN, TABLE_ROW_TAG_CLOSED).map { rowHtml ->
@@ -126,7 +126,7 @@ object HtmlTableParser {
         var startIndex = html.indexOf(openTag)
         var endIndex = html.indexOf(closedTag) + closedTag.length - 1
 
-        while (startIndex != INVALID_INDEX && endIndex != INVALID_INDEX) {
+        while (startIndex != INVALID_INDEX && endIndex != INVALID_INDEX && startIndex <= endIndex) {
             items.add(html.substring(startIndex + 1, endIndex))
 
             html = html.substring(endIndex, html.lastIndex + 1)

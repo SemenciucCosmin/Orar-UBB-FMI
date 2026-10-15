@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.network.model.isEmpty
 import com.ubb.fmi.orar.data.network.model.isLoading
 import com.ubb.fmi.orar.data.studylines.repository.StudyLinesRepository
+import com.ubb.fmi.orar.data.timetable.model.Semester
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
-import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState
 import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.StudyLinesFormUiState.Companion.filteredGroupedStudyLines
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
@@ -66,7 +66,7 @@ class StudyLinesFormViewModel(
             val lineId = studyLevel?.let { configuration.fieldId + studyLevel.notation }
             val selectedStudyLine = resource.payload?.firstOrNull { it.id == lineId }
             val groupedStudyLines = resource.payload?.groupBy { studyLine ->
-                studyLine.fieldId
+                studyLine.field.id
             }?.values?.toList()?.map { studyLines ->
                 studyLines.sortedBy { it.level.orderIndex }.toImmutableList()
             }?.toImmutableList() ?: persistentListOf()
@@ -83,8 +83,8 @@ class StudyLinesFormViewModel(
                     isEmpty = resource.status.isEmpty(),
                     errorStatus = resource.status.toErrorStatus(),
                     groupedStudyLines = groupedStudyLines,
-                    selectedFilterId = selectedStudyLine?.degree?.id ?: DegreeFilter.ALL.id,
-                    selectedFieldId = selectedStudyLine?.fieldId,
+                    selectedFilterId = selectedStudyLine?.field?.degree?.id ?: DegreeFilter.ALL.id,
+                    selectedFieldId = selectedStudyLine?.field?.id,
                     selectedStudyLevelId = selectedStudyLine?.level?.id,
                 )
             }
@@ -140,12 +140,12 @@ class StudyLinesFormViewModel(
             val fieldId = uiState.value.selectedFieldId ?: return@launch
             val studyLevelId = uiState.value.selectedStudyLevelId ?: return@launch
             val studyLine = uiState.value.filteredGroupedStudyLines.flatten().firstOrNull {
-                it.fieldId == fieldId && it.level.id == studyLevelId
+                it.field.id == fieldId && it.level.id == studyLevelId
             } ?: return@launch
 
             timetablePreferences.setFieldId(fieldId)
             timetablePreferences.setStudyLevelId(studyLevelId)
-            timetablePreferences.setDegreeId(studyLine.degree.id)
+            timetablePreferences.setDegreeId(studyLine.field.degree.id)
 
             registerEvent(StudyLinesFormUiState.StudyLinesFormUiEvent.SELECTION_DONE)
         }

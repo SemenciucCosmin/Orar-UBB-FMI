@@ -25,6 +25,11 @@ enum class StudyLevel(
         id = "Anul 3",
         orderIndex = 2,
         notation = "3"
+    ),
+    LEVEL_4(
+        id = "Anul 4",
+        orderIndex = 3,
+        notation = "4"
     );
 
     companion object {
