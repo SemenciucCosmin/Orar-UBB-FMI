@@ -38,12 +38,14 @@
     <string name="lbl_free_rooms">Săli libere</string>
     <string name="lbl_explore">Explorează</string>
 
+    <!--  EXPLORE  -->
     <string name="lbl_students_details">Caută Linii de Studiu, Grupe și orarele lor</string>
     <string name="lbl_teachers_details">Caută Profesori și orarele lor</string>
     <string name="lbl_subjects_details">Caută Materii și orarele lor</string>
     <string name="lbl_rooms_details">Caută Săli și orarele lor</string>
     <string name="lbl_free_rooms_details">Caută Săli libere</string>
     <string name="lbl_add_personal_event_details">Adaugă un eveniment personal în orarul tău</string>
+    <string name="lbl_calendar_details">Vezi activitățile anului universitar</string>
 
     <!--  USER  -->
     <string name="lbl_student">Student</string>
@@ -52,6 +54,8 @@
     <!--  FREQUENCY  -->
     <string name="lbl_week_1">săpt. 1</string>
     <string name="lbl_week_2">săpt. 2</string>
+    <string name="lbl_week_1_abr">s1</string>
+    <string name="lbl_week_2_abr">s2</string>
     <string name="lbl_both_weeks">ambele</string>
 
     <!--  DEGREE  -->
@@ -169,6 +173,7 @@
     <string name="lbl_notification_permission_message">Notificările sunt oprite deoarece aplicația nu are permisiunea de a le trimite. Deschizi setările pentru a acorda permisiunea?</string>
     <string name="lbl_open_settings">Deschide setările</string>
 
+    <!--  COLORS SETTINGS  -->
     <string name="lbl_colors">Culori</string>
     <string name="lbl_status_indicators">Indicatori de status</string>
     <string name="lbl_event_types">Tipuri de evenimente</string>
@@ -177,4 +182,26 @@
     <string name="lbl_save">Salvează</string>
     <string name="lbl_preview">Previzualizare</string>
     <string name="lbl_reset_to_default">Resetează la implicit</string>
+
+    <!--  CALENDAR  -->
+    <string name="lbl_academic_calendar">Calendar academic</string>
+    <string name="lbl_calendar">Calendar</string>
+    <string name="lbl_calendar_preparation">Pregătire</string>
+    <string name="lbl_calendar_teaching">Activitate didactică</string>
+    <string name="lbl_calendar_holiday">Vacanță</string>
+    <string name="lbl_calendar_session">Sesiune</string>
+    <string name="lbl_calendar_internship">Practică</string>
+    <string name="lbl_calendar_thesis">Licență/disertație</string>
+    <string name="lbl_january">Ianuarie</string>
+    <string name="lbl_february">Februarie</string>
+    <string name="lbl_march">Martie</string>
+    <string name="lbl_april">Aprilie</string>
+    <string name="lbl_may">Mai</string>
+    <string name="lbl_june">Iunie</string>
+    <string name="lbl_july">Iulie</string>
+    <string name="lbl_august">August</string>
+    <string name="lbl_september">Septembrie</string>
+    <string name="lbl_october">Octombrie</string>
+    <string name="lbl_november">Noiembrie</string>
+    <string name="lbl_december">Decembrie</string>
 </resources>

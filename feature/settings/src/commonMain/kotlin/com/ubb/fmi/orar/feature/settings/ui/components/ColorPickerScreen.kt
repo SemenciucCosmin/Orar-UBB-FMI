@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedCard
@@ -22,6 +23,7 @@ import com.ubb.fmi.orar.domain.colorpack.model.ColorItem
 import com.ubb.fmi.orar.feature.settings.viewmodel.model.ColorPickerUiState
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
+import com.ubb.fmi.orar.ui.catalog.components.calendar.CalendarDayBox
 import com.ubb.fmi.orar.ui.catalog.components.timetable.EventTypeChip
 import com.ubb.fmi.orar.ui.catalog.components.timetable.StatusIndicator
 import com.ubb.fmi.orar.ui.catalog.extensions.colorItem
@@ -34,6 +36,8 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_preview
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_save
 import org.jetbrains.compose.resources.stringResource
+
+private const val PREVIEW_DAY_OF_MONTH = 15
 
 /**
  * Screen for picking the color of a single [ColorItem], with a live preview and a save action.
@@ -111,6 +115,14 @@ private fun ColorPreview(item: ColorItem) {
                             ?.let { type ->
                                 EventTypeChip(text = "", type = type, enabled = true)
                             }
+
+                    ColorGroup.ACADEMIC_CALENDAR -> CalendarDayBox(
+                        dayOfMonth = PREVIEW_DAY_OF_MONTH,
+                        colorItem = item,
+                        isToday = false,
+                        isCurrentMonth = true,
+                        modifier = Modifier.size(Pds.icon.Large),
+                    )
                 }
             }
         }

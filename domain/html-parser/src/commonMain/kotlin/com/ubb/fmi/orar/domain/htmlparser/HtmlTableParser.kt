@@ -41,6 +41,12 @@ object HtmlTableParser {
                         .firstOrNull()?.formatHyperlinkId() ?: String.BLANK
 
                     val cells = when {
+                        cellHtml.contains(STRONG_TAG_OPEN) -> {
+                            cellHtml
+                                .select(STRONG_TAG_OPEN, STRONG_TAG_CLOSED)
+                                .firstOrNull()?.select(TAG_RIGHT, TAG_LEFT) ?: emptyList()
+                        }
+
                         !cellHtml.contains(HYPERLINK_TAG_OPEN) -> {
                             cellHtml.select(TAG_RIGHT, TAG_LEFT)
                         }
@@ -161,6 +167,9 @@ object HtmlTableParser {
 
     private const val TABLE_COLUMN_TAG_OPEN = "<td"
     private const val TABLE_COLUMN_TAG_CLOSED = "</td"
+
+    private const val STRONG_TAG_OPEN = "<strong>"
+    private const val STRONG_TAG_CLOSED = "</strong>"
 
     private const val HREF_TAG_OPEN = "f=\""
     private const val HREF_TAG_CLOSED = "\" >"

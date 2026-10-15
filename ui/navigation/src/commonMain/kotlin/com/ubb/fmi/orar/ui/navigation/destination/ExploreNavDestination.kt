@@ -103,4 +103,10 @@ sealed class ExploreNavDestination {
      */
     @Serializable
     data object AddPersonalEvent : ExploreNavDestination()
+
+    /**
+     * Represents a navigation destination for the academic calendar.
+     */
+    @Serializable
+    data object Calendar : ExploreNavDestination()
 }

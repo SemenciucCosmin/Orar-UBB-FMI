@@ -27,6 +27,7 @@ import com.ubb.fmi.orar.domain.permissions.di.permissionsDomainModule
 import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
+import com.ubb.fmi.orar.feature.calendar.di.calendarFeatureModule
 import com.ubb.fmi.orar.feature.dialogs.ui.di.dialogsFeatureModule
 import com.ubb.fmi.orar.feature.feedback.ui.di.feedbackFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
@@ -66,6 +67,7 @@ fun commonModule() = module {
     // CALENDAR
     includes(calendarDataModule())
     includes(calendarDomainModule())
+    includes(calendarFeatureModule())
 
     // COLOR PACK
     includes(colorPackDomainModule())

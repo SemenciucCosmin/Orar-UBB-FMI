@@ -99,6 +99,7 @@ kotlin {
             implementation(projects.domain.theme)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
+            implementation(projects.feature.calendar)
             implementation(projects.feature.dialogs)
             implementation(projects.feature.explore)
             implementation(projects.feature.feedback)

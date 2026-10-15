@@ -60,6 +60,7 @@ include(
     ":domain:theme",
     ":domain:timetable",
     ":domain:user-timetable",
+    ":feature:calendar",
     ":feature:dialogs",
     ":feature:explore",
     ":feature:feedback",

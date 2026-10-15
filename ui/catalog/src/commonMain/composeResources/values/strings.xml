@@ -37,12 +37,14 @@
     <string name="lbl_free_rooms">Free rooms</string>
     <string name="lbl_explore">Explore</string>
 
+    <!--  EXPLORE  -->
     <string name="lbl_students_details">Search for Study Lines, Groups and their timetables</string>
     <string name="lbl_teachers_details">Search for Teachers and their timetables</string>
     <string name="lbl_subjects_details">Search for Subjects and their timetables</string>
     <string name="lbl_rooms_details">Search for Rooms and their timetables</string>
     <string name="lbl_free_rooms_details">Search for free Rooms</string>
     <string name="lbl_add_personal_event_details">Add a personal event to your timetable</string>
+    <string name="lbl_calendar_details">See the academic year activities</string>
 
     <!--  USER  -->
     <string name="lbl_student">Student</string>
@@ -51,6 +53,8 @@
     <!--  FREQUENCY  -->
     <string name="lbl_week_1">week 1</string>
     <string name="lbl_week_2">week 2</string>
+    <string name="lbl_week_1_abr">w1</string>
+    <string name="lbl_week_2_abr">w2</string>
     <string name="lbl_both_weeks">both</string>
 
     <!--  DEGREE  -->
@@ -168,6 +172,7 @@
     <string name="lbl_notification_permission_message">Notifications are off because the app isn't allowed to send them. Open settings to grant the permission?</string>
     <string name="lbl_open_settings">Open settings</string>
 
+    <!--  COLORS SETTINGS  -->
     <string name="lbl_colors">Colors</string>
     <string name="lbl_status_indicators">Status indicators</string>
     <string name="lbl_event_types">Event types</string>
@@ -176,4 +181,26 @@
     <string name="lbl_save">Save</string>
     <string name="lbl_preview">Preview</string>
     <string name="lbl_reset_to_default">Reset to default</string>
+
+    <!--  CALENDAR  -->
+    <string name="lbl_academic_calendar">Academic calendar</string>
+    <string name="lbl_calendar">Calendar</string>
+    <string name="lbl_calendar_preparation">Preparation</string>
+    <string name="lbl_calendar_teaching">Teaching</string>
+    <string name="lbl_calendar_holiday">Holiday</string>
+    <string name="lbl_calendar_session">Session</string>
+    <string name="lbl_calendar_internship">Internship</string>
+    <string name="lbl_calendar_thesis">Thesis</string>
+    <string name="lbl_january">January</string>
+    <string name="lbl_february">February</string>
+    <string name="lbl_march">March</string>
+    <string name="lbl_april">April</string>
+    <string name="lbl_may">May</string>
+    <string name="lbl_june">June</string>
+    <string name="lbl_july">July</string>
+    <string name="lbl_august">August</string>
+    <string name="lbl_september">September</string>
+    <string name="lbl_october">October</string>
+    <string name="lbl_november">November</string>
+    <string name="lbl_december">December</string>
 </resources>
