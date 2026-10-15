@@ -11,7 +11,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.net.toUri
-import com.ubb.fmi.orar.data.calendar.model.AcademicWeek
 import com.ubb.fmi.orar.data.notifications.datasource.NotificationCacheDataSource
 import com.ubb.fmi.orar.data.notifications.manager.scheduleExact
 import com.ubb.fmi.orar.data.notifications.model.EventNotification
@@ -19,7 +18,6 @@ import com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.data.timetable.model.Week
 import com.ubb.fmi.orar.domain.calendar.usecase.GetUpcomingEventOccurrencesUseCase
 import kotlin.time.Clock
 import kotlin.time.Instant
@@ -58,7 +56,7 @@ class NotificationRepositoryImpl(
     @SuppressLint("MissingPermission")
     private suspend fun schedule(notification: EventNotification) {
         val triggerMillis = getUpcomingEventOccurrencesUseCase(
-            teachingWeeks = notification.teachingWeeks,
+            type = notification.type,
             day = notification.day,
             frequency = notification.frequency,
             startHour = notification.startHour,
@@ -71,8 +69,7 @@ class NotificationRepositoryImpl(
         if (triggerMillis == null) {
             logger.d(
                 TAG,
-                "Skipped notification ${notification.id}, no teaching week left to fire in " +
-                    "(teachingWeeks: ${notification.teachingWeeks?.size})",
+                "Skipped notification ${notification.id}, no teaching week left to fire in",
             )
             return
         }
@@ -89,8 +86,7 @@ class NotificationRepositoryImpl(
                     "($triggerMillis), exact: $isExact, day: ${notification.day.id}, " +
                     "frequency: ${notification.frequency.id}, " +
                     "start: ${notification.startHour}:${notification.startMinute}, " +
-                    "advanceMinutes: ${notification.advanceMinutes}, " +
-                    "teachingWeeks: ${notification.teachingWeeks?.size}",
+                    "advanceMinutes: ${notification.advanceMinutes}",
             )
         } catch (exception: SecurityException) {
             logger.e(TAG, "Failed to schedule notification ${notification.id}: ${exception.message}")
@@ -118,27 +114,10 @@ class NotificationRepositoryImpl(
     /**
      * Rebuilds the [EventNotification] stored in an alarm [intent] by [buildPendingIntent].
      * Returns `null` when the intent is missing any required extra.
-     *
-     * The teaching weeks travel as parallel arrays of their week ids, starts and ends. An intent
-     * without teaching weeks belongs to a personal event, which isn't bound to them.
      */
     @Suppress("ReturnCount")
     fun getEventNotification(intent: Intent): EventNotification? {
         val id = intent.requireStringExtra(EXTRA_NOTIFICATION_ID) ?: return null
-        val teachingWeekIds = intent.getIntArrayExtra(EXTRA_TEACHING_WEEK_IDS)
-        val teachingWeekStarts = intent.getLongArrayExtra(EXTRA_TEACHING_WEEK_STARTS)
-        val teachingWeekEnds = intent.getLongArrayExtra(EXTRA_TEACHING_WEEK_ENDS)
-        val teachingWeeks = when {
-            teachingWeekIds == null || teachingWeekStarts == null || teachingWeekEnds == null -> null
-            else -> teachingWeekIds.indices.map { position ->
-                AcademicWeek(
-                    week = Week.getById(teachingWeekIds[position]),
-                    startMillis = teachingWeekStarts[position],
-                    endMillis = teachingWeekEnds[position],
-                )
-            }
-        }
-
         return EventNotification(
             id = id,
             activity = intent.requireStringExtra(EXTRA_EVENT_ACTIVITY) ?: return null,
@@ -152,7 +131,6 @@ class NotificationRepositoryImpl(
             endHour = intent.getIntExtra(EXTRA_END_HOUR, DEFAULT_TIME),
             endMinute = intent.getIntExtra(EXTRA_END_MINUTE, DEFAULT_TIME),
             advanceMinutes = intent.getIntExtra(EXTRA_ADVANCE_MINUTES, DEFAULT_TIME),
-            teachingWeeks = teachingWeeks,
         )
     }
 
@@ -169,7 +147,6 @@ class NotificationRepositoryImpl(
      * notification and schedule its next occurrence.
      */
     private fun buildPendingIntent(notification: EventNotification): PendingIntent {
-        val teachingWeeks = notification.teachingWeeks
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             data = buildNotificationUri(notification.id)
             putExtra(EXTRA_NOTIFICATION_ID, notification.id)
@@ -184,11 +161,6 @@ class NotificationRepositoryImpl(
             putExtra(EXTRA_END_HOUR, notification.endHour)
             putExtra(EXTRA_END_MINUTE, notification.endMinute)
             putExtra(EXTRA_ADVANCE_MINUTES, notification.advanceMinutes)
-            if (teachingWeeks != null) {
-                putExtra(EXTRA_TEACHING_WEEK_IDS, teachingWeeks.map { it.week.id }.toIntArray())
-                putExtra(EXTRA_TEACHING_WEEK_STARTS, teachingWeeks.map { it.startMillis }.toLongArray())
-                putExtra(EXTRA_TEACHING_WEEK_ENDS, teachingWeeks.map { it.endMillis }.toLongArray())
-            }
         }
 
         return PendingIntent.getBroadcast(
@@ -249,9 +221,6 @@ class NotificationRepositoryImpl(
         private const val EXTRA_END_HOUR = "end_hour"
         private const val EXTRA_END_MINUTE = "end_minute"
         private const val EXTRA_ADVANCE_MINUTES = "advance_minutes"
-        private const val EXTRA_TEACHING_WEEK_IDS = "teaching_week_ids"
-        private const val EXTRA_TEACHING_WEEK_STARTS = "teaching_week_starts"
-        private const val EXTRA_TEACHING_WEEK_ENDS = "teaching_week_ends"
         private const val DEFAULT_TIME = 0
     }
 }

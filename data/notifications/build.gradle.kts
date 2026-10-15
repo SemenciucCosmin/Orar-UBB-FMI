@@ -39,7 +39,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
 
             // Modules
-            implementation(projects.data.calendar)
             implementation(projects.data.timetable)
             implementation(projects.domain.calendar)
             implementation(projects.domain.extensions)

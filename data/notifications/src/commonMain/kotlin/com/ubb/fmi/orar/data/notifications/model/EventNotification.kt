@@ -1,6 +1,5 @@
 package com.ubb.fmi.orar.data.notifications.model
 
-import com.ubb.fmi.orar.data.calendar.model.AcademicWeek
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
@@ -11,12 +10,6 @@ import com.ubb.fmi.orar.data.timetable.model.Frequency
  * it's reused as the notification/alarm identifier so it can be individually cancelled later.
  * [advanceMinutes] is the user-configured lead time; the notification fires that many minutes
  * before [startHour]:[startMinute], not at the event's start itself.
- *
- * [teachingWeeks] bound when this notification may fire at all: occurrences are taken from
- * the teaching weeks of its semester only, so nothing is ever scheduled during the winter, Easter, exam, resit or
- * summer periods, nor in the other semester, whose timetable is a different one entirely.
- * [Frequency.WEEK_1]/[Frequency.WEEK_2] then resolve to the exact same weeks the timetable UI
- * displays. It is `null` for personal events, which fire every matching calendar week all year.
  */
 data class EventNotification(
     val id: String,
@@ -31,5 +24,4 @@ data class EventNotification(
     val endHour: Int,
     val endMinute: Int,
     val advanceMinutes: Int,
-    val teachingWeeks: List<AcademicWeek>?,
 )

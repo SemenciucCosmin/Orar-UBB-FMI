@@ -45,8 +45,8 @@ class GetAcademicCalendarUseCase(
             val semesters = academicCalendar.semesters
                 .filter { studyLanguage in it.studyLanguages }
                 .groupBy { it.semester }
-                .mapNotNull { (_, variants) ->
-                    variants.firstOrNull { it.isFinal == isFinal } ?: variants.firstOrNull()
+                .map { (_, variants) ->
+                    variants.firstOrNull { it.isFinal == isFinal } ?: variants.first()
                 }
 
             academicCalendar.copy(semesters = semesters)

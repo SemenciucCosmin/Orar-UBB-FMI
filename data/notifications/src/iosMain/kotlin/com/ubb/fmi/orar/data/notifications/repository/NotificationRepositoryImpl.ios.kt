@@ -60,7 +60,7 @@ class NotificationRepositoryImpl(
             .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(notification.id))
 
         val occurrencesMillis = getUpcomingEventOccurrencesUseCase(
-            teachingWeeks = notification.teachingWeeks,
+            type = notification.type,
             day = notification.day,
             frequency = notification.frequency,
             startHour = notification.startHour,
@@ -79,7 +79,7 @@ class NotificationRepositoryImpl(
             "Scheduling ${occurrencesMillis.size}/$occurrenceCount occurrence(s) of ${notification.id}, " +
                 "first: ${Instant.fromEpochMilliseconds(occurrencesMillis.first())}, " +
                 "last: ${Instant.fromEpochMilliseconds(occurrencesMillis.last())}, " +
-                "advanceMinutes: ${notification.advanceMinutes}, teachingWeeks: ${notification.teachingWeeks?.size}",
+                "advanceMinutes: ${notification.advanceMinutes}",
         )
 
         val content = buildNotificationContent(notification)

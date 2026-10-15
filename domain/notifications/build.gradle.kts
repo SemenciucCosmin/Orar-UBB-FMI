@@ -39,7 +39,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
 
             // Modules
-            implementation(projects.data.calendar)
             implementation(projects.data.groups)
             implementation(projects.data.network)
             implementation(projects.data.notifications)
