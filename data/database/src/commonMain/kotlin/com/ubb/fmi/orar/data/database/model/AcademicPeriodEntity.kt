@@ -11,7 +11,6 @@ import androidx.room.Entity
  * @param [isFinal]: whether the semester is for final year students
  * @param [studyLanguageIds]: comma separated study language ids the semester applies to
  * @param [activityId]: academic activity id during this period
- * @param [weeksCount]: number of weeks of this period
  * @param [startDateMillis]: period start date in millis
  * @param [endDateMillis]: period end date in millis
  */
@@ -26,7 +25,6 @@ data class AcademicPeriodEntity(
     @ColumnInfo(name = "isFinal") val isFinal: Boolean,
     @ColumnInfo(name = "studyLanguageIds") val studyLanguageIds: String,
     @ColumnInfo(name = "activityId") val activityId: String,
-    @ColumnInfo(name = "weeksCount") val weeksCount: Int,
     @ColumnInfo(name = "startDateMillis") val startDateMillis: Long,
     @ColumnInfo(name = "endDateMillis") val endDateMillis: Long,
 )

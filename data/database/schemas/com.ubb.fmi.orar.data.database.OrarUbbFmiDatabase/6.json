@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "8550c2ef50d2e236aa0af4bd53b2f5e0",
+    "identityHash": "ec0cf31e3e8344fb0b9b3a8a6d594061",
     "entities": [
       {
         "tableName": "academic_periods",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`startYear` INTEGER NOT NULL, `endYear` INTEGER NOT NULL, `semesterId` TEXT NOT NULL, `isFinal` INTEGER NOT NULL, `studyLanguageIds` TEXT NOT NULL, `activityId` TEXT NOT NULL, `weeksCount` INTEGER NOT NULL, `startDateMillis` INTEGER NOT NULL, `endDateMillis` INTEGER NOT NULL, PRIMARY KEY(`startYear`, `semesterId`, `isFinal`, `studyLanguageIds`, `startDateMillis`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`startYear` INTEGER NOT NULL, `endYear` INTEGER NOT NULL, `semesterId` TEXT NOT NULL, `isFinal` INTEGER NOT NULL, `studyLanguageIds` TEXT NOT NULL, `activityId` TEXT NOT NULL, `startDateMillis` INTEGER NOT NULL, `endDateMillis` INTEGER NOT NULL, PRIMARY KEY(`startYear`, `semesterId`, `isFinal`, `studyLanguageIds`, `startDateMillis`))",
         "fields": [
           {
             "fieldPath": "startYear",
@@ -42,12 +42,6 @@
             "fieldPath": "activityId",
             "columnName": "activityId",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "weeksCount",
-            "columnName": "weeksCount",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -433,7 +427,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8550c2ef50d2e236aa0af4bd53b2f5e0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ec0cf31e3e8344fb0b9b3a8a6d594061')"
     ]
   }
 }
