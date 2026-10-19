@@ -4,8 +4,6 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 data class AddPersonalEventUiState(
     val activity: String = String.BLANK,
@@ -17,7 +15,7 @@ data class AddPersonalEventUiState(
     val endHour: Int = DEFAULT_HOUR,
     val endMinute: Int = DEFAULT_MINUTE,
     val selectedFrequency: Frequency = Frequency.BOTH,
-    val selectedDays: ImmutableList<Day> = persistentListOf(Day.MONDAY),
+    val selectedDays: List<Day> = emptyList(),
 ) {
     enum class AddPersonalEventUiEvent : UiEvent {
         SUCCESS

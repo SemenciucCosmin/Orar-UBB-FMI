@@ -8,7 +8,6 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
 import com.ubb.fmi.orar.feature.freerooms.ui.viewmodel.model.FreeRoomsUiState
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -78,7 +77,7 @@ class FreeRoomsViewModel(
     }
 
     fun selectDays(days: List<Day>) {
-        _uiState.update { it.copy(selectedDays = days.toImmutableList()) }
+        _uiState.update { it.copy(selectedDays = days) }
     }
 
     companion object {

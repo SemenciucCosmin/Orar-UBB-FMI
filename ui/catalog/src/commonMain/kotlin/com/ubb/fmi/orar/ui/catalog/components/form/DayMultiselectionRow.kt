@@ -10,12 +10,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun DayMultiselectionRow(
-    selectedDays: ImmutableList<Day>,
+    selectedDays: List<Day>,
     onSelectDays: (List<Day>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -44,7 +42,7 @@ private fun PreviewDayMultiselectionRow() {
     OrarUbbFmiTheme {
         Surface {
             DayMultiselectionRow(
-                selectedDays = persistentListOf(Day.MONDAY, Day.FRIDAY, Day.SATURDAY),
+                selectedDays = listOf(Day.MONDAY, Day.FRIDAY, Day.SATURDAY),
                 onSelectDays = {},
             )
         }

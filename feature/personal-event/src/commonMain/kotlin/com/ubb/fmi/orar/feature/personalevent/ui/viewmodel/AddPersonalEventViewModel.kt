@@ -6,7 +6,6 @@ import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.domain.usertimetable.usecase.AddPersonalEventsUseCase
 import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.AddPersonalEventUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -62,7 +61,7 @@ class AddPersonalEventViewModel(
     }
 
     fun selectDays(days: List<Day>) {
-        _uiState.update { it.copy(selectedDays = days.toImmutableList()) }
+        _uiState.update { it.copy(selectedDays = days) }
     }
 
     fun finish() {
