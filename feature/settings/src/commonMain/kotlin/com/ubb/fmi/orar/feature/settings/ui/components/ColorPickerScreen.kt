@@ -33,6 +33,8 @@ import com.ubb.fmi.orar.ui.colorpack.components.ColorPicker
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_hex_code
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_invalid_hex_code
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_preview
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_save
 import org.jetbrains.compose.resources.stringResource
@@ -71,6 +73,8 @@ fun ColorPickerScreen(
             ColorPicker(
                 color = uiState.selectedColor,
                 onColorChange = onColorChange,
+                hexLabel = stringResource(Res.string.lbl_hex_code),
+                invalidHexMessage = stringResource(Res.string.lbl_invalid_hex_code),
             )
 
             PrimaryButton(

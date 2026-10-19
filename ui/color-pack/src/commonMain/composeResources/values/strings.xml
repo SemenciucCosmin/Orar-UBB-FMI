@@ -1,4 +1,0 @@
-<resources>
-    <string name="lbl_hex_code">Hex code</string>
-    <string name="lbl_invalid_hex_code">Enter a 6 digit hex code, e.g. #1DB954</string>
-</resources>

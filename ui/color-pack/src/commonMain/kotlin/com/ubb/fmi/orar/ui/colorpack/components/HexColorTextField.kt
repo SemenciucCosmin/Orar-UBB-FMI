@@ -19,10 +19,6 @@ import com.ubb.fmi.orar.domain.extensions.HASH
 import com.ubb.fmi.orar.ui.colorpack.extensions.toColorOrNull
 import com.ubb.fmi.orar.ui.colorpack.extensions.toHex
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
-import orar_ubb_fmi.ui.color_pack.generated.resources.Res
-import orar_ubb_fmi.ui.color_pack.generated.resources.lbl_hex_code
-import orar_ubb_fmi.ui.color_pack.generated.resources.lbl_invalid_hex_code
-import org.jetbrains.compose.resources.stringResource
 
 private const val MAX_HEX_INPUT_LENGTH = 7
 private const val HEX_DIGITS = "0123456789ABCDEF"
@@ -39,6 +35,8 @@ private const val HEX_DIGITS = "0123456789ABCDEF"
 fun HexColorTextField(
     color: Color,
     onColorChange: (Color) -> Unit,
+    label: String,
+    invalidMessage: String,
     modifier: Modifier = Modifier,
 ) {
     var text by remember { mutableStateOf(color.toHex()) }
@@ -56,10 +54,10 @@ fun HexColorTextField(
             text.toColorOrNull()?.let(onColorChange)
         },
         modifier = modifier,
-        label = { Text(text = stringResource(Res.string.lbl_hex_code)) },
+        label = { Text(text = label) },
         supportingText = when (parsedColor) {
             null -> {
-                { Text(text = stringResource(Res.string.lbl_invalid_hex_code)) }
+                { Text(text = invalidMessage) }
             }
 
             else -> null
@@ -79,6 +77,11 @@ fun HexColorTextField(
 @Composable
 private fun PreviewHexColorTextField() {
     OrarUbbFmiTheme {
-        HexColorTextField(color = Color.Red, onColorChange = {})
+        HexColorTextField(
+            color = Color.Red,
+            onColorChange = {},
+            label = "Hex code",
+            invalidMessage = "Enter a 6 digit hex code, e.g. #1DB954",
+        )
     }
 }

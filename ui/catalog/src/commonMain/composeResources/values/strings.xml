@@ -195,6 +195,8 @@
     <string name="lbl_save">Save</string>
     <string name="lbl_preview">Preview</string>
     <string name="lbl_reset_to_default">Reset to default</string>
+    <string name="lbl_hex_code">Hex code</string>
+    <string name="lbl_invalid_hex_code">Enter a 6 digit hex code, e.g. #1DB954</string>
 
     <!--  CALENDAR  -->
     <string name="lbl_academic_calendar">Academic calendar</string>

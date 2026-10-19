@@ -196,6 +196,8 @@
     <string name="lbl_save">Salvează</string>
     <string name="lbl_preview">Previzualizare</string>
     <string name="lbl_reset_to_default">Resetează la implicit</string>
+    <string name="lbl_hex_code">Cod hex</string>
+    <string name="lbl_invalid_hex_code">Introdu un cod hex de 6 cifre, ex. #1DB954</string>
 
     <!--  CALENDAR  -->
     <string name="lbl_academic_calendar">Calendar academic</string>

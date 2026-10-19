@@ -28,6 +28,8 @@ import com.ubb.fmi.orar.ui.theme.Pds
 fun ColorPicker(
     color: Color,
     onColorChange: (Color) -> Unit,
+    hexLabel: String,
+    invalidHexMessage: String,
     modifier: Modifier = Modifier,
     swatches: List<Color> = DefaultSwatches,
 ) {
@@ -67,6 +69,8 @@ fun ColorPicker(
         HexColorTextField(
             color = color,
             onColorChange = onColorChange,
+            label = hexLabel,
+            invalidMessage = invalidHexMessage,
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -76,6 +80,11 @@ fun ColorPicker(
 @Composable
 private fun PreviewColorPicker() {
     OrarUbbFmiTheme {
-        ColorPicker(color = Color(0xFF2563EB), onColorChange = {})
+        ColorPicker(
+            color = Color(0xFF2563EB),
+            onColorChange = {},
+            hexLabel = "Hex code",
+            invalidHexMessage = "Enter a 6 digit hex code, e.g. #1DB954",
+        )
     }
 }
