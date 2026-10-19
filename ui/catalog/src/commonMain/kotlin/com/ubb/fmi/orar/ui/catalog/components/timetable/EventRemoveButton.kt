@@ -17,7 +17,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_trash
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_cancel
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_ok
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_remove_personal_event_message
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_remove_event_message
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -44,7 +44,7 @@ fun EventRemoveButton(
 
     if (isDialogOpen) {
         AlertDialog(
-            text = stringResource(Res.string.lbl_remove_personal_event_message),
+            text = stringResource(Res.string.lbl_remove_event_message),
             positiveButtonText = stringResource(Res.string.lbl_ok),
             negativeButtonText = stringResource(Res.string.lbl_cancel),
             onNegativeClick = { isDialogOpen = false },

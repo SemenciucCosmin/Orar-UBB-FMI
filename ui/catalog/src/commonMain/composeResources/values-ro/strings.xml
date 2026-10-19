@@ -136,7 +136,7 @@
     <string name="lbl_text_field_error">Trebuie să completaţi secţiunea</string>
     <string name="lbl_day_selection_error">Trebuie să selectaţi cel puţin o zi</string>
     <string name="lbl_event_added">Evenimentul a fost adăugat orarului cu success!</string>
-    <string name="lbl_remove_personal_event_message">Ștergeți acest eveniment personal?</string>
+    <string name="lbl_remove_event_message">Ștergeți acest eveniment?</string>
     <string name="lbl_add_event_message">Adăugați acest eveniment in orar?</string>
 
     <!--  FEEDBACK  -->
