@@ -8,7 +8,7 @@ enum class EventType(val id: String) {
     SEMINARY(id = "Seminar"),
     LABORATORY(id = "Laborator"),
     STAFF(id = "Colectiv"),
-    PERSONAL(id = "Personal");
+    CUSTOM(id = "Personal");
 
     companion object {
         fun getById(id: String): EventType {

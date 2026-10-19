@@ -1,6 +1,6 @@
 package com.ubb.fmi.orar.domain.usertimetable.di
 
-import com.ubb.fmi.orar.domain.usertimetable.usecase.AddPersonalEventsUseCase
+import com.ubb.fmi.orar.domain.usertimetable.usecase.AddCustomEventsUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.AdoptEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
@@ -16,7 +16,7 @@ import org.koin.dsl.module
 fun userTimetableDomainModule() = module {
     factoryOf(::GetUserTimetableUseCase)
     factoryOf(::GetCurrentWeekUseCase)
-    factoryOf(::AddPersonalEventsUseCase)
+    factoryOf(::AddCustomEventsUseCase)
     factoryOf(::AdoptEventUseCase)
     factoryOf(::IsConfigurationDoneUseCase)
     factoryOf(::RefreshUserTimetableUseCase)

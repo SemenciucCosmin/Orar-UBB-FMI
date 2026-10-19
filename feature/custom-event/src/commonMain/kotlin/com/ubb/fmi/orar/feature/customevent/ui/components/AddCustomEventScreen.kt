@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.personalevent.ui.components
+package com.ubb.fmi.orar.feature.customevent.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +34,7 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_calendar
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_edit
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_activity
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_custom_event
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_caption
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_characters_counter
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_day_selection_error
@@ -52,12 +52,12 @@ private const val DETAILS_LINES = 3
 private const val DETAILS_MAX_CHARS = 100
 
 /**
- * Form for adding a personal event to the timetable, with a live preview of the event card on top
+ * Form for adding a custom event to the timetable, with a live preview of the event card on top
  * and the add button pinned to the bottom.
  */
 @Suppress("LongParameterList", "LongMethod")
 @Composable
-fun AddPersonalEventScreen(
+fun AddCustomEventScreen(
     activity: String,
     location: String,
     caption: String,
@@ -86,7 +86,7 @@ fun AddPersonalEventScreen(
     Scaffold(
         topBar = {
             TopBar(
-                title = stringResource(Res.string.lbl_add_personal_event),
+                title = stringResource(Res.string.lbl_add_custom_event),
                 onBack = onBack
             )
         },
@@ -119,7 +119,7 @@ fun AddPersonalEventScreen(
                 endTime = formatTime(endHour, endMinute),
                 location = location.ifEmpty { stringResource(Res.string.lbl_location) },
                 title = activity.ifEmpty { stringResource(Res.string.lbl_activity) },
-                type = EventType.PERSONAL,
+                type = EventType.CUSTOM,
                 participant = String.BLANK,
                 caption = caption.ifEmpty { stringResource(Res.string.lbl_caption) },
                 details = details.ifEmpty { stringResource(Res.string.lbl_details) },
@@ -218,9 +218,9 @@ fun AddPersonalEventScreen(
 @Suppress("MagicNumber")
 @Preview
 @Composable
-private fun PreviewAddPersonalEventScreen() {
+private fun PreviewAddCustomEventScreen() {
     OrarUbbFmiTheme {
-        AddPersonalEventScreen(
+        AddCustomEventScreen(
             activity = "",
             caption = "",
             location = "",

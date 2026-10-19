@@ -12,7 +12,7 @@ import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
  * The event's scheduled notification is cancelled as well: on Android each alarm re-arms the next
  * occurrence straight from its own intent data, so a deleted event would otherwise keep notifying.
  */
-class DeletePersonalEventUseCase(
+class DeleteCustomEventUseCase(
     private val eventsDataSource: EventsDataSource,
     private val notificationRepository: NotificationRepository,
     private val analyticsLogger: AnalyticsLogger,
@@ -25,10 +25,10 @@ class DeletePersonalEventUseCase(
         logger.d(TAG, "Deleting event $eventId and cancelling its notification")
         notificationRepository.cancel(eventId)
         eventsDataSource.deleteEvent(eventId)
-        analyticsLogger.logEvent(AnalyticsEvent.DELETE_PERSONAL_EVENT)
+        analyticsLogger.logEvent(AnalyticsEvent.DELETE_CUSTOM_EVENT)
     }
 
     companion object {
-        private const val TAG = "DeletePersonalEventUseCase"
+        private const val TAG = "DeleteCustomEventUseCase"
     }
 }

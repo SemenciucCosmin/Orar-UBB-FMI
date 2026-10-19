@@ -44,8 +44,10 @@ enum class ColorItem(
         group = ColorGroup.EVENT_TYPE,
         defaultColor = 0xFFDC2626,
     ),
-    EVENT_PERSONAL(
-        id = "event_personal",
+
+    // The id is persisted with the chosen colors, so it keeps the former naming
+    EVENT_CUSTOM(
+        id = "event_custom",
         group = ColorGroup.EVENT_TYPE,
         defaultColor = 0xFFD97706,
     ),

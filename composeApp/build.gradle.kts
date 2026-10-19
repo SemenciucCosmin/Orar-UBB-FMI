@@ -109,7 +109,7 @@ kotlin {
             implementation(projects.feature.groups)
             implementation(projects.feature.news)
             implementation(projects.feature.notifications)
-            implementation(projects.feature.personalEvent)
+            implementation(projects.feature.customEvent)
             implementation(projects.feature.roomTimetable)
             implementation(projects.feature.rooms)
             implementation(projects.feature.settings)

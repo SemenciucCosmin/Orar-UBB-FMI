@@ -1,10 +1,10 @@
-package com.ubb.fmi.orar.feature.personalevent.ui.viewmodel
+package com.ubb.fmi.orar.feature.customevent.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.domain.usertimetable.usecase.AddPersonalEventsUseCase
-import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.AddPersonalEventUiState
+import com.ubb.fmi.orar.domain.usertimetable.usecase.AddCustomEventsUseCase
+import com.ubb.fmi.orar.feature.customevent.ui.viewmodel.model.AddCustomEventUiState
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,11 +18,11 @@ import kotlinx.coroutines.launch
  * Saves a new theme option to preferences
  */
 @Suppress("TooManyFunctions")
-class AddPersonalEventViewModel(
-    private val addPersonalEventsUseCase: AddPersonalEventsUseCase
-) : EventViewModel<AddPersonalEventUiState.AddPersonalEventUiEvent>() {
+class AddCustomEventViewModel(
+    private val addCustomEventsUseCase: AddCustomEventsUseCase
+) : EventViewModel<AddCustomEventUiState.AddCustomEventUiEvent>() {
 
-    private val _uiState = MutableStateFlow(AddPersonalEventUiState())
+    private val _uiState = MutableStateFlow(AddCustomEventUiState())
     val uiState = _uiState.asStateFlow()
 
     fun changeActivity(activity: String) {
@@ -67,7 +67,7 @@ class AddPersonalEventViewModel(
 
     fun finish() {
         viewModelScope.launch {
-            addPersonalEventsUseCase(
+            addCustomEventsUseCase(
                 activity = uiState.value.activity,
                 location = uiState.value.location,
                 caption = uiState.value.caption,
@@ -80,7 +80,7 @@ class AddPersonalEventViewModel(
                 days = uiState.value.selectedDays,
             )
 
-            registerEvent(AddPersonalEventUiState.AddPersonalEventUiEvent.SUCCESS)
+            registerEvent(AddCustomEventUiState.AddCustomEventUiEvent.SUCCESS)
         }
     }
 }

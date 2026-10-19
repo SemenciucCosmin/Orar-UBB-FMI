@@ -45,7 +45,7 @@ class GetUserTimetableUseCase(
             if (configuration == null) return@transformLatest
             val configurationId = configuration.year.toString() + configuration.semesterId
 
-            val impersonalEventsFlow = when (UserType.getById(configuration.userTypeId)) {
+            val imcustomEventsFlow = when (UserType.getById(configuration.userTypeId)) {
                 UserType.STUDENT -> {
                     val studyLevel = configuration.studyLevelId?.let { StudyLevel.getById(it) }
                     val fieldId = configuration.fieldId
@@ -66,19 +66,19 @@ class GetUserTimetableUseCase(
                 }
             }
 
-            val personalEventsFlow = eventsDataSource.getEventsFromCache(
+            val customEventsFlow = eventsDataSource.getEventsFromCache(
                 configurationId = configurationId,
                 ownerId = Owner.User.id
             )
 
             combine(
-                impersonalEventsFlow,
-                personalEventsFlow
-            ) { impersonalResource, personalEvents ->
-                val impersonalEvents = impersonalResource.payload ?: emptyList()
-                val events = impersonalEvents + personalEvents
+                imcustomEventsFlow,
+                customEventsFlow
+            ) { nonCustomResource, customEvents ->
+                val imcustomEvents = nonCustomResource.payload ?: emptyList()
+                val events = imcustomEvents + customEvents
 
-                Resource(events, impersonalResource.status)
+                Resource(events, nonCustomResource.status)
             }.collectLatest(::emit)
         }
     }

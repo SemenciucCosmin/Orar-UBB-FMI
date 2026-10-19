@@ -12,10 +12,10 @@ import orar_ubb_fmi.ui.catalog.generated.resources.lbl_calendar_teaching
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_calendar_thesis
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_color_ongoing
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_color_upcoming
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_custom
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_event_types
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_laboratory
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_lecture
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_personal
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_seminary
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_staff
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_status_indicators
@@ -29,7 +29,7 @@ val ColorItem.labelRes: StringResource
         ColorItem.EVENT_SEMINARY -> Res.string.lbl_seminary
         ColorItem.EVENT_LABORATORY -> Res.string.lbl_laboratory
         ColorItem.EVENT_STAFF -> Res.string.lbl_staff
-        ColorItem.EVENT_PERSONAL -> Res.string.lbl_personal
+        ColorItem.EVENT_CUSTOM -> Res.string.lbl_custom
         ColorItem.CALENDAR_PREPARATION -> Res.string.lbl_calendar_preparation
         ColorItem.CALENDAR_TEACHING -> Res.string.lbl_calendar_teaching
         ColorItem.CALENDAR_HOLIDAY -> Res.string.lbl_calendar_holiday

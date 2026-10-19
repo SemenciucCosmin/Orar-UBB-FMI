@@ -30,7 +30,7 @@ import kotlin.time.Instant
  * timetable is a different one. Events are cached per year and semester, so they may only be
  * notified about during the semester they were fetched for.
  *
- * Personal events are enumerated from every calendar week, all year round, with the parity of the
+ * Custom events are enumerated from every calendar week, all year round, with the parity of the
  * matching academic calendar week, so they agree with the week label the timetable shows. Weeks
  * outside teaching are odd.
  *
@@ -67,7 +67,7 @@ class GetUpcomingEventOccurrencesUseCase(
 
         val academicCalendar = getAcademicCalendarUseCase().firstOrNull()
         val weeks = when (type) {
-            EventType.PERSONAL -> getCalendarWeeks(academicCalendar, afterMillis, timeZone)
+            EventType.CUSTOM -> getCalendarWeeks(academicCalendar, afterMillis, timeZone)
             else -> getTeachingWeeks(academicCalendar, afterMillis, timeZone)
         }
 

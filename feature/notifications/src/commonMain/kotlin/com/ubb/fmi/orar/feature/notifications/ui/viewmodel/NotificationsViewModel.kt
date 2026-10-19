@@ -105,7 +105,7 @@ class NotificationsViewModel(
      * would let the scheduler observe the previous value and no-op.
      *
      * This is the one place invalidation runs with `forceAll`, since muting is the only case
-     * where personal event notifications must go quiet too. Their per-event preference survives,
+     * where custom event notifications must go quiet too. Their per-event preference survives,
      * so switching back on restores exactly what the user had.
      */
     fun setNotificationsEnabled(enabled: Boolean) {

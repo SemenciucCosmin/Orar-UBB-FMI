@@ -19,7 +19,7 @@ kotlin {
     }
 
     androidLibrary {
-        namespace = "com.ubb.fmi.orar.feature.personalevent"
+        namespace = "com.ubb.fmi.orar.feature.customevent"
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
 

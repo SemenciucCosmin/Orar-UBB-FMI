@@ -78,7 +78,7 @@ fun EventsList(
                         AnimatedVisibility(isEditModeOn) {
                             EventEditMenu(
                                 isVisible = timetableItem.isVisible,
-                                isRemovable = timetableItem.isPersonal,
+                                isRemovable = timetableItem.isCustom,
                                 isNotificationOn = timetableItem.isNotificationOn,
                                 onVisibleClick = { onVisibleClick(timetableItem) },
                                 onNotificationClick = { onNotificationClick(timetableItem) },

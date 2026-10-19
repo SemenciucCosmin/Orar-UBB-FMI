@@ -3,10 +3,10 @@ package com.ubb.fmi.orar.feature.settings.ui.model
 import com.ubb.fmi.orar.ui.catalog.extensions.getStoreAppUrl
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_building
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_custom
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_explore
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_face_negative
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_face_positive
-import orar_ubb_fmi.ui.catalog.generated.resources.ic_personal
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_contact
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_contact_email
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_data_source
@@ -56,7 +56,7 @@ enum class AboutLink(
     ),
     CONTACT(
         url = "mailto:cosminsemenciuc@gmail.com",
-        iconRes = Res.drawable.ic_personal,
+        iconRes = Res.drawable.ic_custom,
         titleRes = Res.string.lbl_contact,
         messageRes = Res.string.lbl_contact_email,
     ),

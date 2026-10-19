@@ -3,7 +3,7 @@ package com.ubb.fmi.orar.domain.timetable.di
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedNewsDataValidityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.CheckCachedTimetableDataValidityUseCase
-import com.ubb.fmi.orar.domain.timetable.usecase.DeletePersonalEventUseCase
+import com.ubb.fmi.orar.domain.timetable.usecase.DeleteCustomEventUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.InvalidateCachedDataUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -14,7 +14,7 @@ import org.koin.dsl.module
  */
 fun timetableDomainModule() = module {
     factoryOf(::ChangeEventVisibilityUseCase)
-    factoryOf(::DeletePersonalEventUseCase)
+    factoryOf(::DeleteCustomEventUseCase)
     factoryOf(::CheckCachedTimetableDataValidityUseCase)
     factoryOf(::CheckCachedNewsDataValidityUseCase)
     factoryOf(::InvalidateCachedDataUseCase)

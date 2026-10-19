@@ -3,14 +3,14 @@ package com.ubb.fmi.orar.ui.catalog.extensions
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.domain.colorpack.model.ColorItem
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_custom
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_laboratory
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_lecture
-import orar_ubb_fmi.ui.catalog.generated.resources.ic_personal
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_seminary
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_staff
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_custom
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_laboratory
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_lecture
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_personal
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_seminary
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_staff
 import org.jetbrains.compose.resources.DrawableResource
@@ -22,7 +22,7 @@ val EventType.labelRes: StringResource
         EventType.SEMINARY -> Res.string.lbl_seminary
         EventType.LABORATORY -> Res.string.lbl_laboratory
         EventType.STAFF -> Res.string.lbl_staff
-        EventType.PERSONAL -> Res.string.lbl_personal
+        EventType.CUSTOM -> Res.string.lbl_custom
     }
 
 val EventType.imageRes: DrawableResource
@@ -31,7 +31,7 @@ val EventType.imageRes: DrawableResource
         EventType.SEMINARY -> Res.drawable.ic_seminary
         EventType.LABORATORY -> Res.drawable.ic_laboratory
         EventType.STAFF -> Res.drawable.ic_staff
-        EventType.PERSONAL -> Res.drawable.ic_personal
+        EventType.CUSTOM -> Res.drawable.ic_custom
     }
 
 val EventType.colorItem: ColorItem
@@ -40,5 +40,5 @@ val EventType.colorItem: ColorItem
         EventType.SEMINARY -> ColorItem.EVENT_SEMINARY
         EventType.LABORATORY -> ColorItem.EVENT_LABORATORY
         EventType.STAFF -> ColorItem.EVENT_STAFF
-        EventType.PERSONAL -> ColorItem.EVENT_PERSONAL
+        EventType.CUSTOM -> ColorItem.EVENT_CUSTOM
     }

@@ -144,7 +144,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             EventType.SEMINARY -> SEMINARY_RESOURCE_ID
             EventType.LABORATORY -> LABORATORY_RESOURCE_ID
             EventType.STAFF -> STAFF_RESOURCE_ID
-            EventType.PERSONAL -> PERSONAL_RESOURCE_ID
+            EventType.CUSTOM -> CUSTOM_RESOURCE_ID
         }
 
         val labelResId = context.resources.getIdentifier(
@@ -170,7 +170,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         private const val SEMINARY_RESOURCE_ID = "lbl_seminary"
         private const val LABORATORY_RESOURCE_ID = "lbl_laboratory"
         private const val STAFF_RESOURCE_ID = "lbl_staff"
-        private const val PERSONAL_RESOURCE_ID = "lbl_personal"
+        private const val CUSTOM_RESOURCE_ID = "lbl_custom"
         private const val USER_TIMETABLE_DEEP_LINK_BASE = "orarubbfmi://user-timetable"
     }
 }

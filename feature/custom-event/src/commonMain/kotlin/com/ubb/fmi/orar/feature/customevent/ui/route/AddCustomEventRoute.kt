@@ -1,14 +1,14 @@
-package com.ubb.fmi.orar.feature.personalevent.ui.route
+package com.ubb.fmi.orar.feature.customevent.ui.route
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.ubb.fmi.orar.feature.personalevent.ui.components.AddPersonalEventScreen
-import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.AddPersonalEventViewModel
-import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.AddPersonalEventUiState
-import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.isNextEnabled
-import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.isTimeIntervalValid
+import com.ubb.fmi.orar.feature.customevent.ui.components.AddCustomEventScreen
+import com.ubb.fmi.orar.feature.customevent.ui.viewmodel.AddCustomEventViewModel
+import com.ubb.fmi.orar.feature.customevent.ui.viewmodel.model.AddCustomEventUiState
+import com.ubb.fmi.orar.feature.customevent.ui.viewmodel.model.isNextEnabled
+import com.ubb.fmi.orar.feature.customevent.ui.viewmodel.model.isTimeIntervalValid
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.extensions.showToast
@@ -19,12 +19,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun AddPersonalEventRoute(navController: NavController) {
+fun AddCustomEventRoute(navController: NavController) {
     val context = getContext()
-    val viewModel: AddPersonalEventViewModel = koinViewModel()
+    val viewModel: AddCustomEventViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AddPersonalEventScreen(
+    AddCustomEventScreen(
         activity = uiState.activity,
         caption = uiState.caption,
         location = uiState.location,
@@ -53,7 +53,7 @@ fun AddPersonalEventRoute(navController: NavController) {
 
     EventHandler(viewModel.events) { event ->
         when (event) {
-            AddPersonalEventUiState.AddPersonalEventUiEvent.SUCCESS -> {
+            AddCustomEventUiState.AddCustomEventUiEvent.SUCCESS -> {
                 viewModel.unregisterEvent(event)
                 showToast(context, stringResource(Res.string.lbl_event_added), ToastLength.SHORT)
                 navController.navigateUp()

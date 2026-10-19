@@ -45,7 +45,7 @@
     <string name="lbl_subjects_details">Caută Materii și orarele lor</string>
     <string name="lbl_rooms_details">Caută Săli și orarele lor</string>
     <string name="lbl_free_rooms_details">Caută Săli libere</string>
-    <string name="lbl_add_personal_event_details">Adaugă un eveniment personal în orarul tău</string>
+    <string name="lbl_add_custom_event_details">Adaugă un eveniment personalizat în orarul tău</string>
     <string name="lbl_calendar_details">Vezi activitățile anului universitar</string>
 
     <!--  USER  -->
@@ -82,7 +82,7 @@
     <string name="lbl_seminary">Seminar</string>
     <string name="lbl_laboratory">Laborator</string>
     <string name="lbl_staff">Colectiv</string>
-    <string name="lbl_personal">Personal</string>
+    <string name="lbl_custom">Custom</string>
 
     <!--  SEMESTER  -->
     <string name="lbl_semester">Semestru</string>
@@ -138,8 +138,8 @@
     <string name="lbl_dark">Dark</string>
     <string name="lbl_system">Sistem</string>
 
-    <!--  ADD PERSONAL EVENT  -->
-    <string name="lbl_add_personal_event">Adaugă Eveniment Personal</string>
+    <!--  ADD CUSTOM EVENT  -->
+    <string name="lbl_add_custom_event">Adaugă Eveniment Personalizat</string>
     <string name="lbl_activity">Activitate</string>
     <string name="lbl_participant">Participant</string>
     <string name="lbl_caption">Subtitlu</string>

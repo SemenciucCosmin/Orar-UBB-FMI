@@ -16,7 +16,7 @@ import com.ubb.fmi.orar.domain.notifications.usecase.RescheduleNotificationsUseC
 import com.ubb.fmi.orar.domain.permissions.usecase.IsPermissionGrantedUseCase
 import com.ubb.fmi.orar.domain.permissions.usecase.OpenPermissionSettingsUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
-import com.ubb.fmi.orar.domain.timetable.usecase.DeletePersonalEventUseCase
+import com.ubb.fmi.orar.domain.timetable.usecase.DeleteCustomEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.RefreshUserTimetableUseCase
@@ -48,7 +48,7 @@ class UserTimetableViewModel(
     private val refreshUserTimetableUseCase: RefreshUserTimetableUseCase,
     private val changeEventVisibilityUseCase: ChangeEventVisibilityUseCase,
     private val changeEventNotificationUseCase: ChangeEventNotificationUseCase,
-    private val deletePersonalEventUseCase: DeletePersonalEventUseCase,
+    private val deleteCustomEventUseCase: DeleteCustomEventUseCase,
     private val getCurrentWeekUseCase: GetCurrentWeekUseCase,
     private val rescheduleNotificationsUseCase: RescheduleNotificationsUseCase,
     private val isPermissionGrantedUseCase: IsPermissionGrantedUseCase,
@@ -244,8 +244,8 @@ class UserTimetableViewModel(
 
     fun removeItem(event: TimetableListItem.Event) {
         viewModelScope.launch {
-            logger.d(TAG, "deletePersonalEventUseCase event: $event")
-            deletePersonalEventUseCase(event.id)
+            logger.d(TAG, "deleteCustomEventUseCase event: $event")
+            deleteCustomEventUseCase(event.id)
         }
 
         _uiState.update { state ->

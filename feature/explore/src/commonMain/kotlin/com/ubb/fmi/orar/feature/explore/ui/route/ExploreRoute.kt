@@ -18,13 +18,13 @@ import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_building
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_calendar
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_custom
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_location
-import orar_ubb_fmi.ui.catalog.generated.resources.ic_personal
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_student
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_subject
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event_details
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_custom_event
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_custom_event_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_calendar
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_calendar_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_explore
@@ -95,10 +95,10 @@ fun ExploreRoute(navController: NavController) {
             )
 
             NavigationCard(
-                title = stringResource(Res.string.lbl_add_personal_event),
-                text = stringResource(Res.string.lbl_add_personal_event_details),
-                painter = painterResource(Res.drawable.ic_personal),
-                onClick = { navController.navigate(ExploreNavDestination.AddPersonalEvent) },
+                title = stringResource(Res.string.lbl_add_custom_event),
+                text = stringResource(Res.string.lbl_add_custom_event_details),
+                painter = painterResource(Res.drawable.ic_custom),
+                onClick = { navController.navigate(ExploreNavDestination.AddCustomEvent) },
             )
 
             NavigationCard(

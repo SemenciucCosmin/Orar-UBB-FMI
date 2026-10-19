@@ -87,7 +87,7 @@ data class TimetableUiState(
                                 isVisible = event.isVisible,
                                 isNotificationOn = event.isNotificationOn &&
                                     isNotificationPermissionGranted,
-                                isPersonal = event.ownerId == Owner.User.id,
+                                isCustom = event.ownerId == Owner.User.id,
                             )
                         }
                     }
@@ -129,7 +129,7 @@ data class TimetableUiState(
                                 isVisible = event.isVisible,
                                 isNotificationOn = event.isNotificationOn &&
                                     isNotificationPermissionGranted,
-                                isPersonal = event.ownerId == Owner.User.id
+                                isCustom = event.ownerId == Owner.User.id
                             )
                         }
                     }

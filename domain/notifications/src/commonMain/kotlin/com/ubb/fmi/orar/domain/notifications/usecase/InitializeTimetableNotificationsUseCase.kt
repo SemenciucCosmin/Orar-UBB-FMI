@@ -19,7 +19,7 @@ import kotlin.collections.component2
 /**
  * Re-syncs notifications from the network: invalidates all currently scheduled notifications,
  * fetches the user's current timetable, force-enables notifications for every visible
- * non-personal event, and schedules them.
+ * non-custom event, and schedules them.
  *
  * This always turns notifications *on* for every visible event, overriding any per-event
  * choice the user previously made. It's meant for first-time setup (e.g. when notification
@@ -49,7 +49,7 @@ class InitializeTimetableNotificationsUseCase(
             invalidateTimetableNotificationsUseCase()
             logger.d(TAG, "configuration $configuration")
 
-            val impersonalEvents = when (UserType.getById(configuration.userTypeId)) {
+            val imcustomEvents = when (UserType.getById(configuration.userTypeId)) {
                 UserType.STUDENT -> {
                     val studyLevel = configuration.studyLevelId?.let { StudyLevel.getById(it) }
                     val fieldId = configuration.fieldId
@@ -83,13 +83,13 @@ class InitializeTimetableNotificationsUseCase(
                 return@launch
             }
 
-            val visibleImpersonalEvents = impersonalEvents.filter { it.isVisible }
+            val visibleImcustomEvents = imcustomEvents.filter { it.isVisible }
             logger.d(
                 TAG,
-                "Fetched ${impersonalEvents.size} timetable event(s), " +
-                    "${visibleImpersonalEvents.size} visible get notifications on",
+                "Fetched ${imcustomEvents.size} timetable event(s), " +
+                    "${visibleImcustomEvents.size} visible get notifications on",
             )
-            val initializedEventsNotifications = visibleImpersonalEvents.map {
+            val initializedEventsNotifications = visibleImcustomEvents.map {
                 it.copy(isNotificationOn = true)
             }
 
@@ -100,18 +100,18 @@ class InitializeTimetableNotificationsUseCase(
                 )
             }
 
-            // Personal events have no network counterpart, so they are not part of the synced
+            // Custom events have no network counterpart, so they are not part of the synced
             // set above and the invalidation step deliberately left them armed. Re-schedule them
             // anyway, so they pick up the current lead time and teaching calendar like the rest.
-            val personalEvents = eventsDataSource
+            val customEvents = eventsDataSource
                 .getEventsWithNotificationsOnFromCache()
-                .filter { it.type == EventType.PERSONAL }
+                .filter { it.type == EventType.CUSTOM }
 
             // Scheduled as a single batch rather than two, because iOS divides its app-wide
             // pending notification budget across whatever it is handed: scheduling the network
-            // events first would let them claim all of it and leave personal events with none.
-            logger.d(TAG, "Rescheduling ${personalEvents.size} personal event notification(s)")
-            val events = initializedEventsNotifications + personalEvents
+            // events first would let them claim all of it and leave custom events with none.
+            logger.d(TAG, "Rescheduling ${customEvents.size} custom event notification(s)")
+            val events = initializedEventsNotifications + customEvents
             scheduleEventNotificationsUseCase(*events.toTypedArray())
         }
     }

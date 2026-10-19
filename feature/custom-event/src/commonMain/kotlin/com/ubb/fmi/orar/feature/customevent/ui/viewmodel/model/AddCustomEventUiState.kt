@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model
+package com.ubb.fmi.orar.feature.customevent.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Frequency
@@ -7,7 +7,7 @@ import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-data class AddPersonalEventUiState(
+data class AddCustomEventUiState(
     val activity: String = String.BLANK,
     val location: String = String.BLANK,
     val caption: String = String.BLANK,
@@ -19,7 +19,7 @@ data class AddPersonalEventUiState(
     val selectedFrequency: Frequency = Frequency.BOTH,
     val selectedDays: ImmutableList<Day> = persistentListOf(Day.MONDAY),
 ) {
-    enum class AddPersonalEventUiEvent : UiEvent {
+    enum class AddCustomEventUiEvent : UiEvent {
         SUCCESS
     }
 
@@ -30,10 +30,10 @@ data class AddPersonalEventUiState(
     }
 }
 
-val AddPersonalEventUiState.isTimeIntervalValid: Boolean
+val AddCustomEventUiState.isTimeIntervalValid: Boolean
     get() = endHour * MINUTES_IN_HOUR + endMinute > startHour * MINUTES_IN_HOUR + startMinute
 
-val AddPersonalEventUiState.isNextEnabled: Boolean
+val AddCustomEventUiState.isNextEnabled: Boolean
     get() = activity.isNotBlank() && selectedDays.isNotEmpty() && isTimeIntervalValid
 
 private const val MINUTES_IN_HOUR = 60

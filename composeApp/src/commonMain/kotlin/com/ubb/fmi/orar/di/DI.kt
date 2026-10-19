@@ -28,6 +28,7 @@ import com.ubb.fmi.orar.domain.theme.di.themeDomainModule
 import com.ubb.fmi.orar.domain.timetable.di.timetableDomainModule
 import com.ubb.fmi.orar.domain.usertimetable.di.userTimetableDomainModule
 import com.ubb.fmi.orar.feature.calendar.di.calendarFeatureModule
+import com.ubb.fmi.orar.feature.customevent.di.customEventFeatureModule
 import com.ubb.fmi.orar.feature.dialogs.ui.di.dialogsFeatureModule
 import com.ubb.fmi.orar.feature.feedback.ui.di.feedbackFeatureModule
 import com.ubb.fmi.orar.feature.form.di.formFeatureModule
@@ -36,7 +37,6 @@ import com.ubb.fmi.orar.feature.groups.di.groupsFeatureModule
 import com.ubb.fmi.orar.feature.grouptimetable.di.groupsTimetableFeatureModule
 import com.ubb.fmi.orar.feature.news.di.newsFeatureModule
 import com.ubb.fmi.orar.feature.notifications.di.notificationsFeatureModule
-import com.ubb.fmi.orar.feature.personalevent.di.personalEventFeatureModule
 import com.ubb.fmi.orar.feature.rooms.di.roomsFeatureModule
 import com.ubb.fmi.orar.feature.roomtimetable.di.roomTimetableFeatureModule
 import com.ubb.fmi.orar.feature.settings.di.settingsFeatureModule
@@ -116,8 +116,8 @@ fun commonModule() = module {
     includes(permissionsDataModule())
     includes(permissionsDomainModule())
 
-    // PERSONAL EVENT
-    includes(personalEventFeatureModule())
+    // CUSTOM EVENT
+    includes(customEventFeatureModule())
 
     // PREFERENCES
     includes(preferencesDataModule())

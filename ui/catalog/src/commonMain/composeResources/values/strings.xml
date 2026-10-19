@@ -44,7 +44,7 @@
     <string name="lbl_subjects_details">Search for Subjects and their timetables</string>
     <string name="lbl_rooms_details">Search for Rooms and their timetables</string>
     <string name="lbl_free_rooms_details">Search for free Rooms</string>
-    <string name="lbl_add_personal_event_details">Add a personal event to your timetable</string>
+    <string name="lbl_add_custom_event_details">Add a custom event to your timetable</string>
     <string name="lbl_calendar_details">See the academic year activities</string>
 
     <!--  USER  -->
@@ -81,7 +81,7 @@
     <string name="lbl_seminary">Seminar</string>
     <string name="lbl_laboratory">Laborator</string>
     <string name="lbl_staff">Colectiv</string>
-    <string name="lbl_personal">Personal</string>
+    <string name="lbl_custom">Custom</string>
 
     <!--  SEMESTER  -->
     <string name="lbl_semester">Semester</string>
@@ -137,8 +137,8 @@
     <string name="lbl_dark">Dark</string>
     <string name="lbl_system">System</string>
 
-    <!--  ADD PERSONAL EVENT  -->
-    <string name="lbl_add_personal_event">Add Personal Event</string>
+    <!--  ADD CUSTOM EVENT  -->
+    <string name="lbl_add_custom_event">Add Custom Event</string>
     <string name="lbl_activity">Activity</string>
     <string name="lbl_participant">Participant</string>
     <string name="lbl_caption">Caption</string>

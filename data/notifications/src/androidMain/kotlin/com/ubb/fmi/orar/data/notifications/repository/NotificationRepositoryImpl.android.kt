@@ -50,7 +50,7 @@ class NotificationRepositoryImpl(
     /**
      * Arms the next occurrence of [notification]. For timetable events it falls inside one of its
      * semester's teaching weeks, and once the semester has none left nothing is armed at all,
-     * which is what stops them from firing through the exam sessions and the breaks. Personal
+     * which is what stops them from firing through the exam sessions and the breaks. Custom
      * events have no semester and always get a next occurrence.
      */
     @SuppressLint("MissingPermission")

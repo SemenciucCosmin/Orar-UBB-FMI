@@ -99,10 +99,10 @@ sealed class ExploreNavDestination {
     data object FreeRooms : ExploreNavDestination()
 
     /**
-     * Represents a navigation destination for the personal event addition feature.
+     * Represents a navigation destination for the custom event addition feature.
      */
     @Serializable
-    data object AddPersonalEvent : ExploreNavDestination()
+    data object AddCustomEvent : ExploreNavDestination()
 
     /**
      * Represents a navigation destination for the academic calendar.
