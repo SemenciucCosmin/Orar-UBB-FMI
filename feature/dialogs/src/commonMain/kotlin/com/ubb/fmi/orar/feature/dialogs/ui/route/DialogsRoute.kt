@@ -8,6 +8,7 @@ import com.ubb.fmi.orar.feature.dialogs.ui.viewmodel.model.DialogsUiEvent
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.navigation.destination.FeedbackNavDestination
 import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
+import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -24,6 +25,11 @@ fun DialogsRoute(navController: NavController) {
                     onDismiss = {
                         viewModel.unregisterEvent(event)
                         viewModel.setUpdateAnnouncementShown()
+                    },
+                    onSupportClick = {
+                        viewModel.unregisterEvent(event)
+                        viewModel.setUpdateAnnouncementShown()
+                        navController.navigate(SettingsNavDestination.About)
                     }
                 )
             }

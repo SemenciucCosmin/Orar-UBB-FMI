@@ -174,14 +174,17 @@
     <string name="lbl_feedback_choice_negative_message">Send me a feedback about your issues</string>
 
     <!--  ANNOUNCEMENTS  -->
-    <string name="lbl_app_update_announcement_title">New app version!</string>
-    <string name="lbl_app_update_announcement_message">
-• See the latest Student or Teacher News
-• Add personal events into your Timetable from Settings screen
-• Adopt a class from another Timetable from the back of the class card
-• Find a free room by day an hour interval
-• Automatic data update
-    </string>
+    <string name="lbl_app_update_announcement_title">What's new</string>
+    <string name="lbl_app_update_announcement_subtitle">The highlights of this update</string>
+    <string name="lbl_app_update_announcement_notifications_title">Event notifications</string>
+    <string name="lbl_app_update_announcement_notifications_message">Get reminded before your classes, customizable for each event</string>
+    <string name="lbl_app_update_announcement_calendar_title">Academic calendar</string>
+    <string name="lbl_app_update_announcement_calendar_message">Teaching weeks, exam sessions and holidays at a glance</string>
+    <string name="lbl_app_update_announcement_colors_title">Custom colors</string>
+    <string name="lbl_app_update_announcement_colors_message">Choose your own colors for event types and status indicators</string>
+    <string name="lbl_app_update_announcement_live_title">Live timetable</string>
+    <string name="lbl_app_update_announcement_live_message">See what's ongoing and up next, with the timetable opening on the current day</string>
+    <string name="lbl_app_update_announcement_message">This is a big update, so a few bugs may have slipped through. Any report or improvement idea is welcome!</string>
 
     <!--  NOTIFICATIONS SETTINGS  -->
     <string name="lbl_notifications">Notifications</string>

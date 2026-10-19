@@ -24,8 +24,7 @@ class DialogsViewModel(
         viewModelScope.launch {
             isConfigurationDoneUseCase().collectLatest { isConfigurationDone ->
                 if (isConfigurationDone) {
-                    // No notable update in this version
-                    //  getUpdateAnnouncementShown()
+                    getUpdateAnnouncementShown()
                     getFeedbackLoopReadiness()
                 }
             }
@@ -36,7 +35,6 @@ class DialogsViewModel(
         viewModelScope.launch { setUpdateAnnouncementShownUseCase() }
     }
 
-    @Suppress("UnusedPrivateMember")
     private fun getUpdateAnnouncementShown() {
         viewModelScope.launch {
             getUpdateAnnouncementShownUseCase().collectLatest { isShown ->

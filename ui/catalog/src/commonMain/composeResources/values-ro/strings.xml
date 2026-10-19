@@ -175,14 +175,18 @@
     <string name="lbl_feedback_choice_negative_message">Trimite-mi o recenzie despre problemele tale</string>
 
     <!--  ANNOUNCEMENTS  -->
-    <string name="lbl_app_update_announcement_title">O nouă versiune!</string>
-    <string name="lbl_app_update_announcement_message">
-• Vezi ultimele știri ale Studenților sau Profesorilor
-• Adaugă evenimente personale în Orar din ecranul de Setări
-• Adoptă o oră dintr-un al Orar din spatele cardului de oră
-• Caută o sală liberă după zi și interval orar
-• Actualizare automată a datelor
-    </string>
+    <string name="lbl_app_update_announcement_title">Ce e nou</string>
+    <string name="lbl_app_update_announcement_subtitle">Noutățile acestei versiuni</string>
+    <string name="lbl_app_update_announcement_notifications_title">Notificări pentru evenimente</string>
+    <string name="lbl_app_update_announcement_notifications_message">Primești un memento înainte de ore, personalizabil pentru fiecare eveniment</string>
+    <string name="lbl_app_update_announcement_calendar_title">Calendarul academic</string>
+    <string name="lbl_app_update_announcement_calendar_message">Săptămânile de cursuri, sesiunile și vacanțele dintr-o privire</string>
+    <string name="lbl_app_update_announcement_colors_title">Culori personalizate</string>
+    <string name="lbl_app_update_announcement_colors_message">Alege culorile pentru tipurile de evenimente și indicatorii de stare</string>
+    <string name="lbl_app_update_announcement_live_title">Orar în timp real</string>
+    <string name="lbl_app_update_announcement_live_message">Vezi ce se desfășoară acum și ce urmează, iar orarul se deschide la ziua curentă</string>
+    <string name="lbl_app_update_announcement_message">Aceasta este o actualizare mare, așa că s-ar putea să mai existe unele probleme. Orice raportare sau idee de îmbunătățire este binevenită!</string>
+
 
     <!--  NOTIFICATIONS SETTINGS  -->
     <string name="lbl_notifications">Notificări</string>
