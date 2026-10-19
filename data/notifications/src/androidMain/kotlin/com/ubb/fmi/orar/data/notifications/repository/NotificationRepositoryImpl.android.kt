@@ -18,7 +18,6 @@ import com.ubb.fmi.orar.data.notifications.receiver.NotificationReceiver
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.domain.calendar.usecase.GetAcademicYearUseCase
 import com.ubb.fmi.orar.domain.calendar.usecase.GetUpcomingEventOccurrencesUseCase
 import kotlin.time.Clock
 import kotlin.time.Instant
@@ -36,7 +35,6 @@ import kotlin.time.Instant
 class NotificationRepositoryImpl(
     private val context: Context,
     private val notificationCacheDataSource: NotificationCacheDataSource,
-    private val getAcademicYearUseCase: GetAcademicYearUseCase,
     private val getUpcomingEventOccurrencesUseCase: GetUpcomingEventOccurrencesUseCase,
     private val logger: Logger,
 ) : NotificationRepository {
@@ -56,9 +54,9 @@ class NotificationRepositoryImpl(
      * events have no semester and always get a next occurrence.
      */
     @SuppressLint("MissingPermission")
-    private fun schedule(notification: EventNotification) {
+    private suspend fun schedule(notification: EventNotification) {
         val triggerMillis = getUpcomingEventOccurrencesUseCase(
-            semester = notification.academicSemester,
+            type = notification.type,
             day = notification.day,
             frequency = notification.frequency,
             startHour = notification.startHour,
@@ -71,8 +69,7 @@ class NotificationRepositoryImpl(
         if (triggerMillis == null) {
             logger.d(
                 TAG,
-                "Skipped notification ${notification.id}, no teaching week left to fire in " +
-                    "(semester: ${notification.academicSemester?.index})",
+                "Skipped notification ${notification.id}, no teaching week left to fire in",
             )
             return
         }
@@ -89,8 +86,7 @@ class NotificationRepositoryImpl(
                     "($triggerMillis), exact: $isExact, day: ${notification.day.id}, " +
                     "frequency: ${notification.frequency.id}, " +
                     "start: ${notification.startHour}:${notification.startMinute}, " +
-                    "advanceMinutes: ${notification.advanceMinutes}, " +
-                    "semester: ${notification.academicSemester?.index}",
+                    "advanceMinutes: ${notification.advanceMinutes}",
             )
         } catch (exception: SecurityException) {
             logger.e(TAG, "Failed to schedule notification ${notification.id}: ${exception.message}")
@@ -118,31 +114,10 @@ class NotificationRepositoryImpl(
     /**
      * Rebuilds the [EventNotification] stored in an alarm [intent] by [buildPendingIntent].
      * Returns `null` when the intent is missing any required extra.
-     *
-     * The semester calendar is too large for an intent extra, so it is rebuilt from a moment
-     * inside the semester and the semester's index. An intent without a semester belongs to a
-     * personal event, which isn't bound to one.
      */
     @Suppress("ReturnCount")
     fun getEventNotification(intent: Intent): EventNotification? {
         val id = intent.requireStringExtra(EXTRA_NOTIFICATION_ID) ?: return null
-        val semesterMillis = intent.getLongExtra(EXTRA_SEMESTER_MILLIS, NO_SEMESTER_MILLIS)
-        val academicSemester = when (semesterMillis) {
-            NO_SEMESTER_MILLIS -> null
-            else -> {
-                val semesterIndex = intent.getIntExtra(EXTRA_SEMESTER_INDEX, NO_SEMESTER_INDEX)
-                val academicYear = getAcademicYearUseCase(semesterMillis)
-                academicYear.semesters.firstOrNull { it.index == semesterIndex } ?: run {
-                    logger.e(
-                        TAG,
-                        "Alarm $id references semester $semesterIndex, missing from academic year " +
-                            "${academicYear.startYear} resolved from $semesterMillis",
-                    )
-                    return null
-                }
-            }
-        }
-
         return EventNotification(
             id = id,
             activity = intent.requireStringExtra(EXTRA_EVENT_ACTIVITY) ?: return null,
@@ -156,7 +131,6 @@ class NotificationRepositoryImpl(
             endHour = intent.getIntExtra(EXTRA_END_HOUR, DEFAULT_TIME),
             endMinute = intent.getIntExtra(EXTRA_END_MINUTE, DEFAULT_TIME),
             advanceMinutes = intent.getIntExtra(EXTRA_ADVANCE_MINUTES, DEFAULT_TIME),
-            academicSemester = academicSemester,
         )
     }
 
@@ -171,12 +145,8 @@ class NotificationRepositoryImpl(
     /**
      * Builds the [PendingIntent] carrying all data [NotificationReceiver] needs to display the
      * notification and schedule its next occurrence.
-     *
-     * The semester travels as its midpoint rather than its start, so it still resolves to the
-     * same academic year even if the device's time zone changes before the alarm fires.
      */
     private fun buildPendingIntent(notification: EventNotification): PendingIntent {
-        val semester = notification.academicSemester
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             data = buildNotificationUri(notification.id)
             putExtra(EXTRA_NOTIFICATION_ID, notification.id)
@@ -191,10 +161,6 @@ class NotificationRepositoryImpl(
             putExtra(EXTRA_END_HOUR, notification.endHour)
             putExtra(EXTRA_END_MINUTE, notification.endMinute)
             putExtra(EXTRA_ADVANCE_MINUTES, notification.advanceMinutes)
-            if (semester != null) {
-                putExtra(EXTRA_SEMESTER_MILLIS, (semester.startMillis + semester.endMillis) / 2)
-                putExtra(EXTRA_SEMESTER_INDEX, semester.index)
-            }
         }
 
         return PendingIntent.getBroadcast(
@@ -255,10 +221,6 @@ class NotificationRepositoryImpl(
         private const val EXTRA_END_HOUR = "end_hour"
         private const val EXTRA_END_MINUTE = "end_minute"
         private const val EXTRA_ADVANCE_MINUTES = "advance_minutes"
-        private const val EXTRA_SEMESTER_MILLIS = "semester_millis"
-        private const val EXTRA_SEMESTER_INDEX = "semester_index"
-        private const val NO_SEMESTER_MILLIS = Long.MIN_VALUE
-        private const val NO_SEMESTER_INDEX = 0
         private const val DEFAULT_TIME = 0
     }
 }

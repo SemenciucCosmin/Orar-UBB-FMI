@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
+import com.ubb.fmi.orar.data.timetable.model.Semester
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
-import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.DegreeFilter
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent
@@ -40,7 +40,7 @@ data class StudyLinesFormUiState(
             get() {
                 return groupedStudyLines.filter { studyLines ->
                     studyLines.all {
-                        it.degree.id == selectedFilterId
+                        it.field.degree.id == selectedFilterId
                     } || selectedFilterId == DegreeFilter.ALL.id
                 }.toImmutableList()
             }

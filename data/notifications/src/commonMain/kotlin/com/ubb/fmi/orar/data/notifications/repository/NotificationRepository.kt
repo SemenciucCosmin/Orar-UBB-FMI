@@ -12,7 +12,7 @@ interface NotificationRepository {
     /**
      * Schedules recurring local notifications for every entry of [notifications], based on its
      * [EventNotification.day], start time and [EventNotification.frequency], and bounded to the
-     * teaching weeks of its [EventNotification.academicYear]. Calling this again for the same
+     * teaching weeks of the academic calendar. Calling this again for the same
      * [EventNotification.id] replaces anything previously scheduled for it.
      *
      * Scheduling is expressed as a batch rather than one event at a time because iOS caps an app

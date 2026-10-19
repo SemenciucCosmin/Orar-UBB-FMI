@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.domain.timetable.model
+package com.ubb.fmi.orar.data.timetable.model
 
 /**
  * Represents the two semesters in the academic year.

@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.okio)
 
             // MODULES
+            implementation(projects.data.calendar)
             implementation(projects.data.groups)
             implementation(projects.data.studyLines)
             implementation(projects.data.teachers)

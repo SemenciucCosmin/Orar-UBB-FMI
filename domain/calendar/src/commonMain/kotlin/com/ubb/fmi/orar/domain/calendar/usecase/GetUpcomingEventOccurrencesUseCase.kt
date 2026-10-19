@@ -1,14 +1,18 @@
 package com.ubb.fmi.orar.domain.calendar.usecase
 
+import com.ubb.fmi.orar.data.calendar.model.AcademicCalendar
+import com.ubb.fmi.orar.data.calendar.model.AcademicWeek
 import com.ubb.fmi.orar.data.timetable.model.Day
+import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
-import com.ubb.fmi.orar.domain.calendar.model.AcademicSemester
+import com.ubb.fmi.orar.data.timetable.model.Week
+import com.ubb.fmi.orar.data.timetable.preferences.TimetablePreferences
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.atTime
-import kotlinx.datetime.daysUntil
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
@@ -20,36 +24,36 @@ import kotlin.time.Instant
  * Returns the upcoming occurrences of a weekly timetable event, as epoch milliseconds in
  * chronological order.
  *
- * With a semester, occurrences are enumerated from that semester's teaching weeks only. That is
- * what confines timetable events to school weeks: the winter, Easter, exam, resit and summer
- * periods simply have no teaching week to derive an occurrence from, and neither does the other
- * semester, whose timetable is a different one.
+ * Timetable events are enumerated from the teaching weeks of the configured semester only. That
+ * is what confines them to school weeks: the winter, Easter, exam, resit and summer periods simply
+ * have no teaching week to derive an occurrence from, and neither does the other semester, whose
+ * timetable is a different one. Events are cached per year and semester, so they may only be
+ * notified about during the semester they were fetched for.
  *
- * Without a semester (personal events), occurrences are enumerated from every calendar week, all
- * year round. Inside a teaching week the week keeps its teaching parity, so personal events agree
- * with the week label the timetable shows; outside teaching, the parity keeps alternating every
- * calendar week from the last teaching week before it.
+ * Personal events are enumerated from every calendar week, all year round, with the parity of the
+ * matching academic calendar week, so they agree with the week label the timetable shows. Weeks
+ * outside teaching are odd.
  *
  * The odd/even alternation of [Frequency.WEEK_1] and [Frequency.WEEK_2] follows the teaching week
  * numbering instead of the calendar, so a break of an odd number of weeks (the Easter one)
  * doesn't silently invert it.
  */
 class GetUpcomingEventOccurrencesUseCase(
-    private val getAcademicYearUseCase: GetAcademicYearUseCase,
+    private val getAcademicCalendarUseCase: GetAcademicCalendarUseCase,
+    private val timetablePreferences: TimetablePreferences,
 ) {
 
     /**
-     * Returns up to [limit] occurrences of an event held on [day] at [startHour]:[startMinute]
-     * with [frequency], each moved back by [advanceMinutes], keeping only those strictly after
-     * [afterMillis]. Occurrences are bounded to the teaching weeks of [semester], or unbounded
-     * when [semester] is `null`.
+     * Returns up to [limit] occurrences of an event of [type] held on [day] at
+     * [startHour]:[startMinute] with [frequency], each moved back by [advanceMinutes], keeping only
+     * those strictly after [afterMillis].
      *
      * Moving back by [advanceMinutes] happens after the occurrence is placed in its week, so a
      * lead time long enough to cross midnight correctly lands on the previous day.
      */
     @Suppress("LongParameterList")
-    operator fun invoke(
-        semester: AcademicSemester?,
+    suspend operator fun invoke(
+        type: EventType,
         day: Day,
         frequency: Frequency,
         startHour: Int,
@@ -61,15 +65,10 @@ class GetUpcomingEventOccurrencesUseCase(
     ): List<Long> {
         if (limit <= 0) return emptyList()
 
-        val weeks = when (semester) {
-            null -> getCalendarWeeks(afterMillis, timeZone)
-            else -> semester.teachingWeeks.asSequence().map { teachingWeek ->
-                val weekStartDate = Instant.fromEpochMilliseconds(teachingWeek.startMillis)
-                    .toLocalDateTime(timeZone)
-                    .date
-
-                weekStartDate to teachingWeek.isOdd
-            }
+        val academicCalendar = getAcademicCalendarUseCase().firstOrNull()
+        val weeks = when (type) {
+            EventType.PERSONAL -> getCalendarWeeks(academicCalendar, afterMillis, timeZone)
+            else -> getTeachingWeeks(academicCalendar, afterMillis, timeZone)
         }
 
         return weeks
@@ -89,53 +88,66 @@ class GetUpcomingEventOccurrencesUseCase(
     }
 
     /**
-     * Returns every calendar week from the one [afterMillis] falls in onwards, as its Monday paired
-     * with whether it is an odd week. An occurrence is never notified after the event itself, so
-     * no earlier week can hold an occurrence later than [afterMillis].
+     * Returns the teaching weeks of the configured semester, or of the semester in session at
+     * [afterMillis] when the configured one isn't in [academicCalendar], as their Monday paired
+     * with whether they are odd weeks.
      */
-    private fun getCalendarWeeks(afterMillis: Long, timeZone: TimeZone): Sequence<Pair<LocalDate, Boolean>> {
-        val afterDate = Instant.fromEpochMilliseconds(afterMillis).toLocalDateTime(timeZone).date
-        val firstWeekStartDate = afterDate.minus(afterDate.dayOfWeek.ordinal, DateTimeUnit.DAY)
+    private suspend fun getTeachingWeeks(
+        academicCalendar: AcademicCalendar?,
+        afterMillis: Long,
+        timeZone: TimeZone,
+    ): Sequence<Pair<LocalDate, Boolean>> {
+        val semesterId = timetablePreferences.getConfiguration().firstOrNull()?.semesterId
+        val semesters = academicCalendar?.semesters.orEmpty()
+        val academicSemester = semesters.firstOrNull {
+            it.semester.id == semesterId
+        } ?: semesters.firstOrNull { afterMillis in it }
 
-        return generateSequence(firstWeekStartDate) { weekStartDate ->
-            weekStartDate.plus(1, DateTimeUnit.WEEK)
-        }.map { weekStartDate ->
-            weekStartDate to isOddWeek(weekStartDate, timeZone)
+        val teachingWeeks = academicSemester?.teachingWeeks.orEmpty()
+        return teachingWeeks.asSequence().map { teachingWeek ->
+            val weekStartDate = Instant.fromEpochMilliseconds(teachingWeek.startMillis)
+                .toLocalDateTime(timeZone)
+                .date
+
+            weekStartDate to (teachingWeek.week == Week.ODD)
         }
     }
 
     /**
-     * Whether the calendar week starting on [weekStartDate] is odd. A teaching week keeps its own
-     * parity; any other week continues alternating from the last teaching week before it, looking
-     * back into the previous academic year when needed (e.g. for the summer break).
+     * Returns every calendar week from the one [afterMillis] falls in onwards, as its Monday paired
+     * with whether it is an odd week. An occurrence is never notified after the event itself, so
+     * no earlier week can hold an occurrence later than [afterMillis].
      */
-    private fun isOddWeek(weekStartDate: LocalDate, timeZone: TimeZone): Boolean {
-        val weekStartMillis = weekStartDate.atStartOfDayIn(timeZone).toEpochMilliseconds()
-        val academicYear = getAcademicYearUseCase(weekStartMillis, timeZone)
-        val teachingWeeks = academicYear.semesters.flatMap { it.teachingWeeks }
+    private fun getCalendarWeeks(
+        academicCalendar: AcademicCalendar?,
+        afterMillis: Long,
+        timeZone: TimeZone,
+    ): Sequence<Pair<LocalDate, Boolean>> {
+        val afterDate = Instant.fromEpochMilliseconds(afterMillis).toLocalDateTime(timeZone).date
+        val firstWeekStartDate = afterDate.minus(afterDate.dayOfWeek.ordinal, DateTimeUnit.DAY)
+        val academicWeeks = academicCalendar
+            ?.semesters
+            ?.flatMap { semester -> semester.periods.flatMap { it.weeks } }
+            .orEmpty()
 
-        teachingWeeks.firstOrNull { weekStartMillis in it }?.let { teachingWeek ->
-            return teachingWeek.isOdd
+        return generateSequence(firstWeekStartDate) { weekStartDate ->
+            weekStartDate.plus(1, DateTimeUnit.WEEK)
+        }.map { weekStartDate ->
+            weekStartDate to isOddWeek(weekStartDate, academicWeeks, timeZone)
         }
-
-        val lastTeachingWeek = teachingWeeks.lastOrNull { it.endMillis <= weekStartMillis }
-            ?: getAcademicYearUseCase(academicYear.startYear.dec(), timeZone)
-                .semesters
-                .last()
-                .teachingWeeks
-                .last()
-
-        val lastTeachingWeekStartDate = Instant.fromEpochMilliseconds(lastTeachingWeek.startMillis)
-            .toLocalDateTime(timeZone)
-            .date
-
-        val weeksSinceLastTeachingWeek = lastTeachingWeekStartDate.daysUntil(weekStartDate) / DAYS_IN_WEEK
-        val isParityFlipped = weeksSinceLastTeachingWeek % 2 != 0
-
-        return lastTeachingWeek.isOdd != isParityFlipped
     }
 
-    companion object {
-        private const val DAYS_IN_WEEK = 7
+    /**
+     * Whether the calendar week starting on [weekStartDate] is odd: the parity of the academic
+     * calendar week it matches, or odd outside the academic calendar.
+     */
+    private fun isOddWeek(
+        weekStartDate: LocalDate,
+        academicWeeks: List<AcademicWeek>,
+        timeZone: TimeZone,
+    ): Boolean {
+        val weekStartMillis = weekStartDate.atStartOfDayIn(timeZone).toEpochMilliseconds()
+        val academicWeek = academicWeeks.firstOrNull { weekStartMillis in it }
+        return academicWeek?.week != Week.EVEN
     }
 }

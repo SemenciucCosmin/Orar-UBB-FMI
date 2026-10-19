@@ -1,8 +1,8 @@
 package com.ubb.fmi.orar.feature.form.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.Owner
+import com.ubb.fmi.orar.data.timetable.model.Semester
 import com.ubb.fmi.orar.domain.extensions.BLANK
-import com.ubb.fmi.orar.domain.timetable.model.Semester
 import com.ubb.fmi.orar.ui.catalog.model.ErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.UiEvent

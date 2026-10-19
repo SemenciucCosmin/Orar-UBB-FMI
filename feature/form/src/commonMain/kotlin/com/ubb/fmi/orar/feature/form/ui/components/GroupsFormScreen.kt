@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.ubb.fmi.orar.data.timetable.model.Degree
+import com.ubb.fmi.orar.data.timetable.model.Field
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import com.ubb.fmi.orar.data.timetable.model.StudyLevel
 import com.ubb.fmi.orar.data.timetable.model.StudyLine
@@ -106,9 +106,8 @@ private fun PreviewGroupsFormScreen() {
                         studyLine = StudyLine(
                             id = "$it",
                             name = "$it",
-                            fieldId = "$it",
+                            field = Field.entries.random(),
                             level = StudyLevel.entries.random(),
-                            degree = Degree.entries.random(),
                             configurationId = "$it"
                         )
                     )

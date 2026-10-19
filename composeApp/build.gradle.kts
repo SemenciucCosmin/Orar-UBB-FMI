@@ -71,6 +71,7 @@ kotlin {
 
             // MODULES
             implementation(projects.data.announcements)
+            implementation(projects.data.calendar)
             implementation(projects.data.database)
             implementation(projects.data.feedback)
             implementation(projects.data.groups)
@@ -98,6 +99,7 @@ kotlin {
             implementation(projects.domain.theme)
             implementation(projects.domain.timetable)
             implementation(projects.domain.userTimetable)
+            implementation(projects.feature.calendar)
             implementation(projects.feature.dialogs)
             implementation(projects.feature.explore)
             implementation(projects.feature.feedback)

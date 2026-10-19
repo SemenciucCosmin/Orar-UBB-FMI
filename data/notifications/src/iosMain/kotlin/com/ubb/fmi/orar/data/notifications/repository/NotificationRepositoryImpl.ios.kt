@@ -51,7 +51,7 @@ class NotificationRepositoryImpl(
      * Replaces everything pending for [notification] with its next [occurrenceCount] teaching
      * week occurrences.
      */
-    private fun schedule(notification: EventNotification, occurrenceCount: Int, nowMillis: Long) {
+    private suspend fun schedule(notification: EventNotification, occurrenceCount: Int, nowMillis: Long) {
         // Clear every identifier this event may have used before. Without this, an event whose
         // frequency or lead time changed would leave its old requests pending alongside the new
         // ones, firing at both times and wasting the app-wide pending notification budget.
@@ -60,7 +60,7 @@ class NotificationRepositoryImpl(
             .removePendingNotificationRequestsWithIdentifiers(allNotificationIdentifiers(notification.id))
 
         val occurrencesMillis = getUpcomingEventOccurrencesUseCase(
-            semester = notification.academicSemester,
+            type = notification.type,
             day = notification.day,
             frequency = notification.frequency,
             startHour = notification.startHour,
@@ -79,7 +79,7 @@ class NotificationRepositoryImpl(
             "Scheduling ${occurrencesMillis.size}/$occurrenceCount occurrence(s) of ${notification.id}, " +
                 "first: ${Instant.fromEpochMilliseconds(occurrencesMillis.first())}, " +
                 "last: ${Instant.fromEpochMilliseconds(occurrencesMillis.last())}, " +
-                "advanceMinutes: ${notification.advanceMinutes}, semester: ${notification.academicSemester?.index}",
+                "advanceMinutes: ${notification.advanceMinutes}",
         )
 
         val content = buildNotificationContent(notification)

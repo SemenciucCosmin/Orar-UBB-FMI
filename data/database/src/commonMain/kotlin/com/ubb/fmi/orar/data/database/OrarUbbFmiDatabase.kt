@@ -4,6 +4,7 @@ import androidx.room.AutoMigration
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.ubb.fmi.orar.data.database.dao.AcademicPeriodDao
 import com.ubb.fmi.orar.data.database.dao.EventDao
 import com.ubb.fmi.orar.data.database.dao.GroupDao
 import com.ubb.fmi.orar.data.database.dao.NewsDao
@@ -11,6 +12,7 @@ import com.ubb.fmi.orar.data.database.dao.RoomDao
 import com.ubb.fmi.orar.data.database.dao.StudyLineDao
 import com.ubb.fmi.orar.data.database.dao.SubjectDao
 import com.ubb.fmi.orar.data.database.dao.TeacherDao
+import com.ubb.fmi.orar.data.database.model.AcademicPeriodEntity
 import com.ubb.fmi.orar.data.database.model.ArticleEntity
 import com.ubb.fmi.orar.data.database.model.EventEntity
 import com.ubb.fmi.orar.data.database.model.GroupEntity
@@ -25,9 +27,10 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
  * It includes entities for rooms, study lines, subjects, teachers, and timetable classes.
  */
 @Database(
-    version = 5,
+    version = 6,
     exportSchema = true,
     entities = [
+        AcademicPeriodEntity::class,
         ArticleEntity::class,
         EventEntity::class,
         GroupEntity::class,
@@ -41,10 +44,13 @@ import com.ubb.fmi.orar.data.database.model.TeacherEntity
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
+        AutoMigration(from = 5, to = 6, spec = AutoMigrations.AutoMigrationSpec5To6::class),
     ]
 )
 @ConstructedBy(OrarUbbFmiDatabaseConstructor::class)
 abstract class OrarUbbFmiDatabase : RoomDatabase() {
+
+    abstract val academicPeriodDao: AcademicPeriodDao
 
     abstract val eventDao: EventDao
 

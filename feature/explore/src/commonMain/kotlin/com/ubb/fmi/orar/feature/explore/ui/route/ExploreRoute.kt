@@ -3,6 +3,8 @@ package com.ubb.fmi.orar.feature.explore.ui.route
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -15,6 +17,7 @@ import com.ubb.fmi.orar.ui.navigation.destination.ExploreNavDestination
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_building
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_calendar
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_location
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_personal
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_student
@@ -22,6 +25,8 @@ import orar_ubb_fmi.ui.catalog.generated.resources.ic_subject
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_teacher
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add_personal_event_details
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_calendar
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_calendar_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_explore
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_free_rooms
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_free_rooms_details
@@ -51,6 +56,7 @@ fun ExploreRoute(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium),
             modifier = Modifier
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
                 .padding(Pds.spacing.Medium)
         ) {
             NavigationCard(
@@ -93,6 +99,13 @@ fun ExploreRoute(navController: NavController) {
                 text = stringResource(Res.string.lbl_add_personal_event_details),
                 painter = painterResource(Res.drawable.ic_personal),
                 onClick = { navController.navigate(ExploreNavDestination.AddPersonalEvent) },
+            )
+
+            NavigationCard(
+                title = stringResource(Res.string.lbl_calendar),
+                text = stringResource(Res.string.lbl_calendar_details),
+                painter = painterResource(Res.drawable.ic_calendar),
+                onClick = { navController.navigate(ExploreNavDestination.Calendar) },
             )
         }
     }

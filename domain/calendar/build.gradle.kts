@@ -29,12 +29,16 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // MODULES
+            implementation(projects.data.calendar)
+            implementation(projects.data.network)
+            implementation(projects.data.studyLines)
             implementation(projects.data.timetable)
 
             // KOIN
             implementation(libs.koin.core)
 
             // KOTLINX
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.date.time)
         }
     }

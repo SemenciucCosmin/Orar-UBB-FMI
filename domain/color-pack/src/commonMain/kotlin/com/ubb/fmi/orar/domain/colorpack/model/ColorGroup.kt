@@ -6,4 +6,5 @@ package com.ubb.fmi.orar.domain.colorpack.model
 enum class ColorGroup {
     STATUS_INDICATOR,
     EVENT_TYPE,
+    ACADEMIC_CALENDAR,
 }

@@ -1,7 +1,7 @@
 package com.ubb.fmi.orar.domain.timetable.usecase
 
 import Logger
-import com.ubb.fmi.orar.domain.timetable.model.Semester
+import com.ubb.fmi.orar.data.timetable.model.Semester
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock

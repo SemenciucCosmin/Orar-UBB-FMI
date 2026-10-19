@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.ubb.fmi.orar.feature.calendar.ui.route.CalendarRoute
 import com.ubb.fmi.orar.feature.freerooms.ui.route.FreeRoomsRoute
 import com.ubb.fmi.orar.feature.groups.ui.route.GroupsRoute
 import com.ubb.fmi.orar.feature.grouptimetable.ui.route.GroupTimetableRoute
@@ -91,5 +92,9 @@ fun NavGraphBuilder.exploreGraph(navController: NavController) {
 
     composable<ExploreNavDestination.AddPersonalEvent> { navBackStackEntry ->
         AddPersonalEventRoute(navController)
+    }
+
+    composable<ExploreNavDestination.Calendar> { navBackStackEntry ->
+        CalendarRoute(navController)
     }
 }
