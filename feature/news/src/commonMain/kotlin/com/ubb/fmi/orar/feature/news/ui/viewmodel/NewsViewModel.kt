@@ -90,6 +90,7 @@ class NewsViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        newsRepository.refresh()
         job.cancel()
         job = getNews()
     }

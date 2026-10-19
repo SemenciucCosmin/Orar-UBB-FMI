@@ -97,7 +97,14 @@ class GroupsFormViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
-        getGroups()
+        viewModelScope.launch {
+            val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            val studyLevel = configuration?.studyLevelId?.let(StudyLevel::getById)
+            val fieldId = configuration?.fieldId
+            if (studyLevel == null || fieldId == null) return@launch
+
+            groupsRepository.refreshGroups(fieldId + studyLevel.notation)
+        }
     }
 
     /**

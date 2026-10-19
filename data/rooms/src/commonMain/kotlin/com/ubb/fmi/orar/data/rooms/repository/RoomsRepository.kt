@@ -27,6 +27,16 @@ interface RoomsRepository {
     suspend fun getAllRoomsAndEvents(): Flow<Pair<List<Owner.Room>, List<Event>>>
 
     /**
+     * Fetches the rooms from API again, to recover from a failed fetch
+     */
+    fun refresh()
+
+    /**
+     * Fetches the timetable for certain room from API again, to recover from a failed fetch
+     */
+    fun refreshTimetable(roomId: String)
+
+    /**
      * Invalidates rooms cache
      */
     suspend fun invalidate(

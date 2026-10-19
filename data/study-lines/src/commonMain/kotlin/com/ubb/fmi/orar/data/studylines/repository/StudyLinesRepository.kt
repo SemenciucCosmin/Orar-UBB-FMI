@@ -15,6 +15,11 @@ interface StudyLinesRepository {
     fun getStudyLines(): Flow<Resource<List<StudyLine>>>
 
     /**
+     * Fetches the study lines from API again, to recover from a failed fetch
+     */
+    fun refresh()
+
+    /**
      * Invalidates study lines cache
      */
     suspend fun invalidate(

@@ -2,6 +2,8 @@ package com.ubb.fmi.orar.data.subjects.repository
 
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.network.model.isNotFoundError
 import com.ubb.fmi.orar.data.network.model.isSuccess
 import com.ubb.fmi.orar.data.subjects.datasource.SubjectsDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
@@ -12,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -70,6 +73,49 @@ class SubjectsRepositoryImpl(
     }
 
     /**
+     * Fetches the subjects from API again, to recover from a failed fetch
+     */
+    override fun refresh() {
+        subjectsFlow.update { Resource(it.payload, Status.Loading) }
+        coroutineScope.launch {
+            when (val configuration = timetablePreferences.getConfiguration().firstOrNull()) {
+                null -> subjectsFlow.update { Resource(null, Status.NotFoundError) }
+                else -> getSubjectsFromApi(configuration.year, configuration.semesterId)
+            }
+        }
+    }
+
+    /**
+     * Fetches the timetable for certain subject from API again, to recover from a failed fetch. When
+     * the subject itself is missing, the subjects are fetched again first.
+     */
+    override fun refreshTimetable(subjectId: String) {
+        val timetableFlow = timetableFlows[subjectId] ?: return
+        timetableFlow.update { Resource(it.payload, Status.Loading) }
+
+        coroutineScope.launch {
+            val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            if (configuration == null) {
+                timetableFlow.update { Resource(null, Status.NotFoundError) }
+                return@launch
+            }
+
+            val subject = subjectsFlow.value.payload?.firstOrNull { it.id == subjectId }
+            if (subject != null) {
+                getEventsFromApi(configuration.year, configuration.semesterId, subject)
+                return@launch
+            }
+
+            // Once cached, the subject is picked up by initializeEvents, so only failures are handled
+            subjectsFlow.update { Resource(it.payload, Status.Loading) }
+            val resource = getSubjectsFromApi(configuration.year, configuration.semesterId)
+            if (resource.payload?.any { it.id == subjectId } != true) {
+                timetableFlow.update { Resource(null, resource.status.isNotFoundError()) }
+            }
+        }
+    }
+
+    /**
      * Tries prefetching the subject events from API for a safety update of local data
      */
     private fun prefetchSubjects() {
@@ -107,27 +153,35 @@ class SubjectsRepositoryImpl(
     }
 
     /**
-     * Retrieves subjects from API and update the database of output flow
+     * Retrieves subjects from API and update the database of output flow, returning the API resource
      */
     private suspend fun getSubjectsFromApi(
         year: Int,
         semesterId: String,
-    ) {
+    ): Resource<List<Owner.Subject>> {
         val resource = subjectsDataSource.getSubjectsFromApi(year, semesterId)
         val subject = resource.payload
 
         when {
             resource.status.isSuccess() && subject != null -> {
                 subjectsDataSource.saveSubjectsInCache(subject)
+                subjectsFlow.update {
+                    when {
+                        it.payload.isNullOrEmpty() -> it
+                        else -> it.copy(status = Status.Success)
+                    }
+                }
             }
 
             else -> subjectsFlow.update {
                 when {
                     it.payload.isNullOrEmpty() -> Resource(null, resource.status)
-                    else -> it
+                    else -> it.copy(status = Status.Success)
                 }
             }
         }
+
+        return resource
     }
 
     /**
@@ -150,19 +204,34 @@ class SubjectsRepositoryImpl(
     }
 
     /**
-     * Initializes collection of database entries and possible API updates
+     * Initializes collection of database entries and possible API updates. Follows the subjects, so
+     * the timetable is loaded once the subject is available, or fails along with the subjects.
      */
     private fun initializeEvents(subjectId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
                 if (configuration == null) return@collectLatest
 
-                val subject = subjectsDataSource.getSubjectsFromCache(
-                    configuration.year,
-                    configuration.semesterId
-                ).firstOrNull()?.firstOrNull { it.id == subjectId } ?: return@collectLatest
+                subjectsFlow
+                    .map { resource ->
+                        val subject = resource.payload?.firstOrNull { it.id == subjectId }
+                        subject to resource.status.takeIf { subject == null }
+                    }
+                    .distinctUntilChanged()
+                    .collectLatest { (subject, status) ->
+                        when {
+                            subject != null -> getEventsFromCache(
+                                configuration.year,
+                                configuration.semesterId,
+                                subject
+                            )
 
-                getEventsFromCache(configuration.year, configuration.semesterId, subject)
+                            status == null || status.isLoading() -> Unit
+                            else -> timetableFlows[subjectId]?.update {
+                                Resource(null, status.isNotFoundError())
+                            }
+                        }
+                    }
             }
         }
     }
@@ -201,12 +270,18 @@ class SubjectsRepositoryImpl(
         when {
             resource.status.isSuccess() && events != null -> {
                 eventsDataSource.updateEventsInCache(configurationId, subject.id, events)
+                timetableFlows[subject.id]?.update {
+                    when {
+                        it.payload?.events.isNullOrEmpty() -> it
+                        else -> it.copy(status = Status.Success)
+                    }
+                }
             }
 
             else -> timetableFlows[subject.id]?.update {
                 when {
                     it.payload?.events.isNullOrEmpty() -> Resource(null, resource.status)
-                    else -> it
+                    else -> it.copy(status = Status.Success)
                 }
             }
         }

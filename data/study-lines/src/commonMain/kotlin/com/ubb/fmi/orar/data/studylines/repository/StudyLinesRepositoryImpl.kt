@@ -44,6 +44,19 @@ class StudyLinesRepositoryImpl(
     }
 
     /**
+     * Fetches the study lines from API again, to recover from a failed fetch
+     */
+    override fun refresh() {
+        studyLinesFlow.update { Resource(it.payload, Status.Loading) }
+        coroutineScope.launch {
+            when (val configuration = timetablePreferences.getConfiguration().firstOrNull()) {
+                null -> studyLinesFlow.update { Resource(null, Status.NotFoundError) }
+                else -> getStudyLinesFromApi(configuration.year, configuration.semesterId)
+            }
+        }
+    }
+
+    /**
      * Invalidates study lines cache
      */
     override suspend fun invalidate(year: Int, semesterId: String) {
@@ -100,12 +113,18 @@ class StudyLinesRepositoryImpl(
         when {
             resource.status.isSuccess() && studyLine != null -> {
                 studyLinesDataSource.saveStudyLinesInCache(studyLine)
+                studyLinesFlow.update {
+                    when {
+                        it.payload.isNullOrEmpty() -> it
+                        else -> it.copy(status = Status.Success)
+                    }
+                }
             }
 
             else -> studyLinesFlow.update {
                 when {
                     it.payload.isNullOrEmpty() -> Resource(null, resource.status)
-                    else -> it
+                    else -> it.copy(status = Status.Success)
                 }
             }
         }

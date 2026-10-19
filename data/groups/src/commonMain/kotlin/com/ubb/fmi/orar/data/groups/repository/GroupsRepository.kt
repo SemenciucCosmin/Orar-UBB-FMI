@@ -21,6 +21,16 @@ interface GroupsRepository {
     fun getTimetable(groupId: String, studyLineId: String): Flow<Resource<Timetable<Owner.Group>>>
 
     /**
+     * Fetches the groups of certain study line from API again, to recover from a failed fetch
+     */
+    fun refreshGroups(studyLineId: String)
+
+    /**
+     * Fetches the timetable for certain group from API again, to recover from a failed fetch
+     */
+    fun refreshTimetable(groupId: String, studyLineId: String)
+
+    /**
      * Invalidates groups cache
      */
     suspend fun invalidate(

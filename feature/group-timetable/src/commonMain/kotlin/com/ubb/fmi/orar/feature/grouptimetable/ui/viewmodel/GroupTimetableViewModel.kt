@@ -157,7 +157,8 @@ class GroupTimetableViewModel(
             event = AnalyticsEvent.TIMETABLE_RETRY,
             params = mapOf(AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.GROUP),
         )
-        loadTimetable()
+        val studyLineId = fieldId + StudyLevel.getById(studyLevelId).notation
+        groupsRepository.refreshTimetable(groupId, studyLineId)
     }
 
     /**

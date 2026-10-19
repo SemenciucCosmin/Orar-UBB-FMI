@@ -15,6 +15,11 @@ interface AcademicCalendarRepository {
     fun getCalendar(): Flow<Resource<AcademicCalendar>>
 
     /**
+     * Fetches the academic calendar from API again, to recover from a failed fetch
+     */
+    fun refresh()
+
+    /**
      * Invalidates academic calendar cache for [year]
      */
     suspend fun invalidate(year: Int)

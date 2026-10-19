@@ -88,6 +88,7 @@ class SubjectsViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        subjectsRepository.refresh()
         job.cancel()
         job = getSubjects()
     }

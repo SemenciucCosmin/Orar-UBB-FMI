@@ -40,6 +40,19 @@ class AcademicCalendarRepositoryImpl(
     }
 
     /**
+     * Fetches the academic calendar from API again, to recover from a failed fetch
+     */
+    override fun refresh() {
+        calendarFlow.update { Resource(it.payload, Status.Loading) }
+        coroutineScope.launch {
+            when (val configuration = timetablePreferences.getConfiguration().firstOrNull()) {
+                null -> calendarFlow.update { Resource(null, Status.NotFoundError) }
+                else -> getCalendarFromApi(configuration.year)
+            }
+        }
+    }
+
+    /**
      * Invalidates academic calendar cache for [year]
      */
     override suspend fun invalidate(year: Int) {
@@ -91,7 +104,15 @@ class AcademicCalendarRepositoryImpl(
 
         if (resource.status.isSuccess() && academicCalendar != null) {
             academicCalendarDataSource.saveCalendarInCache(academicCalendar)
-            if (academicCalendar.startYear == year) return
+            if (academicCalendar.startYear == year) {
+                calendarFlow.update {
+                    when (it.payload) {
+                        null -> it
+                        else -> it.copy(status = Status.Success)
+                    }
+                }
+                return
+            }
         }
 
         val status = when {
@@ -102,7 +123,7 @@ class AcademicCalendarRepositoryImpl(
         calendarFlow.update {
             when (it.payload) {
                 null -> Resource(null, status)
-                else -> it
+                else -> it.copy(status = Status.Success)
             }
         }
     }

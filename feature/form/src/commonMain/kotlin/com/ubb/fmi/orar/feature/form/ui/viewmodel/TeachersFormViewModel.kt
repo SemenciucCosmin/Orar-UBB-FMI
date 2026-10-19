@@ -120,7 +120,7 @@ class TeachersFormViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
-        getTeachers()
+        teacherRepository.refresh()
     }
 
     /**

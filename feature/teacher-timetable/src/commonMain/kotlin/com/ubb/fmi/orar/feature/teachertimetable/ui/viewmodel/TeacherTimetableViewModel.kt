@@ -147,7 +147,7 @@ class TeacherTimetableViewModel(
             event = AnalyticsEvent.TIMETABLE_RETRY,
             params = mapOf(AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.TEACHER),
         )
-        loadTimetable()
+        teacherRepository.refreshTimetable(teacherId)
     }
 
     /**

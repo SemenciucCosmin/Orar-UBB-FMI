@@ -21,6 +21,16 @@ interface SubjectsRepository {
     fun getTimetable(subjectId: String): Flow<Resource<Timetable<Owner.Subject>>>
 
     /**
+     * Fetches the subjects from API again, to recover from a failed fetch
+     */
+    fun refresh()
+
+    /**
+     * Fetches the timetable for certain subject from API again, to recover from a failed fetch
+     */
+    fun refreshTimetable(subjectId: String)
+
+    /**
      * Invalidates subjects cache
      */
     suspend fun invalidate(

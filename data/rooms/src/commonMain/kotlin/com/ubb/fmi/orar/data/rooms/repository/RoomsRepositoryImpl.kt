@@ -2,6 +2,8 @@ package com.ubb.fmi.orar.data.rooms.repository
 
 import com.ubb.fmi.orar.data.network.model.Resource
 import com.ubb.fmi.orar.data.network.model.Status
+import com.ubb.fmi.orar.data.network.model.isLoading
+import com.ubb.fmi.orar.data.network.model.isNotFoundError
 import com.ubb.fmi.orar.data.network.model.isSuccess
 import com.ubb.fmi.orar.data.rooms.datasource.RoomsDataSource
 import com.ubb.fmi.orar.data.timetable.datasource.EventsDataSource
@@ -91,6 +93,49 @@ class RoomsRepositoryImpl(
     }
 
     /**
+     * Fetches the rooms from API again, to recover from a failed fetch
+     */
+    override fun refresh() {
+        roomsFlow.update { Resource(it.payload, Status.Loading) }
+        coroutineScope.launch {
+            when (val configuration = timetablePreferences.getConfiguration().firstOrNull()) {
+                null -> roomsFlow.update { Resource(null, Status.NotFoundError) }
+                else -> getRoomsFromApi(configuration.year, configuration.semesterId)
+            }
+        }
+    }
+
+    /**
+     * Fetches the timetable for certain room from API again, to recover from a failed fetch. When
+     * the room itself is missing, the rooms are fetched again first.
+     */
+    override fun refreshTimetable(roomId: String) {
+        val timetableFlow = timetableFlows[roomId] ?: return
+        timetableFlow.update { Resource(it.payload, Status.Loading) }
+
+        coroutineScope.launch {
+            val configuration = timetablePreferences.getConfiguration().firstOrNull()
+            if (configuration == null) {
+                timetableFlow.update { Resource(null, Status.NotFoundError) }
+                return@launch
+            }
+
+            val room = roomsFlow.value.payload?.firstOrNull { it.id == roomId }
+            if (room != null) {
+                getEventsFromApi(configuration.year, configuration.semesterId, room)
+                return@launch
+            }
+
+            // Once cached, the room is picked up by initializeEvents, so only failures are handled
+            roomsFlow.update { Resource(it.payload, Status.Loading) }
+            val resource = getRoomsFromApi(configuration.year, configuration.semesterId)
+            if (resource.payload?.any { it.id == roomId } != true) {
+                timetableFlow.update { Resource(null, resource.status.isNotFoundError()) }
+            }
+        }
+    }
+
+    /**
      * Tries prefetching the rooms from API for a safety update of local data
      */
     private fun prefetchRooms() {
@@ -128,27 +173,35 @@ class RoomsRepositoryImpl(
     }
 
     /**
-     * Retrieves rooms from API and update the database of output flow
+     * Retrieves rooms from API and update the database of output flow, returning the API resource
      */
     private suspend fun getRoomsFromApi(
         year: Int,
         semesterId: String,
-    ) {
+    ): Resource<List<Owner.Room>> {
         val resource = roomsDataSource.getRoomsFromApi(year, semesterId)
         val rooms = resource.payload
 
         when {
             resource.status.isSuccess() && rooms != null -> {
                 roomsDataSource.saveRoomsInCache(rooms)
+                roomsFlow.update {
+                    when {
+                        it.payload.isNullOrEmpty() -> it
+                        else -> it.copy(status = Status.Success)
+                    }
+                }
             }
 
             else -> roomsFlow.update {
                 when {
                     it.payload.isNullOrEmpty() -> Resource(null, resource.status)
-                    else -> it
+                    else -> it.copy(status = Status.Success)
                 }
             }
         }
+
+        return resource
     }
 
     /**
@@ -171,19 +224,34 @@ class RoomsRepositoryImpl(
     }
 
     /**
-     * Initializes collection of database entries and possible API updates
+     * Initializes collection of database entries and possible API updates. Follows the rooms, so
+     * the timetable is loaded once the room is available, or fails along with the rooms.
      */
     private fun initializeEvents(roomId: String) {
         coroutineScope.launch {
             timetablePreferences.getConfiguration().collectLatest { configuration ->
                 if (configuration == null) return@collectLatest
 
-                val room = roomsDataSource.getRoomsFromCache(
-                    configuration.year,
-                    configuration.semesterId
-                ).firstOrNull()?.firstOrNull { it.id == roomId } ?: return@collectLatest
+                roomsFlow
+                    .map { resource ->
+                        val room = resource.payload?.firstOrNull { it.id == roomId }
+                        room to resource.status.takeIf { room == null }
+                    }
+                    .distinctUntilChanged()
+                    .collectLatest { (room, status) ->
+                        when {
+                            room != null -> getEventsFromCache(
+                                configuration.year,
+                                configuration.semesterId,
+                                room
+                            )
 
-                getEventsFromCache(configuration.year, configuration.semesterId, room)
+                            status == null || status.isLoading() -> Unit
+                            else -> timetableFlows[roomId]?.update {
+                                Resource(null, status.isNotFoundError())
+                            }
+                        }
+                    }
             }
         }
     }
@@ -222,12 +290,18 @@ class RoomsRepositoryImpl(
         when {
             resource.status.isSuccess() && events != null -> {
                 eventsDataSource.updateEventsInCache(configurationId, room.id, events)
+                timetableFlows[room.id]?.update {
+                    when {
+                        it.payload?.events.isNullOrEmpty() -> it
+                        else -> it.copy(status = Status.Success)
+                    }
+                }
             }
 
             else -> timetableFlows[room.id]?.update {
                 when {
                     it.payload?.events.isNullOrEmpty() -> Resource(null, resource.status)
-                    else -> it
+                    else -> it.copy(status = Status.Success)
                 }
             }
         }

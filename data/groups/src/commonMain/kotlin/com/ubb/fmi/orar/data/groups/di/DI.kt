@@ -11,5 +11,5 @@ import org.koin.dsl.module
  */
 fun groupsDataModule() = module {
     factory<GroupsDataSource> { GroupsDataSourceImpl(get(), get(), get(), get()) }
-    factory<GroupsRepository> { GroupsRepositoryImpl(get(), get(), get(), get(), get()) }
+    single<GroupsRepository> { GroupsRepositoryImpl(get(), get(), get(), get(), get(), get()) }
 }

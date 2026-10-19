@@ -92,6 +92,7 @@ class RoomsViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        roomsRepository.refresh()
         job.cancel()
         job = getRooms()
     }

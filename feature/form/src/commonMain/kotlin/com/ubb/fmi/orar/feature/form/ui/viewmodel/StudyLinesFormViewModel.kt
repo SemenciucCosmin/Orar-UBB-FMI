@@ -157,7 +157,7 @@ class StudyLinesFormViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
-        getStudyLines()
+        studyLinesRepository.refresh()
     }
 
     companion object {

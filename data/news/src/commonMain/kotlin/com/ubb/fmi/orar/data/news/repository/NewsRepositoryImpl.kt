@@ -37,6 +37,14 @@ class NewsRepositoryImpl(
     }
 
     /**
+     * Fetches the news from API again, to recover from a failed fetch
+     */
+    override fun refresh() {
+        articlesFlow.update { Resource(it.payload, Status.Loading) }
+        coroutineScope.launch { getNewsFromApi() }
+    }
+
+    /**
      * Invalidates news cache older than [timestampLimit]
      */
     override suspend fun invalidate(timestampLimit: Long) {
@@ -79,12 +87,18 @@ class NewsRepositoryImpl(
         when {
             resource.status.isSuccess() && articles != null -> {
                 newsDataSource.saveNewsInCache(articles)
+                articlesFlow.update {
+                    when {
+                        it.payload.isNullOrEmpty() -> it
+                        else -> it.copy(status = Status.Success)
+                    }
+                }
             }
 
             else -> articlesFlow.update {
                 when {
                     it.payload.isNullOrEmpty() -> Resource(null, resource.status)
-                    else -> it
+                    else -> it.copy(status = Status.Success)
                 }
             }
         }

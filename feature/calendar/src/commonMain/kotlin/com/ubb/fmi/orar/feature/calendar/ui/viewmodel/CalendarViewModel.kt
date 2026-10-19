@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ubb.fmi.orar.data.calendar.model.AcademicCalendar
 import com.ubb.fmi.orar.data.calendar.model.AcademicPeriod
 import com.ubb.fmi.orar.data.calendar.model.AcademicWeek
+import com.ubb.fmi.orar.data.calendar.repository.AcademicCalendarRepository
 import com.ubb.fmi.orar.data.timetable.model.Week
 import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
 import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
@@ -43,6 +44,7 @@ import kotlin.time.Instant
  */
 class CalendarViewModel(
     private val getAcademicCalendarUseCase: GetAcademicCalendarUseCase,
+    private val academicCalendarRepository: AcademicCalendarRepository,
     private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
@@ -104,6 +106,7 @@ class CalendarViewModel(
     fun retry() {
         logger.d(TAG, "retry")
         analyticsLogger.logEvent(AnalyticsEvent.CALENDAR_RETRY)
+        academicCalendarRepository.refresh()
         job.cancel()
         job = getCalendar()
     }

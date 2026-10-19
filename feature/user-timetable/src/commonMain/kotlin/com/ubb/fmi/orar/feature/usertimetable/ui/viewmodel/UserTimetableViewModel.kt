@@ -19,6 +19,7 @@ import com.ubb.fmi.orar.domain.timetable.usecase.ChangeEventVisibilityUseCase
 import com.ubb.fmi.orar.domain.timetable.usecase.DeletePersonalEventUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetCurrentWeekUseCase
 import com.ubb.fmi.orar.domain.usertimetable.usecase.GetUserTimetableUseCase
+import com.ubb.fmi.orar.domain.usertimetable.usecase.RefreshUserTimetableUseCase
 import com.ubb.fmi.orar.ui.catalog.extensions.toErrorStatus
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.EventViewModel
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
 @Suppress("LongParameterList", "TooManyFunctions")
 class UserTimetableViewModel(
     private val getUserTimetableUseCase: GetUserTimetableUseCase,
+    private val refreshUserTimetableUseCase: RefreshUserTimetableUseCase,
     private val changeEventVisibilityUseCase: ChangeEventVisibilityUseCase,
     private val changeEventNotificationUseCase: ChangeEventNotificationUseCase,
     private val deletePersonalEventUseCase: DeletePersonalEventUseCase,
@@ -265,8 +267,11 @@ class UserTimetableViewModel(
             event = AnalyticsEvent.TIMETABLE_RETRY,
             params = mapOf(AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.USER),
         )
-        job.cancel()
-        job = loadTimetable()
+        viewModelScope.launch {
+            refreshUserTimetableUseCase()
+            job.cancel()
+            job = loadTimetable()
+        }
     }
 
     companion object {

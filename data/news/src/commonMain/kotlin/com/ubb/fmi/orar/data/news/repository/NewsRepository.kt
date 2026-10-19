@@ -15,6 +15,11 @@ interface NewsRepository {
     fun getNews(): Flow<Resource<List<Article>>>
 
     /**
+     * Fetches the news from API again, to recover from a failed fetch
+     */
+    fun refresh()
+
+    /**
      * Invalidates news cache older than [timestampLimit]
      */
     suspend fun invalidate(timestampLimit: Long)

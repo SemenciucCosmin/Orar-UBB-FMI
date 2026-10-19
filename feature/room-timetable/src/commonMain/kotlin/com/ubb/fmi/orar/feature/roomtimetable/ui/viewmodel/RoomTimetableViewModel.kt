@@ -142,7 +142,7 @@ class RoomTimetableViewModel(
             event = AnalyticsEvent.TIMETABLE_RETRY,
             params = mapOf(AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.ROOM),
         )
-        loadTimetable()
+        roomsRepository.refreshTimetable(roomId)
     }
 
     /**

@@ -83,7 +83,8 @@ class GroupsViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
-        getGroups()
+        val studyLineId = fieldId + StudyLevel.getById(studyLevelId).notation
+        groupsRepository.refreshGroups(studyLineId)
     }
 
     /**

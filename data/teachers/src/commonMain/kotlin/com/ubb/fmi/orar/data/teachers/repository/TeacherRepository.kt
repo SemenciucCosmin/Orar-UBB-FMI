@@ -21,6 +21,16 @@ interface TeacherRepository {
     fun getTimetable(teacherId: String): Flow<Resource<Timetable<Owner.Teacher>>>
 
     /**
+     * Fetches the teachers from API again, to recover from a failed fetch
+     */
+    fun refresh()
+
+    /**
+     * Fetches the timetable for certain teacher from API again, to recover from a failed fetch
+     */
+    fun refreshTimetable(teacherId: String)
+
+    /**
      * Invalidates teachers cache
      */
     suspend fun invalidate(

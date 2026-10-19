@@ -112,6 +112,7 @@ class StudyLinesViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        studyLinesRepository.refresh()
         job.cancel()
         job = getStudyLines()
     }

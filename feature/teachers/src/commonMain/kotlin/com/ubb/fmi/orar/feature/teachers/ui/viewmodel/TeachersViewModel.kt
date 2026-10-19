@@ -101,6 +101,7 @@ class TeachersViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        teacherRepository.refresh()
         job.cancel()
         job = getTeachers()
     }

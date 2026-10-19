@@ -125,7 +125,7 @@ class SubjectTimetableViewModel(
             event = AnalyticsEvent.TIMETABLE_RETRY,
             params = mapOf(AnalyticsParameter.TIMETABLE_TYPE to AnalyticsTimetableType.SUBJECT),
         )
-        loadTimetable()
+        subjectsRepository.refreshTimetable(subjectId)
     }
 
     /**
