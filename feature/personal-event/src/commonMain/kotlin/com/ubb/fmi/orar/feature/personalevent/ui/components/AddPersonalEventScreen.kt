@@ -29,6 +29,8 @@ import com.ubb.fmi.orar.ui.catalog.components.form.TimeChip
 import com.ubb.fmi.orar.ui.catalog.components.timetable.EventCard
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_activity
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_add
@@ -53,7 +55,7 @@ fun AddPersonalEventScreen(
     endHour: Int,
     endMinute: Int,
     selectedFrequency: Frequency,
-    selectedDays: List<Day>,
+    selectedDays: ImmutableList<Day>,
     isNextEnabled: Boolean,
     onActivityChange: (String) -> Unit,
     onCaptionChange: (String) -> Unit,
@@ -202,7 +204,7 @@ private fun PreviewAddPersonalEventScreen() {
             endHour = 12,
             endMinute = 0,
             selectedFrequency = Frequency.BOTH,
-            selectedDays = listOf(Day.MONDAY, Day.FRIDAY, Day.SATURDAY),
+            selectedDays = persistentListOf(Day.MONDAY, Day.FRIDAY, Day.SATURDAY),
             isNextEnabled = true,
             onActivityChange = {},
             onCaptionChange = {},
