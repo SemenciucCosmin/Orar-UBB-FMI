@@ -113,11 +113,24 @@
     <string name="lbl_refresh_data_success_message">Reactualizarea datelor reușită</string>
     <string name="lbl_version">Versiunea %1$s</string>
     <string name="lbl_developed_by">Creat de Semenciuc Cosmin</string>
-    <string name="lbl_open_source">Codul sursă este disponibil pe</string>
-    <string name="lbl_github">GitHub</string>
     <string name="lbl_report_issue">Raportează o problemă</string>
     <string name="lbl_leave_feedback">Lasă un feedback</string>
-    <string name="lbl_contact_me_at">Contactează-mă la cosminsemenciuc@gmail.com</string>
+
+    <!--  ABOUT  -->
+    <string name="lbl_about">Despre</string>
+    <string name="lbl_app_name">Orar UBB-FMI</string>
+    <string name="lbl_about_app_description">Orarul tău la Facultatea de Matematică și Informatică, Universitatea Babeș-Bolyai</string>
+    <string name="lbl_support">Suport</string>
+    <string name="lbl_project">Proiect</string>
+    <string name="lbl_store_review_message">Îți place aplicația? Evalueaz-o în magazin</string>
+    <string name="lbl_report_issue_message">Ai găsit o problemă? Deschide un tichet pe GitHub</string>
+    <string name="lbl_leave_feedback_message">Spune-mi părerea ta într-un formular scurt</string>
+    <string name="lbl_contact">Contact</string>
+    <string name="lbl_contact_email">cosminsemenciuc@gmail.com</string>
+    <string name="lbl_source_code">Cod sursă</string>
+    <string name="lbl_source_code_message">Aplicația este open source pe GitHub</string>
+    <string name="lbl_data_source">Datele orarului</string>
+    <string name="lbl_data_source_message">Preluate de pe site-ul facultății, cs.ubbcluj.ro</string>
 
     <!--  THEME  -->
     <string name="lbl_theme">Tema</string>

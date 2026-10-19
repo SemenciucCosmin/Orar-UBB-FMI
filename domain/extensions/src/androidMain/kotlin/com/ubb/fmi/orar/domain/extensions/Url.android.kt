@@ -23,6 +23,6 @@ actual fun openUrl(
     try {
         context.startActivity(intent)
     } catch (_: Exception) {
-        onFailure
+        onFailure()
     }
 }

@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.ubb.fmi.orar.feature.notifications.ui.route.NotificationsRoute
+import com.ubb.fmi.orar.feature.settings.ui.route.AboutRoute
 import com.ubb.fmi.orar.feature.settings.ui.route.ColorPickerRoute
 import com.ubb.fmi.orar.feature.settings.ui.route.ColorsRoute
 import com.ubb.fmi.orar.feature.settings.ui.route.SettingsRoute
@@ -41,5 +42,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             navController = navController,
             colorItemId = args.colorItemId,
         )
+    }
+
+    composable<SettingsNavDestination.About> { navBackStackEntry ->
+        AboutRoute(navController)
     }
 }

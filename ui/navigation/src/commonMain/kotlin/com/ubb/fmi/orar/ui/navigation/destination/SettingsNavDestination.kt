@@ -39,4 +39,10 @@ sealed class SettingsNavDestination {
      */
     @Serializable
     data class ColorPicker(val colorItemId: String) : SettingsNavDestination()
+
+    /**
+     * Represents a navigation destination for the about screen, with app details and support links.
+     */
+    @Serializable
+    data object About : SettingsNavDestination()
 }
