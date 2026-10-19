@@ -7,6 +7,9 @@ import com.ubb.fmi.orar.data.calendar.model.AcademicCalendar
 import com.ubb.fmi.orar.data.calendar.model.AcademicPeriod
 import com.ubb.fmi.orar.data.calendar.model.AcademicWeek
 import com.ubb.fmi.orar.data.timetable.model.Week
+import com.ubb.fmi.orar.domain.analytics.AnalyticsLogger
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsEvent
+import com.ubb.fmi.orar.domain.analytics.model.AnalyticsParameter
 import com.ubb.fmi.orar.domain.calendar.usecase.GetAcademicCalendarUseCase
 import com.ubb.fmi.orar.domain.colorpack.model.ColorItem
 import com.ubb.fmi.orar.feature.calendar.ui.extensions.colorItem
@@ -40,6 +43,7 @@ import kotlin.time.Instant
  */
 class CalendarViewModel(
     private val getAcademicCalendarUseCase: GetAcademicCalendarUseCase,
+    private val analyticsLogger: AnalyticsLogger,
     private val logger: Logger,
 ) : ViewModel() {
 
@@ -75,6 +79,12 @@ class CalendarViewModel(
                 ?.flatMap { it.periods }
                 ?.sortedBy { it.startDateMillis }
                 .orEmpty()
+            val errorStatus = when (academicCalendar) {
+                null -> ErrorStatus.NOT_FOUND
+                else -> null
+            }
+
+            logAnalytics(errorStatus)
 
             _uiState.update {
                 it.copy(
@@ -82,10 +92,7 @@ class CalendarViewModel(
                     periods = periods.toImmutableList(),
                     initialPage = months.indexOfLast { month -> month.firstDate <= today }.coerceAtLeast(0),
                     isLoading = false,
-                    errorStatus = when (academicCalendar) {
-                        null -> ErrorStatus.NOT_FOUND
-                        else -> null
-                    },
+                    errorStatus = errorStatus,
                 )
             }
         }
@@ -96,8 +103,27 @@ class CalendarViewModel(
      */
     fun retry() {
         logger.d(TAG, "retry")
+        analyticsLogger.logEvent(AnalyticsEvent.CALENDAR_RETRY)
         job.cancel()
         job = getCalendar()
+    }
+
+    /**
+     * Logs the calendar view once it is loaded, or the load error once it occurs.
+     */
+    private fun logAnalytics(errorStatus: ErrorStatus?) {
+        when {
+            errorStatus != null -> {
+                analyticsLogger.logEvent(
+                    event = AnalyticsEvent.CALENDAR_LOAD_ERROR,
+                    params = mapOf(AnalyticsParameter.ERROR_TYPE to errorStatus.name),
+                )
+            }
+
+            else -> {
+                analyticsLogger.logEvent(AnalyticsEvent.CALENDAR_VIEW)
+            }
+        }
     }
 
     /**

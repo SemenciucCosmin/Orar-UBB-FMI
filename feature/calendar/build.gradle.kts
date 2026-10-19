@@ -48,6 +48,7 @@ kotlin {
             implementation(libs.kotlinx.immutableCollections)
 
             // MODULES
+            implementation(projects.domain.analytics)
             implementation(projects.data.calendar)
             implementation(projects.data.timetable)
             implementation(projects.domain.calendar)
