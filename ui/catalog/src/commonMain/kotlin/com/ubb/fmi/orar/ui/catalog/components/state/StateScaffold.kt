@@ -1,5 +1,7 @@
 package com.ubb.fmi.orar.ui.catalog.components.state
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -72,40 +74,66 @@ fun StateScaffold(
         contentColor = contentColor,
         contentWindowInsets = contentWindowInsets,
     ) { paddingValues ->
-        when {
-            isLoading -> when (loadingContent) {
-                null -> ProgressOverlay(
+        val screenState = when {
+            isLoading -> ScreenState.Loading
+            errorStatus != null -> ScreenState.Error(errorStatus)
+            isEmpty -> ScreenState.Empty
+            else -> ScreenState.Content
+        }
+
+        Crossfade(
+            targetState = screenState,
+            animationSpec = tween(STATE_FADE_DURATION_MILLIS),
+            label = "screenState",
+        ) { state ->
+            when (state) {
+                ScreenState.Loading -> when (loadingContent) {
+                    null -> ProgressOverlay(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize()
+                    )
+
+                    else -> loadingContent(paddingValues)
+                }
+
+                is ScreenState.Error -> ErrorState(
+                    errorStatus = state.errorStatus,
+                    onRetry = onRetryClick,
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()
                 )
 
-                else -> loadingContent(paddingValues)
+                ScreenState.Empty -> Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(Pds.spacing.Medium)
+                        .fillMaxSize()
+                ) {
+                    Text(
+                        text = stringResource(Res.string.lbl_no_results),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+                ScreenState.Content -> content(paddingValues)
             }
-
-            errorStatus != null -> ErrorState(
-                errorStatus = errorStatus,
-                onRetry = onRetryClick,
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            )
-
-            isEmpty -> Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(Pds.spacing.Medium)
-                    .fillMaxSize()
-            ) {
-                Text(
-                    text = stringResource(Res.string.lbl_no_results),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            else -> content(paddingValues)
         }
     }
 }
+
+/**
+ * State displayed by [StateScaffold], each one faded into the next. The error state holds its
+ * status, so it is still displayed while fading out after the status was cleared.
+ */
+private sealed interface ScreenState {
+    data object Loading : ScreenState
+    data class Error(val errorStatus: ErrorStatus) : ScreenState
+    data object Empty : ScreenState
+    data object Content : ScreenState
+}
+
+private const val STATE_FADE_DURATION_MILLIS = 300
