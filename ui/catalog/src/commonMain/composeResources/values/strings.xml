@@ -8,6 +8,7 @@
     <string name="lbl_network_error_message">Check your internet connection and try again.</string>
     <string name="lbl_not_found_error_message">No data available at this moment. Please try again later or change configuration.</string>
     <string name="lbl_no_results">No results found</string>
+    <string name="lbl_loading">Loading</string>
     <string name="lbl_all">All</string>
     <string name="lbl_subject">Subject</string>
     <string name="lbl_room">Room</string>

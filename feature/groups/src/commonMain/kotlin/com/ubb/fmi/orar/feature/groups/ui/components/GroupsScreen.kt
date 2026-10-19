@@ -16,6 +16,7 @@ import com.ubb.fmi.orar.domain.extensions.BLANK
 import com.ubb.fmi.orar.feature.groups.ui.viewmodel.model.GroupsUiState
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
+import com.ubb.fmi.orar.ui.catalog.components.skeleton.ListSkeleton
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
@@ -49,6 +50,13 @@ fun GroupsScreen(
         isEmpty = uiState.isEmpty,
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
+        loadingContent = { paddingValues ->
+            ListSkeleton(
+                modifier = Modifier.padding(paddingValues),
+                hasLeadingIcon = true,
+                hasTrailingIcon = true,
+            )
+        },
         topBar = {
             TopBar(
                 title = uiState.title ?: String.BLANK,

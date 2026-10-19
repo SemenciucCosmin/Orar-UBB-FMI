@@ -38,6 +38,9 @@ fun CalendarScreen(
         isEmpty = uiState.months.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
+        loadingContent = { paddingValues ->
+            CalendarSkeleton(modifier = Modifier.padding(paddingValues))
+        },
         topBar = {
             TopBar(
                 title = stringResource(Res.string.lbl_calendar),

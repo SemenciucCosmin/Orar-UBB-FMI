@@ -15,6 +15,7 @@ import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState
 import com.ubb.fmi.orar.feature.rooms.ui.viewmodel.model.RoomsUiState.Companion.filteredRooms
 import com.ubb.fmi.orar.ui.catalog.components.SearchTopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
+import com.ubb.fmi.orar.ui.catalog.components.skeleton.ListSkeleton
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -44,6 +45,14 @@ fun RoomsScreen(
         isEmpty = uiState.isEmpty,
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
+        loadingContent = { paddingValues ->
+            ListSkeleton(
+                modifier = Modifier.padding(paddingValues),
+                hasLeadingIcon = true,
+                hasUnderline = true,
+                hasTrailingIcon = true,
+            )
+        },
         topBar = {
             SearchTopBar(
                 title = stringResource(Res.string.lbl_rooms),

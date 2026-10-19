@@ -93,7 +93,10 @@ fun TimetableScreen(
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = topBar,
-        bottomBar = bottomBar
+        bottomBar = bottomBar,
+        loadingContent = { paddingValues ->
+            EventsListSkeleton(modifier = Modifier.padding(paddingValues))
+        },
     ) { paddingValues ->
         EventsList(
             modifier = Modifier.padding(paddingValues),

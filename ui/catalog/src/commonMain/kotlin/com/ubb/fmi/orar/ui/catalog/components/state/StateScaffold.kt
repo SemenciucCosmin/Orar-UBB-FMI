@@ -39,6 +39,7 @@ import org.jetbrains.compose.resources.stringResource
  * @param containerColor Color of the scaffold container.
  * @param contentColor Color of the content within the scaffold.
  * @param contentWindowInsets Insets for the content area of the scaffold.
+ * @param loadingContent Composable displayed while loading, a [ProgressOverlay] when null.
  * @param content Composable that provides the main content of the scaffold when not in
  * loading, empty, or error state.
  */
@@ -57,6 +58,7 @@ fun StateScaffold(
     containerColor: Color = MaterialTheme.colorScheme.background,
     contentColor: Color = contentColorFor(containerColor),
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
+    loadingContent: (@Composable (PaddingValues) -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -71,11 +73,15 @@ fun StateScaffold(
         contentWindowInsets = contentWindowInsets,
     ) { paddingValues ->
         when {
-            isLoading -> ProgressOverlay(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            )
+            isLoading -> when (loadingContent) {
+                null -> ProgressOverlay(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                )
+
+                else -> loadingContent(paddingValues)
+            }
 
             errorStatus != null -> ErrorState(
                 errorStatus = errorStatus,

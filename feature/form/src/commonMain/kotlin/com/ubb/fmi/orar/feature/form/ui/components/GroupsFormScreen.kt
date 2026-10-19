@@ -20,6 +20,7 @@ import com.ubb.fmi.orar.feature.form.ui.viewmodel.model.isNextEnabled
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
+import com.ubb.fmi.orar.ui.catalog.components.skeleton.ListSkeleton
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
@@ -51,6 +52,11 @@ fun GroupsFormScreen(
         isEmpty = uiState.isEmpty,
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
+        loadingContent = { paddingValues ->
+            ListSkeleton(
+                modifier = Modifier.padding(paddingValues),
+            )
+        },
         topBar = {
             TopBar(
                 title = uiState.title ?: String.BLANK,

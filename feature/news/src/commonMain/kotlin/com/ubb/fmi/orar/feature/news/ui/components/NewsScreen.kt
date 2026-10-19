@@ -61,6 +61,9 @@ fun NewsScreen(
         isEmpty = articles.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
+        loadingContent = { paddingValues ->
+            NewsSkeleton(modifier = Modifier.padding(paddingValues))
+        },
         bottomBar = bottomBar,
         topBar = {
             TopBar(

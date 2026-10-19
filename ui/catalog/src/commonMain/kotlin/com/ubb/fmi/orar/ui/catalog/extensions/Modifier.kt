@@ -5,7 +5,10 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
@@ -19,7 +22,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.addOutline
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import kotlin.math.sqrt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -95,7 +100,7 @@ fun Modifier.animatedGradientBorder(
             ),
             center = size.center,
         )
-        val radius = size.getDistance() / 2
+        val radius = sqrt(size.width * size.width + size.height * size.height) / 2
 
         onDrawWithContent {
             drawContent()
@@ -108,9 +113,48 @@ fun Modifier.animatedGradientBorder(
     }
 }
 
+/**
+ * Creates a brush for skeleton placeholders, with a highlight that continuously sweeps across it.
+ * Sharing one brush between placeholders keeps them on a single animation, sweeping in sync.
+ *
+ * @param sweepDuration Time for the highlight to cross the sweep width once.
+ */
+@Composable
+fun rememberShimmerBrush(sweepDuration: Duration = DEFAULT_SHIMMER_SWEEP_DURATION): Brush {
+    val color = MaterialTheme.colorScheme.onSurfaceVariant
+    val sweepWidth = with(LocalDensity.current) { SHIMMER_SWEEP_WIDTH.toPx() }
+    val highlightWidth = with(LocalDensity.current) { SHIMMER_HIGHLIGHT_WIDTH.toPx() }
+
+    val transition = rememberInfiniteTransition(label = "shimmer")
+    val offset by transition.animateFloat(
+        initialValue = -highlightWidth,
+        targetValue = sweepWidth,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = sweepDuration.inWholeMilliseconds.toInt(),
+                easing = LinearEasing,
+            ),
+        ),
+        label = "shimmerOffset",
+    )
+
+    return Brush.linearGradient(
+        colors = listOf(
+            color.copy(alpha = SHIMMER_BASE_ALPHA),
+            color.copy(alpha = SHIMMER_HIGHLIGHT_ALPHA),
+            color.copy(alpha = SHIMMER_BASE_ALPHA),
+        ),
+        start = Offset(offset, 0f),
+        end = Offset(offset + highlightWidth, 0f),
+    )
+}
+
 private const val START_ANGLE = 0f
 private const val FULL_ANGLE = 360f
 private const val BORDER_FADED_ALPHA = 0.15f
 private val DEFAULT_BORDER_ROTATION_DURATION = 3.seconds
-
-private fun Size.getDistance(): Float = sqrt(width * width + height * height)
+private const val SHIMMER_BASE_ALPHA = 0.12f
+private const val SHIMMER_HIGHLIGHT_ALPHA = 0.28f
+private val SHIMMER_SWEEP_WIDTH = 600.dp
+private val SHIMMER_HIGHLIGHT_WIDTH = 200.dp
+private val DEFAULT_SHIMMER_SWEEP_DURATION = 1.2.seconds

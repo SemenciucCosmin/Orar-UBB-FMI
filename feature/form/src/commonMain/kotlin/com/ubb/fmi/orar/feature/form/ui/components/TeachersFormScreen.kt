@@ -19,6 +19,7 @@ import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.SearchTopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemSelectable
+import com.ubb.fmi.orar.ui.catalog.components.skeleton.ListSkeleton
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.catalog.model.TeacherTitleFilter
@@ -56,6 +57,12 @@ fun TeachersFormScreen(
         isEmpty = uiState.filteredTeachers.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
+        loadingContent = { paddingValues ->
+            ListSkeleton(
+                modifier = Modifier.padding(paddingValues),
+                hasOverline = true,
+            )
+        },
         topBar = {
             SearchTopBar(
                 title = title,

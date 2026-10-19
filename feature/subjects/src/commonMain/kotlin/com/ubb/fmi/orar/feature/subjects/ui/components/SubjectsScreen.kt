@@ -14,6 +14,7 @@ import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState
 import com.ubb.fmi.orar.feature.subjects.ui.viewmodel.model.SubjectsUiState.Companion.filteredSubjects
 import com.ubb.fmi.orar.ui.catalog.components.SearchTopBar
 import com.ubb.fmi.orar.ui.catalog.components.list.ListItemClickable
+import com.ubb.fmi.orar.ui.catalog.components.skeleton.ListSkeleton
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
@@ -47,6 +48,14 @@ fun SubjectsScreen(
         isEmpty = uiState.filteredSubjects.isEmpty(),
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
+        loadingContent = { paddingValues ->
+            ListSkeleton(
+                modifier = Modifier.padding(paddingValues),
+                hasLeadingIcon = true,
+                hasOverline = true,
+                hasTrailingIcon = true,
+            )
+        },
         topBar = {
             SearchTopBar(
                 title = stringResource(Res.string.lbl_subjects),
