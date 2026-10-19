@@ -152,6 +152,12 @@
     <string name="lbl_event_added">Evenimentul a fost adăugat orarului cu success!</string>
     <string name="lbl_remove_event_message">Ștergeți acest eveniment?</string>
     <string name="lbl_add_event_message">Adăugați acest eveniment in orar?</string>
+    <string name="lbl_event_information">Informații</string>
+    <string name="lbl_schedule">Program</string>
+    <string name="lbl_days">Zile</string>
+    <string name="lbl_weeks">Săptămâni</string>
+    <string name="lbl_time_interval_error">Evenimentul trebuie să se termine după ce începe</string>
+    <string name="lbl_characters_counter">%1$s/%2$s</string>
 
     <!--  FEEDBACK  -->
     <string name="lbl_feedback_choice_message">Cât de satisfăcut ești de experiența ta?</string>

@@ -8,6 +8,7 @@ import com.ubb.fmi.orar.feature.personalevent.ui.components.AddPersonalEventScre
 import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.AddPersonalEventViewModel
 import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.AddPersonalEventUiState
 import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.isNextEnabled
+import com.ubb.fmi.orar.feature.personalevent.ui.viewmodel.model.isTimeIntervalValid
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.extensions.getContext
 import com.ubb.fmi.orar.ui.catalog.extensions.showToast
@@ -34,6 +35,7 @@ fun AddPersonalEventRoute(navController: NavController) {
         endMinute = uiState.endMinute,
         selectedFrequency = uiState.selectedFrequency,
         selectedDays = uiState.selectedDays,
+        isTimeIntervalValid = uiState.isTimeIntervalValid,
         isNextEnabled = uiState.isNextEnabled,
         onActivityChange = viewModel::changeActivity,
         onCaptionChange = viewModel::changeCaption,

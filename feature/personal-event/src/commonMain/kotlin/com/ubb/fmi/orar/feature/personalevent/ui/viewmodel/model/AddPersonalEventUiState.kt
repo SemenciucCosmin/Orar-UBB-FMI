@@ -14,7 +14,7 @@ data class AddPersonalEventUiState(
     val details: String = String.BLANK,
     val startHour: Int = DEFAULT_HOUR,
     val startMinute: Int = DEFAULT_MINUTE,
-    val endHour: Int = DEFAULT_HOUR,
+    val endHour: Int = DEFAULT_END_HOUR,
     val endMinute: Int = DEFAULT_MINUTE,
     val selectedFrequency: Frequency = Frequency.BOTH,
     val selectedDays: ImmutableList<Day> = persistentListOf(Day.MONDAY),
@@ -25,9 +25,15 @@ data class AddPersonalEventUiState(
 
     companion object {
         private const val DEFAULT_HOUR = 12
+        private const val DEFAULT_END_HOUR = 14
         private const val DEFAULT_MINUTE = 0
     }
 }
 
+val AddPersonalEventUiState.isTimeIntervalValid: Boolean
+    get() = endHour * MINUTES_IN_HOUR + endMinute > startHour * MINUTES_IN_HOUR + startMinute
+
 val AddPersonalEventUiState.isNextEnabled: Boolean
-    get() = activity.isNotBlank() && selectedDays.isNotEmpty()
+    get() = activity.isNotBlank() && selectedDays.isNotEmpty() && isTimeIntervalValid
+
+private const val MINUTES_IN_HOUR = 60

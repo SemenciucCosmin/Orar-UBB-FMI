@@ -151,6 +151,12 @@
     <string name="lbl_event_added">Event was successfully added to your timetable!</string>
     <string name="lbl_remove_event_message">Remove this event?</string>
     <string name="lbl_add_event_message">Add this event to your timetable?</string>
+    <string name="lbl_event_information">Information</string>
+    <string name="lbl_schedule">Schedule</string>
+    <string name="lbl_days">Days</string>
+    <string name="lbl_weeks">Weeks</string>
+    <string name="lbl_time_interval_error">The event must end after it starts</string>
+    <string name="lbl_characters_counter">%1$s/%2$s</string>
 
     <!--  FEEDBACK  -->
     <string name="lbl_feedback_choice_message">How satisfied are you with your experience?</string>
