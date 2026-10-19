@@ -4,6 +4,7 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.LocalTime
 
@@ -17,7 +18,7 @@ data class FreeRoomsUiState(
     val startMinute: Int = DEFAULT_MINUTE,
     val endHour: Int = DEFAULT_END_HOUR,
     val endMinute: Int = DEFAULT_MINUTE,
-    val selectedDays: List<Day> = emptyList(),
+    val selectedDays: ImmutableList<Day> = persistentListOf(),
     val isLoading: Boolean = false,
 ) {
     companion object {
