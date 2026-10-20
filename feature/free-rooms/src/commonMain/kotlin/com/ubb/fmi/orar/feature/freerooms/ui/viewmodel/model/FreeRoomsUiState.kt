@@ -2,6 +2,7 @@ package com.ubb.fmi.orar.feature.freerooms.ui.viewmodel.model
 
 import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
+import com.ubb.fmi.orar.data.timetable.model.Frequency
 import com.ubb.fmi.orar.data.timetable.model.Owner
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -19,15 +20,30 @@ data class FreeRoomsUiState(
     val endHour: Int = DEFAULT_END_HOUR,
     val endMinute: Int = DEFAULT_MINUTE,
     val selectedDays: ImmutableList<Day> = persistentListOf(),
+    val selectedFrequency: Frequency = Frequency.BOTH,
     val isLoading: Boolean = false,
 ) {
     companion object {
+        private val FreeRoomsUiState.startMillis: Int
+            get() = LocalTime(startHour, startMinute).toMillisecondOfDay()
+
+        private val FreeRoomsUiState.endMillis: Int
+            get() = LocalTime(endHour, endMinute).toMillisecondOfDay()
+
+        val FreeRoomsUiState.isTimeIntervalValid: Boolean
+            get() = endMillis > startMillis
+
+        /**
+         * Events happening in one of the selected days, in the selected weeks, during the selected
+         * interval. An event of a single week doesn't overlap a selection of the other week.
+         */
         private val FreeRoomsUiState.overlappingEvents: List<Event>
             get() = events.filter { event ->
-                val isDayOverlap = selectedDays.isNotEmpty() && event.day in selectedDays
+                val isDayOverlap = event.day in selectedDays
 
-                val selectedStartMillis = LocalTime(startHour, startMinute).toMillisecondOfDay()
-                val selectedEndMillis = LocalTime(endHour, endMinute).toMillisecondOfDay()
+                val isFrequencyOverlap = selectedFrequency == Frequency.BOTH ||
+                    event.frequency == Frequency.BOTH ||
+                    event.frequency == selectedFrequency
 
                 val eventStartMillis = LocalTime(
                     hour = event.startHour,
@@ -39,20 +55,24 @@ data class FreeRoomsUiState(
                     minute = event.endMinute
                 ).toMillisecondOfDay()
 
-                val isEventOver = eventStartMillis in selectedStartMillis..<selectedEndMillis
-                val isSelectionOver = selectedStartMillis in eventStartMillis..<eventEndMillis
-                val isTimeOverlap = isEventOver || isSelectionOver
+                val isTimeOverlap = eventStartMillis < endMillis && startMillis < eventEndMillis
 
-                isDayOverlap && isTimeOverlap
+                isDayOverlap && isFrequencyOverlap && isTimeOverlap
             }
 
+        /**
+         * Rooms with a timetable that are free during the whole selection. Empty when there is no
+         * valid selection.
+         */
         val FreeRoomsUiState.filteredRooms: ImmutableList<Owner.Room>
             get() {
-                val overlappingRoomIds = overlappingEvents.map { it.ownerId }
+                if (selectedDays.isEmpty() || !isTimeIntervalValid) return persistentListOf()
+
+                val roomIdsWithEvents = events.mapTo(mutableSetOf()) { it.ownerId }
+                val overlappingRoomIds = overlappingEvents.mapTo(mutableSetOf()) { it.ownerId }
+
                 return rooms.filter { room ->
-                    val roomHasEvents = events.any { it.ownerId == room.id }
-                    val roomHasOverlap = room.id in overlappingRoomIds
-                    roomHasEvents && !roomHasOverlap
+                    room.id in roomIdsWithEvents && room.id !in overlappingRoomIds
                 }.sortedBy { it.name }.toImmutableList()
             }
 

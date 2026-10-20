@@ -26,6 +26,8 @@ fun FreeRoomsRoute(navController: NavController) {
         onEndHourChange = viewModel::changeEndHour,
         onEndMinuteChange = viewModel::changeEndMinute,
         onSelectDays = viewModel::selectDays,
+        onSelectFrequency = viewModel::selectFrequency,
+        onNowClick = viewModel::selectNow,
         onRoomClick = { roomId ->
             navController.navigate(ExploreNavDestination.RoomTimetable(roomId))
         }

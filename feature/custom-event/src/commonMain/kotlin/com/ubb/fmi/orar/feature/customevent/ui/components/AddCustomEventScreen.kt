@@ -23,7 +23,11 @@ import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.custom.OutlinedTextField
 import com.ubb.fmi.orar.ui.catalog.components.form.DayMultiselectionRow
+import com.ubb.fmi.orar.ui.catalog.components.form.FormFieldError
+import com.ubb.fmi.orar.ui.catalog.components.form.FormFieldLabel
+import com.ubb.fmi.orar.ui.catalog.components.form.FormSection
 import com.ubb.fmi.orar.ui.catalog.components.form.FrequencySelectionRow
+import com.ubb.fmi.orar.ui.catalog.components.form.TimeIntervalRow
 import com.ubb.fmi.orar.ui.catalog.components.timetable.EventCard
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds

@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.customevent.ui.components
+package com.ubb.fmi.orar.ui.catalog.components.form
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,12 +20,15 @@ import com.ubb.fmi.orar.ui.theme.Pds
 
 /**
  * Card grouping related form fields under a titled header
+ *
+ * @param trailingContent Optional content displayed at the end of the header, e.g. an action.
  */
 @Composable
 fun FormSection(
     title: String,
     icon: Painter,
     modifier: Modifier = Modifier,
+    trailingContent: (@Composable () -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ElevatedCard(modifier = modifier.fillMaxWidth()) {
@@ -48,7 +51,10 @@ fun FormSection(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f)
                 )
+
+                trailingContent?.invoke()
             }
 
             content()

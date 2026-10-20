@@ -238,4 +238,16 @@
     <string name="lbl_thesis_preparation">Thesis preparation</string>
     <string name="lbl_thesis_exam">Thesis exam</string>
     <string name="lbl_holiday">Holiday</string>
+
+    <!--  FREE ROOMS  -->
+    <string name="lbl_free_rooms_now">Right now</string>
+    <plurals name="lbl_free_rooms_count">
+        <item quantity="one">%1$d free room</item>
+        <item quantity="other">%1$d free rooms</item>
+    </plurals>
+    <string name="lbl_free_rooms_select_day">Pick a day</string>
+    <string name="lbl_free_rooms_select_day_details">Select at least one day to see which rooms are free</string>
+    <string name="lbl_free_rooms_invalid_interval">Check the interval</string>
+    <string name="lbl_free_rooms_empty">No free rooms</string>
+    <string name="lbl_free_rooms_empty_details">All rooms are busy in this interval, try a shorter one or another day</string>
 </resources>

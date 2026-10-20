@@ -1,4 +1,4 @@
-package com.ubb.fmi.orar.feature.customevent.ui.components
+package com.ubb.fmi.orar.ui.catalog.components.form
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

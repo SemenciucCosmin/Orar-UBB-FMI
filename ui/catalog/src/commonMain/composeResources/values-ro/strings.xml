@@ -240,4 +240,17 @@
     <string name="lbl_thesis_preparation">Pregătirea examenului de licență/disertație</string>
     <string name="lbl_thesis_exam">Examen de licență/disertație</string>
     <string name="lbl_holiday">Vacanță</string>
+
+    <!--  FREE ROOMS  -->
+    <string name="lbl_free_rooms_now">Acum</string>
+    <plurals name="lbl_free_rooms_count">
+        <item quantity="one">%1$d sală liberă</item>
+        <item quantity="few">%1$d săli libere</item>
+        <item quantity="other">%1$d de săli libere</item>
+    </plurals>
+    <string name="lbl_free_rooms_select_day">Alege o zi</string>
+    <string name="lbl_free_rooms_select_day_details">Selectează cel puțin o zi pentru a vedea ce săli sunt libere</string>
+    <string name="lbl_free_rooms_invalid_interval">Verifică intervalul</string>
+    <string name="lbl_free_rooms_empty">Nicio sală liberă</string>
+    <string name="lbl_free_rooms_empty_details">Toate sălile sunt ocupate în acest interval, încearcă unul mai scurt sau altă zi</string>
 </resources>
