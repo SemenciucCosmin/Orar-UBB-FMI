@@ -23,6 +23,11 @@
     <string name="lbl_welcome">Welcome!</string>
     <string name="lbl_year">Year</string>
     <string name="lbl_user">User</string>
+    <string name="lbl_onboarding_message">Set up your timetable in a few steps</string>
+    <string name="lbl_onboarding_user_type">I am a</string>
+    <string name="lbl_onboarding_user_type_details">Choose how you use the timetable</string>
+    <string name="lbl_onboarding_year_details">The academic year of the timetable</string>
+    <string name="lbl_onboarding_semester_details">The semester you want to follow</string>
 
     <!--  CONFIGURATION  -->
     <string name="lbl_timetable_configuration_title">Configure timetable</string>

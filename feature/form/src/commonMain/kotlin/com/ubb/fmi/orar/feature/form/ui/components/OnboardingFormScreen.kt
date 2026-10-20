@@ -1,37 +1,35 @@
-@file:Suppress("MagicNumber")
-
 package com.ubb.fmi.orar.feature.form.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.ubb.fmi.orar.data.timetable.model.Semester
 import com.ubb.fmi.orar.data.timetable.model.UserType
 import com.ubb.fmi.orar.ui.catalog.components.PrimaryButton
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
-import com.ubb.fmi.orar.ui.catalog.components.list.FormSelectionRow
-import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
+import com.ubb.fmi.orar.ui.catalog.components.list.ChipSelectionRow
 import com.ubb.fmi.orar.ui.catalog.extensions.labelRes
+import com.ubb.fmi.orar.ui.catalog.model.Chip
 import com.ubb.fmi.orar.ui.catalog.model.ConfigurationFormType
-import com.ubb.fmi.orar.ui.catalog.model.FormSelectionItem
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_next
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_onboarding_semester_details
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_onboarding_user_type
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_onboarding_user_type_details
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_onboarding_year_details
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_semester
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_timetable_configuration_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_timetable_configuration_title
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_user
-import orar_ubb_fmi.ui.catalog.generated.resources.lbl_welcome
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_year
 import org.jetbrains.compose.resources.stringResource
 
@@ -49,6 +47,7 @@ import org.jetbrains.compose.resources.stringResource
  * @param onNextClick: lambda for next button action
  * @param onBack: lambda for back button action
  */
+@Suppress("LongParameterList")
 @Composable
 fun OnboardingFormScreen(
     configurationFormType: ConfigurationFormType,
@@ -63,7 +62,9 @@ fun OnboardingFormScreen(
     onNextClick: () -> Unit,
     onBack: () -> Unit,
 ) {
-    StateScaffold(
+    val chipsStartPadding = Pds.icon.Medium + Pds.spacing.SMedium
+
+    Scaffold(
         topBar = {
             if (configurationFormType == ConfigurationFormType.SETTINGS) {
                 TopBar(
@@ -71,84 +72,78 @@ fun OnboardingFormScreen(
                     onBack = onBack
                 )
             }
-        }
-    ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            if (configurationFormType == ConfigurationFormType.STARTUP) {
-                Text(
-                    text = stringResource(Res.string.lbl_welcome),
-                    style = MaterialTheme.typography.displaySmall,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier
-                        .padding(Pds.spacing.Medium)
-                        .fillMaxWidth()
-                        .weight(0.2f)
-                )
-            }
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-                modifier = Modifier
-                    .weight(0.8f)
-                    .padding(Pds.spacing.Medium),
-            ) {
-                Text(
-                    text = stringResource(Res.string.lbl_timetable_configuration_message),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-
-                FormSelectionRow(
-                    headline = stringResource(Res.string.lbl_year),
-                    selectedItemId = selectedStudyYear,
-                    onClick = onStudyYearClick,
-                    items = studyYears.map { level ->
-                        FormSelectionItem(
-                            id = level,
-                            label = "$level-${level.inc()}"
-                        )
-                    }
-                )
-
-                HorizontalDivider()
-
-                FormSelectionRow(
-                    headline = stringResource(Res.string.lbl_semester),
-                    selectedItemId = selectedSemesterId,
-                    onClick = onSemesterClick,
-                    items = Semester.entries.map {
-                        FormSelectionItem(
-                            id = it.id,
-                            label = stringResource(it.labelRes)
-                        )
-                    }
-                )
-
-                HorizontalDivider()
-
-                FormSelectionRow(
-                    headline = stringResource(Res.string.lbl_user),
-                    selectedItemId = selectedUserTypeId,
-                    onClick = onUserTypeClick,
-                    items = UserType.entries.map {
-                        FormSelectionItem(
-                            id = it.id,
-                            label = stringResource(it.labelRes)
-                        )
-                    }
-                )
-            }
-
+        },
+        bottomBar = {
             PrimaryButton(
                 onClick = onNextClick,
                 enabled = isNextEnabled,
                 text = stringResource(Res.string.lbl_next),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .navigationBarsPadding()
                     .padding(Pds.spacing.Medium)
             )
+        }
+    ) { paddingValues ->
+        Column(
+            verticalArrangement = Arrangement.spacedBy(Pds.spacing.Large),
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(Pds.spacing.Medium)
+        ) {
+            if (configurationFormType == ConfigurationFormType.STARTUP) {
+                OnboardingHeader()
+            }
+
+            OnboardingStep(
+                number = 1,
+                title = stringResource(Res.string.lbl_onboarding_user_type),
+                description = stringResource(Res.string.lbl_onboarding_user_type_details),
+                isCompleted = selectedUserTypeId != null,
+            ) {
+                ChipSelectionRow(
+                    selectedChipId = selectedUserTypeId,
+                    onClick = onUserTypeClick,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.padding(start = chipsStartPadding),
+                    chips = UserType.entries.map {
+                        Chip(it.id, stringResource(it.labelRes))
+                    },
+                )
+            }
+
+            OnboardingStep(
+                number = 2,
+                title = stringResource(Res.string.lbl_year),
+                description = stringResource(Res.string.lbl_onboarding_year_details),
+                isCompleted = selectedStudyYear != null,
+            ) {
+                ChipSelectionRow(
+                    selectedChipId = selectedStudyYear,
+                    onClick = onStudyYearClick,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.padding(start = chipsStartPadding),
+                    chips = studyYears.map { year -> Chip(year, "$year-${year.inc()}") },
+                )
+            }
+
+            OnboardingStep(
+                number = 3,
+                title = stringResource(Res.string.lbl_semester),
+                description = stringResource(Res.string.lbl_onboarding_semester_details),
+                isCompleted = selectedSemesterId != null,
+            ) {
+                ChipSelectionRow(
+                    selectedChipId = selectedSemesterId,
+                    onClick = onSemesterClick,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.padding(start = chipsStartPadding),
+                    chips = Semester.entries.map {
+                        Chip(it.id, stringResource(it.labelRes))
+                    },
+                )
+            }
         }
     }
 }

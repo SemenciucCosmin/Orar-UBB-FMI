@@ -24,6 +24,11 @@
     <string name="lbl_welcome">Bun venit!</string>
     <string name="lbl_year">An</string>
     <string name="lbl_user">Utilizator</string>
+    <string name="lbl_onboarding_message">Configurează-ți orarul în câțiva pași</string>
+    <string name="lbl_onboarding_user_type">Sunt</string>
+    <string name="lbl_onboarding_user_type_details">Alege cum folosești orarul</string>
+    <string name="lbl_onboarding_year_details">Anul universitar al orarului</string>
+    <string name="lbl_onboarding_semester_details">Semestrul pe care vrei să-l urmărești</string>
 
     <!--  CONFIGURATION  -->
     <string name="lbl_timetable_configuration_title">Configurare orar</string>
