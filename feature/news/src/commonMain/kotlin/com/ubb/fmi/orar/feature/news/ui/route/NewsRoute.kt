@@ -30,9 +30,10 @@ fun NewsRoute(navController: NavController) {
         uiState = uiState,
         onRetryClick = viewModel::retry,
         bottomBar = { BottomBar(navController) },
-        onArticleClick = { url ->
+        onArticleTypeClick = viewModel::selectArticleType,
+        onArticleClick = { article ->
             viewModel.handleClickAction()
-            openUrl(url, context) { showToast(context, toastMessage, ToastLength.SHORT) }
+            openUrl(article.url, context) { showToast(context, toastMessage, ToastLength.SHORT) }
         }
     )
 }

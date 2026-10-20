@@ -3,12 +3,11 @@ package com.ubb.fmi.orar.feature.news.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,62 +19,50 @@ import com.ubb.fmi.orar.ui.catalog.components.skeleton.SkeletonColumn
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import com.ubb.fmi.orar.ui.theme.Pds
 
-private const val ARTICLES_COUNT = 6
-private const val TEXT_LINES_COUNT = 3
-private const val LAST_LINE_WIDTH_FRACTION = 0.6f
-private const val TITLE_LAST_LINE_WIDTH_FRACTION = 0.7f
+private const val ARTICLES_COUNT = 10
+private const val TEXT_LAST_LINE_WIDTH_FRACTION = 0.6f
 
 /**
- * Placeholder of the news list displayed while the articles load, mirroring [ArticleListItem]
- * entries separated by dividers.
+ * Placeholder of the news list displayed while the articles load, mirroring a
+ * [NewsMonthHeader] followed by [ArticleCard] entries.
  */
 @Composable
 fun NewsSkeleton(modifier: Modifier = Modifier) {
-    SkeletonColumn(modifier = modifier) { brush ->
-        repeat(ARTICLES_COUNT) { index ->
-            ArticleSkeleton(brush)
-
-            if (index != ARTICLES_COUNT - 1) {
-                Spacer(modifier = Modifier.padding(Pds.spacing.Medium))
-                HorizontalDivider()
-            }
-        }
+    SkeletonColumn(
+        modifier = modifier,
+        spacing = Pds.spacing.SMedium
+    ) { brush ->
+        ShimmerBar(brush = brush, height = 14.dp, modifier = Modifier.width(120.dp))
+        repeat(ARTICLES_COUNT) { ArticleSkeleton(brush) }
     }
 }
 
 /**
- * Placeholder of [ArticleListItem]
+ * Placeholder of [ArticleCard]
  */
 @Composable
 private fun ArticleSkeleton(brush: Brush) {
-    Column(verticalArrangement = Arrangement.spacedBy(Pds.spacing.Small)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(Pds.spacing.Small)) {
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium),
+            modifier = Modifier.padding(Pds.spacing.SMedium)
+        ) {
             ShimmerBar(
                 brush = brush,
                 height = Pds.icon.XXLarge,
-                shape = MaterialTheme.shapes.small,
+                shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.size(Pds.icon.XXLarge)
             )
 
             Column(verticalArrangement = Arrangement.spacedBy(Pds.spacing.XSmall)) {
                 ShimmerBar(brush = brush, height = 12.dp, modifier = Modifier.width(72.dp))
-                ShimmerBar(brush = brush, height = 18.dp, modifier = Modifier.fillMaxWidth())
+                ShimmerBar(brush = brush, height = 16.dp, modifier = Modifier.fillMaxWidth())
                 ShimmerBar(
                     brush = brush,
-                    height = 18.dp,
-                    modifier = Modifier.fillMaxWidth(TITLE_LAST_LINE_WIDTH_FRACTION)
+                    height = 12.dp,
+                    modifier = Modifier.fillMaxWidth(TEXT_LAST_LINE_WIDTH_FRACTION)
                 )
             }
-        }
-
-        repeat(TEXT_LINES_COUNT) { line ->
-            ShimmerBar(
-                brush = brush,
-                height = 14.dp,
-                modifier = Modifier.fillMaxWidth(
-                    if (line == TEXT_LINES_COUNT - 1) LAST_LINE_WIDTH_FRACTION else 1f
-                )
-            )
         }
     }
 }

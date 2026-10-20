@@ -96,6 +96,14 @@ class NewsViewModel(
     }
 
     /**
+     * Displays the articles of [articleType]
+     */
+    fun selectArticleType(articleType: ArticleType) {
+        logger.d(TAG, "selectArticleType: $articleType")
+        _uiState.update { it.copy(selectedArticleType = articleType) }
+    }
+
+    /**
      * Registers analytics event for the item click action
      */
     fun handleClickAction() {
