@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import com.ubb.fmi.orar.ui.catalog.components.timetable.StatusIndicator
 import com.ubb.fmi.orar.ui.catalog.extensions.animatedGradientBorder
@@ -66,12 +67,14 @@ fun AnimatedCard(
                 Modifier
                     .align(Alignment.Center)
                     .alpha(animatedCardState.faceVisibilityAlpha)
+                    .conditional(!animatedCardState.isFaceShowing) { clearAndSetSemantics {} }
             )
 
             backContent(
                 Modifier
                     .align(Alignment.Center)
                     .alpha(animatedCardState.backVisibilityAlpha)
+                    .conditional(animatedCardState.isFaceShowing) { clearAndSetSemantics {} }
             )
 
             if (statusIndicator != null) {

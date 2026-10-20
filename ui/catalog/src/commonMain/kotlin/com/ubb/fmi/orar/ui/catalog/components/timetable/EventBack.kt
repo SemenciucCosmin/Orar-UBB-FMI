@@ -34,11 +34,14 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Composable for the back side of an Event card, showing its details, or an empty state
  * message when there are none.
+ *
+ * @param enabled Whether the add button responds to clicks, false while the back isn't showing.
  */
 @Composable
 fun EventBack(
     text: String,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onAddClick: (() -> Unit)? = null,
 ) {
     var isDialogOpen by remember { mutableStateOf(false) }
@@ -48,7 +51,10 @@ fun EventBack(
         modifier = modifier.height(intrinsicSize = IntrinsicSize.Max)
     ) {
         onAddClick?.let {
-            IconButton(onClick = { isDialogOpen = true }) {
+            IconButton(
+                enabled = enabled,
+                onClick = { isDialogOpen = true }
+            ) {
                 Icon(
                     modifier = Modifier.size(Pds.icon.SMedium),
                     contentDescription = null,

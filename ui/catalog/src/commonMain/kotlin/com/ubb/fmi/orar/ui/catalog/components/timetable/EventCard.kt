@@ -56,6 +56,7 @@ fun EventCard(
             EventBack(
                 modifier = modifier,
                 text = details,
+                enabled = !animatedCardState.isFaceShowing,
                 onAddClick = onAddClick
             )
         }
