@@ -12,9 +12,15 @@ The app is available on both **[Google Play](https://play.google.com/store/apps/
 - View personalized timetables for students and teachers  
 - Student mode: choose year, semester, study line, and group  
 - Teacher mode: select a teacher and see their schedule  
+- Live timetable: see what's ongoing and up next, opening on the current day  
+- Event notifications: get reminded before classes, customizable for each event  
+- Academic calendar: teaching weeks, exam sessions, and holidays at a glance  
+- Custom events: add your own events alongside the official timetable  
+- Free room search: filter by days, week, and time interval, or find a room that is free right now  
+- News: latest faculty announcements for students and teachers  
 - Browse timetables for students, teachers, rooms, and subjects  
 - Save and switch between multiple configurations  
-- Customizable themes and UI  
+- Customizable themes and colors for event types and status indicators  
 - Always up to date with official UBB-FMI schedules (parsed from the public website)  
 
 ---
@@ -26,8 +32,12 @@ The app is available on both **[Google Play](https://play.google.com/store/apps/
 - **Ktor** – networking and HTML parsing  
 - **Koin** – dependency injection  
 - **Room** – local persistence and caching  
-- **Multimodule architecture** – clean separation of features and data layers  
-- **Custom UI design** – built with Compose principles  
+- **Navigation Compose** – type-safe navigation with animated transitions  
+- **kotlinx-datetime** – multiplatform date and time handling  
+- **Firebase** – analytics and Crashlytics  
+- **Detekt** – static code analysis  
+- **Multimodule architecture** – clean separation of features, domain, data, and UI layers  
+- **Custom UI design** – built with Material 3 and Compose principles  
 
 ---
 
