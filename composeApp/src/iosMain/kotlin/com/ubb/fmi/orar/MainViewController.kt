@@ -20,6 +20,10 @@ import com.ubb.fmi.orar.ui.colorpack.ColorPackProvider
 import com.ubb.fmi.orar.ui.navigation.destination.MainNavDestination
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
 import org.koin.compose.koinInject
+import platform.UIKit.UIApplication
+import platform.UIKit.UIUserInterfaceStyle
+import platform.UIKit.UIWindow
+import platform.UIKit.UIWindowScene
 
 /**
  * Main view controller for the Orar UBB FMI application on iOS.
@@ -44,6 +48,10 @@ fun MainViewController() = ComposeUIViewController(
         initialValue = ColorPack.Default
     )
 
+    LaunchedEffect(themeOption) {
+        applyUserInterfaceStyle(themeOption)
+    }
+
     val deepLinkUrl = DeepLinkHandler.deepLinkUrl
     LaunchedEffect(deepLinkUrl) {
         if (deepLinkUrl == null) return@LaunchedEffect
@@ -67,6 +75,23 @@ fun MainViewController() = ComposeUIViewController(
 }
 
 private const val DEEP_LINK_TAG = "DeepLinkHandler"
+
+/**
+ * Overrides the interface style of the app windows so system UI, like the status bar,
+ * follows the in-app [themeOption] instead of the system setting.
+ */
+private fun applyUserInterfaceStyle(themeOption: ThemeOption) {
+    val style = when (themeOption) {
+        ThemeOption.DARK -> UIUserInterfaceStyle.UIUserInterfaceStyleDark
+        ThemeOption.LIGHT -> UIUserInterfaceStyle.UIUserInterfaceStyleLight
+        ThemeOption.SYSTEM -> UIUserInterfaceStyle.UIUserInterfaceStyleUnspecified
+    }
+
+    UIApplication.sharedApplication.connectedScenes
+        .filterIsInstance<UIWindowScene>()
+        .flatMap { scene -> scene.windows.filterIsInstance<UIWindow>() }
+        .forEach { window -> window.overrideUserInterfaceStyle = style }
+}
 
 private fun extractEventIdFromDeepLink(url: String): String? {
     val query = url.substringAfter("?", "")

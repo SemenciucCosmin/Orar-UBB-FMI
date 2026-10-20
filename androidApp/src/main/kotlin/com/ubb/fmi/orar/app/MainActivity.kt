@@ -1,13 +1,18 @@
 package com.ubb.fmi.orar.app
 
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.CompositionLocal
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,6 +57,28 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 initialValue = ColorPack.Default
             )
 
+            val nightMode = LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            val isDarkTheme = when (themeOption) {
+                ThemeOption.DARK -> true
+                ThemeOption.LIGHT -> false
+                ThemeOption.SYSTEM -> nightMode == Configuration.UI_MODE_NIGHT_YES
+            }
+
+            LaunchedEffect(isDarkTheme) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(
+                        lightScrim = Color.TRANSPARENT,
+                        darkScrim = Color.TRANSPARENT,
+                        detectDarkMode = { isDarkTheme },
+                    ),
+                    navigationBarStyle = SystemBarStyle.auto(
+                        lightScrim = LIGHT_NAVIGATION_BAR_SCRIM,
+                        darkScrim = DARK_NAVIGATION_BAR_SCRIM,
+                        detectDarkMode = { isDarkTheme },
+                    ),
+                )
+            }
+
             OrarUbbFmiTheme(themeOption) {
                 ColorPackProvider(colorPack) {
                     AppGraph(navController)
@@ -64,5 +91,11 @@ class MainActivity : ComponentActivity(), KoinComponent {
     override fun onDestroy() {
         PermissionRequestBridge.unregister()
         super.onDestroy()
+    }
+
+    companion object {
+        // Same scrims used by the default enableEdgeToEdge() for 3-button navigation
+        private val LIGHT_NAVIGATION_BAR_SCRIM = Color.argb(0xE6, 0xFF, 0xFF, 0xFF)
+        private val DARK_NAVIGATION_BAR_SCRIM = Color.argb(0x80, 0x1B, 0x1B, 0x1B)
     }
 }
