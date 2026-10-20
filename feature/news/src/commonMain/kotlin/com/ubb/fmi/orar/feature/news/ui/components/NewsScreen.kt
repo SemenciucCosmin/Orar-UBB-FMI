@@ -1,6 +1,7 @@
 package com.ubb.fmi.orar.feature.news.ui.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -13,9 +14,11 @@ import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState
 import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState.Companion.articlesByMonth
 import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState.Companion.hasArticles
 import com.ubb.fmi.orar.feature.news.ui.viewmodel.model.NewsUiState.Companion.isRefreshing
+import com.ubb.fmi.orar.ui.catalog.calculateContentBottomPadding
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
+import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_news
@@ -30,7 +33,6 @@ fun NewsScreen(
     onArticleClick: (Article) -> Unit,
     onArticleTypeClick: (ArticleType) -> Unit,
     onRetryClick: () -> Unit,
-    bottomBar: @Composable () -> Unit,
 ) {
     StateScaffold(
         isLoading = uiState.isLoading && !uiState.isRefreshing,
@@ -40,7 +42,6 @@ fun NewsScreen(
         loadingContent = { paddingValues ->
             NewsSkeleton(modifier = Modifier.padding(paddingValues))
         },
-        bottomBar = bottomBar,
         topBar = {
             Column {
                 TopBar(
@@ -58,11 +59,17 @@ fun NewsScreen(
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
             onRefresh = onRetryClick,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
         ) {
             NewsList(
                 articlesByMonth = uiState.articlesByMonth,
                 onArticleClick = onArticleClick,
+                contentPadding = PaddingValues(
+                    start = Pds.spacing.Medium,
+                    top = Pds.spacing.Medium,
+                    end = Pds.spacing.Medium,
+                    bottom = Pds.spacing.Medium + paddingValues.calculateContentBottomPadding(),
+                ),
             )
         }
     }
@@ -76,7 +83,6 @@ private fun PreviewNewsScreen() {
             onArticleClick = {},
             onArticleTypeClick = {},
             onRetryClick = {},
-            bottomBar = {},
             uiState = NewsUiState(
                 isLoading = false,
                 articles = List(10) {

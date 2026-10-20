@@ -34,7 +34,7 @@ fun NavGraphBuilder.mainGraph(navController: NavController) {
     }
 
     composable<MainNavDestination.News> { navBackStackEntry ->
-        NewsRoute(navController)
+        NewsRoute()
     }
 
     composable<MainNavDestination.Explore> { navBackStackEntry ->

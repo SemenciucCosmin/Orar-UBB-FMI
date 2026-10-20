@@ -1,13 +1,17 @@
 package com.ubb.fmi.orar.ui.navigation.components
 
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -22,40 +26,50 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Composable function that displays the bottom navigation bar for the timetable.
+ * Composable function that displays the floating bottom navigation bar for the timetable.
  *
  * @param navController The NavController used for navigation.
  */
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    BottomAppBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
-        BottomBarItem.entries.forEach { timetableBottomBarItem ->
-            val destination = timetableBottomBarItem.destination
-            val isSelected = currentDestination?.hasRoute(destination::class) == true
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = CircleShape,
+        shadowElevation = Pds.spacing.Small,
+        modifier = modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .padding(horizontal = Pds.spacing.Large, vertical = Pds.spacing.Small)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .selectableGroup()
+                .padding(Pds.spacing.Small)
+        ) {
+            BottomBarItem.entries.forEach { bottomBarItem ->
+                val destination = bottomBarItem.destination
 
-            NavigationBarItem(
-                selected = isSelected,
-                onClick = {
-                    navController.navigate(timetableBottomBarItem.destination) {
-                        popUpTo(MainNavDestination.UserMain()) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    Icon(
-                        modifier = Modifier.size(Pds.icon.SMedium),
-                        painter = painterResource(timetableBottomBarItem.icon),
-                        contentDescription = null
-                    )
-                },
-                label = {
-                    Text(text = stringResource(timetableBottomBarItem.labelRes))
-                }
-            )
+                BottomBarTab(
+                    icon = painterResource(bottomBarItem.icon),
+                    label = stringResource(bottomBarItem.labelRes),
+                    isSelected = currentDestination?.hasRoute(destination::class) == true,
+                    onClick = {
+                        navController.navigate(destination) {
+                            popUpTo(MainNavDestination.UserMain()) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                )
+            }
         }
     }
 }

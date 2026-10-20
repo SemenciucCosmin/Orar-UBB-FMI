@@ -21,11 +21,12 @@ fun NewsList(
     articlesByMonth: ImmutableList<ArticlesMonth>,
     onArticleClick: (Article) -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(Pds.spacing.Medium),
     listState: LazyListState = rememberLazyListState(),
 ) {
     LazyColumn(
         state = listState,
-        contentPadding = PaddingValues(Pds.spacing.Medium),
+        contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium),
         modifier = modifier
     ) {

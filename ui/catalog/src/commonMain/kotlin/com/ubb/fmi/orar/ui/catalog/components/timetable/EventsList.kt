@@ -32,6 +32,7 @@ fun EventsList(
     onNotificationClick: (TimetableListItem.Event) -> Unit,
     onRemoveClick: (TimetableListItem.Event) -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(Pds.spacing.SMedium),
     selectedEventId: String? = null,
     onSelectedEventAnimated: () -> Unit = {},
     onAddItem: ((String) -> Unit)? = null,
@@ -39,7 +40,7 @@ fun EventsList(
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Pds.spacing.Medium),
-        contentPadding = PaddingValues(Pds.spacing.SMedium),
+        contentPadding = contentPadding,
         state = listState,
     ) {
         items(

@@ -10,9 +10,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.ubb.fmi.orar.ui.catalog.calculateContentBottomPadding
 import com.ubb.fmi.orar.ui.catalog.components.NavigationCard
 import com.ubb.fmi.orar.ui.catalog.components.TopBar
-import com.ubb.fmi.orar.ui.navigation.components.BottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.ExploreNavDestination
 import com.ubb.fmi.orar.ui.theme.Pds
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
@@ -44,7 +44,6 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ExploreRoute(navController: NavController) {
     Scaffold(
-        bottomBar = { BottomBar(navController) },
         topBar = {
             TopBar(
                 title = stringResource(Res.string.lbl_explore),
@@ -55,9 +54,10 @@ fun ExploreRoute(navController: NavController) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Pds.spacing.SMedium),
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(top = paddingValues.calculateTopPadding())
                 .verticalScroll(rememberScrollState())
                 .padding(Pds.spacing.Medium)
+                .padding(bottom = paddingValues.calculateContentBottomPadding())
         ) {
             NavigationCard(
                 title = stringResource(Res.string.lbl_students),

@@ -14,7 +14,6 @@ import com.ubb.fmi.orar.feature.usertimetable.ui.viewmodel.UserTimetableViewMode
 import com.ubb.fmi.orar.ui.catalog.components.EventHandler
 import com.ubb.fmi.orar.ui.catalog.components.timetable.TimetableScreen
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState.TimetableUiEvent
-import com.ubb.fmi.orar.ui.navigation.components.BottomBar
 import com.ubb.fmi.orar.ui.navigation.destination.SettingsNavDestination
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -43,7 +42,6 @@ fun UserTimetableRoute(navController: NavController, selectedEventId: String? = 
         uiState = uiState,
         selectedEventId = selectedEventId,
         onRetryClick = viewModel::retry,
-        bottomBar = { BottomBar(navController) },
         onRemoveItem = viewModel::removeItem,
         onItemVisibilityChange = viewModel::changeTimetableClassVisibility,
         onItemNotificationChange = {

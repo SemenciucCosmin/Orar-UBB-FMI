@@ -1,5 +1,6 @@
 package com.ubb.fmi.orar.ui.catalog.components.timetable
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -16,10 +17,12 @@ import com.ubb.fmi.orar.data.timetable.model.Day
 import com.ubb.fmi.orar.data.timetable.model.Event
 import com.ubb.fmi.orar.data.timetable.model.EventType
 import com.ubb.fmi.orar.data.timetable.model.Frequency
+import com.ubb.fmi.orar.ui.catalog.calculateContentBottomPadding
 import com.ubb.fmi.orar.ui.catalog.components.state.StateScaffold
 import com.ubb.fmi.orar.ui.catalog.model.TimetableListItem
 import com.ubb.fmi.orar.ui.catalog.viewmodel.model.TimetableUiState
 import com.ubb.fmi.orar.ui.theme.OrarUbbFmiTheme
+import com.ubb.fmi.orar.ui.theme.Pds
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
@@ -38,7 +41,6 @@ private val SCROLL_START_DELAY = 500.milliseconds
  * @param uiState The current state of the timetable UI.
  * @param onRetryClick Callback invoked when the retry button is clicked.
  * @param topBar Composable for the top bar of the screen.
- * @param bottomBar Composable for the bottom bar of the screen (optional).
  * @param onItemVisibilityChange Callback invoked when the visibility of a timetable item changes.
  * @param selectedEventId Optional event ID to scroll to once the list is loaded; the scrolled to
  * card then plays a shake animation to draw attention to it. When absent, the list scrolls to the
@@ -49,7 +51,6 @@ fun TimetableScreen(
     uiState: TimetableUiState,
     onRetryClick: () -> Unit,
     topBar: @Composable () -> Unit,
-    bottomBar: @Composable () -> Unit = {},
     onItemVisibilityChange: (TimetableListItem.Event) -> Unit = {},
     onItemNotificationChange: (TimetableListItem.Event) -> Unit = {},
     onRemoveItem: (TimetableListItem.Event) -> Unit = {},
@@ -93,13 +94,18 @@ fun TimetableScreen(
         errorStatus = uiState.errorStatus,
         onRetryClick = onRetryClick,
         topBar = topBar,
-        bottomBar = bottomBar,
         loadingContent = { paddingValues ->
             EventsListSkeleton(modifier = Modifier.padding(paddingValues))
         },
     ) { paddingValues ->
         EventsList(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
+            contentPadding = PaddingValues(
+                start = Pds.spacing.SMedium,
+                top = Pds.spacing.SMedium,
+                end = Pds.spacing.SMedium,
+                bottom = Pds.spacing.SMedium + paddingValues.calculateContentBottomPadding(),
+            ),
             items = uiState.timetableListItems,
             isEditModeOn = uiState.isEditModeOn,
             ongoingEventIds = ongoingEventIds,
@@ -143,7 +149,6 @@ private fun PreviewTimetableScreen() {
         TimetableScreen(
             onRetryClick = {},
             topBar = {},
-            bottomBar = {},
             onItemVisibilityChange = {},
             uiState = TimetableUiState(
                 title = "",
@@ -186,7 +191,6 @@ private fun PreviewTimetableScreenEditMode() {
         TimetableScreen(
             onRetryClick = {},
             topBar = {},
-            bottomBar = {},
             onItemVisibilityChange = {},
             onItemNotificationChange = {},
             uiState = TimetableUiState(
