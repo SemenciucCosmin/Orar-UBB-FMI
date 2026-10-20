@@ -190,6 +190,10 @@
     <string name="lbl_app_update_announcement_colors_message">Alege culorile pentru tipurile de evenimente și indicatorii de stare</string>
     <string name="lbl_app_update_announcement_live_title">Orar în timp real</string>
     <string name="lbl_app_update_announcement_live_message">Vezi ce se desfășoară acum și ce urmează, iar orarul se deschide la ziua curentă</string>
+    <string name="lbl_app_update_announcement_free_rooms_title">Căutare mai bună a sălilor libere</string>
+    <string name="lbl_app_update_announcement_free_rooms_message">Filtrează după zile, săptămână și interval orar, sau găsește o sală liberă chiar acum</string>
+    <string name="lbl_app_update_announcement_design_title">Design reîmprospătat</string>
+    <string name="lbl_app_update_announcement_design_message">Un aspect nou pentru anunțuri, navigare, evenimente personalizate și configurare, cu animații mai fine</string>
     <string name="lbl_app_update_announcement_message">Aceasta este o actualizare mare, așa că s-ar putea să mai existe unele probleme. Orice raportare sau idee de îmbunătățire este binevenită!</string>
 
 

@@ -189,6 +189,10 @@
     <string name="lbl_app_update_announcement_colors_message">Choose your own colors for event types and status indicators</string>
     <string name="lbl_app_update_announcement_live_title">Live timetable</string>
     <string name="lbl_app_update_announcement_live_message">See what's ongoing and up next, with the timetable opening on the current day</string>
+    <string name="lbl_app_update_announcement_free_rooms_title">Smarter free room search</string>
+    <string name="lbl_app_update_announcement_free_rooms_message">Filter by days, week and time interval, or find a room that is free right now</string>
+    <string name="lbl_app_update_announcement_design_title">Refreshed design</string>
+    <string name="lbl_app_update_announcement_design_message">A new look for news, navigation, custom events and onboarding, with smoother animations</string>
     <string name="lbl_app_update_announcement_message">This is a big update, so a few bugs may have slipped through. Any report or improvement idea is welcome!</string>
 
     <!--  NOTIFICATIONS SETTINGS  -->

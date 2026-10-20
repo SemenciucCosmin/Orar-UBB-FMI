@@ -2,13 +2,19 @@ package com.ubb.fmi.orar.feature.dialogs.ui.model
 
 import orar_ubb_fmi.ui.catalog.generated.resources.Res
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_calendar
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_custom
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_edit
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_explore
 import orar_ubb_fmi.ui.catalog.generated.resources.ic_notification_on
+import orar_ubb_fmi.ui.catalog.generated.resources.ic_search
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_calendar_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_calendar_title
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_colors_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_colors_title
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_design_message
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_design_title
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_free_rooms_message
+import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_free_rooms_title
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_live_message
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_live_title
 import orar_ubb_fmi.ui.catalog.generated.resources.lbl_app_update_announcement_notifications_message
@@ -43,5 +49,15 @@ enum class UpdateHighlight(
         iconRes = Res.drawable.ic_explore,
         titleRes = Res.string.lbl_app_update_announcement_live_title,
         messageRes = Res.string.lbl_app_update_announcement_live_message,
+    ),
+    FREE_ROOMS(
+        iconRes = Res.drawable.ic_search,
+        titleRes = Res.string.lbl_app_update_announcement_free_rooms_title,
+        messageRes = Res.string.lbl_app_update_announcement_free_rooms_message,
+    ),
+    DESIGN(
+        iconRes = Res.drawable.ic_custom,
+        titleRes = Res.string.lbl_app_update_announcement_design_title,
+        messageRes = Res.string.lbl_app_update_announcement_design_message,
     ),
 }
