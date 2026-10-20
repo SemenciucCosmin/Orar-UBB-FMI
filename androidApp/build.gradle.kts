@@ -63,8 +63,8 @@ android {
         applicationId = "com.ubb.fmi.orar"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 9
-        versionName = "1.2.6"
+        versionCode = 10
+        versionName = "1.3.0"
     }
     packaging {
         resources {
