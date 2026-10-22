@@ -59,12 +59,12 @@ All timetable data is retrieved from the faculty’s **public website**.
 ## Screenshots
 <p float="left">
   <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/1_onboarding.png" width="180">
-  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/2_main.png" width="180">
-  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/3_students.png" width="180">
+  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/2_timetable.png" width="180">
+  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/3_news.png" width="180">
 </p>
 
 <p float="left">
-  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/4_teachers.png" width="180">
-  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/5_subjects.png" width="180">
-  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/6_rooms.png" width="180">
+  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/4_calendar.png" width="180">
+  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/5_custom_event.png" width="180">
+  <img src="https://github.com/SemenciucCosmin/Orar-UBB-FMI/blob/main/screenshots/6_free_room.png" width="180">
 </p>
